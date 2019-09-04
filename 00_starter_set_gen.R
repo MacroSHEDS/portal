@@ -5,6 +5,7 @@ library(tidyr)
 library(data.table)
 library(dtplyr)
 library(dplyr, warn.conflicts = FALSE)
+library(lubridate)
 
 setwd('/home/mike/git/macrosheds/')
 
@@ -19,38 +20,63 @@ pw = extract_from_config('MYSQL_PW')
 con = DBI::dbConnect(RMariaDB::MariaDB(), dbname='hbef',
     username='root', password=pw)
 
-# grab_cur = DBI::dbReadTable(con, 'chemistry') %>%
-#     mutate(uniqueID=gsub('_Dup', '', uniqueID)) %>%
-#     group_by(uniqueID, datetime) %>%
-#     summarize_if(is.numeric, mean, na.rm=TRUE) %>%
-#     as_tibble()
-# grab_cur = DBI::dbReadTable(con, 'chemistry') %>%
-
-grab_cur = dtplyr::lazy_dt(DBI::dbReadTable(con, 'chemistry')) %>%
+#can't use lazy_dt with summarize_if yet
+grab_cur = DBI::dbReadTable(con, 'chemistry') %>%
+# grab_cur = dtplyr::lazy_dt(DBI::dbReadTable(con, 'chemistry')) %>%
     mutate(uniqueID=gsub('_Dup', '', uniqueID)) %>%
-    as_tibble()
-grab_cur = group_by(grab_cur, uniqueID, datetime) %>%
+    data.table(.) %>%
+    .[!is.na(uniqueID) & !is.na(datetime),
+        lapply(.SD, function(x) {
+            if(is.numeric(x)) mean(x, na.rm=TRUE) else x[! is.na(x)][1L]
+        }),
+        by=list(uniqueID, datetime)] %>%
+    as_tibble(.) %>%
+    # filter(!is.na(uniqueID) & !is.na(datetime)) %>%
     # group_by(uniqueID, datetime) %>%
-    summarize_if(is.numeric, mean, na.rm=TRUE) %>%
-    ungroup() %>%
-    # as.data.table() %>%
-    # lazy_dt() %>%
-    mutate(uniqueID=str_match(uniqueID, '^(.+?)_.+$')[,2],
-        datetime=as.POSIXct(datetime, tz='UTC', format='%m/%e/%y %H:%M')) %>%
-    # as_tibble()
-    # as.data.table()
-# grab_cur = lazy_dt(grab_cur, immutable=FALSE) %>%
-# grab_cur = mutate(grab_cur, uniqueID=str_match(uniqueID, '^(.+?)_.+$')[2]) %>%
-    select(-waterYr, -refNo) %>%
-    # select(-uniqueID) %>%
-    # rename(uniqueID=temp) %>%
+    # summarize_if(is.numeric, mean, na.rm=TRUE) %>%
+    # ungroup() %>%
+    mutate(site=str_match(uniqueID, '^(.+?)_.+$')[,2],
+        datetime=lubridate::with_tz(as.POSIXct(datetime, tz='US/Eastern',
+            format='%m/%e/%y %H:%M'), tzone='UTC')) %>%
+    select(-refNo, -uniqueID, -duplicate) %>%
+    replace(is.na(.), NA) %>% #for NaNs
     as_tibble()
 
+grab_hist = DBI::dbReadTable(con, 'historical') %>%
+    mutate(uniqueID=gsub('_Dup', '', uniqueID)) %>%
+    data.table(.) %>%
+    .[!is.na(uniqueID) & !is.na(datetime),
+        lapply(.SD, function(x) {
+            if(is.numeric(x)) mean(x, na.rm=TRUE) else x[! is.na(x)][1L]
+        }),
+        by=list(uniqueID, datetime)] %>%
+    as_tibble(.) %>%
+    mutate(site=str_match(uniqueID, '^(.+?)_.+$')[,2],
+        datetime=lubridate::with_tz(as.POSIXct(datetime, tz='US/Eastern',
+            format='%m/%e/%y %H:%M'), tzone='UTC')) %>%
+    select(-refNo, -uniqueID, -date, -timeEST, -duplicate) %>%
+    replace(is.na(.), NA) %>%
+    as_tibble()
 
-    select(-refNo,
-grab_hist = dtplyr::lazy_dt(DBI::dbReadTable(con, 'historical'))
-sens_Q = dtplyr::lazy_dt(DBI::dbReadTable(con, 'sensor2'))
-sens_etc = dtplyr::lazy_dt(DBI::dbReadTable(con, 'sensor3'))
+grab = full_join(grab_cur, grab_hist) %>%
+    arrange(datetime)
+
+sensor_Q = dtplyr::lazy_dt(DBI::dbReadTable(con, 'sensor2')) %>%
+    mutate(site=paste0('W', watershedID)) %>%
+    select(-id, -watershedID) %>%
+    replace(is.na(.), NA) %>%
+    as_tibble()
+
+sensor_etc = dtplyr::lazy_dt(DBI::dbReadTable(con, 'sensor3')) %>%
+    rename_all(function(x) gsub('S3__', '', x)) %>%
+    mutate(site=paste0('W', watershedID)) %>%
+    select(-id, -watershedID) %>%
+    replace(is.na(.), NA) %>%
+    as_tibble()
+
+sensor = full_join(sensor_Q, sensor_etc) %>%
+    arrange(datetime)
+
 
 tidyr::gather(grab_cur,'variable', 'value',
     data = gather(data, 'Variable', 'Value', Light_PAR:Discharge_m3s)
