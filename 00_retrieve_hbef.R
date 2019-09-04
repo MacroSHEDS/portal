@@ -6,6 +6,7 @@ library(data.table)
 library(dtplyr)
 library(dplyr, warn.conflicts = FALSE)
 library(lubridate)
+library(feather)
 
 setwd('/home/mike/git/macrosheds/')
 
@@ -77,11 +78,10 @@ sensor_etc = dtplyr::lazy_dt(DBI::dbReadTable(con, 'sensor3')) %>%
 sensor = full_join(sensor_Q, sensor_etc) %>%
     arrange(datetime)
 
+# tidyr::gather(grab_cur,'variable', 'value',
+#     data = gather(data, 'Variable', 'Value', Light_PAR:Discharge_m3s)
 
-tidyr::gather(grab_cur,'variable', 'value',
-    data = gather(data, 'Variable', 'Value', Light_PAR:Discharge_m3s)
-
-setdiff(colnames(grab_hist), colnames(grab_cur))
-colnames(sens_etc)
+write_feather(grab, 'data/hbef/grab.feather')
+write_feather(sensor, 'data/hbef/sensor.feather')
 
 dbDisconnect(con)

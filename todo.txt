@@ -3,7 +3,7 @@ verify timezones for al hbef data
 out and in folders for all data i retrieve
 within the in folder, have separate feather files that represent
     1. all combined raw objects
-    2. all objects groupes
+    2. all objects groups
     3. all together, final feather
 
 data source
