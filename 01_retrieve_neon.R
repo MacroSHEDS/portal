@@ -137,7 +137,8 @@ get_DP1.20288.001 = function(sets){
             site_with_suffix = paste0(site, site_suffix)
 
             #download data
-            sensor_sub = read.delim(d$data$files$url[data_inds[j]], sep=",")
+            sensor_sub = read.delim(d$data$files$url[data_inds[j]], sep=",",
+                stringsAsFactors=FALSE)
 
             #get list of variables included
             varind = grep('SciRvw', colnames(sensor_sub))
@@ -239,5 +240,3 @@ for(s in 1:length(sensor_data_products)){
 
 write_feather(grab, 'data/neon/grab.feather')
 write_feather(sensor, 'data/neon/sensor.feather')
-
-dbDisconnect(con)
