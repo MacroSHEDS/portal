@@ -1,4 +1,8 @@
-verify timezones for al hbef data
+verify timezones for all hbef data
+logging
+http requests fail randomly?
+    Error in the HTTP2 framing layer
+    could just tryCatch and repeat
 
 out and in folders for all data i retrieve
 within the in folder, have separate feather files that represent
