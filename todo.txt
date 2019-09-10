@@ -10,20 +10,23 @@ within the in folder, have separate feather files that represent
     2. all objects groups
     3. all together, final feather
 
-data source
-    sitegroup
-        site
-            continuous (constant/irregular interval)
-                timestamp
-                data
-                flag
-            grab
-                timestamp
-                data
-                flag
-            watershed summary
-                data
-            blob
-                data
+users
+activity
+sourcedata
+    data source
+        sitegroup
+            site
+                continuous (constant/irregular interval)
+                    timestamp
+                    data
+                    flag
+                grab
+                    timestamp
+                    data
+                    flag
+                watershed summary
+                    data
+                blob
+                    data
 
 

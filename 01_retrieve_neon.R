@@ -240,3 +240,7 @@ for(s in 1:length(sensor_data_products)){
 
 write_feather(grab, 'data/neon/grab.feather')
 write_feather(sensor, 'data/neon/sensor.feather')
+
+zip('data/neon.zip', list.files('data/neon', recursive=TRUE, full.names=TRUE))
+out = drive_upload("data/neon.zip",
+    as_id('https://drive.google.com/drive/folders/0ABfF-JkuRvL5Uk9PVA'))
