@@ -1,3 +1,6 @@
-main_biplot = function(){
-    plot(1, 1)
+main_biplot = function(x, y){
+    plot(grab[[x]], grab[[y]])
+}
+summary_biplot = function(x, y){
+    plot(x, y)
 }

@@ -16,35 +16,36 @@ shinyjs.getHeight50 = function() {
 }
 "
 
-shinyUI(
-    fluidPage(
+source('ui/timeseries_ui.R')
+source('ui/site_comparison_ui.R')
+source('ui/about_ui.R')
+source('ui/summary_biplot_ui.R')
+source('ui/map_ui.R')
 
-        #screen shouldn't go gray when plots are updating.
-        tags$style(type="text/css", ".recalculating { opacity: 1.0; }" ),
-        shinyjs::useShinyjs(),
-        shinyjs::extendShinyjs(text=get_plotheight,
-            functions=c('getHeight50', 'init')),
-        navbarPage(title=p(strong(a('MacroSHEDS',
-            href='https://macrosheds.org/'))), inverse=TRUE,
-            windowTitle='MacroSHEDS',
-            tabPanel('About',
-                p("Looking for some river data? Here's all of it.")
-            ),
-            tabPanel(HTML('Biplot Supreme'),
-                fluidRow(
-                    column(12, align='left',
-                        div(align='center', style=paste0(
-                                'display: inline-block;',
-                                'vertical-align:middle;'),
-                            p('Info and stuff; maybe some options')
-                        )
-                    )
-                ),
-                fluidRow(
-                    plotOutput('MAIN_BIPLOT', brush='biplot_brush')
-                        # height='auto', width='auto')
-                )
+shinyUI(fluidPage(
+
+    #screen shouldn't go gray when plots are updating.
+    tags$style(type="text/css", ".recalculating { opacity: 1.0; }" ),
+    shinyjs::useShinyjs(),
+    shinyjs::extendShinyjs(text=get_plotheight,
+        functions=c('getHeight50', 'init')),
+    # navbarPage(title=p(strong(a('MacroSHEDS',
+    #     href='https://macrosheds.org/'))), inverse=TRUE,
+    #     windowTitle='MacroSHEDS',
+
+    sidebarLayout(
+        sidebarPanel(width=4,
+            tabsetPanel(
+                about_tab,
+                map_tab
+            )
+        ),
+        mainPanel(width=8,
+            tabsetPanel(id='tabs',
+                summary_biplot_tab,
+                timeseries_tab,
+                site_comparison_tab
             )
         )
     )
-)
+))

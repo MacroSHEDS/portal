@@ -137,7 +137,7 @@ chunker_ingester = function(l, chunksize=100000){
 chunker_ingester(grablist)
 
 r('macrosheds', 'sourcedata')$insert(grablist[1:5])$run(recon)
-r('macrosheds', 'sourcedata')$get('1')$run(recon)
+r('macrosheds', 'sourcedata')$get(1)$run(recon)
 r('macrosheds', 'sourcedata')$delete()$run(recon)
 r('macrosheds', 'sourcedata')$count()$run(recon)
 close(recon)
