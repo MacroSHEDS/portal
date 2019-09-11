@@ -1,4 +1,4 @@
-summary_biplot_tab = tabPanel(HTML('Pretty Much Gapminder'),
+summary_biplot_tab = tabPanel('Pretty Much Gapminder', value='gap',
     fluidRow(
         column(12, align='left',
             div(align='center', style=paste0(

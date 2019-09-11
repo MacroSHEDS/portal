@@ -8,13 +8,6 @@ restyle everything
     max 80 char lines
     <- into =
     etc
-modify carolina's page:
-    change R/F limb markers to colored points
-    change plots to dygraphs
-    facet plots somehow (see matt's app for example)
-        should facet dynamically as more sites/vars are chosen
-        should maybe facet according to var or unit grouping
-        list of variables should be grouped by unit, etc
 
 out and in folders for all data i retrieve
 within the in folder, have separate feather files that represent
@@ -69,12 +62,16 @@ start with page divided 1/3-2/3 map of sites and gapminder summary biplot
     
 http://mtm-weathering.web.duke.edu/
 
+goal 1 - tweak free-for-all tab:
+    hide most recent year
+    include all available sensor data
+    change R, F, L, PK limb display (what do these mean?)
+    figure out if ET or UTC
+    change plots to dygraphs
+    facet plots somehow (see matt's app for example)
+        should facet dynamically as more sites/vars are chosen
+        should maybe facet according to var or unit grouping
+        list of variables should be grouped by unit, etc
 
-emily questions:
-    do we need results in october?
-    zone, domain, sitegroup?
-    3 tabs?
-        summary data biplot (gapminder)
-        within-site exploration (timeseries free-for-all)
-        few-site comparison (biplot)
-            or do we want timeseries free-for-all here too
+questions for emily:
+    do we need to hide the most recent hbef year from viz? or just not let people download it?

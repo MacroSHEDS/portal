@@ -1,4 +1,4 @@
-site_comparison_tab = tabPanel(HTML('Biplot Supreme'),
+site_comparison_tab = tabPanel('Biplot Supreme', value='supreme',
     fluidRow(
         column(12, align='left',
             div(align='center', style=paste0(

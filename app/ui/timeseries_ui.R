@@ -1,4 +1,4 @@
-timeseries_tab = tabPanel("Time series",
+timeseries_tab = tabPanel("Time series", value='site_exploration',
     sidebarLayout(
         # Sidebar with tabs for Solute, Sites, Options
         sidebarPanel(
