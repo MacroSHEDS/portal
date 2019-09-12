@@ -1,3 +1,4 @@
+GENERAL
 verify timezones for all hbef data
 logging
 http requests fail randomly?
@@ -9,12 +10,30 @@ restyle everything
     <- into =
     etc
 
+
+APP LAYOUT
+map page
+    choose one site and jump straight to site exploration page or
+    choose more sites and jump to restricted comparisons page
+gapminder page (not till year 3)
+restricted comparisons page
+    annual, seasonal, maybe finer scale comparisons across domains
+    comparisons only allowed between sites with similar treatments, characteristics, etc (e.g. nutrient addition, cutting)
+site exploration page (carolina free-for-all page)
+    
+http://mtm-weathering.web.duke.edu/
+
+
+DATA RETRIEVAL
 out and in folders for all data i retrieve
 within the in folder, have separate feather files that represent
     1. all combined raw objects
     2. all objects groups
     3. all together, final feather
 
+
+SCHEMA DESIGN
+option 1 (doc store):
 users
 activity
 sourcedata
@@ -35,7 +54,7 @@ sourcedata
                     data
                 meta
 
-
+option 2 (doc store):
 users
 activity
 site
@@ -52,16 +71,7 @@ blob
 meta
 
 
-either compare annual (or subseassonal) sujmary data across study systems or (2)
-    evernt based stuff within systems (3)
-
-start with page divided 1/3-2/3 map of sites and gapminder summary biplot
-    choose one site and jump straight to 3 or
-    choose more sites and jump to 2
-
-    
-http://mtm-weathering.web.duke.edu/
-
+CURRENT GOALS
 goal 1 - tweak free-for-all tab:
     hide most recent year
     include all available sensor data
@@ -73,5 +83,9 @@ goal 1 - tweak free-for-all tab:
         should maybe facet according to var or unit grouping
         list of variables should be grouped by unit, etc
 
-questions for emily:
+QUESTIONS FOR MATT:
+    facet by category? or by number of series plotted? or both?
+    if always going to facet by category, i can just group the grabvars into categorical lists
+
+QUESTIONS FOR EMILY:
     do we need to hide the most recent hbef year from viz? or just not let people download it?

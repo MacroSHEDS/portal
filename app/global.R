@@ -33,29 +33,26 @@ grabcols = grabcols[grabcols != 'datetime']
 # sensor = read_feather('../data/hbef/sensor.feather')
 # sensor = select_if(sensor, is.numeric)
 
-# If you add to this list, must update colors_cations list as well
-solutes_cations <- list("TOTAL Cation Charge" = "cationCharge",
+grabvars = list(
+    "Aluminum (Al) ICP" = "Al_ICP",
+    "OM Aluminum (Al)" = "OMAl",
+    "TM Aluminum (Al)" = "TMAl",
+    "Ammonium (NH4)" = "NH4",
     "Calcium (Ca)" = "Ca",
+    "Chloride (Cl)" = "Cl",
+    "Fluorine (F)" = "F",
+    "Iron (Fe)" = "Fe",
     "Magnesium (Mg)" = "Mg",
+    "Manganese (Mn)" = "Mn",
+    "Nitrate (NO3)" = "NO3",
+    "Phosphate (PO4)" = "PO4",
     "Potassium (K)" = "K",
     "Sodium (Na)" = "Na",
-    "TM Aluminum (Al)" = "TMAl",
-    "OM Aluminum (Al)" = "OMAl",
-    "Aluminum (Al) ICP" = "Al_ICP",
-    "Ammonium (NH4)" = "NH4",
-    "Manganese (Mn)" = "Mn",
-    "Iron (Fe)" = "Fe")
-
-# If you add to this list, must update colors_anions list as well
-solutes_anions <- list("TOTAL Anion Charge" = "anionCharge",
     "Sulfate (SO4)" = "SO4",
-    "Nitrate (NO3)" = "NO3",
-    "Chloride (Cl)" = "Cl",
-    "Phosphate (PO4)" = "PO4",
-    "Fluorine (F)" = "F")
 
-# If you add to this list, must update colors_other list as well
-solutes_other <- list("pH (3 Star)" = "pH",
+    "TOTAL Anion Charge" = "anionCharge",
+    "TOTAL Cation Charge" = "cationCharge",
+    "pH (3 Star)" = "pH",
     "pH (Metrohm)"="pHmetrohm",
     "Dissolved Organic Carbon (DOC)" = "DOC",
     "Total Dissolved Nitrogen (TDN)" = "TDN",
@@ -69,6 +66,7 @@ solutes_other <- list("pH (3 Star)" = "pH",
     "Water Temperature" = "temp",
     "Ion Balance" = "ionBalance")
 
+
 codes999.9 <- c("timeEST", "temp", "ANC960", "ANCMet",
     "ionError", "ionBalance")
 codes123 <- c("pH", "pHmetrohm", "spCond", "au254", "au275",
@@ -76,7 +74,6 @@ codes123 <- c("pH", "pHmetrohm", "spCond", "au254", "au275",
     "K", "Na", "TMAl", "OMAl", "Al_ICP", "NH4",
     "SO4", "NO3", "Cl", "PO4", "DOC", "TDN", "DIC",
     "DON", "SiO2", "Mn", "Fe", "F")
-
 
 # Lists of Sites
 #***************
