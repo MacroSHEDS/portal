@@ -248,7 +248,9 @@ output$GRAPH_MAIN4 <- renderPlot({
             scale_x_date(date_labels = "%Y-%b")+
             coord_cartesian(xlim = c(input$DATE4[1], input$DATE4[2])) +
             scale_color_manual(values = c("black", "#307975", "#691476", "#735E1F", "#6F0D2F", "#7F8D36", "#37096D", "#074670", "#0C2282", "#750D47")) +
-            labs(x = "", y = "Solutes")
+            labs(x = "", y = 'Solutes')
+            # labs(x="", y=eval(parse(text=grabvars[grabvars$shortname ==
+            #         input$SOLUTES4, 'R_display'])))
     } else {
         m <- ggplot(data, aes(x, y, shape=data$solute, color=data$site)) +
             my_theme +

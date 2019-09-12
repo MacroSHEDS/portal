@@ -82,11 +82,10 @@ goal 1 - tweak free-for-all tab:
         should facet dynamically as more sites/vars are chosen
         should maybe facet according to var or unit grouping
         list of variables should be grouped by unit, etc
+        legend should include units
 
 QUESTIONS FOR MATT:
-    facet by category? or by number of series plotted? or both?
-    if always going to facet by category, i can just group the grabvars into categorical lists
-    replace chemical symbols with units?
+    look over units sheet
 
 QUESTIONS FOR EMILY:
     do we need to hide the most recent hbef year from viz? or just not let people download it?

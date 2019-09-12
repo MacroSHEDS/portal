@@ -92,8 +92,8 @@ timeseries_tab = tabPanel("Time series", value='site_exploration',
                 # Solutes tab
                 #********************
                 tabPanel("Solutes",
-                    selectizeInput('SOLUTES4', label='',
-                        choices=grabvars, multiple=TRUE, selected='Al_ICP'),
+                    selectizeInput('SOLUTES4', label='', multiple=TRUE,
+                        choices=grabvars_display, selected='Al_ICP'),
                     # checkboxGroupInput("SOLUTES4",
                     #     label = "",
                     #     # choiceNames = sapply(names(grabvars), HTML,
