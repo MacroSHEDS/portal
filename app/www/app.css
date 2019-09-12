@@ -1,0 +1,30 @@
+@charset "UTF-8";
+
+body {
+	font-family: 'Montserrat', sans-serif;
+}
+
+#SOLUTES4 ~ .selectize-control {
+    font-size: 60%;
+} .selectize-dropdown {
+    font-size: 120%;
+} .optgroup-header {
+    color: black !important;
+    background-color: #efefef !important;
+    font-size: 140% !important;
+}
+
+.recalculating { opacity: 1.0; }
+
+/* make the padding around the boxes smaller */
+[class*="col-lg-"],[class*="col-md-"],
+[class*="col-sm-"],[class*="col-xs-"]{
+    padding-right:5pt !important;
+    padding-left: 5pt !important;
+}
+
+/* change the background color of the entire app */
+.content-wrapper{
+	background-color: #f2f6f7;
+}
+

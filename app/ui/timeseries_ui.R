@@ -92,21 +92,21 @@ timeseries_tab = tabPanel("Time series", value='site_exploration',
                 # Solutes tab
                 #********************
                 tabPanel("Solutes",
-                    br(),
-                    HTML('<strong>Solutes</strong>'),
-                    checkboxGroupInput("SOLUTES4",
-                        label = "",
-                        # choiceNames = sapply(names(grabvars), HTML,
-                        #     USE.NAMES=FALSE),
-
-                        # choiceNames = names(grabvars),
-                        # choiceValues = unname(grabvars),
-                        choiceNames=list('1', HTML('2<br><strong>other</strong>'), 'z'),
-                        choiceValues=list('K', 'Ca', 'DIC'),
-
-                        # choices = grabvars,
-                        selected = "Ca"
-                    ),
+                    selectizeInput('SOLUTES4', label='',
+                        choices=grabvars, multiple=TRUE, selected='Al_ICP'),
+                    # checkboxGroupInput("SOLUTES4",
+                    #     label = "",
+                    #     # choiceNames = sapply(names(grabvars), HTML,
+                    #     #     USE.NAMES=FALSE),
+                    #
+                    #     choiceNames = names(grabvars),
+                    #     choiceValues = unname(grabvars),
+                    #     # choiceNames=list('1', HTML('2<br><strong>other</strong>'), 'z'),
+                    #     # choiceValues=list('K', 'Ca', 'DIC'),
+                    #
+                    #     # choices = grabvars,
+                    #     selected = "Ca"
+                    # ),
                     helpText(textOutput("LIMITS4"),
                         style = "color:#fc9272; font-size:85%;"
                     )

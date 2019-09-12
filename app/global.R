@@ -34,22 +34,24 @@ grabcols = grabcols[grabcols != 'datetime']
 # sensor = select_if(sensor, is.numeric)
 
 grabvars = list(
+    Solutes=list(
     "Aluminum (Al) ICP" = "Al_ICP",
-    "OM Aluminum (Al)" = "OMAl",
-    "TM Aluminum (Al)" = "TMAl",
+    "Aluminum (Al) OM" = "OMAl",
+    "Aluminum (Al) TM" = "TMAl",
     "Ammonium (NH4)" = "NH4",
     "Calcium (Ca)" = "Ca",
     "Chloride (Cl)" = "Cl",
     "Fluorine (F)" = "F",
     "Iron (Fe)" = "Fe",
+    # Anions=list(
     "Magnesium (Mg)" = "Mg",
     "Manganese (Mn)" = "Mn",
     "Nitrate (NO3)" = "NO3",
     "Phosphate (PO4)" = "PO4",
     "Potassium (K)" = "K",
     "Sodium (Na)" = "Na",
-    "Sulfate (SO4)" = "SO4",
-
+    "Sulfate (SO4)" = "SO4"),
+    Other=list(
     "TOTAL Anion Charge" = "anionCharge",
     "TOTAL Cation Charge" = "cationCharge",
     "pH (3 Star)" = "pH",
@@ -64,7 +66,7 @@ grabvars = list(
     "Specific Conductivity" = "spCond",
     "Theoretical Conductivity" = "theoryCond",
     "Water Temperature" = "temp",
-    "Ion Balance" = "ionBalance")
+    "Ion Balance" = "ionBalance"))
 
 
 codes999.9 <- c("timeEST", "temp", "ANC960", "ANCMet",

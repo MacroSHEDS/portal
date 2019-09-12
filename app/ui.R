@@ -31,7 +31,10 @@ source('ui/map_ui.R')
 shinyUI(fluidPage(
 
     #screen shouldn't go gray when plots are updating.
-    tags$style(type="text/css", ".recalculating { opacity: 1.0; }" ),
+    # tags$style(type="text/css", ".recalculating { opacity: 1.0; }" ),
+    tags$head(tags$style(HTML(
+        "@import url('https://fonts.googleapis.com/css?family=Montserrat');"))),
+    tags$head(tags$link(rel="stylesheet", type="text/css", href="app.css")),
     shinyjs::useShinyjs(),
     shinyjs::extendShinyjs(text=js_code,
         functions=c('getHeight50', 'init')),
