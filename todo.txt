@@ -83,6 +83,7 @@ goal 1 - tweak free-for-all tab:
         should maybe facet according to var or unit grouping
         list of variables should be grouped by unit, etc
         legend should include units
+        put units on y axis (formatted), and varnames in legend
 
 QUESTIONS FOR MATT:
     look over units sheet

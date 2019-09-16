@@ -143,15 +143,15 @@ timeseries_tab = tabPanel("Time series", value='site_exploration',
             conditionalPanel(
                 condition = "input.PRECIP4_OPTION == true",
                 fluidRow(
-                    column(12, style = "height:100px;",
-                        plotOutput("GRAPH_PRECIP4"))
+                    dygraphOutput("GRAPH_PRECIP4", height='100px'),
+                    br()
                 )
             ),
             conditionalPanel(
                 condition = "input.SOLUTE4_OPTION == true",
                 fluidRow(
-                    column(12, style = "height:350px;",
-                        plotOutput("GRAPH_MAIN4"))
+                    dygraphOutput("GRAPH_MAIN4", height='200px'),
+                    br()
                 )
             ),
             conditionalPanel(

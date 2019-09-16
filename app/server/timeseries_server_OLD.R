@@ -103,6 +103,7 @@ dataCurrentR <- eventReactive(changesInData$change_dataCurrent, {
 
 })
 
+
 dataAllR <- eventReactive(changesInData$change_dataAll, {
     dataAllR <- bind_rows(select(dataHistorical, -canonical), dataCurrentR())
     dataAllR <- standardizeClasses(dataAllR)
@@ -134,6 +135,8 @@ dataAllR <- eventReactive(changesInData$change_dataAll, {
     dataAllR
 
 })
+
+
 
 ## Filter data to desired dates
 data4 <- reactive ({
@@ -210,74 +213,44 @@ dataFlowHydroGraph4 <- reactive ({
 })
 
 
-output$GRAPH_PRECIP4 <- renderDygraph({
-
+output$GRAPH_PRECIP4 <- renderPlot({
     if (input$PRECIP4_OPTION == TRUE) {
-
         data <- dataPrecip4()
+        x <- data$date
+        # get column number of selected precipitation source
         # ind_col <- which(input$PRECIP_SOURCE4 == colnames(data), arr.ind = TRUE)
-        dydat = xts(data$medianPrecip, order.by=data$date)
-        ymax = max(dydat, na.rm=TRUE)
-
-        p = dygraph(dydat, group='free') %>%
-            dyOptions(useDataTimezone=TRUE, drawPoints=FALSE, fillGraph=TRUE,
-                fillAlpha=1, colors='#4b92cc', strokeWidth=3,
-                plotter="function barChartPlotter(e) {
-                    var ctx = e.drawingContext;
-                    var points = e.points;
-                    var y_bottom = e.dygraph.toDomYCoord(0);  // see     http://dygraphs.com/jsdoc/symbols/Dygraph.html#toDomYCoord
-
-                    // This should really be based on the minimum gap
-                    var bar_width = 2/3 * (points[1].canvasx - points[0].canvasx);
-                    ctx.fillStyle = e.color;
-
-                    // Do the actual plotting.
-                    for (var i = 0; i < points.length; i++) {
-                    var p = points[i];
-                    var center_x = p.canvasx;  // center of the bar
-
-                    ctx.fillRect(center_x - bar_width / 2, p.canvasy,
-                    bar_width, y_bottom - p.canvasy);
-                    ctx.strokeRect(center_x - bar_width / 2, p.canvasy,
-                    bar_width, y_bottom - p.canvasy);
-                    }
-                }") %>%
-            dyAxis('y', label='Daily mean precip (in.)',
-                valueRange=c(ymax + ymax * 0.1, 0))
-
-        return(p)
+        y <- data$medianPrecip
+        p <- ggplot(data, aes(x, y)) + my_theme +
+            geom_col(fill = "cadetblue3", width = 4, na.rm=TRUE) +
+            labs(x = "", y = "Precipitation") +
+            coord_cartesian(xlim = c(input$DATE4[1], input$DATE4[2])) +
+            scale_y_reverse()
+        p
     }
-}) # end of output$GRAPH_PRECIP4
-# }, height = 100) # end of output$GRAPH_PRECIP4
-
-output$GRAPH_MAIN4 <- renderDygraph({
-
-    data = dataMain4()
-    data = aggregate(solute_value ~ site + date + solute, mean,
-        data=data, na.action=NULL)
-    data = spread(data, solute, solute_value)
-        # select(input$SOLUTES4) %>%
-        # mutate(varnames=paste0(shortname, ' (', unit, ')'))
-    ordsOfMag = apply(select_if(data, is.numeric), 2, function(x) {
-        rng = max(x, na.rm=TRUE) - min(x, na.rm=TRUE)
-        log10_ceiling(rng)
-    })
-
-    dydat = xts(data[, input$SOLUTES4], order.by=data$date)
-    varnames = grabvars[grabvars$shortname %in% input$SOLUTES4,
-        c('fullname', 'unit')]
-    varnames$combined = paste0(varnames$fullname, ' (', varnames$unit, ')')
-    dimnames(dydat) = list(NULL, varnames$combined)
-    cols = c("#000000", "#307975", "#691476", "#735E1F", "#6F0D2F",
-        "#7F8D36", "#37096D", "#074670", "#0C2282", "#750D47")
-
+}, height = 100) # end of output$GRAPH_PRECIP4
+output$GRAPH_MAIN4 <- renderPlot({
+    data <- dataMain4()
+    x <- data$date
+    y <- data$solute_value
+    # build ggplot function
+    # design <- my_theme +
+    #   geom_point(size = 2.5) +
+    #   geom_line(alpha = 0.5) +
+    #   scale_x_date(date_labels = "%Y-%b")+
+    #   coord_cartesian(xlim = c(input$DATE4[1], input$DATE4[2])) +
+    #   scale_color_manual(values = c("black", "#307975", "#691476", "#735E1F", "#6F0D2F", "#7F8D36", "#37096D", "#074670", "#0C2282", "#750D47")) +
+    #   labs(x = "", y = "Solutes")
     if(input$SOLUTES4_COLOR == "Solutes") {
-
-        m = dygraph(dydat, group='free') %>%
-            dyOptions(useDataTimezone=TRUE, drawPoints=TRUE,
-                colors=cols, strokeWidth=2, pointSize=2) %>%
-            dyLegend(show='onmouseover', labelsSeparateLines=TRUE)
-
+        m <- ggplot(data, aes(x, y, shape=data$site, color=data$solute)) +
+            my_theme +
+            geom_point(size = 2.5) +
+            geom_line(alpha = 0.5) +
+            scale_x_date(date_labels = "%Y-%b")+
+            coord_cartesian(xlim = c(input$DATE4[1], input$DATE4[2])) +
+            scale_color_manual(values = c("black", "#307975", "#691476", "#735E1F", "#6F0D2F", "#7F8D36", "#37096D", "#074670", "#0C2282", "#750D47")) +
+            labs(x = "", y = 'Solutes')
+            # labs(x="", y=eval(parse(text=grabvars[grabvars$shortname ==
+            #         input$SOLUTES4, 'R_display'])))
     } else {
         m <- ggplot(data, aes(x, y, shape=data$solute, color=data$site)) +
             my_theme +
@@ -296,9 +269,8 @@ output$GRAPH_MAIN4 <- renderDygraph({
             check_overlap = TRUE)
     }
     # plot
-    return(m)
-}) # end of output$GRAPH_MAIN4
-# }, height = 350) # end of output$GRAPH_MAIN4
+    m
+}, height = 350) # end of output$GRAPH_MAIN4
 output$GRAPH_FLOW4 <- renderPlot({
     if (input$DISCHARGE4_OPTION == TRUE) {
         data <- dataFlow4()
@@ -322,8 +294,7 @@ output$GRAPH_FLOW4 <- renderPlot({
         }
         f
     }
-}) # end of output$GRAPH_FLOW4
-# }, height = 100) # end of output$GRAPH_FLOW4
+}, height = 100) # end of output$GRAPH_FLOW4
 
 output$TABLE4 <- renderDataTable({
     dataFlowHydroGraph4()
