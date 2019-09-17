@@ -52,52 +52,6 @@ grabvars_display = mutate(grabvars,
             y['shortname']
         })
     })
-# grabvars_display = mutate(grabvars,
-#         displayname=paste0(fullname, ' (', unit, ')')) %>%
-#     select(displayname, shortname) %>%
-#     plyr::daply(plyr::.(displayname), function(x){
-#         x['shortname']
-#     })
-
-# grabvarsdf = plyr::ldply(grabvars)
-# colnames(grabvarsdf) = c('fullname', 'shortname')
-# write.csv(grabvarsdf, '~/git/macrosheds/data/general/variables.csv',
-#     row.names=FALSE)
-
-# grabvars = list(
-#     Solutes=list(
-#     "Aluminum (Al) ICP" = "Al_ICP",
-#     "Aluminum (Al) OM" = "OMAl",
-#     "Aluminum (Al) TM" = "TMAl",
-#     "Ammonium (NH4)" = "NH4",
-#     "Calcium (Ca)" = "Ca",
-#     "Chloride (Cl)" = "Cl",
-#     "Fluorine (F)" = "F",
-#     "Iron (Fe)" = "Fe",
-#     "Magnesium (Mg)" = "Mg",
-#     "Manganese (Mn)" = "Mn",
-#     "Nitrate (NO3)" = "NO3",
-#     "Phosphate (PO4)" = "PO4",
-#     "Potassium (K)" = "K",
-#     "Sodium (Na)" = "Na",
-#     "Sulfate (SO4)" = "SO4"),
-#     Other=list(
-#     "TOTAL Anion Charge" = "anionCharge",
-#     "TOTAL Cation Charge" = "cationCharge",
-#     "pH (3 Star)" = "pH",
-#     "pH (Metrohm)"="pHmetrohm",
-#     "Dissolved Organic Carbon (DOC)" = "DOC",
-#     "Total Dissolved Nitrogen (TDN)" = "TDN",
-#     "Dissolved Organic Nitrogen (DON)" = "DON",
-#     "Dissolved Inorganic Carbon (DIC)" = "DIC",
-#     "Silica (SiO2)" = "SiO2",
-#     "Acid Neutralizing Capacity 960" = "ANC960",
-#     "Acid Neutralizing Capacity Met" = "ANCMet",
-#     "Specific Conductivity" = "spCond",
-#     "Theoretical Conductivity" = "theoryCond",
-#     "Water Temperature" = "temp",
-#     "Ion Balance" = "ionBalance"))
-
 
 codes999.9 <- c("timeEST", "temp", "ANC960", "ANCMet",
     "ionError", "ionBalance")

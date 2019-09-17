@@ -65,8 +65,16 @@ changesInSelections$facet1 = 0
 changesInSelections$facet2 = 0
 changesInSelections$facet3 = 0
 
+observeEvent(input$SITES4, {
+    changesInSelections$facet1 = changesInSelections$facet1 + 1
+    changesInSelections$facet2 = changesInSelections$facet1 + 1
+    changesInSelections$facet3 = changesInSelections$facet1 + 1
+})
+
+
 observeEvent({
-    if(length(input$SOLUTES4) %in% 1:3){# && input$SOLUTES4_COLOR == 'Solutes' ||
+    if(length(input$SOLUTES4) %in% 1:3){
+            # && input$SOLUTES4_COLOR == 'Solutes' ||
             # length(input$SITES4) %in% 1:3 && input$SOLUTES4_COLOR == 'Sites'){
         TRUE
     } else return()
@@ -290,7 +298,7 @@ output$GRAPH_MAIN4a <- renderDygraph({
 
     changesInSelections$facet1
     n_vars = isolate(changesInSelections$n_vars)
-    plotvars = isolate(input$SOLUTES4)
+    plotvars = isolate(input$SOLUTES4)[1:min(c(n_vars, 3))]
     # n_sites = isolate(changesInSelections$n_sites)
 
     # if(input$SOLUTES4_COLOR == "Solutes"){
@@ -369,7 +377,7 @@ output$GRAPH_MAIN4b <- renderDygraph({
 
     changesInSelections$facet2
     n_vars = isolate(changesInSelections$n_vars)
-    plotvars = isolate(input$SOLUTES4)[4:n_vars]
+    plotvars = isolate(input$SOLUTES4)[4:min(c(n_vars, 6))]
 
     varnames = filter(grabvars, shortname %in% plotvars) %>%
         select(fullname, unit) %>%
@@ -396,7 +404,7 @@ output$GRAPH_MAIN4c <- renderDygraph({
 
     changesInSelections$facet3
     n_vars = isolate(changesInSelections$n_vars)
-    plotvars = isolate(input$SOLUTES4)[7:n_vars]
+    plotvars = isolate(input$SOLUTES4)[7:min(c(n_vars, 9))]
 
     varnames = filter(grabvars, shortname %in% plotvars) %>%
         select(fullname, unit) %>%
@@ -435,7 +443,7 @@ output$GRAPH_FLOW4 <- renderDygraph({
 
         dg = dygraph(dydat, group='oneSiteNVar') %>%
             dyOptions(useDataTimezone=TRUE, drawPoints=FALSE, fillGraph=TRUE,
-                colors='#4b92cc', strokeWidth=2) %>%
+                colors='#4b92cc', strokeWidth=2, fillAlpha=0.25) %>%
             dyAxis('y', label='Discharge (L/s)', labelWidth=16, labelHeight=10)
             # dyLegend(show='onmouseover', labelsSeparateLines=TRUE)
 
