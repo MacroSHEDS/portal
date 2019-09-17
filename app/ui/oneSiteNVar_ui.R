@@ -1,4 +1,4 @@
-timeseries_tab = tabPanel("Time series", value='site_exploration',
+oneSiteNVar_tab = tabPanel("Single Site", value='site_exploration',
     sidebarLayout(
         # Sidebar with tabs for Solute, Sites, Options
         sidebarPanel(
@@ -34,9 +34,10 @@ timeseries_tab = tabPanel("Time series", value='site_exploration',
 
                     # Options for "Solutes" Graph
                     #****************************
-                    p("Solutes", style = "font-weight:bold; font-size:1.1em;"),
+                    p("Grab Variables",
+                        style="font-weight:bold; font-size:1.1em;"),
                     checkboxInput("SOLUTE4_OPTION",
-                        label = p("Show graph", style = "font-size:0.9em; color:#919191;"),
+                        label = p("Show graph(s)", style = "font-size:0.9em; color:#919191;"),
                         value = TRUE
                     ),
                     conditionalPanel(
@@ -147,19 +148,27 @@ timeseries_tab = tabPanel("Time series", value='site_exploration',
                     br()
                 )
             ),
-            conditionalPanel(
-                condition = "input.SOLUTE4_OPTION == true",
-                fluidRow(
-                    dygraphOutput("GRAPH_MAIN4", height='200px'),
+            # conditionalPanel(
+            #     condition = "input.SOLUTE4_OPTION == true",
+            fluidRow(
+                conditionalPanel('input.SOLUTES4 !== null',
+                    dygraphOutput("GRAPH_MAIN4a", height='150px'),
+                    br()
+                ),
+                conditionalPanel('input.SOLUTES4.length > 3',
+                    dygraphOutput("GRAPH_MAIN4b", height='150px'),
+                    br()
+                ),
+                conditionalPanel('input.SOLUTES4.length > 6',
+                    dygraphOutput("GRAPH_MAIN4c", height='150px'),
                     br()
                 )
             ),
+            # ),
             conditionalPanel(
                 condition = "input.DISCHARGE4_OPTION == true",
                 fluidRow(
-                    column(12, style = "height:100px;",
-                        plotOutput("GRAPH_FLOW4"))
-                )
+                    dygraphOutput("GRAPH_FLOW4", height='100px'))
             )
             # use for when testing data selection
             # hr(),

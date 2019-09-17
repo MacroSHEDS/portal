@@ -1,8 +1,12 @@
 library(shiny)
 library(Cairo)
+library(readr)
 # library(shinyjs)
 
 options(shiny.usecairo=TRUE)
+
+hyetograph_file = 'js/hyetograph.js'
+hyetograph_js = readChar(hyetograph_file, file.info(hyetograph_file)$size)
 
 shinyServer(function(input, output, session){
 
@@ -13,7 +17,7 @@ shinyServer(function(input, output, session){
     # js$getHeight50()
 
     source('server/site_comparison_server.R', local=TRUE)
-    source('server/timeseries_server.R', local=TRUE)
+    source('server/oneSiteNVar_server.R', local=TRUE)
     source('server/summary_biplot_server.R', local=TRUE)
     source('server/map_server.R', local=TRUE)
 

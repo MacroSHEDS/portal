@@ -31,17 +31,17 @@ removeCodes <- function(dataSet) {
     return(dataSet)
 }
 
-# Graph theme
-my_theme <- theme_fivethirtyeight() +
-    theme(rect = element_rect(fill = NA),
-        panel.grid.major = element_line(colour = "#dddddd"),
-        text = element_text(family = "Arial", size = 14),
-        legend.position = "top", legend.direction = "horizontal", legend.box = "horizontal",
-        legend.box.just = "left", legend.title = element_blank(),
-        #legend.key.size = unit(2.5, "native"),
-        strip.text = element_text(hjust = 1, size = 20, face = "bold"),
-        axis.title= element_text(NULL), axis.title.x= element_blank(),
-        axis.title.y= element_text(hjust = 1, angle = 90, margin = margin(r=20)))
+# # Graph theme
+# my_theme <- theme_fivethirtyeight() +
+#     theme(rect = element_rect(fill = NA),
+#         panel.grid.major = element_line(colour = "#dddddd"),
+#         text = element_text(family = "Arial", size = 14),
+#         legend.position = "top", legend.direction = "horizontal", legend.box = "horizontal",
+#         legend.box.just = "left", legend.title = element_blank(),
+#         #legend.key.size = unit(2.5, "native"),
+#         strip.text = element_text(hjust = 1, size = 20, face = "bold"),
+#         axis.title= element_text(NULL), axis.title.x= element_blank(),
+#         axis.title.y= element_text(hjust = 1, angle = 90, margin = margin(r=20)))
 
 # Set up color palette for solutes (using 'qual', or qualitative, color palette)
 n <- 30 # number of colors
@@ -56,6 +56,47 @@ col_vector = unlist(mapply(brewer.pal, qual_col_pals$maxcolors, rownames(qual_co
 changesInData <- reactiveValues()
 changesInData$change_dataCurrent <- 0
 changesInData$change_dataAll <- 0
+
+#this one keeps track of n vars/sites selected, for faceting
+changesInSelections = reactiveValues()
+changesInSelections$n_vars = 1
+# changesInSelections$n_sites = 1
+changesInSelections$facet1 = 0
+changesInSelections$facet2 = 0
+changesInSelections$facet3 = 0
+
+observeEvent({
+    if(length(input$SOLUTES4) %in% 1:3){# && input$SOLUTES4_COLOR == 'Solutes' ||
+            # length(input$SITES4) %in% 1:3 && input$SOLUTES4_COLOR == 'Sites'){
+        TRUE
+    } else return()
+}, {
+    changesInSelections$facet1 = changesInSelections$facet1 + 1
+    changesInSelections$n_vars = length(input$SOLUTES4)
+    # changesInSelections$n_sites = length(input$SITES4)
+})
+
+observeEvent({
+    if(length(input$SOLUTES4) %in% 4:6){# && input$SOLUTES4_COLOR == 'Solutes' ||
+            # length(input$SITES4) %in% 4:6 && input$SOLUTES4_COLOR == 'Sites'){
+        TRUE
+    } else return()
+}, {
+    changesInSelections$facet2 = changesInSelections$facet2 + 1
+    changesInSelections$n_vars = length(input$SOLUTES4)
+    # changesInSelections$n_sites = length(input$SITES4)
+})
+
+observeEvent({
+    if(length(input$SOLUTES4) %in% 7:9){# && input$SOLUTES4_COLOR == 'Solutes' ||
+            # length(input$SITES4) %in% 7:9 && input$SOLUTES4_COLOR == 'Sites'){
+        TRUE
+    } else return()
+}, {
+    changesInSelections$facet3 = changesInSelections$facet3 + 1
+    changesInSelections$n_vars = length(input$SOLUTES4)
+    # changesInSelections$n_sites = length(input$SITES4)
+})
 
 # Make a reactive dataAll2 data frame, to be called whenever data is updated
 # (R in dataCurrentR stands for reactive)
@@ -94,7 +135,7 @@ dataCurrentR <- eventReactive(changesInData$change_dataCurrent, {
     wateryears_current <<- as.list(wy1_current) #assign it globally
 
     # Update Panel 5 user interface
-    updateSelectInput(session, "WATERYEAR5", label = "Water Year", choices = wateryears_current)
+    # updateSelectInput(session, "WATERYEAR5", label = "Water Year", choices = wateryears_current)
 
     # Trigger update in dataAll
     changesInData$change_dataAll <- changesInData$change_dataAll + 1
@@ -121,9 +162,9 @@ dataAllR <- eventReactive(changesInData$change_dataAll, {
     maxDate <- max(dataAllR$date, na.rm=TRUE)
 
     # Update Panel 1-4 user interfaces
-    updateSelectInput(session, "WATERYEAR1", label = "Water Year", choices = wateryears)
-    updateSelectInput(session, "WATERYEAR2", label = "Water Year", choices = wateryears)
-    updateSelectInput(session, "WATERYEAR3", label = "Water Year", choices = wateryears)
+    # updateSelectInput(session, "WATERYEAR1", label = "Water Year", choices = wateryears)
+    # updateSelectInput(session, "WATERYEAR2", label = "Water Year", choices = wateryears)
+    # updateSelectInput(session, "WATERYEAR3", label = "Water Year", choices = wateryears)
     updateSliderInput(session, "DATE4",
         label = "Date Range",
         value = as.Date(c(maxDate-365, maxDate)),
@@ -143,6 +184,17 @@ data4 <- reactive ({
         filter(date <= input$DATE4[2])
     data4 <- removeCodes(data4)
 })
+
+# #keep track of n variables selected
+# n_vars = reactive({
+#     length(input$SOLUTES4)
+# })
+#
+# #keep track of n sites selected
+# n_sites = reactive({
+#     length(input$SITES4)
+# })
+
 ## Extract data for Precip plot
 dataPrecip4 <- reactive ({
     dataPrecip4 <- data4() %>%
@@ -161,6 +213,7 @@ dataPrecip4 <- reactive ({
     }
     dataPrecip4
 })
+
 ## Extract data for Solutes (Main) plot
 dataMain4 <- reactive ({
     dataMain4 <- data4() %>%
@@ -199,6 +252,7 @@ dataFlow4 <- reactive ({
     }
     dataFlow4
 })
+
 ## Additional data for Flow plot: hydroGraph labels
 dataFlowHydroGraph4 <- reactive ({
     dataFlowHydroGraph4 <- data4() %>%
@@ -209,7 +263,6 @@ dataFlowHydroGraph4 <- reactive ({
     dataFlowHydroGraph4
 })
 
-
 output$GRAPH_PRECIP4 <- renderDygraph({
 
     if (input$PRECIP4_OPTION == TRUE) {
@@ -217,77 +270,89 @@ output$GRAPH_PRECIP4 <- renderDygraph({
         data <- dataPrecip4()
         # ind_col <- which(input$PRECIP_SOURCE4 == colnames(data), arr.ind = TRUE)
         dydat = xts(data$medianPrecip, order.by=data$date)
+        dimnames(dydat) = list(NULL, 'P')
         ymax = max(dydat, na.rm=TRUE)
 
-        p = dygraph(dydat, group='free') %>%
+        p = dygraph(dydat, group='oneSiteNVar') %>%
             dyOptions(useDataTimezone=TRUE, drawPoints=FALSE, fillGraph=TRUE,
                 fillAlpha=1, colors='#4b92cc', strokeWidth=3,
-                plotter="function barChartPlotter(e) {
-                    var ctx = e.drawingContext;
-                    var points = e.points;
-                    var y_bottom = e.dygraph.toDomYCoord(0);  // see     http://dygraphs.com/jsdoc/symbols/Dygraph.html#toDomYCoord
-
-                    // This should really be based on the minimum gap
-                    var bar_width = 2/3 * (points[1].canvasx - points[0].canvasx);
-                    ctx.fillStyle = e.color;
-
-                    // Do the actual plotting.
-                    for (var i = 0; i < points.length; i++) {
-                    var p = points[i];
-                    var center_x = p.canvasx;  // center of the bar
-
-                    ctx.fillRect(center_x - bar_width / 2, p.canvasy,
-                    bar_width, y_bottom - p.canvasy);
-                    ctx.strokeRect(center_x - bar_width / 2, p.canvasy,
-                    bar_width, y_bottom - p.canvasy);
-                    }
-                }") %>%
+                plotter=hyetograph_js) %>%
             dyAxis('y', label='Daily mean precip (in.)',
-                valueRange=c(ymax + ymax * 0.1, 0))
+                valueRange=c(ymax + ymax * 0.1, 0),
+                labelWidth=16, labelHeight=10)
 
         return(p)
     }
 }) # end of output$GRAPH_PRECIP4
 # }, height = 100) # end of output$GRAPH_PRECIP4
 
-output$GRAPH_MAIN4 <- renderDygraph({
+output$GRAPH_MAIN4a <- renderDygraph({
 
-    data = dataMain4()
-    data = aggregate(solute_value ~ site + date + solute, mean,
-        data=data, na.action=NULL)
-    data = spread(data, solute, solute_value)
-        # select(input$SOLUTES4) %>%
-        # mutate(varnames=paste0(shortname, ' (', unit, ')'))
-    ordsOfMag = apply(select_if(data, is.numeric), 2, function(x) {
-        rng = max(x, na.rm=TRUE) - min(x, na.rm=TRUE)
-        log10_ceiling(rng)
-    })
+    changesInSelections$facet1
+    n_vars = isolate(changesInSelections$n_vars)
+    plotvars = isolate(input$SOLUTES4)
+    # n_sites = isolate(changesInSelections$n_sites)
 
-    dydat = xts(data[, input$SOLUTES4], order.by=data$date)
-    varnames = grabvars[grabvars$shortname %in% input$SOLUTES4,
-        c('fullname', 'unit')]
-    varnames$combined = paste0(varnames$fullname, ' (', varnames$unit, ')')
+    # if(input$SOLUTES4_COLOR == "Solutes"){
+
+    varnames = filter(grabvars, shortname %in% plotvars) %>%
+        select(fullname, unit) %>%
+        mutate(combined = paste0(fullname, ' (', unit, ')'))
+
+    widedat = isolate(dataMain4()) %>%
+        filter(solute %in% plotvars) %>%
+        group_by(date, solute) %>% #, site
+        summarize(solute_value=mean(solute_value)) %>%
+        spread(solute, solute_value)
+    # widedat = aggregate(solute_value ~ site + date + solute, mean,
+        # data=widedat, na.action=NULL)
+    # datal = split(widedat, widedat$site)
+
+    # widedat = datal[[1]]
+    dydat = xts(widedat[, plotvars], order.by=widedat$date)
     dimnames(dydat) = list(NULL, varnames$combined)
-    cols = c("#000000", "#307975", "#691476", "#735E1F", "#6F0D2F",
-        "#7F8D36", "#37096D", "#074670", "#0C2282", "#750D47")
 
-    if(input$SOLUTES4_COLOR == "Solutes") {
+    dg = dygraph(dydat, group='oneSiteNVar') %>%
+        dyOptions(useDataTimezone=TRUE, drawPoints=FALSE,
+            colors=linecolors[1:3], strokeWidth=2) %>%#, pointSize=2) %>%
+        dyLegend(show='onmouseover', labelsSeparateLines=TRUE)
 
-        m = dygraph(dydat, group='free') %>%
-            dyOptions(useDataTimezone=TRUE, drawPoints=TRUE,
-                colors=cols, strokeWidth=2, pointSize=2) %>%
-            dyLegend(show='onmouseover', labelsSeparateLines=TRUE)
+    return(dg)
+    # }
 
-    } else {
-        m <- ggplot(data, aes(x, y, shape=data$solute, color=data$site)) +
-            my_theme +
-            geom_point(size = 2.5) +
-            geom_line(alpha = 0.5) +
-            scale_x_date(date_labels = "%Y-%b")+
-            coord_cartesian(xlim = c(input$DATE4[1], input$DATE4[2])) +
-            scale_color_manual(values = c("black", "#307975", "#691476", "#735E1F", "#6F0D2F", "#7F8D36", "#37096D", "#074670", "#0C2282", "#750D47")) +
-            labs(x = "", y = "Solutes")
-    }
+    # ordsOfMag = apply(select_if(data, is.numeric), 2, function(x) {
+    #     rng = max(x, na.rm=TRUE) - min(x, na.rm=TRUE)
+    #     log10_ceiling(rng)
+    # })
+
+    # if(length(datal) > 1){
+    #     for(i in 2:length(datal)){
+    #         data = datal[[i]]
+    #
+    #         for(pv in plotvars){
+    #             dydat = xts(data[, pv], order.by=data$date)
+    #             dimnames(dydat) = list(NULL, varnames$combined)
+    #
+    #             m = m %>%
+    #                 dySeries('')
+    #         }
+    #
+    #     }
+    # }
+
+    # if(input$SOLUTES4_COLOR == "Solutes") {
+
+
+    # } else {
+    #     m <- ggplot(data, aes(x, y, shape=data$solute, color=data$site)) +
+    #         my_theme +
+    #         geom_point(size = 2.5) +
+    #         geom_line(alpha = 0.5) +
+    #         scale_x_date(date_labels = "%Y-%b")+
+    #         coord_cartesian(xlim = c(input$DATE4[1], input$DATE4[2])) +
+    #         scale_color_manual(values = c("black", "#307975", "#691476", "#735E1F", "#6F0D2F", "#7F8D36", "#37096D", "#074670", "#0C2282", "#750D47")) +
+    #         labs(x = "", y = "Solutes")
+    # }
 
     # If show field code is selected, add to ggplot
     if (input$FIELDCODE4 == TRUE) {
@@ -295,19 +360,85 @@ output$GRAPH_MAIN4 <- renderDygraph({
             nudge_y = (max(data$solute_value, na.rm = TRUE) - min(data$solute_value, na.rm = TRUE))/15,
             check_overlap = TRUE)
     }
-    # plot
-    return(m)
+
+    # return(m)
 }) # end of output$GRAPH_MAIN4
 # }, height = 350) # end of output$GRAPH_MAIN4
-output$GRAPH_FLOW4 <- renderPlot({
+
+output$GRAPH_MAIN4b <- renderDygraph({
+
+    changesInSelections$facet2
+    n_vars = isolate(changesInSelections$n_vars)
+    plotvars = isolate(input$SOLUTES4)[4:n_vars]
+
+    varnames = filter(grabvars, shortname %in% plotvars) %>%
+        select(fullname, unit) %>%
+        mutate(combined = paste0(fullname, ' (', unit, ')'))
+
+    widedat = isolate(dataMain4()) %>%
+        filter(solute %in% plotvars) %>%
+        group_by(date, solute) %>%
+        summarize(solute_value=mean(solute_value)) %>%
+        spread(solute, solute_value)
+
+    dydat = xts(widedat[, plotvars], order.by=widedat$date)
+    dimnames(dydat) = list(NULL, varnames$combined)
+
+    dg = dygraph(dydat, group='oneSiteNVar') %>%
+        dyOptions(useDataTimezone=TRUE, drawPoints=FALSE,
+            colors=linecolors[4:6], strokeWidth=2) %>%
+        dyLegend(show='onmouseover', labelsSeparateLines=TRUE)
+
+    return(dg)
+})
+
+output$GRAPH_MAIN4c <- renderDygraph({
+
+    changesInSelections$facet3
+    n_vars = isolate(changesInSelections$n_vars)
+    plotvars = isolate(input$SOLUTES4)[7:n_vars]
+
+    varnames = filter(grabvars, shortname %in% plotvars) %>%
+        select(fullname, unit) %>%
+        mutate(combined = paste0(fullname, ' (', unit, ')'))
+
+    widedat = isolate(dataMain4()) %>%
+        filter(solute %in% plotvars) %>%
+        group_by(date, solute) %>%
+        summarize(solute_value=mean(solute_value)) %>%
+        spread(solute, solute_value)
+
+    dydat = xts(widedat[, plotvars], order.by=widedat$date)
+    dimnames(dydat) = list(NULL, varnames$combined)
+
+    dg = dygraph(dydat, group='oneSiteNVar') %>%
+        dyOptions(useDataTimezone=TRUE, drawPoints=FALSE,
+            colors=linecolors[7:9], strokeWidth=2) %>%
+        dyLegend(show='onmouseover', labelsSeparateLines=TRUE)
+
+    return(dg)
+})
+
+output$GRAPH_FLOW4 <- renderDygraph({
+
     if (input$DISCHARGE4_OPTION == TRUE) {
-        data <- dataFlow4()
-        x <- data$date
-        y <- data$flowMaxPerDate
-        f <- ggplot(data, aes(x, y)) + my_theme +
-            geom_area(fill = "cadetblue3", na.rm=TRUE) +
-            coord_cartesian(xlim = c(input$DATE4[1], input$DATE4[2])) +
-            labs(x = "", y = "Discharge")
+
+        widedat <- dataFlow4()
+        # x <- data$date
+        # y <- data$flowMaxPerDate
+        # f <- ggplot(data, aes(x, y)) + my_theme +
+        #     geom_area(fill = "cadetblue3", na.rm=TRUE) +
+        #     coord_cartesian(xlim = c(input$DATE4[1], input$DATE4[2])) +
+        #     labs(x = "", y = "Discharge")
+        dydat = xts(widedat[, 'flowMaxPerDate'], order.by=widedat$date)
+        dimnames(dydat) = list(NULL, 'Q')
+
+        dg = dygraph(dydat, group='oneSiteNVar') %>%
+            dyOptions(useDataTimezone=TRUE, drawPoints=FALSE, fillGraph=TRUE,
+                colors='#4b92cc', strokeWidth=2) %>%
+            dyAxis('y', label='Discharge (L/s)', labelWidth=16, labelHeight=10)
+            # dyLegend(show='onmouseover', labelsSeparateLines=TRUE)
+
         if (input$HYDROLIMB4 == TRUE) {
             data.hl <- dataFlowHydroGraph4()
             if (input$FLOW_SOURCE4 == "gageHt") y.hl <- data.hl$gageHt
@@ -320,7 +451,8 @@ output$GRAPH_FLOW4 <- renderPlot({
                 nudge_y = (max(y.hl, na.rm = TRUE) - min(y.hl, na.rm = TRUE))/15,
                 check_overlap = TRUE)
         }
-        f
+
+        return(dg)
     }
 }) # end of output$GRAPH_FLOW4
 # }, height = 100) # end of output$GRAPH_FLOW4

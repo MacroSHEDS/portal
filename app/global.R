@@ -1,3 +1,4 @@
+library(V8)
 library(stringr)
 library(feather)
 library(dplyr)
@@ -8,14 +9,14 @@ library(shiny)
 library(dygraphs)
 library(RMariaDB)
 library(DBI)
-library(ggthemes)
-library(ggplot2)
+# library(ggthemes)
+# library(ggplot2)
 
 # library(colorspace)
 # library(jsonlite)
 # library(plotly)
 library(lubridate)
-library(RColorBrewer)
+# library(RColorBrewer)
 # library(reshape2)
 library(tidyr)
 library(xts)
@@ -25,6 +26,9 @@ library(leaflet)
 site_data = read.csv('site_data.csv', stringsAsFactors=FALSE)
 
 pass = readLines('~/git/hbef/RMySQL.config')    # for MV's local computer
+
+linecolors = c("#000000", "#307975", "#691476", "#735E1F", "#6F0D2F",
+    "#7F8D36", "#37096D", "#074670", "#0C2282", "#750D47")
 
 # setwd('~/git/macrosheds/app')
 grab = read_feather('../data/hbef/grab.feather')

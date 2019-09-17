@@ -87,6 +87,7 @@ goal 1 - tweak free-for-all tab:
 
 QUESTIONS FOR MATT:
     look over units sheet
+    can't put unit on y axis because we're faceting by scale
 
 QUESTIONS FOR EMILY:
     do we need to hide the most recent hbef year from viz? or just not let people download it?
