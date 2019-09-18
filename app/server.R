@@ -1,6 +1,5 @@
-library(shiny)
-library(Cairo)
-library(readr)
+# library(shiny)
+# library(readr)
 # library(shinyjs)
 
 options(shiny.usecairo=TRUE)

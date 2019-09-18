@@ -44,9 +44,9 @@ removeCodes <- function(dataSet) {
 #         axis.title.y= element_text(hjust = 1, angle = 90, margin = margin(r=20)))
 
 # Set up color palette for solutes (using 'qual', or qualitative, color palette)
-n <- 30 # number of colors
-qual_col_pals = brewer.pal.info[brewer.pal.info$category == 'qual',]
-col_vector = unlist(mapply(brewer.pal, qual_col_pals$maxcolors, rownames(qual_col_pals)))
+# n <- 30 # number of colors
+# qual_col_pals = brewer.pal.info[brewer.pal.info$category == 'qual',]
+# col_vector = unlist(mapply(brewer.pal, qual_col_pals$maxcolors, rownames(qual_col_pals)))
 # pie(rep(1,n), col=(col_vector[1:n])) # to see color wheel
 
 
@@ -110,22 +110,24 @@ observeEvent({
 # (R in dataCurrentR stands for reactive)
 dataCurrentR <- eventReactive(changesInData$change_dataCurrent, {
 
-    # Open database connection
-    y = RMariaDB::MariaDB()
-    con = dbConnect(y,
-        user = 'root',
-        password = pass,
-        host = 'localhost',
-        dbname = 'hbef')
+    # # Open database connection
+    # y = RMariaDB::MariaDB()
+    # con = dbConnect(y,
+    #     user = 'root',
+    #     password = pass,
+    #     host = 'localhost',
+    #     dbname = 'hbef')
 
     # Read current data and disconnect from table
-    dataCurrentR <- dbReadTable(con, "current")
+    # dataCurrentR <- dbReadTable(con, "current")
+    # dataCurrentR = read_feather('temp_shinyappsio/dataCurrent.feather')
+    dataCurrentR = dataCurrent
     message(print(class(dataCurrentR)))
     message(head(dataCurrentR))
     dataCurrentR <- as.data.frame(dataCurrentR)
     message(print(class(dataCurrentR)))
     message(head(dataCurrentR))
-    dbDisconnect(con)
+    # dbDisconnect(con)
 
     # Clean up data
     dataCurrentR <- standardizeClasses(dataCurrentR)
@@ -236,12 +238,6 @@ dataFlow4 <- reactive ({
         filter(site %in% input$FLOW_SITE4)
     # flow values need to be summarized with median per date,
     # because multiple values for one date make flow graph look strange
-    if (input$FLOW_SOURCE4 == "gageHt") {
-        dataFlow4 <- dataFlow4 %>%
-            select(one_of("date", input$FLOW_SOURCE4)) %>%
-            group_by(date) %>%
-            summarise(flowMaxPerDate = max(gageHt, na.rm=TRUE))
-    }
     if (input$FLOW_SOURCE4 == "flowGageHt") {
         dataFlow4 <- dataFlow4 %>%
             select(one_of("date", input$FLOW_SOURCE4)) %>%
@@ -273,24 +269,21 @@ dataFlowHydroGraph4 <- reactive ({
 
 output$GRAPH_PRECIP4 <- renderDygraph({
 
-    if (input$PRECIP4_OPTION == TRUE) {
+    data <- dataPrecip4()
+    # ind_col <- which(input$PRECIP_SOURCE4 == colnames(data), arr.ind = TRUE)
+    dydat = xts(data$medianPrecip, order.by=data$date)
+    dimnames(dydat) = list(NULL, 'P')
+    ymax = max(dydat, na.rm=TRUE)
 
-        data <- dataPrecip4()
-        # ind_col <- which(input$PRECIP_SOURCE4 == colnames(data), arr.ind = TRUE)
-        dydat = xts(data$medianPrecip, order.by=data$date)
-        dimnames(dydat) = list(NULL, 'P')
-        ymax = max(dydat, na.rm=TRUE)
+    p = dygraph(dydat, group='oneSiteNVar') %>%
+        dyOptions(useDataTimezone=TRUE, drawPoints=FALSE, fillGraph=TRUE,
+            fillAlpha=1, colors='#4b92cc', strokeWidth=3,
+            plotter=hyetograph_js) %>%
+        dyAxis('y', label='Daily mean precip (in.)',
+            valueRange=c(ymax + ymax * 0.1, 0),
+            labelWidth=16, labelHeight=10)
 
-        p = dygraph(dydat, group='oneSiteNVar') %>%
-            dyOptions(useDataTimezone=TRUE, drawPoints=FALSE, fillGraph=TRUE,
-                fillAlpha=1, colors='#4b92cc', strokeWidth=3,
-                plotter=hyetograph_js) %>%
-            dyAxis('y', label='Daily mean precip (in.)',
-                valueRange=c(ymax + ymax * 0.1, 0),
-                labelWidth=16, labelHeight=10)
-
-        return(p)
-    }
+    return(p)
 }) # end of output$GRAPH_PRECIP4
 # }, height = 100) # end of output$GRAPH_PRECIP4
 
@@ -429,39 +422,35 @@ output$GRAPH_MAIN4c <- renderDygraph({
 
 output$GRAPH_FLOW4 <- renderDygraph({
 
-    if (input$DISCHARGE4_OPTION == TRUE) {
+    widedat <- dataFlow4()
+    # x <- data$date
+    # y <- data$flowMaxPerDate
+    # f <- ggplot(data, aes(x, y)) + my_theme +
+    #     geom_area(fill = "cadetblue3", na.rm=TRUE) +
+    #     coord_cartesian(xlim = c(input$DATE4[1], input$DATE4[2])) +
+    #     labs(x = "", y = "Discharge")
+    dydat = xts(widedat[, 'flowMaxPerDate'], order.by=widedat$date)
+    dimnames(dydat) = list(NULL, 'Q')
 
-        widedat <- dataFlow4()
-        # x <- data$date
-        # y <- data$flowMaxPerDate
-        # f <- ggplot(data, aes(x, y)) + my_theme +
-        #     geom_area(fill = "cadetblue3", na.rm=TRUE) +
-        #     coord_cartesian(xlim = c(input$DATE4[1], input$DATE4[2])) +
-        #     labs(x = "", y = "Discharge")
-        dydat = xts(widedat[, 'flowMaxPerDate'], order.by=widedat$date)
-        dimnames(dydat) = list(NULL, 'Q')
+    dg = dygraph(dydat, group='oneSiteNVar') %>%
+        dyOptions(useDataTimezone=TRUE, drawPoints=FALSE, fillGraph=TRUE,
+            colors='#4b92cc', strokeWidth=2, fillAlpha=0.25) %>%
+        dyAxis('y', label='Discharge (L/s)', labelWidth=16, labelHeight=10)
+        # dyLegend(show='onmouseover', labelsSeparateLines=TRUE)
 
-        dg = dygraph(dydat, group='oneSiteNVar') %>%
-            dyOptions(useDataTimezone=TRUE, drawPoints=FALSE, fillGraph=TRUE,
-                colors='#4b92cc', strokeWidth=2, fillAlpha=0.25) %>%
-            dyAxis('y', label='Discharge (L/s)', labelWidth=16, labelHeight=10)
-            # dyLegend(show='onmouseover', labelsSeparateLines=TRUE)
-
-        if (input$HYDROLIMB4 == TRUE) {
-            data.hl <- dataFlowHydroGraph4()
-            if (input$FLOW_SOURCE4 == "gageHt") y.hl <- data.hl$gageHt
-            if (input$FLOW_SOURCE4 == "flowGageHt") y.hl <- data.hl$flowGageHt
-            if (input$FLOW_SOURCE4 == "flowSens") y.hl <- data.hl$flowSensor
-            f <- f + geom_text(data = data.hl,
-                aes(x = date,
-                    y = y.hl,
-                    label = hydroGraph),
-                nudge_y = (max(y.hl, na.rm = TRUE) - min(y.hl, na.rm = TRUE))/15,
-                check_overlap = TRUE)
-        }
-
-        return(dg)
+    if (input$HYDROLIMB4 == TRUE) {
+        data.hl <- dataFlowHydroGraph4()
+        if (input$FLOW_SOURCE4 == "flowGageHt") y.hl <- data.hl$flowGageHt
+        if (input$FLOW_SOURCE4 == "flowSens") y.hl <- data.hl$flowSensor
+        f <- f + geom_text(data = data.hl,
+            aes(x = date,
+                y = y.hl,
+                label = hydroGraph),
+            nudge_y = (max(y.hl, na.rm = TRUE) - min(y.hl, na.rm = TRUE))/15,
+            check_overlap = TRUE)
     }
+
+    return(dg)
 }) # end of output$GRAPH_FLOW4
 # }, height = 100) # end of output$GRAPH_FLOW4
 
