@@ -11,32 +11,16 @@ oneSiteNVar_tab = tabPanel("Single Site", value='site_exploration',
                 selected=grabvars_display[[1]][[1]],
                 multiple=TRUE, choices=grabvars_display),
             div('(Up to 9)', class='widget-subtitle text-center'),
-            hr(),
-            radioButtons(
-                "PRECIP_SOURCE4",
-                label = "Precip data source:",
-                choices = c("Collector Catch (mm)" = "precipCatch",
-                    "ETI" = "precipETI"
-                ),
-                selected = "precipCatch"
-            ),
-            hr(),
-            p("Grab Variables",
-                style="font-weight:bold; font-size:1.1em;"),
+            radioButtons('PRECIP_SOURCE4', label='Precip data source',
+                choices=c('Collector Catch (mm)'='precipCatch',
+                    'ETI'='precipETI'), selected='precipCatch'),
             checkboxInput("FIELDCODE4",
                 label = "Show field codes",
                 value = FALSE
             ),
-            hr(),
-            # Options for "Discharge" Graph
-            p("Discharge", style = "font-weight:bold; font-size:1.1em;"),
-            radioButtons("FLOW_SOURCE4",
-                label = p("Data type:", style = "font-weight:bold"),
-                choices = c("Q from Gage Height (L/s)" = "flowGageHt",
-                    "Q from Sensor (L/s)" = "flowSens"
-                ),
-                selected = "flowGageHt"
-            ),
+            radioButtons("FLOW_SOURCE4", label='Discharge data source',
+                choices=c('Rating curve (L/s)'='flowGageHt',
+                    'Sensor (L/s)'='flowSens')),
         width=3), # closes sidebarPanel
 
         # Plot

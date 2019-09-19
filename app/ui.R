@@ -19,19 +19,26 @@ shinyUI(fluidPage(
     #     href='https://macrosheds.org/'))), inverse=TRUE,
     #     windowTitle='MacroSHEDS',
 
-    sidebarLayout(
-        sidebarPanel(width=4,
-            tabsetPanel(id='left_tabs',
-                about_tab,
-                map_tab
-            )
-        ),
-        mainPanel(width=8,
+    # sidebarLayout(
+    # fluidRow(
+        # column(width=4, class='collapse width',
+            bsCollapse(id='MAINCOLLAPSE', open='Hide top panel',
+            # sidebarPanel(width=4,
+                bsCollapsePanel('left_collapse', value='Hide top panel',
+                    tabsetPanel(id='left_tabs',
+                        about_tab,
+                        map_tab
+                   )
+                )
+            ),
+        # ),
+        # column(width=8,
+        # mainPanel(width=8,
             tabsetPanel(id='right_tabs',
                 summary_biplot_tab,
                 oneSiteNVar_tab,
                 site_comparison_tab
             )
-        )
-    )
+        # )
+    # )
 ))

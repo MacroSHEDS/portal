@@ -9,10 +9,11 @@ body {
     font-size: 1.1em;
 }
 
-.widget-title {
+.widget-title, .control-label {
     font-size: 1.0em;
-    padding: 0px
+    padding: 0px;
     margin: 0px;
+    font-weight: bold;
 }
 
 .widget-subtitle {
@@ -32,6 +33,14 @@ body {
     color: black !important;
     background-color: #efefef !important;
     font-size: 140% !important;
+}
+
+.collapse.width {
+    height: auto;
+    -webkit-transition: width 0.35s ease;
+    -moz-transition: width 0.35s ease;
+    -o-transition: width 0.35s ease;
+    transition: width 0.35s ease;
 }
 
 .shiny-input-container{

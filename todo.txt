@@ -9,6 +9,8 @@ restyle everything
     max 80 char lines
     <- into =
     etc
+    allcaps all shiny elementIDs
+
 
 
 APP LAYOUT
@@ -77,6 +79,9 @@ goal 1 - tweak free-for-all tab:
     include all available sensor data
     change R, F, L, PK limb display (what do these mean?)
     figure out if ET or UTC
+use rmarkdown for data acquisition (and eventually bookdown, but dont have to think about that till end)
+use tidylog (will render in bookdown)
+check out highcharter
 
 QUESTIONS FOR MATT:
     look over units sheet

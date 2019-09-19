@@ -235,7 +235,7 @@ dataMain4 <- reactive ({
 ## Extract data for Discharge (Flow) plot
 dataFlow4 <- reactive ({
     dataFlow4 <- data4() %>%
-        filter(site %in% input$FLOW_SITE4)
+        filter(site %in% input$SITES4)
     # flow values need to be summarized with median per date,
     # because multiple values for one date make flow graph look strange
     if (input$FLOW_SOURCE4 == "flowGageHt") {
@@ -245,9 +245,8 @@ dataFlow4 <- reactive ({
             summarise(flowMaxPerDate = max(flowGageHt, na.rm=TRUE))
     }
     if (input$FLOW_SOURCE4 == "flowSens") {
-        #!!! Not selecting by input$FLOW_SITE4, but by all SITES4 selected - is this intentional?
         dataFlow4 = filter(dataSensor, datetime > input$DATE4[1],
-            datetime < input$DATE4[2], watershedID %in% input$FLOW_SITE4) %>%
+            datetime < input$DATE4[2], watershedID %in% input$SITES4) %>%
             mutate(date=as.Date(datetime)) %>%
             select(date, Q_Ls) %>%
             group_by(date) %>%
@@ -260,7 +259,7 @@ dataFlow4 <- reactive ({
 ## Additional data for Flow plot: hydroGraph labels
 dataFlowHydroGraph4 <- reactive ({
     dataFlowHydroGraph4 <- data4() %>%
-        filter(site %in% input$FLOW_SITE4) %>%
+        filter(site %in% input$SITES4) %>%
         select(one_of("date", "hydroGraph", input$FLOW_SOURCE4))
     # group_by(date) %>%
     # summarise(hydroGraph = first(hydroGraph, na.rm=TRUE), flowSource = max(flowSource, na.rm=TRUE))
@@ -423,12 +422,6 @@ output$GRAPH_MAIN4c <- renderDygraph({
 output$GRAPH_FLOW4 <- renderDygraph({
 
     widedat <- dataFlow4()
-    # x <- data$date
-    # y <- data$flowMaxPerDate
-    # f <- ggplot(data, aes(x, y)) + my_theme +
-    #     geom_area(fill = "cadetblue3", na.rm=TRUE) +
-    #     coord_cartesian(xlim = c(input$DATE4[1], input$DATE4[2])) +
-    #     labs(x = "", y = "Discharge")
     dydat = xts(widedat[, 'flowMaxPerDate'], order.by=widedat$date)
     dimnames(dydat) = list(NULL, 'Q')
 
@@ -438,23 +431,9 @@ output$GRAPH_FLOW4 <- renderDygraph({
         dyAxis('y', label='Discharge (L/s)', labelWidth=16, labelHeight=10)
         # dyLegend(show='onmouseover', labelsSeparateLines=TRUE)
 
-    if (input$HYDROLIMB4 == TRUE) {
-        data.hl <- dataFlowHydroGraph4()
-        if (input$FLOW_SOURCE4 == "flowGageHt") y.hl <- data.hl$flowGageHt
-        if (input$FLOW_SOURCE4 == "flowSens") y.hl <- data.hl$flowSensor
-        f <- f + geom_text(data = data.hl,
-            aes(x = date,
-                y = y.hl,
-                label = hydroGraph),
-            nudge_y = (max(y.hl, na.rm = TRUE) - min(y.hl, na.rm = TRUE))/15,
-            check_overlap = TRUE)
-    }
-
     return(dg)
-}) # end of output$GRAPH_FLOW4
-# }, height = 100) # end of output$GRAPH_FLOW4
+})
 
 output$TABLE4 <- renderDataTable({
     dataFlowHydroGraph4()
-    #head(dataCurrentR())
-}) # end of output$TABLE4
+})
