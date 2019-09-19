@@ -15,6 +15,24 @@ shinyServer(function(input, output, session){
     # })
     # js$getHeight50()
 
+    output$COLLAPSIBLE_SECTION=renderMenu({
+        sidebarMenu(
+            menuItem('Dashboard', tabName='dashboard', icon=icon('dashboard')),
+            menuItem('Widgets', icon=icon('th'), tabName='widgets',
+                badgeLabel='new',
+                badgeColor='green'),
+            menuItem('Charts', icon=icon('bar-chart-o'),
+                menuSubItem('Sub-item 1', tabName='subitem1'),
+                menuSubItem('Sub-item 2', tabName='subitem2')
+            )
+        )
+    })
+
+    observeEvent(input$hideMe, {
+        # shinyjs::hide(selector = ".main-sidebar");
+        # shinyjs::addClass(selector = "body", class = "sidebar-collapse")
+    })
+
     source('server/site_comparison_server.R', local=TRUE)
     source('server/oneSiteNVar_server.R', local=TRUE)
     source('server/summary_biplot_server.R', local=TRUE)

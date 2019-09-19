@@ -35,17 +35,27 @@ body {
     font-size: 140% !important;
 }
 
-.collapse.width {
+.shiny-input-container{
+    margin-bottom: 0px;
+}
+
+/*.collapse.width {
     height: auto;
     -webkit-transition: width 0.35s ease;
     -moz-transition: width 0.35s ease;
     -o-transition: width 0.35s ease;
     transition: width 0.35s ease;
+}*/
+
+/*.sidebar-collapse .left-side, .sidebar-collapse .main-sidebar{
+ transform: translate(0,0);
+ width: 40px;
+}*/
+
+#sidebarCollapsed, .content {
+    padding-top: 0px;
 }
 
-.shiny-input-container{
-    margin-bottom: 0px;
-}
 
 .recalculating { opacity: 1.0; }
 
