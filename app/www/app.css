@@ -4,14 +4,47 @@ body {
 	font-family: 'Montserrat', sans-serif;
 }
 
-#SOLUTES4 ~ .selectize-control {
-    font-size: 60%;
+.section-heading {
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+.widget-title, .control-label {
+    font-size: 1.0em;
+    padding: 0px;
+    margin: 0px;
+    font-weight: bold;
+}
+
+.widget-subtitle {
+    font-size: 0.8em;
+    color: gray;
+    padding: 0px;
+    margin: 0px;
+}
+
+/*#SOLUTES4 ~ .selectize-control {*/
+.selectize-control {
+    font-size: 70%;
+    margin-bottom: 0px;
 } .selectize-dropdown {
     font-size: 120%;
 } .optgroup-header {
     color: black !important;
     background-color: #efefef !important;
     font-size: 140% !important;
+}
+
+.collapse.width {
+    height: auto;
+    -webkit-transition: width 0.35s ease;
+    -moz-transition: width 0.35s ease;
+    -o-transition: width 0.35s ease;
+    transition: width 0.35s ease;
+}
+
+.shiny-input-container{
+    margin-bottom: 0px;
 }
 
 .recalculating { opacity: 1.0; }

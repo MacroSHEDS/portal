@@ -1,33 +1,40 @@
+library(V8)
 library(stringr)
 library(feather)
 library(dplyr)
 # library(plyr)
 library(data.table)
-library(dtplyr)
+# library(dtplyr)
 library(shiny)
-# library(dygraphs)
-library(RMariaDB)
-library(DBI)
-library(ggthemes)
-library(ggplot2)
+library(dygraphs)
+library(Cairo)
+# library(RMariaDB)
+# library(DBI)
+# library(ggthemes)
+# library(ggplot2)
 
 # library(colorspace)
 # library(jsonlite)
 # library(plotly)
 library(lubridate)
-library(RColorBrewer)
+# library(RColorBrewer)
 # library(reshape2)
 library(tidyr)
-# library(xts)
-
+library(xts)
 library(leaflet)
+
+# rsconnect::deployApp('~/git/macrosheds/app', appName='MacroSheds_demo')
 
 site_data = read.csv('site_data.csv', stringsAsFactors=FALSE)
 
-pass = readLines('~/git/hbef/RMySQL.config')    # for MV's local computer
+# pass = readLines('~/git/hbef/RMySQL.config')
+
+linecolors = c("#000000", "#307975", "#691476", "#735E1F", "#6F0D2F",
+    "#7F8D36", "#37096D", "#074670", "#0C2282", "#750D47")
 
 # setwd('~/git/macrosheds/app')
-grab = read_feather('../data/hbef/grab.feather')
+grab = read_feather('data/grab.feather')
+# grab = read_feather('../data/hbef/grab.feather')
 grab = grab %>% select(which(sapply(., class) == 'numeric'), datetime, -waterYr)
 grabcols = colnames(grab)
 grabcols = grabcols[grabcols != 'datetime']
@@ -36,7 +43,8 @@ grabcols = grabcols[grabcols != 'datetime']
 
 # {4}(\".+)? = (.+)?,
 #    \2 = list(\1, ("")),
-variables = read.csv('../data/general/variables.csv', stringsAsFactors=FALSE)
+variables = read.csv('data/variables.csv', stringsAsFactors=FALSE)
+# variables = read.csv('../data/general/variables.csv', stringsAsFactors=FALSE)
 # variables = read.csv('~/git/macrosheds/data/general/variables.csv', stringsAsFactors=FALSE)
 
 grabvars = filter(variables, category == 'grab')
@@ -48,52 +56,6 @@ grabvars_display = mutate(grabvars,
             y['shortname']
         })
     })
-# grabvars_display = mutate(grabvars,
-#         displayname=paste0(fullname, ' (', unit, ')')) %>%
-#     select(displayname, shortname) %>%
-#     plyr::daply(plyr::.(displayname), function(x){
-#         x['shortname']
-#     })
-
-# grabvarsdf = plyr::ldply(grabvars)
-# colnames(grabvarsdf) = c('fullname', 'shortname')
-# write.csv(grabvarsdf, '~/git/macrosheds/data/general/variables.csv',
-#     row.names=FALSE)
-
-# grabvars = list(
-#     Solutes=list(
-#     "Aluminum (Al) ICP" = "Al_ICP",
-#     "Aluminum (Al) OM" = "OMAl",
-#     "Aluminum (Al) TM" = "TMAl",
-#     "Ammonium (NH4)" = "NH4",
-#     "Calcium (Ca)" = "Ca",
-#     "Chloride (Cl)" = "Cl",
-#     "Fluorine (F)" = "F",
-#     "Iron (Fe)" = "Fe",
-#     "Magnesium (Mg)" = "Mg",
-#     "Manganese (Mn)" = "Mn",
-#     "Nitrate (NO3)" = "NO3",
-#     "Phosphate (PO4)" = "PO4",
-#     "Potassium (K)" = "K",
-#     "Sodium (Na)" = "Na",
-#     "Sulfate (SO4)" = "SO4"),
-#     Other=list(
-#     "TOTAL Anion Charge" = "anionCharge",
-#     "TOTAL Cation Charge" = "cationCharge",
-#     "pH (3 Star)" = "pH",
-#     "pH (Metrohm)"="pHmetrohm",
-#     "Dissolved Organic Carbon (DOC)" = "DOC",
-#     "Total Dissolved Nitrogen (TDN)" = "TDN",
-#     "Dissolved Organic Nitrogen (DON)" = "DON",
-#     "Dissolved Inorganic Carbon (DIC)" = "DIC",
-#     "Silica (SiO2)" = "SiO2",
-#     "Acid Neutralizing Capacity 960" = "ANC960",
-#     "Acid Neutralizing Capacity Met" = "ANCMet",
-#     "Specific Conductivity" = "spCond",
-#     "Theoretical Conductivity" = "theoryCond",
-#     "Water Temperature" = "temp",
-#     "Ion Balance" = "ionBalance"))
-
 
 codes999.9 <- c("timeEST", "temp", "ANC960", "ANCMet",
     "ionError", "ionBalance")
@@ -182,14 +144,14 @@ defClassesSample$date <- as.Date(defClassesSample$date, "%m/%d/%y")
 # Grabbing Data from MySQL database ----
 # USE WHEN LIVE ON REMOTE SITE
 #**********************************************
-y = RMariaDB::MariaDB()
-
-con = dbConnect(y,
-    user = 'root',
-    password = pass,
-    host = 'localhost',
-    dbname = 'hbef')
-tables = dbListTables(con)
+# y = RMariaDB::MariaDB()
+#
+# con = dbConnect(y,
+#     user = 'root',
+#     password = pass,
+#     host = 'localhost',
+#     dbname = 'hbef')
+# tables = dbListTables(con)
 
 # # Code for one-time use: to load data into mysql
 # dataCurrent <- read.csv("data/current_clean20181202.csv", stringsAsFactors = FALSE, na.strings=c(""," ", "NA"))
@@ -203,14 +165,22 @@ tables = dbListTables(con)
 #  dbWriteTable(con, "historical", dataHistorical, append = TRUE, row.names = FALSE)
 
 # Get data from mysql
-dataCurrent <- dbReadTable(con, "current")
-dataHistorical <- dbReadTable(con, "historical")
-dataSensor <- dbReadTable(con, "sensor2")
-sensorvars = dbListFields(con, "sensor3")
+# dataCurrentO <- dbReadTable(con, "current")
+# dataHistoricalO <- dbReadTable(con, "historical")
+# dataSensorO <- dbReadTable(con, "sensor2")
+# sensorvarsO = dbListFields(con, "sensor3")
+# write_feather(dataCurrent, '~/git/macrosheds/app/temp_shinyappsio/dataCurrent.feather')
+# write_feather(dataHistorical, '~/git/macrosheds/app/temp_shinyappsio/dataHistorical.feather')
+# write_feather(dataSensor, '~/git/macrosheds/app/temp_shinyappsio/dataSensor.feather')
+# saveRDS(sensorvars, '~/git/macrosheds/app/temp_shinyappsio/sensorvars.rds')
+dataCurrent = as.data.frame(read_feather('temp_shinyappsio/dataCurrent.feather'))
+dataHistorical = as.data.frame(read_feather('temp_shinyappsio/dataHistorical.feather'))
+dataSensor = as.data.frame(read_feather('temp_shinyappsio/dataSensor.feather'))
+sensorvars = readRDS('temp_shinyappsio/sensorvars.rds')
 sensorvars = sub('S3__', '', sensorvars)
 sensorvars = sensorvars[-which(sensorvars %in% c('datetime', 'id', 'watershedID'))]
 dataSensor$watershedID = paste0('W', as.character(dataSensor$watershedID))
-dbDisconnect(con)
+# dbDisconnect(con)
 
 dataCurrent <- standardizeClasses(dataCurrent)
 # necessary to prevent problems when downloading csv files

@@ -1,0 +1,10 @@
+installing timescaledb:
+    install ppa vsns of postgres and timescale
+    use the timescale repo that includes only apache-2 licensed parts
+
+setting up timescaledb:
+    ignore next two. just use default postgres superuser.
+        see digitalocean bookmark instead of link for setting up postgres superuser
+        the superuser should have the same name as an existing linux user, so long as auth is ident based
+    connect to console with sudo -u postgres psql; not the 
+

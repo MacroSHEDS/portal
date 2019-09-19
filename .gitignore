@@ -1,3 +1,7 @@
 /data
 config.txt
 .Rhistory
+app/data/grab.feather
+app/data/variables.csv
+app/rsconnect
+app/temp_shinyappsio
