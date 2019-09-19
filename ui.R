@@ -46,12 +46,23 @@ shinyUI(fluidPage(
         dashboardHeader(disable=TRUE),
         # dashboardHeader(),
         dashboardSidebar(width='50%',
-            sidebarMenuOutput("COLLAPSIBLE_SECTION"),
-            actionLink("hideMe", label='Collapse Me', icon=icon("close"),
-                class="sidebar-toggle", `data-toggle`="offcanvas"),
-            tabsetPanel(id='left_tabs',
-                about_tab,
-                map_tab
+            # sidebarMenuOutput("COLLAPSIBLE_SECTION"),
+            # div(style='display: inline-block; float: left',
+            div(class='sidebar-sub',
+            # div(style='display: inline-block; float:left',
+            # column(width=11,
+                tabsetPanel(id='left_tabs',
+                    about_tab,
+                    map_tab
+                )
+            ),
+            # div(style='width: 36px; display: inline-block; position: absolute; float: right',
+            div(style='width: 36px; display: inline-block; float: right',
+            # div(style='display: inline-block; float:right',
+            # column(width=1,
+                actionLink('COLLAPSE_SIDEBAR', label='', icon=icon('arrows-h'),
+                    class='sidebar-toggle', `data-toggle`='offcanvas',
+                    style='margin: 6px')
             )
         ),
         dashboardBody(

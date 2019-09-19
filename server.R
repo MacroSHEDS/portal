@@ -15,22 +15,37 @@ shinyServer(function(input, output, session){
     # })
     # js$getHeight50()
 
-    output$COLLAPSIBLE_SECTION=renderMenu({
-        sidebarMenu(
-            menuItem('Dashboard', tabName='dashboard', icon=icon('dashboard')),
-            menuItem('Widgets', icon=icon('th'), tabName='widgets',
-                badgeLabel='new',
-                badgeColor='green'),
-            menuItem('Charts', icon=icon('bar-chart-o'),
-                menuSubItem('Sub-item 1', tabName='subitem1'),
-                menuSubItem('Sub-item 2', tabName='subitem2')
-            )
-        )
-    })
+    # output$COLLAPSIBLE_SECTION=renderMenu({
+    #     sidebarMenu(
+    #         # menuItem('Dashboard', tabName='dashboard', icon=icon('dashboard')),
+    #         # menuItem('Widgets', icon=icon('th'), tabName='widgets',
+    #         #     badgeLabel='new',
+    #         #     badgeColor='green'
+    #         # ),
+    #         # menuItem('Charts', icon=icon('bar-chart-o'),
+    #         #     menuSubItem('Sub-item 1', tabName='subitem1'),
+    #         #     menuSubItem('Sub-item 2', tabName='subitem2')
+    #         # )
+    #     )
+    # })
 
-    observeEvent(input$hideMe, {
+    # collapse_bool = reactiveValues()
+    # collapse_bool$val = FALSE
+
+    observeEvent(input$COLLAPSE_SIDEBAR, {
         # shinyjs::hide(selector = ".main-sidebar");
         # shinyjs::addClass(selector = "body", class = "sidebar-collapse")
+
+        # collapse_bool$val = ! collapse_bool$val
+        # if(collapse_bool$val){
+        shinyjs::toggleClass(selector='.sidebar-sub',
+            class='sidebar-sub-gone')
+        shinyjs::toggleClass(selector='.content-wrapper',
+            class='content-wrapper-wide')
+        # }
+        # } else {
+        #     shinyjs::addClass(selector='.sidebar-sub', class='sidebar-sub-gone')
+        # }
     })
 
     source('server/site_comparison_server.R', local=TRUE)

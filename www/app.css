@@ -39,23 +39,30 @@ body {
     margin-bottom: 0px;
 }
 
-/*.collapse.width {
-    height: auto;
-    -webkit-transition: width 0.35s ease;
-    -moz-transition: width 0.35s ease;
-    -o-transition: width 0.35s ease;
-    transition: width 0.35s ease;
-}*/
-
-/*.sidebar-collapse .left-side, .sidebar-collapse .main-sidebar{
+.sidebar-collapse .left-side, .sidebar-collapse .main-sidebar{
  transform: translate(0,0);
- width: 40px;
-}*/
+ width: 80px; /* why not 51? 36 for toggle button + 15 for container-fluid?*/
+}
 
 #sidebarCollapsed, .content {
     padding-top: 0px;
 }
 
+.sidebar-sub {
+    width: -webkit-calc(100% - 36px);
+    width:    -moz-calc(100% - 36px);
+    width:         calc(100% - 36px);
+    /*position: absolute;*/
+    float: left;
+}
+
+.sidebar-sub-gone {
+    display: none;
+}
+
+.content-wrapper-wide {
+    margin-left: 36px !important;
+}
 
 .recalculating { opacity: 1.0; }
 
