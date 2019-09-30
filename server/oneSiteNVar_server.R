@@ -64,13 +64,16 @@ changesInSelections$n_vars = 1
 changesInSelections$facet1 = 0
 changesInSelections$facet2 = 0
 changesInSelections$facet3 = 0
+changesInSelections$update_vars = 0
 
-observeEvent(input$SITES4, {
+observeEvent({
+        input$SITES4
+        input$DATE4
+}, {
     changesInSelections$facet1 = changesInSelections$facet1 + 1
     changesInSelections$facet2 = changesInSelections$facet1 + 1
     changesInSelections$facet3 = changesInSelections$facet1 + 1
 })
-
 
 observeEvent({
     if(length(input$SOLUTES4) %in% 1:3){
@@ -184,11 +187,23 @@ observeEvent({
 
 observeEvent(input$SITES4, {
 
-    last_record = max(grab$datetime, na.rm=TRUE)
+    grab_subset = filter(grab, site_name == input$SITES4)
+    grabvars_display_subset = populate_vars(grab_subset[-(1:2)])
+
+    updateSelectizeInput(session, 'SOLUTES4',
+        choices=grabvars_display_subset,
+        selected=grabvars_display_subset[[1]][[1]])
+
+    site_dtrng = as.Date(range(grab$datetime[grab$site_name == input$SITES4],
+        na.rm=TRUE))
 
     updateSliderInput(session, "DATE4",
-        label="Date Range", value=as.Date(c(last_record - 365, last_record)),
-        min=as.Date("1963-06-01"), max=as.Date(last_record), step=30)
+        label="Date Range", min=site_dtrng[1], max=site_dtrng[2], step=30,
+        value=c(max(site_dtrng[2] - lubridate::days(365),
+            site_dtrng[1], na.rm=TRUE),
+            site_dtrng[2]))
+
+    changesInSelections$update_vars = changesInSelections$update_vars + 1
 })
 
 ## Filter data to desired dates
@@ -198,6 +213,7 @@ data4 <- reactive ({
         filter(datetime >= input$DATE4[1]) %>%
         filter(datetime <= input$DATE4[2])
     # data4 <- removeCodes(data4)
+    return(data4)
 })
 
 # #keep track of n variables selected
@@ -212,21 +228,22 @@ data4 <- reactive ({
 
 ## Extract data for Precip plot
 dataPrecip4 <- reactive ({
+
+    # dataPrecip4 <- data4() %>%
+    #     select(precipCatch) %>%
+    #     filter(! is.na(precipCatch)) %>%
+    #     select(one_of("datetime", "site_name", 'precipCatch')) %>%
+    #     group_by(lubridate::days(datetime)) %>%
+    #     summarise(medianPrecip = median(precipCatch, na.rm=TRUE)) %>%
+    #     ungroup()
+
     dataPrecip4 <- data4() %>%
-        #filter(site %in% input$PRECIP_SITE4) %>%
         filter(site_name %in% sites_precip) %>%
-        select(one_of("datetime", "site_name", input$PRECIP_SOURCE4))
-    if (input$PRECIP_SOURCE4 == "precipCatch") {
-        dataPrecip4 <- dataPrecip4 %>%
-            group_by(datetime) %>%
-            summarise(medianPrecip = median(precipCatch, na.rm=TRUE))
-    }
-    if (input$PRECIP_SOURCE4 == "precipETI") {
-        dataPrecip4 <- dataPrecip4 %>%
-            group_by(datetime) %>%
-            summarise(medianPrecip = median(precipETI, na.rm=TRUE))
-    }
-    dataPrecip4
+        select(one_of("datetime", "site", 'precipCatch')) %>%
+        # group_by(lubridate::yday(datetime)) %>%
+        group_by(datetime) %>%
+        summarise(medianPrecip=median(precipCatch, na.rm=TRUE)) %>%
+        ungroup()
 })
 
 ## Extract data for Solutes (Main) plot
@@ -276,7 +293,7 @@ output$GRAPH_PRECIP4 <- renderDygraph({
 
     data <- dataPrecip4()
     # ind_col <- which(input$PRECIP_SOURCE4 == colnames(data), arr.ind = TRUE)
-    dydat = xts(data$medianPrecip, order.by=data$datetime)
+    dydat = xts(data$medianPrecip, order.by=data$datetime, tzone='UTC')
     dimnames(dydat) = list(NULL, 'P')
     ymax = max(dydat, na.rm=TRUE)
 
@@ -315,7 +332,7 @@ output$GRAPH_MAIN4a <- renderDygraph({
     # datal = split(widedat, widedat$site)
 
     # widedat = datal[[1]]
-    dydat = xts(widedat[, plotvars], order.by=widedat$datetime)
+    dydat = xts(widedat[, plotvars], order.by=widedat$datetime, tzone='UTC')
     dimnames(dydat) = list(NULL, varnames$combined)
 
     dg = dygraph(dydat, group='oneSiteNVar') %>%
@@ -387,7 +404,7 @@ output$GRAPH_MAIN4b <- renderDygraph({
         summarize(solute_value=mean(solute_value)) %>%
         spread(solute, solute_value)
 
-    dydat = xts(widedat[, plotvars], order.by=widedat$datetime)
+    dydat = xts(widedat[, plotvars], order.by=widedat$datetime, tzone='UTC')
     dimnames(dydat) = list(NULL, varnames$combined)
 
     dg = dygraph(dydat, group='oneSiteNVar') %>%
@@ -414,7 +431,7 @@ output$GRAPH_MAIN4c <- renderDygraph({
         summarize(solute_value=mean(solute_value)) %>%
         spread(solute, solute_value)
 
-    dydat = xts(widedat[, plotvars], order.by=widedat$datetime)
+    dydat = xts(widedat[, plotvars], order.by=widedat$datetime, tzone='UTC')
     dimnames(dydat) = list(NULL, varnames$combined)
 
     dg = dygraph(dydat, group='oneSiteNVar') %>%
@@ -428,7 +445,8 @@ output$GRAPH_MAIN4c <- renderDygraph({
 output$GRAPH_FLOW4 <- renderDygraph({
 
     widedat <- dataFlow4()
-    dydat = xts(widedat[, 'flowMaxPerDate'], order.by=widedat$datetime)
+    dydat = xts(widedat[, 'flowMaxPerDate'], order.by=widedat$datetime,
+        tzone='UTC')
     dimnames(dydat) = list(NULL, 'Q')
 
     dg = dygraph(dydat, group='oneSiteNVar') %>%
@@ -440,6 +458,6 @@ output$GRAPH_FLOW4 <- renderDygraph({
     return(dg)
 })
 
-output$TABLE4 <- renderDataTable({
-    dataFlowHydroGraph4()
-})
+# output$TABLE4 <- renderDataTable({
+#     dataFlowHydroGraph4()
+# })

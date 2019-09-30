@@ -3,13 +3,13 @@ oneSiteNVar_tab = tabPanel("Single Site", value='site_exploration',
         # Sidebar with tabs for Solute, Sites, Options
         sidebarPanel(
             div('Choose a site', class='widget-title text-center'),
-            selectizeInput('SITES4', label=NULL,
-                choices=c(sites_streams, sites_precip)),
+            selectizeInput('SITES4', label=NULL, selected=default_site,
+                choices=sites),
             br(),
             div('Choose variables', class='widget-title text-center'),
             selectizeInput('SOLUTES4', label=NULL,
-                selected=grabvars_display[[1]][[1]],
-                multiple=TRUE, choices=grabvars_display),
+                selected=grabvars_display_subset[[1]][[1]],
+                multiple=TRUE, choices=grabvars_display_subset),
             div('(Up to 9)', class='widget-subtitle text-center'),
             conditionalPanel('false', #hiding this until it's necessary
                 radioButtons('PRECIP_SOURCE4', label='Precip data source',
@@ -28,16 +28,13 @@ oneSiteNVar_tab = tabPanel("Single Site", value='site_exploration',
         # Plot
         mainPanel(
             wellPanel(
-                sliderInput(
-                    "DATE4",
-                    label = "Date Range",
-                    min =as.Date("1963-06-01"),
-                    max = as.Date(maxDate),
-                    value = as.Date(c(maxDate-365, maxDate)),
-                    width = "100%",
-                    timeFormat = "%b %Y",
-                    step = 30,
-                    dragRange = TRUE)
+                sliderInput("DATE4", label="Date Range",
+                    min=dtrng[1], max=dtrng[2],
+                    value=c(max(dtrng[2] - lubridate::days(365),
+                        initial_dtrng[1], na.rm=TRUE),
+                        dtrng[2]),
+                    width="100%", timeFormat="%b %Y", step=30,
+                    dragRange=TRUE)
             ),
             #tags$h4(textOutput("TITLE4")),
             fluidRow(

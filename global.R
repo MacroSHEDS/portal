@@ -11,7 +11,6 @@ library(Cairo)
 # library(DBI)
 # library(ggthemes)
 # library(ggplot2)
-
 # library(colorspace)
 # library(jsonlite)
 # library(plotly)
@@ -44,20 +43,15 @@ grab = DBI::dbGetQuery(con, paste0('select data_grab.datetime, site.site_name, '
     tidyr::spread(variable_code, value) %>%
     dplyr::ungroup()
 
-# grab = read_feather('data/grab.feather')
-# grab = grab %>% select(which(sapply(., class) == 'numeric'), datetime, -waterYr)
 grabcols = colnames(grab)
 grabcols = grabcols[grabcols != 'datetime']
 # sensor = read_feather('../data/hbef/sensor.feather')
 # sensor = select_if(sensor, is.numeric)
 
-# {4}(\".+)? = (.+)?,
-#    \2 = list(\1, ("")),
 variables = read.csv('data/variables.csv', stringsAsFactors=FALSE)
-# variables = read.csv('../data/general/variables.csv', stringsAsFactors=FALSE)
-# variables = read.csv('~/git/macrosheds/data/general/variables.csv', stringsAsFactors=FALSE)
 
-grabvars = filter(variables, variable_type == 'grab')
+grabvars = filter(variables, variable_type == 'grab',
+    ! variable_code %in% c('flowGageHt', 'precipCatch'))
 grabvars_display = mutate(grabvars,
         displayname=paste0(variable_name, ' (', unit, ')')) %>%
     select(displayname, variable_code, variable_subtype) %>%
@@ -78,28 +72,14 @@ codes123 <- c("pH", "pHmetrohm", "spCond", "au254", "au275",
     "SO4", "NO3", "Cl", "PO4", "DOC", "TDN", "DIC",
     "DON", "SiO2", "Mn", "Fe", "F")
 
-# Lists of Sites
-#***************
-sites_streams <- list("Watershed 1" = "W1",
-    "Watershed 2" = "W2",
-    "Watershed 3" = "W3",
-    "Watershed 4" = "W4",
-    "Watershed 5" = "W5",
-    "Watershed 6" = "W6",
-    "Watershed 7" = "W7",
-    "Watershed 8" = "W8",
-    "Watershed 9" = "W9",
-    "HBK",
-    "ML70",
-    "SW")
+sites = DBI::dbGetQuery(con, paste('select site_name as site from site',
+        'order by site_name asc;')) %>%
+    unlist() %>%
+    unname()
 
-#Precipitation sites
-# If you update this list, also update conditional panel below
 sites_precip <- list("RG1", "RG11", "RG23", "RG22", "N", "S", "SP")
 
-# wateryears ----> see list after data import
-
-# list of solutes that have units other than mg/L for data items
+# list of solutes that have units other than mg/L for data items [NOT IN USE]
 other_units <- c("pH",
     "DIC",
     "ANC960",
@@ -111,97 +91,29 @@ other_units <- c("pH",
     "temp",
     "ionBalance")
 
-# import MDL/LOQ data
+# import MDL/LOQ data  [NOT IN USE]
 dataLimits <- read.csv("data/Limits_MDL_LOQ.csv")
 
-# data needed for standardizeClasses() function to work
+# data needed for standardizeClasses() function to work [NOT IN USE]
 defClasses <- read.csv("data/Rclasses.csv", header = TRUE, stringsAsFactors = FALSE, na.strings=c(""," ","NA"))
 defClassesSample <- read.csv("data/RclassesSample.csv", header=TRUE, stringsAsFactors = FALSE, na.strings=c(""," ","NA"))
 defClassesSample$date <- as.Date(defClassesSample$date, "%m/%d/%y")
 
-# Grabbing Data from MySQL database ----
-# USE WHEN LIVE ON REMOTE SITE
-#**********************************************
-# y = RMariaDB::MariaDB()
-#
-# con = dbConnect(y,
-#     user = 'root',
-#     password = pass,
-#     host = 'localhost',
-#     dbname = 'hbef')
-# tables = dbListTables(con)
-
-# # Code for one-time use: to load data into mysql
-# dataCurrent <- read.csv("data/current_clean20181202.csv", stringsAsFactors = FALSE, na.strings=c(""," ", "NA"))
-#  dataCurrent$date <- as.Date(dataCurrent$date, "%m/%d/%y")
-#  dataCurrent <- standardizeClasses(dataCurrent)
-#  dbWriteTable(con, "current", dataCurrent, append = TRUE, row.names = FALSE)
-#
-# dataHistorical<- read.csv("data/historical.csv", stringsAsFactors = FALSE, na.strings=c(""," ", "NA"))
-#  dataHistorical$date <- as.POSIXct(dataHistorical$date, "%Y-%m-%d")
-#  dataHistorical <- standardizeClasses(dataHistorical)
-#  dbWriteTable(con, "historical", dataHistorical, append = TRUE, row.names = FALSE)
-
-# Get data from mysql
-# dataCurrentO <- dbReadTable(con, "current")
-# dataHistoricalO <- dbReadTable(con, "historical")
-# dataSensorO <- dbReadTable(con, "sensor2")
-# sensorvarsO = dbListFields(con, "sensor3")
-# write_feather(dataCurrent, '~/git/macrosheds/app/temp_shinyappsio/dataCurrent.feather')
-# write_feather(dataHistorical, '~/git/macrosheds/app/temp_shinyappsio/dataHistorical.feather')
 # write_feather(dataSensor, '~/git/macrosheds/app/temp_shinyappsio/dataSensor.feather')
 # saveRDS(sensorvars, '~/git/macrosheds/app/temp_shinyappsio/sensorvars.rds')
-# dataCurrent = as.data.frame(read_feather('temp_shinyappsio/dataCurrent.feather'))
-# dataHistorical = as.data.frame(read_feather('temp_shinyappsio/dataHistorical.feather'))
 dataSensor = as.data.frame(read_feather('temp_shinyappsio/dataSensor.feather'))
 sensorvars = readRDS('temp_shinyappsio/sensorvars.rds')
 sensorvars = sub('S3__', '', sensorvars)
 sensorvars = sensorvars[-which(sensorvars %in% c('datetime', 'id', 'watershedID'))]
 dataSensor$watershedID = paste0('W', as.character(dataSensor$watershedID))
-# dbDisconnect(con)
 
-# dataCurrent <- standardizeClasses(dataCurrent)
-# necessary to prevent problems when downloading csv files
-# dataCurrent$notes <- gsub(",", ";", dataCurrent$notes)
-# dataHistorical <- standardizeClasses(dataHistorical)
+#populate default selections
+initial_dtrng = as.Date(range(grab$datetime[grab$site_name == sites[1]],
+    na.rm=TRUE))
+dtrng = as.Date(range(grab$datetime, na.rm=TRUE))
 
-# dataAll = bind_rows(dataCurrent, select(dataHistorical, -canonical))
-# dataAllR = dataAll
+default_site = 'W1'
+grabvars_display_subset = populate_vars(grab[-(1:2)])
+# default_var = get_default_var(grab[-(1:2)])
 
-# ****  END OF DATA IMPORT & PREP ****
-
-
-# Create water years *list* ----
-
-# # Water years list for dataAll
-# # used in ui.R and server.R for Panels 1-3 (QA/QC graphs)
-# wy <- levels(as.factor(dataAll$waterYr))
-# wy1 <- c()
-# for (i in 1:length(wy)) {
-#     wy1 <- c(wy1, wy[i])
-# }
-# #wy1 <- as.character(sort(as.numeric(wy1), decreasing=TRUE)) # sort so that recent years are first
-# wateryears <- as.list(wy1)
-#
-# # Water years list for dataCurrent
-# # used for Panels 5 (DataEdits)
-# wy_current <- levels(as.factor(dataCurrent$waterYr))
-# wy1_current <- c()
-# for (i in 1:length(wy_current)) {
-#     wy1_current <- c(wy1_current, wy_current[i])
-# }
-# #wy1 <- as.character(sort(as.numeric(wy1), decreasing=TRUE)) # sort so that recent years are first
-# wateryears_current <- as.list(wy1_current)
-
-
-# Find maximum date ----
-# used in ui.R for Panel 4 (QA/QC "Free-for-all" graph)
-
-# maxDate_current <- max(dataCurrent$date, na.rm=TRUE)
-# maxDate_historical <- max(dataHistorical$date, na.rm=TRUE)
-# maxDate_sensor <- max(as.Date(dataSensor$date), na.rm=TRUE)
-
-# maxDate <- maxDate_historical # default value if dataCurrent or dataSensor are empty
-maxDate = max(grab$datetime, na.rm=TRUE)
-# if (maxDate_sensor > maxDate_current) maxDate <- maxDate_sensor
-# if (maxDate_sensor < maxDate_current) maxDate <- maxDate_current
+DBI::dbDisconnect(con)
