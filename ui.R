@@ -1,6 +1,7 @@
 
 source("helpers.R")
 source('ui/oneSiteNVar_ui.R')
+source('ui/nSiteNVar_ui.R')
 source('ui/site_comparison_ui.R')
 source('ui/about_ui.R')
 source('ui/summary_biplot_ui.R')
@@ -72,6 +73,7 @@ shinyUI(fluidPage(
             tabsetPanel(id='right_tabs',
                 summary_biplot_tab,
                 oneSiteNVar_tab,
+                nSiteNVar_tab,
                 site_comparison_tab
             )
         )

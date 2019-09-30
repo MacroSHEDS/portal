@@ -80,16 +80,8 @@ sites = DBI::dbGetQuery(con, paste('select site_name as site from site',
 sites_precip <- list("RG1", "RG11", "RG23", "RG22", "N", "S", "SP")
 
 # list of solutes that have units other than mg/L for data items [NOT IN USE]
-other_units <- c("pH",
-    "DIC",
-    "ANC960",
-    "ANCMet",
-    "cationCharge",
-    "anionCharge",
-    "spCond",
-    "theoryCond",
-    "temp",
-    "ionBalance")
+other_units <- c("pH", "DIC", "ANC960", "ANCMet", "cationCharge", "anionCharge",
+    "spCond", "theoryCond", "temp", "ionBalance")
 
 # import MDL/LOQ data  [NOT IN USE]
 dataLimits <- read.csv("data/Limits_MDL_LOQ.csv")

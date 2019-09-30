@@ -24,6 +24,7 @@ shinyServer(function(input, output, session){
 
     source('server/site_comparison_server.R', local=TRUE)
     source('server/oneSiteNVar_server.R', local=TRUE)
+    source('server/nSiteNVar_server.R', local=TRUE)
     source('server/summary_biplot_server.R', local=TRUE)
     source('server/map_server.R', local=TRUE)
 

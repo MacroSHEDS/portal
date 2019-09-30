@@ -64,7 +64,6 @@ changesInSelections$n_vars = 1
 changesInSelections$facet1 = 0
 changesInSelections$facet2 = 0
 changesInSelections$facet3 = 0
-changesInSelections$update_vars = 0
 
 observeEvent({
         input$SITES4
@@ -202,8 +201,6 @@ observeEvent(input$SITES4, {
         value=c(max(site_dtrng[2] - lubridate::days(365),
             site_dtrng[1], na.rm=TRUE),
             site_dtrng[2]))
-
-    changesInSelections$update_vars = changesInSelections$update_vars + 1
 })
 
 ## Filter data to desired dates
