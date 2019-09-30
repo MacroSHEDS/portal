@@ -1,7 +1,5 @@
 library(V8)
-library(stringr)
 library(feather)
-library(dplyr)
 # library(plyr)
 library(data.table)
 # library(dtplyr)
@@ -20,23 +18,34 @@ library(Cairo)
 library(lubridate)
 # library(RColorBrewer)
 # library(reshape2)
-library(tidyr)
 library(xts)
 library(leaflet)
+library(tidyverse)
 
 # rsconnect::deployApp('~/git/macrosheds/app', appName='MacroSheds_demo')
+# setwd('~/git/macrosheds/portal/')
 
 site_data = read.csv('site_data.csv', stringsAsFactors=FALSE)
 
-# pass = readLines('~/git/hbef/RMySQL.config')
+source('helpers.R')
 
-linecolors = c("#000000", "#307975", "#691476", "#735E1F", "#6F0D2F",
-    "#7F8D36", "#37096D", "#074670", "#0C2282", "#750D47")
+conf = readLines('config.txt')
+postgres_pw = extract_from_config('POSTGRESQL_PW')
 
-# setwd('~/git/macrosheds/app')
-grab = read_feather('data/grab.feather')
-# grab = read_feather('../data/hbef/grab.feather')
-grab = grab %>% select(which(sapply(., class) == 'numeric'), datetime, -waterYr)
+con = DBI::dbConnect(RPostgres::Postgres(), host='localhost',
+    dbname='macrosheds', user='mike', password=postgres_pw)
+
+grab = DBI::dbGetQuery(con, paste0('select data_grab.datetime, site.site_name, ',
+        'variable.variable_code, data_grab.value from data_grab, site, variable where ',
+        'data_grab.site=site.id and data_grab.variable=variable.id;')) %>%
+    dplyr::filter(datetime <= Sys.Date()) %>%
+    dplyr::group_by(site_name, variable_code, datetime) %>%
+    dplyr::summarize(value=mean(value,na.rm=TRUE)) %>%
+    tidyr::spread(variable_code, value) %>%
+    dplyr::ungroup()
+
+# grab = read_feather('data/grab.feather')
+# grab = grab %>% select(which(sapply(., class) == 'numeric'), datetime, -waterYr)
 grabcols = colnames(grab)
 grabcols = grabcols[grabcols != 'datetime']
 # sensor = read_feather('../data/hbef/sensor.feather')
@@ -48,15 +57,18 @@ variables = read.csv('data/variables.csv', stringsAsFactors=FALSE)
 # variables = read.csv('../data/general/variables.csv', stringsAsFactors=FALSE)
 # variables = read.csv('~/git/macrosheds/data/general/variables.csv', stringsAsFactors=FALSE)
 
-grabvars = filter(variables, category == 'grab')
+grabvars = filter(variables, variable_type == 'grab')
 grabvars_display = mutate(grabvars,
-        displayname=paste0(fullname, ' (', unit, ')')) %>%
-    select(displayname, shortname, subcategory) %>%
-    plyr::dlply(plyr::.(subcategory), function(x){
+        displayname=paste0(variable_name, ' (', unit, ')')) %>%
+    select(displayname, variable_code, variable_subtype) %>%
+    plyr::dlply(plyr::.(variable_subtype), function(x){
         plyr::daply(x, plyr::.(displayname), function(y){
-            y['shortname']
+            y['variable_code']
         })
     })
+
+linecolors = c("#000000", "#307975", "#691476", "#735E1F", "#6F0D2F",
+    "#7F8D36", "#37096D", "#074670", "#0C2282", "#750D47")
 
 codes999.9 <- c("timeEST", "temp", "ANC960", "ANCMet",
     "ionError", "ionBalance")
@@ -99,41 +111,6 @@ other_units <- c("pH",
     "temp",
     "ionBalance")
 
-
-## Function to re-classify data class (e.g. numeric, character, etc.) of each variable (column) in a data
-## frame. Uses defClasses & defClassesSample data to match data column with its intended
-## data class.
-standardizeClasses <- function(d) {
-    # d:              data.frame to be checked for columns with only NA's
-    # ColClasses :    vector of desired class types for the data.frame
-    message(paste("In standardizeClasses for", deparse(substitute(d))))
-    r <- nrow(d)
-    c <- ncol(d)
-    for (i in 1:c) {
-        # 1. Insert an additional row with a sample value for each column
-        ## Find index in defClassesSample that corresponds to column in d, save that index
-        current_col_ofData <- colnames(d[i])
-        ind_col <- which(current_col_ofData == colnames(defClassesSample), arr.ind = TRUE)
-        ## Add corresponding sample value to last row of d
-        d[r+1,i] <- defClassesSample[1,ind_col]
-        # 2. Define class of each column according to what you specified in defClasses
-        ind_row <- which(current_col_ofData == defClasses$VariableName, arr.ind = TRUE)
-        switch(defClasses$Class[ind_row],
-            integer=as.integer(d[[i]]),
-            character=as.character(d[[i]]),
-            #numeric=as.numeric(as.character(d[[i]])),
-            numeric=as.numeric(d[[i]]),
-            Date=as.Date(d[[i]]), #, origin='1970-01-01'
-            ### !!! Class below not being used, causing problems
-            #POSIXct=as.POSIXct(d[[i]], "%Y-%m-%d %H:%M", tz="EST", usetz=FALSE, na.rm=TRUE),
-            factor=as.factor(d[[i]])
-        )
-    }
-    ## 3. Delete last row of sample values
-    d <- d[-(r+1),]
-    d
-}
-
 # import MDL/LOQ data
 dataLimits <- read.csv("data/Limits_MDL_LOQ.csv")
 
@@ -174,8 +151,8 @@ defClassesSample$date <- as.Date(defClassesSample$date, "%m/%d/%y")
 # write_feather(dataHistorical, '~/git/macrosheds/app/temp_shinyappsio/dataHistorical.feather')
 # write_feather(dataSensor, '~/git/macrosheds/app/temp_shinyappsio/dataSensor.feather')
 # saveRDS(sensorvars, '~/git/macrosheds/app/temp_shinyappsio/sensorvars.rds')
-dataCurrent = as.data.frame(read_feather('temp_shinyappsio/dataCurrent.feather'))
-dataHistorical = as.data.frame(read_feather('temp_shinyappsio/dataHistorical.feather'))
+# dataCurrent = as.data.frame(read_feather('temp_shinyappsio/dataCurrent.feather'))
+# dataHistorical = as.data.frame(read_feather('temp_shinyappsio/dataHistorical.feather'))
 dataSensor = as.data.frame(read_feather('temp_shinyappsio/dataSensor.feather'))
 sensorvars = readRDS('temp_shinyappsio/sensorvars.rds')
 sensorvars = sub('S3__', '', sensorvars)
@@ -183,46 +160,48 @@ sensorvars = sensorvars[-which(sensorvars %in% c('datetime', 'id', 'watershedID'
 dataSensor$watershedID = paste0('W', as.character(dataSensor$watershedID))
 # dbDisconnect(con)
 
-dataCurrent <- standardizeClasses(dataCurrent)
+# dataCurrent <- standardizeClasses(dataCurrent)
 # necessary to prevent problems when downloading csv files
-dataCurrent$notes <- gsub(",", ";", dataCurrent$notes)
-dataHistorical <- standardizeClasses(dataHistorical)
+# dataCurrent$notes <- gsub(",", ";", dataCurrent$notes)
+# dataHistorical <- standardizeClasses(dataHistorical)
 
-dataAll = bind_rows(dataCurrent, select(dataHistorical, -canonical))
+# dataAll = bind_rows(dataCurrent, select(dataHistorical, -canonical))
+# dataAllR = dataAll
 
 # ****  END OF DATA IMPORT & PREP ****
 
 
 # Create water years *list* ----
 
-# Water years list for dataAll
-# used in ui.R and server.R for Panels 1-3 (QA/QC graphs)
-wy <- levels(as.factor(dataAll$waterYr))
-wy1 <- c()
-for (i in 1:length(wy)) {
-    wy1 <- c(wy1, wy[i])
-}
-#wy1 <- as.character(sort(as.numeric(wy1), decreasing=TRUE)) # sort so that recent years are first
-wateryears <- as.list(wy1)
-
-# Water years list for dataCurrent
-# used for Panels 5 (DataEdits)
-wy_current <- levels(as.factor(dataCurrent$waterYr))
-wy1_current <- c()
-for (i in 1:length(wy_current)) {
-    wy1_current <- c(wy1_current, wy_current[i])
-}
-#wy1 <- as.character(sort(as.numeric(wy1), decreasing=TRUE)) # sort so that recent years are first
-wateryears_current <- as.list(wy1_current)
+# # Water years list for dataAll
+# # used in ui.R and server.R for Panels 1-3 (QA/QC graphs)
+# wy <- levels(as.factor(dataAll$waterYr))
+# wy1 <- c()
+# for (i in 1:length(wy)) {
+#     wy1 <- c(wy1, wy[i])
+# }
+# #wy1 <- as.character(sort(as.numeric(wy1), decreasing=TRUE)) # sort so that recent years are first
+# wateryears <- as.list(wy1)
+#
+# # Water years list for dataCurrent
+# # used for Panels 5 (DataEdits)
+# wy_current <- levels(as.factor(dataCurrent$waterYr))
+# wy1_current <- c()
+# for (i in 1:length(wy_current)) {
+#     wy1_current <- c(wy1_current, wy_current[i])
+# }
+# #wy1 <- as.character(sort(as.numeric(wy1), decreasing=TRUE)) # sort so that recent years are first
+# wateryears_current <- as.list(wy1_current)
 
 
 # Find maximum date ----
 # used in ui.R for Panel 4 (QA/QC "Free-for-all" graph)
 
-maxDate_current <- max(dataCurrent$date, na.rm=TRUE)
-maxDate_historical <- max(dataHistorical$date, na.rm=TRUE)
-maxDate_sensor <- max(as.Date(dataSensor$date), na.rm=TRUE)
+# maxDate_current <- max(dataCurrent$date, na.rm=TRUE)
+# maxDate_historical <- max(dataHistorical$date, na.rm=TRUE)
+# maxDate_sensor <- max(as.Date(dataSensor$date), na.rm=TRUE)
 
-maxDate <- maxDate_historical # default value if dataCurrent or dataSensor are empty
-if (maxDate_sensor > maxDate_current) maxDate <- maxDate_sensor
-if (maxDate_sensor < maxDate_current) maxDate <- maxDate_current
+# maxDate <- maxDate_historical # default value if dataCurrent or dataSensor are empty
+maxDate = max(grab$datetime, na.rm=TRUE)
+# if (maxDate_sensor > maxDate_current) maxDate <- maxDate_sensor
+# if (maxDate_sensor < maxDate_current) maxDate <- maxDate_current

@@ -44,7 +44,12 @@ body {
  width: 80px; /* why not 51? 36 for toggle button + 15 for container-fluid?*/
 }
 
-#sidebarCollapsed, .content {
+#sidebarCollapsed {
+    padding-top: 0px;
+    background-color: #ecf0f5;
+}
+
+.content {
     padding-top: 0px;
 }
 
