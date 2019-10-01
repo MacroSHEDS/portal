@@ -17,7 +17,7 @@ nSiteNVar_tab = tabPanel("Multisite", value='multisite_exploration',
         # Plot
         mainPanel(
             wellPanel(
-                sliderInput("DATE3", label="Date Range",
+                sliderInput("DATE3", label=NULL,
                     min=dtrng[1], max=dtrng[2],
                     value=c(max(dtrng[2] - lubridate::days(365),
                         initial_dtrng[1], na.rm=TRUE),
@@ -33,15 +33,16 @@ nSiteNVar_tab = tabPanel("Multisite", value='multisite_exploration',
             # conditionalPanel(
             #     condition = "input.SOLUTE3_OPTION == true",
             fluidRow(
-                conditionalPanel('input.SOLUTES3 !== null',
+                conditionalPanel(paste('input.SOLUTES3 !== null &&',
+                        'input.SITES3 !== null'),
                     dygraphOutput("GRAPH_MAIN3a", height='150px'),
                     br()
                 ),
-                conditionalPanel('input.SOLUTES3.length > 3',
+                conditionalPanel('input.SITES3.length > 1',
                     dygraphOutput("GRAPH_MAIN3b", height='150px'),
                     br()
                 ),
-                conditionalPanel('input.SOLUTES3.length > 6',
+                conditionalPanel('input.SITES3.length > 2',
                     dygraphOutput("GRAPH_MAIN3c", height='150px'),
                     br()
                 )

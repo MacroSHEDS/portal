@@ -1,15 +1,14 @@
 
 #this one keeps track of n vars/sites selected, for faceting
-changesInSelections = reactiveValues()
-changesInSelections$n_sites = 1
-changesInSelections$facet1 = 0
-changesInSelections$facet2 = 0
-changesInSelections$facet3 = 0
+changesInSelections3 = reactiveValues()
+changesInSelections3$facetA3 = 0
+changesInSelections3$facetB3 = 0
+changesInSelections3$facetC3 = 0
 
 observeEvent(input$DATE3, {
-        changesInSelections$facet1 = changesInSelections$facet1 + 1
-        changesInSelections$facet2 = changesInSelections$facet1 + 1
-        changesInSelections$facet3 = changesInSelections$facet1 + 1
+        changesInSelections3$facetA3 = changesInSelections3$facetA3 + 1
+        changesInSelections3$facetB3 = changesInSelections3$facetB3 + 1
+        changesInSelections3$facetC3 = changesInSelections3$facetC3 + 1
 })
 
 observeEvent({
@@ -17,8 +16,7 @@ observeEvent({
         TRUE
     } else return()
 }, {
-    changesInSelections$facet1 = changesInSelections$facet1 + 1
-    changesInSelections$n_sites = 1
+    changesInSelections3$facetA3 = changesInSelections3$facetA3 + 1
 })
 
 observeEvent({
@@ -26,8 +24,7 @@ observeEvent({
         TRUE
     } else return()
 }, {
-    changesInSelections$facet2 = changesInSelections$facet2 + 1
-    changesInSelections$n_sites = 2
+    changesInSelections3$facetB3 = changesInSelections3$facetB3 + 1
 })
 
 observeEvent({
@@ -35,8 +32,7 @@ observeEvent({
         TRUE
     } else return()
 }, {
-    changesInSelections$facet3 = changesInSelections$facet3 + 1
-    changesInSelections$n_sites = 3
+    changesInSelections3$facetC3 = changesInSelections3$facetC3 + 1
 })
 
 observeEvent(input$SITES3, {
@@ -48,14 +44,14 @@ observeEvent(input$SITES3, {
         choices=grabvars_display_subset,
         selected=grabvars_display_subset[[1]][[1]])
 
-    site_dtrng = as.Date(range(grab$datetime[grab$site_name %in% input$SITES3],
-        na.rm=TRUE))
-
-    updateSliderInput(session, "DATE3",
-        label="Date Range", min=site_dtrng[1], max=site_dtrng[2], step=30,
-        value=c(max(site_dtrng[2] - lubridate::days(365),
-            site_dtrng[1], na.rm=TRUE),
-            site_dtrng[2]))
+    # site_dtrng = as.Date(range(grab$datetime[grab$site_name %in% input$SITES3],
+    #     na.rm=TRUE))
+    #
+    # updateSliderInput(session, "DATE3",
+    #     label="Date Range", min=site_dtrng[1], max=site_dtrng[2], step=30,
+    #     value=c(max(site_dtrng[2] - lubridate::days(365),
+    #         site_dtrng[1], na.rm=TRUE),
+    #         site_dtrng[2]))
 })
 
 ## Filter data to desired dates
@@ -89,13 +85,11 @@ dataPrecip3 <- reactive ({
 ## Extract data for Solutes (Main) plot
 dataMain3 <- reactive ({
 
-    changesInSelections$n_sites
-
     dataMain3 <- data3() %>%
         filter(site_name %in% input$SITES3) %>%
-        select(one_of("datetime", "site_name", input$SOLUTES3)) %>%  # Keep date, site, solute & fieldcode data
+        select(one_of("datetime", "site_name", input$SOLUTES3)) %>%
         group_by(datetime, site_name) %>%
-        gather(key = solute, value = solute_value, -site_name, -datetime)  # Reshape data for ggplot2 plotting
+        gather(key = solute, value = solute_value, -site_name, -datetime)
 })
 
 ## Extract data for Discharge (Flow) plot
@@ -132,7 +126,8 @@ output$GRAPH_PRECIP3 <- renderDygraph({
     p = dygraph(dydat, group='nSiteNVar') %>%
         dyOptions(useDataTimezone=TRUE, drawPoints=FALSE, fillGraph=TRUE,
             fillAlpha=1, colors='#4b92cc', strokeWidth=3,
-            plotter=hyetograph_js) %>%
+            plotter=hyetograph_js,
+            retainDateWindow=TRUE) %>%
         dyAxis('y', label='Daily mean precip (in.)',
             valueRange=c(ymax + ymax * 0.1, 0),
             labelWidth=16, labelHeight=10)
@@ -142,8 +137,8 @@ output$GRAPH_PRECIP3 <- renderDygraph({
 
 output$GRAPH_MAIN3a <- renderDygraph({
 
-    changesInSelections$facet1
-    plotvars = input$SOLUTES3
+    changesInSelections3$facetA3
+    plotvars = na.omit(input$SOLUTES3[1:3])
     siteA = isolate(input$SITES3[1])
 
     varnames = filter(grabvars, variable_code %in% plotvars) %>%
@@ -156,21 +151,28 @@ output$GRAPH_MAIN3a <- renderDygraph({
         summarize(solute_value=mean(solute_value)) %>%
         spread(solute, solute_value)
 
-    dydat = xts(widedat[, plotvars], order.by=widedat$datetime, tzone='UTC')
-    dimnames(dydat) = list(NULL, varnames$combined)
+    if(nrow(widedat)){
+        dydat = xts(widedat[, plotvars], order.by=widedat$datetime, tzone='UTC')
+        dimnames(dydat) = list(NULL, varnames$combined)
 
-    dg = dygraph(dydat, group='nSiteNVar') %>%
-        dyOptions(useDataTimezone=TRUE, drawPoints=FALSE,
-            colors=linecolors[1:3], strokeWidth=2) %>%
-        dyLegend(show='onmouseover', labelsSeparateLines=TRUE)
+        dg = dygraph(dydat, group='nSiteNVar') %>%
+            dyOptions(useDataTimezone=TRUE, drawPoints=FALSE,
+                colors=linecolors[1:3], strokeWidth=2,
+                retainDateWindow=TRUE) %>%
+            dyLegend(show='onmouseover', labelsSeparateLines=TRUE) %>%
+            dyAxis('y', label=siteA, labelWidth=16, labelHeight=10)
+    } else {
+        dg = plot_empty_dygraph(isolate(input$DATE3), plotgroup='nSiteNVar',
+            ylab=siteA)
+    }
 
     return(dg)
 })
 
 output$GRAPH_MAIN3b <- renderDygraph({
 
-    changesInSelections$facet2
-    plotvars = input$SOLUTES3
+    changesInSelections3$facetB3
+    plotvars = na.omit(input$SOLUTES3[1:3])
     siteB = isolate(input$SITES3[2])
 
     varnames = filter(grabvars, variable_code %in% plotvars) %>%
@@ -183,21 +185,28 @@ output$GRAPH_MAIN3b <- renderDygraph({
         summarize(solute_value=mean(solute_value)) %>%
         spread(solute, solute_value)
 
-    dydat = xts(widedat[, plotvars], order.by=widedat$datetime, tzone='UTC')
-    dimnames(dydat) = list(NULL, varnames$combined)
+    if(nrow(widedat)){
+        dydat = xts(widedat[, plotvars], order.by=widedat$datetime, tzone='UTC')
+        dimnames(dydat) = list(NULL, varnames$combined)
 
-    dg = dygraph(dydat, group='nSiteNVar') %>%
-        dyOptions(useDataTimezone=TRUE, drawPoints=FALSE,
-            colors=linecolors[4:6], strokeWidth=2) %>%
-        dyLegend(show='onmouseover', labelsSeparateLines=TRUE)
+        dg = dygraph(dydat, group='nSiteNVar') %>%
+            dyOptions(useDataTimezone=TRUE, drawPoints=FALSE,
+                colors=linecolors[1:3], strokeWidth=2,
+                retainDateWindow=TRUE) %>%
+            dyLegend(show='onmouseover', labelsSeparateLines=TRUE) %>%
+            dyAxis('y', label=siteB, labelWidth=16, labelHeight=10)
+    } else {
+        dg = plot_empty_dygraph(isolate(input$DATE3), plotgroup='nSiteNVar',
+            ylab=siteB)
+    }
 
     return(dg)
 })
 
 output$GRAPH_MAIN3c <- renderDygraph({
 
-    changesInSelections$facet3
-    plotvars = input$SOLUTES3
+    changesInSelections3$facetC3
+    plotvars = na.omit(input$SOLUTES3[1:3])
     siteC = isolate(input$SITES3[3])
 
     varnames = filter(grabvars, variable_code %in% plotvars) %>%
@@ -210,13 +219,20 @@ output$GRAPH_MAIN3c <- renderDygraph({
         summarize(solute_value=mean(solute_value)) %>%
         spread(solute, solute_value)
 
-    dydat = xts(widedat[, plotvars], order.by=widedat$datetime, tzone='UTC')
-    dimnames(dydat) = list(NULL, varnames$combined)
+    if(nrow(widedat)){
+        dydat = xts(widedat[, plotvars], order.by=widedat$datetime, tzone='UTC')
+        dimnames(dydat) = list(NULL, varnames$combined)
 
-    dg = dygraph(dydat, group='nSiteNVar') %>%
-        dyOptions(useDataTimezone=TRUE, drawPoints=FALSE,
-            colors=linecolors[7:9], strokeWidth=2) %>%
-        dyLegend(show='onmouseover', labelsSeparateLines=TRUE)
+        dg = dygraph(dydat, group='nSiteNVar') %>%
+            dyOptions(useDataTimezone=TRUE, drawPoints=FALSE,
+                colors=linecolors[1:3], strokeWidth=2,
+                retainDateWindow=TRUE) %>%
+            dyLegend(show='onmouseover', labelsSeparateLines=TRUE) %>%
+            dyAxis('y', label=siteC, labelWidth=16, labelHeight=10)
+    } else {
+        dg = plot_empty_dygraph(isolate(input$DATE3), plotgroup='nSiteNVar',
+            ylab=siteC)
+    }
 
     return(dg)
 })
@@ -230,7 +246,8 @@ output$GRAPH_FLOW3 <- renderDygraph({
 
     dg = dygraph(dydat, group='nSiteNVar') %>%
         dyOptions(useDataTimezone=TRUE, drawPoints=FALSE, fillGraph=TRUE,
-            colors='#4b92cc', strokeWidth=2, fillAlpha=0.25) %>%
+            colors='#4b92cc', strokeWidth=2, fillAlpha=0.25,
+            retainDateWindow=TRUE) %>%
         dyAxis('y', label='Discharge (L/s)', labelWidth=16, labelHeight=10)
 
     return(dg)

@@ -58,20 +58,20 @@
 # changesInData$change_dataAll <- 0
 
 #this one keeps track of n vars/sites selected, for faceting
-changesInSelections = reactiveValues()
-changesInSelections$n_vars = 1
-# changesInSelections$n_sites = 1
-changesInSelections$facet1 = 0
-changesInSelections$facet2 = 0
-changesInSelections$facet3 = 0
+changesInSelections4 = reactiveValues()
+changesInSelections4$n_vars = 1
+# changesInSelections4$n_sites = 1
+changesInSelections4$facetA4 = 0
+changesInSelections4$facetB4 = 0
+changesInSelections4$facetC4 = 0
 
 observeEvent({
         input$SITES4
         input$DATE4
 }, {
-    changesInSelections$facet1 = changesInSelections$facet1 + 1
-    changesInSelections$facet2 = changesInSelections$facet1 + 1
-    changesInSelections$facet3 = changesInSelections$facet1 + 1
+    changesInSelections4$facetA4 = changesInSelections4$facetA4 + 1
+    changesInSelections4$facetB4 = changesInSelections4$facetB4 + 1
+    changesInSelections4$facetC4 = changesInSelections4$facetC4 + 1
 })
 
 observeEvent({
@@ -81,9 +81,9 @@ observeEvent({
         TRUE
     } else return()
 }, {
-    changesInSelections$facet1 = changesInSelections$facet1 + 1
-    changesInSelections$n_vars = length(input$SOLUTES4)
-    # changesInSelections$n_sites = length(input$SITES4)
+    changesInSelections4$facetA4 = changesInSelections4$facetA4 + 1
+    changesInSelections4$n_vars = length(input$SOLUTES4)
+    # changesInSelections4$n_sites = length(input$SITES4)
 })
 
 observeEvent({
@@ -92,9 +92,9 @@ observeEvent({
         TRUE
     } else return()
 }, {
-    changesInSelections$facet2 = changesInSelections$facet2 + 1
-    changesInSelections$n_vars = length(input$SOLUTES4)
-    # changesInSelections$n_sites = length(input$SITES4)
+    changesInSelections4$facetB4 = changesInSelections4$facetB4 + 1
+    changesInSelections4$n_vars = length(input$SOLUTES4)
+    # changesInSelections4$n_sites = length(input$SITES4)
 })
 
 observeEvent({
@@ -103,9 +103,9 @@ observeEvent({
         TRUE
     } else return()
 }, {
-    changesInSelections$facet3 = changesInSelections$facet3 + 1
-    changesInSelections$n_vars = length(input$SOLUTES4)
-    # changesInSelections$n_sites = length(input$SITES4)
+    changesInSelections4$facetC4 = changesInSelections4$facetC4 + 1
+    changesInSelections4$n_vars = length(input$SOLUTES4)
+    # changesInSelections4$n_sites = length(input$SITES4)
 })
 
 # Make a reactive dataAll2 data frame, to be called whenever data is updated
@@ -308,10 +308,10 @@ output$GRAPH_PRECIP4 <- renderDygraph({
 
 output$GRAPH_MAIN4a <- renderDygraph({
 
-    changesInSelections$facet1
-    n_vars = isolate(changesInSelections$n_vars)
+    changesInSelections4$facetA4
+    n_vars = isolate(changesInSelections4$n_vars)
     plotvars = isolate(input$SOLUTES4)[1:min(c(n_vars, 3))]
-    # n_sites = isolate(changesInSelections$n_sites)
+    # n_sites = isolate(changesInSelections4$n_sites)
 
     # if(input$SOLUTES4_COLOR == "Solutes"){
 
@@ -387,8 +387,8 @@ output$GRAPH_MAIN4a <- renderDygraph({
 
 output$GRAPH_MAIN4b <- renderDygraph({
 
-    changesInSelections$facet2
-    n_vars = isolate(changesInSelections$n_vars)
+    changesInSelections4$facetB4
+    n_vars = isolate(changesInSelections4$n_vars)
     plotvars = isolate(input$SOLUTES4)[4:min(c(n_vars, 6))]
 
     varnames = filter(grabvars, variable_code %in% plotvars) %>%
@@ -414,8 +414,8 @@ output$GRAPH_MAIN4b <- renderDygraph({
 
 output$GRAPH_MAIN4c <- renderDygraph({
 
-    changesInSelections$facet3
-    n_vars = isolate(changesInSelections$n_vars)
+    changesInSelections4$facetC4
+    n_vars = isolate(changesInSelections4$n_vars)
     plotvars = isolate(input$SOLUTES4)[7:min(c(n_vars, 9))]
 
     varnames = filter(grabvars, variable_code %in% plotvars) %>%

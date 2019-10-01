@@ -28,7 +28,7 @@ oneSiteNVar_tab = tabPanel("Single Site", value='site_exploration',
         # Plot
         mainPanel(
             wellPanel(
-                sliderInput("DATE4", label="Date Range",
+                sliderInput("DATE4", label=NULL,
                     min=dtrng[1], max=dtrng[2],
                     value=c(max(dtrng[2] - lubridate::days(365),
                         initial_dtrng[1], na.rm=TRUE),
