@@ -20,8 +20,8 @@ oneSiteNVar_tab = tabPanel("Single Site", value='site_exploration',
                     value = FALSE
                 ),
                 radioButtons("FLOW_SOURCE4", label='Discharge data source',
-                    choices=c('Rating curve (L/s)'='flowGageHt',
-                        'Sensor (L/s)'='flowSens'))
+                    choices=c('Sensor (L/s)'='flowSens',
+                        'Rating curve (L/s)'='flowGageHt'))
             ),
         width=3), # closes sidebarPanel
 
@@ -38,28 +38,28 @@ oneSiteNVar_tab = tabPanel("Single Site", value='site_exploration',
             ),
             #tags$h4(textOutput("TITLE4")),
             fluidRow(
-                dygraphOutput("GRAPH_PRECIP4", height='100px'),
+                dygraphOutput("GRAPH_PRECIP4", height='75px'),
                 br()
             ),
             # conditionalPanel(
             #     condition = "input.SOLUTE4_OPTION == true",
             fluidRow(
                 conditionalPanel('input.SOLUTES4 !== null',
-                    dygraphOutput("GRAPH_MAIN4a", height='150px'),
+                    dygraphOutput("GRAPH_MAIN4a", height='125px'),
                     br()
                 ),
                 conditionalPanel('input.SOLUTES4.length > 3',
-                    dygraphOutput("GRAPH_MAIN4b", height='150px'),
+                    dygraphOutput("GRAPH_MAIN4b", height='125px'),
                     br()
                 ),
                 conditionalPanel('input.SOLUTES4.length > 6',
-                    dygraphOutput("GRAPH_MAIN4c", height='150px'),
+                    dygraphOutput("GRAPH_MAIN4c", height='125px'),
                     br()
                 )
             ),
             # ),
             fluidRow(
-                dygraphOutput("GRAPH_FLOW4", height='100px')
+                dygraphOutput("GRAPH_FLOW4", height='75px')
             )
             # use for when testing data selection
             # hr(),

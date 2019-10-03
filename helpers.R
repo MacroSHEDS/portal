@@ -26,7 +26,7 @@ populate_vars = function(df){
     # return(default_var)
 }
 
-plot_empty_dygraph = function(datelims, plotgroup, ylab){
+plot_empty_dygraph = function(datelims, plotgroup, ylab, px_per_lab){
     datelims = as.POSIXct(datelims)
     dateseq = seq(datelims[1], datelims[2], by='day')
     emptydat = xts(rep(0, length.out=length(dateseq)),
@@ -34,7 +34,8 @@ plot_empty_dygraph = function(datelims, plotgroup, ylab){
     dg = dygraph(emptydat, group=plotgroup) %>%
         dyOptions(useDataTimezone=TRUE, drawPoints=FALSE,
             colors='transparent', retainDateWindow=TRUE) %>%
-        dyAxis('y', label=ylab, labelWidth=16, labelHeight=10)
+        dyAxis('y', label=ylab, labelWidth=16, labelHeight=10,
+            pixelsPerLabel=px_per_lab, rangePad=10)
 
     return(dg)
 }

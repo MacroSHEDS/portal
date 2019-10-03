@@ -4,6 +4,24 @@ body {
 	font-family: 'Montserrat', sans-serif;
 }
 
+.modal.in .modal-dialog {
+    width: 100%;
+    height: 100%;
+    margin: 0px;
+}
+
+.modal-content {
+    width: 100%;
+    height: 100%;
+    color: #396060;
+    /*0088AA*/
+} 
+
+/*.modal-footer button {
+    display: none;
+}*/
+
+
 .section-heading {
     font-weight: bold;
     font-size: 1.1em;
@@ -40,13 +58,14 @@ body {
 }
 
 .sidebar-collapse .left-side, .sidebar-collapse .main-sidebar{
- transform: translate(0,0);
- width: 80px; /* why not 51? 36 for toggle button + 15 for container-fluid?*/
+    transform: translate(0,0);
+    width: 80px; /* why not 51? 36 for toggle button + 15 for container-fluid?*/
 }
 
 #sidebarCollapsed {
     padding-top: 0px;
-    background-color: #ecf0f5;
+    /*background-color: #d9f2d9;*/
+    /*background-color: #ecf0f5;*/
 }
 
 .content {
@@ -74,7 +93,7 @@ body {
 /* make the padding around the boxes smaller */
 [class*="col-lg-"],[class*="col-md-"],
 [class*="col-sm-"],[class*="col-xs-"]{
-    padding-right:5pt !important;
+    padding-right: 5pt !important;
     padding-left: 5pt !important;
 }
 

@@ -60,7 +60,6 @@
 #this one keeps track of n vars/sites selected, for faceting
 changesInSelections4 = reactiveValues()
 changesInSelections4$n_vars = 1
-# changesInSelections4$n_sites = 1
 changesInSelections4$facetA4 = 0
 changesInSelections4$facetB4 = 0
 changesInSelections4$facetC4 = 0
@@ -76,36 +75,29 @@ observeEvent({
 
 observeEvent({
     if(length(input$SOLUTES4) %in% 1:3){
-            # && input$SOLUTES4_COLOR == 'Solutes' ||
-            # length(input$SITES4) %in% 1:3 && input$SOLUTES4_COLOR == 'Sites'){
         TRUE
     } else return()
 }, {
     changesInSelections4$facetA4 = changesInSelections4$facetA4 + 1
     changesInSelections4$n_vars = length(input$SOLUTES4)
-    # changesInSelections4$n_sites = length(input$SITES4)
 })
 
 observeEvent({
-    if(length(input$SOLUTES4) %in% 4:6){# && input$SOLUTES4_COLOR == 'Solutes' ||
-            # length(input$SITES4) %in% 4:6 && input$SOLUTES4_COLOR == 'Sites'){
+    if(length(input$SOLUTES4) %in% 4:6){
         TRUE
     } else return()
 }, {
     changesInSelections4$facetB4 = changesInSelections4$facetB4 + 1
     changesInSelections4$n_vars = length(input$SOLUTES4)
-    # changesInSelections4$n_sites = length(input$SITES4)
 })
 
 observeEvent({
-    if(length(input$SOLUTES4) %in% 7:9){# && input$SOLUTES4_COLOR == 'Solutes' ||
-            # length(input$SITES4) %in% 7:9 && input$SOLUTES4_COLOR == 'Sites'){
+    if(length(input$SOLUTES4) %in% 7:9){
         TRUE
     } else return()
 }, {
     changesInSelections4$facetC4 = changesInSelections4$facetC4 + 1
     changesInSelections4$n_vars = length(input$SOLUTES4)
-    # changesInSelections4$n_sites = length(input$SITES4)
 })
 
 # Make a reactive dataAll2 data frame, to be called whenever data is updated
@@ -191,39 +183,27 @@ observeEvent(input$SITES4, {
 
     updateSelectizeInput(session, 'SOLUTES4',
         choices=grabvars_display_subset,
-        selected=grabvars_display_subset[[1]][[1]])
+        selected=input$SOLUTES4)
 
-    site_dtrng = as.Date(range(grab$datetime[grab$site_name == input$SITES4],
-        na.rm=TRUE))
-
-    updateSliderInput(session, "DATE4",
-        label="Date Range", min=site_dtrng[1], max=site_dtrng[2], step=30,
-        value=c(max(site_dtrng[2] - lubridate::days(365),
-            site_dtrng[1], na.rm=TRUE),
-            site_dtrng[2]))
+    # site_dtrng = as.Date(range(grab$datetime[grab$site_name == input$SITES4],
+    #     na.rm=TRUE))
+    #
+    # updateSliderInput(session, "DATE4",
+    #     label="Date Range", min=site_dtrng[1], max=site_dtrng[2], step=30,
+    #     value=c(max(site_dtrng[2] - lubridate::days(365),
+    #         site_dtrng[1], na.rm=TRUE),
+    #         site_dtrng[2]))
 })
 
 ## Filter data to desired dates
 data4 <- reactive ({
-    # if (changesInData$change_dataAll > 0) dataAll <- dataAllR()
+
     data4 <- grab %>%
         filter(datetime >= input$DATE4[1]) %>%
         filter(datetime <= input$DATE4[2])
-    # data4 <- removeCodes(data4)
     return(data4)
 })
 
-# #keep track of n variables selected
-# n_vars = reactive({
-#     length(input$SOLUTES4)
-# })
-#
-# #keep track of n sites selected
-# n_sites = reactive({
-#     length(input$SITES4)
-# })
-
-## Extract data for Precip plot
 dataPrecip4 <- reactive ({
 
     # dataPrecip4 <- data4() %>%
@@ -236,54 +216,42 @@ dataPrecip4 <- reactive ({
 
     dataPrecip4 <- data4() %>%
         filter(site_name %in% sites_precip) %>%
-        select(one_of("datetime", "site", 'precipCatch')) %>%
+        select(one_of("datetime", "site_name", 'precipCatch')) %>%
         # group_by(lubridate::yday(datetime)) %>%
         group_by(datetime) %>%
         summarise(medianPrecip=median(precipCatch, na.rm=TRUE)) %>%
         ungroup()
 })
 
-## Extract data for Solutes (Main) plot
 dataMain4 <- reactive ({
+
     dataMain4 <- data4() %>%
         filter(site_name %in% input$SITES4) %>%
-        select(one_of("datetime", "site_name", input$SOLUTES4)) %>%  # Keep date, site, solute & fieldcode data
-        group_by(datetime, site_name) %>%
-        gather(key = solute, value = solute_value, -site_name, -datetime)  # Reshape data for ggplot2 plotting
+        select(one_of("datetime", "site_name", input$SOLUTES4))
 })
 
-## Extract data for Discharge (Flow) plot
 dataFlow4 <- reactive ({
+
     dataFlow4 <- data4() %>%
         filter(site_name %in% input$SITES4)
-    # flow values need to be summarized with median per date,
-    # because multiple values for one date make flow graph look strange
+
     if (input$FLOW_SOURCE4 == "flowGageHt") {
         dataFlow4 <- dataFlow4 %>%
             select(one_of("datetime", input$FLOW_SOURCE4)) %>%
             group_by(datetime) %>%
             summarise(flowMaxPerDate = max(flowGageHt, na.rm=TRUE))
     }
+
     if (input$FLOW_SOURCE4 == "flowSens") {
-        dataFlow4 = filter(dataSensor, datetime > input$DATE4[1],
-            datetime < input$DATE4[2], watershedID %in% input$SITES4) %>%
-            mutate(datetime=as.Date(datetime)) %>%
+        dataFlow4 = filter(sensor, datetime > input$DATE4[1],
+                datetime < input$DATE4[2], watershedID %in% input$SITES4) %>%
+            mutate(datetime=datetime) %>%
             select(datetime, Q_Ls) %>%
             group_by(datetime) %>%
             summarise(flowMaxPerDate = max(Q_Ls, na.rm=TRUE))
-
     }
-    dataFlow4
-})
 
-## Additional data for Flow plot: hydroGraph labels
-dataFlowHydroGraph4 <- reactive ({
-    dataFlowHydroGraph4 <- data4() %>%
-        filter(site_name %in% input$SITES4) %>%
-        select(one_of("datetime", "hydroGraph", input$FLOW_SOURCE4))
-    # group_by(datetime) %>%
-    # summarise(hydroGraph = first(hydroGraph, na.rm=TRUE), flowSource = max(flowSource, na.rm=TRUE))
-    dataFlowHydroGraph4
+    dataFlow4
 })
 
 output$GRAPH_PRECIP4 <- renderDygraph({
@@ -298,45 +266,35 @@ output$GRAPH_PRECIP4 <- renderDygraph({
         dyOptions(useDataTimezone=TRUE, drawPoints=FALSE, fillGraph=TRUE,
             fillAlpha=1, colors='#4b92cc', strokeWidth=3,
             plotter=hyetograph_js) %>%
-        dyAxis('y', label='Daily mean precip (in.)',
+        dyAxis('y', label='P (in)',
             valueRange=c(ymax + ymax * 0.1, 0),
-            labelWidth=16, labelHeight=10)
+            labelWidth=16, labelHeight=10, pixelsPerLabel=10, rangePad=10)
 
     return(p)
-}) # end of output$GRAPH_PRECIP4
-# }, height = 100) # end of output$GRAPH_PRECIP4
+})
 
 output$GRAPH_MAIN4a <- renderDygraph({
 
     changesInSelections4$facetA4
     n_vars = isolate(changesInSelections4$n_vars)
     plotvars = isolate(input$SOLUTES4)[1:min(c(n_vars, 3))]
-    # n_sites = isolate(changesInSelections4$n_sites)
-
-    # if(input$SOLUTES4_COLOR == "Solutes"){
 
     varnames = filter(grabvars, variable_code %in% plotvars) %>%
         select(variable_name, unit) %>%
         mutate(combined = paste0(variable_name, ' (', unit, ')'))
 
     widedat = isolate(dataMain4()) %>%
-        filter(solute %in% plotvars) %>%
-        group_by(datetime, solute) %>% #, site
-        summarize(solute_value=mean(solute_value)) %>%
-        spread(solute, solute_value)
-    # widedat = aggregate(solute_value ~ site + datetime + solute, mean,
-        # data=widedat, na.action=NULL)
-    # datal = split(widedat, widedat$site)
+        # filter(solute %in% plotvars) %>%
+        select(datetime, one_of(plotvars))
 
-    # widedat = datal[[1]]
     dydat = xts(widedat[, plotvars], order.by=widedat$datetime, tzone='UTC')
     dimnames(dydat) = list(NULL, varnames$combined)
 
     dg = dygraph(dydat, group='oneSiteNVar') %>%
         dyOptions(useDataTimezone=TRUE, drawPoints=FALSE,
             colors=linecolors[1:3], strokeWidth=2) %>%#, pointSize=2) %>%
-        dyLegend(show='onmouseover', labelsSeparateLines=TRUE)
-
+        dyLegend(show='onmouseover', labelsSeparateLines=TRUE) %>%
+        dyAxis('y', label=NULL, pixelsPerLabel=20, rangePad=10)
     return(dg)
     # }
 
@@ -374,16 +332,7 @@ output$GRAPH_MAIN4a <- renderDygraph({
     #         labs(x = "", y = "Solutes")
     # }
 
-    # If show field code is selected, add to ggplot
-    if (input$FIELDCODE4 == TRUE) {
-        m <- m + geom_text(aes(label=data$fieldCode),
-            nudge_y = (max(data$solute_value, na.rm = TRUE) - min(data$solute_value, na.rm = TRUE))/15,
-            check_overlap = TRUE)
-    }
-
-    # return(m)
-}) # end of output$GRAPH_MAIN4
-# }, height = 350) # end of output$GRAPH_MAIN4
+})
 
 output$GRAPH_MAIN4b <- renderDygraph({
 
@@ -396,10 +345,7 @@ output$GRAPH_MAIN4b <- renderDygraph({
         mutate(combined = paste0(variable_name, ' (', unit, ')'))
 
     widedat = isolate(dataMain4()) %>%
-        filter(solute %in% plotvars) %>%
-        group_by(datetime, solute) %>%
-        summarize(solute_value=mean(solute_value)) %>%
-        spread(solute, solute_value)
+        select(datetime, one_of(plotvars))
 
     dydat = xts(widedat[, plotvars], order.by=widedat$datetime, tzone='UTC')
     dimnames(dydat) = list(NULL, varnames$combined)
@@ -407,8 +353,8 @@ output$GRAPH_MAIN4b <- renderDygraph({
     dg = dygraph(dydat, group='oneSiteNVar') %>%
         dyOptions(useDataTimezone=TRUE, drawPoints=FALSE,
             colors=linecolors[4:6], strokeWidth=2) %>%
-        dyLegend(show='onmouseover', labelsSeparateLines=TRUE)
-
+        dyLegend(show='onmouseover', labelsSeparateLines=TRUE) %>%
+        dyAxis('y', label=NULL, pixelsPerLabel=20, rangePad=10)
     return(dg)
 })
 
@@ -423,10 +369,7 @@ output$GRAPH_MAIN4c <- renderDygraph({
         mutate(combined = paste0(variable_name, ' (', unit, ')'))
 
     widedat = isolate(dataMain4()) %>%
-        filter(solute %in% plotvars) %>%
-        group_by(datetime, solute) %>%
-        summarize(solute_value=mean(solute_value)) %>%
-        spread(solute, solute_value)
+        select(datetime, one_of(plotvars))
 
     dydat = xts(widedat[, plotvars], order.by=widedat$datetime, tzone='UTC')
     dimnames(dydat) = list(NULL, varnames$combined)
@@ -434,7 +377,8 @@ output$GRAPH_MAIN4c <- renderDygraph({
     dg = dygraph(dydat, group='oneSiteNVar') %>%
         dyOptions(useDataTimezone=TRUE, drawPoints=FALSE,
             colors=linecolors[7:9], strokeWidth=2) %>%
-        dyLegend(show='onmouseover', labelsSeparateLines=TRUE)
+        dyLegend(show='onmouseover', labelsSeparateLines=TRUE) %>%
+        dyAxis('y', label=NULL, pixelsPerLabel=20, rangePad=10)
 
     return(dg)
 })
@@ -442,19 +386,22 @@ output$GRAPH_MAIN4c <- renderDygraph({
 output$GRAPH_FLOW4 <- renderDygraph({
 
     widedat <- dataFlow4()
-    dydat = xts(widedat[, 'flowMaxPerDate'], order.by=widedat$datetime,
-        tzone='UTC')
-    dimnames(dydat) = list(NULL, 'Q')
 
-    dg = dygraph(dydat, group='oneSiteNVar') %>%
-        dyOptions(useDataTimezone=TRUE, drawPoints=FALSE, fillGraph=TRUE,
-            colors='#4b92cc', strokeWidth=2, fillAlpha=0.25) %>%
-        dyAxis('y', label='Discharge (L/s)', labelWidth=16, labelHeight=10)
-        # dyLegend(show='onmouseover', labelsSeparateLines=TRUE)
+    if(nrow(widedat)){
+        dydat = xts(widedat[, 'flowMaxPerDate'], order.by=widedat$datetime,
+            tzone='UTC')
+        dimnames(dydat) = list(NULL, 'Q')
+
+        dg = dygraph(dydat, group='oneSiteNVar') %>%
+            dyOptions(useDataTimezone=TRUE, drawPoints=FALSE, fillGraph=TRUE,
+                colors='#4b92cc', strokeWidth=2, fillAlpha=0.25) %>%
+            dyAxis('y', label='Q (L/s)', labelWidth=16, labelHeight=10,
+                pixelsPerLabel=10, rangePad=10)
+            # dyLegend(show='onmouseover', labelsSeparateLines=TRUE)
+    } else {
+        dg = plot_empty_dygraph(isolate(input$DATE4), plotgroup='oneSiteNVar',
+            ylab='Q (L/s)', px_per_lab=10)
+    }
 
     return(dg)
 })
-
-# output$TABLE4 <- renderDataTable({
-#     dataFlowHydroGraph4()
-# })

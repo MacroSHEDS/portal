@@ -27,7 +27,7 @@ nSiteNVar_tab = tabPanel("Multisite", value='multisite_exploration',
             ),
             #tags$h4(textOutput("TITLE3")),
             fluidRow(
-                dygraphOutput("GRAPH_PRECIP3", height='100px'),
+                dygraphOutput("GRAPH_PRECIP3", height='75px'),
                 br()
             ),
             # conditionalPanel(
@@ -35,21 +35,21 @@ nSiteNVar_tab = tabPanel("Multisite", value='multisite_exploration',
             fluidRow(
                 conditionalPanel(paste('input.SOLUTES3 !== null &&',
                         'input.SITES3 !== null'),
-                    dygraphOutput("GRAPH_MAIN3a", height='150px'),
+                    dygraphOutput("GRAPH_MAIN3a", height='125px'),
                     br()
                 ),
-                conditionalPanel('input.SITES3.length > 1',
-                    dygraphOutput("GRAPH_MAIN3b", height='150px'),
+                conditionalPanel('input.SOLUTES3.length > 1',
+                    dygraphOutput("GRAPH_MAIN3b", height='125px'),
                     br()
                 ),
-                conditionalPanel('input.SITES3.length > 2',
-                    dygraphOutput("GRAPH_MAIN3c", height='150px'),
+                conditionalPanel('input.SOLUTES3.length > 2',
+                    dygraphOutput("GRAPH_MAIN3c", height='125px'),
                     br()
                 )
             ),
             # ),
             fluidRow(
-                dygraphOutput("GRAPH_FLOW3", height='100px')
+                dygraphOutput("GRAPH_FLOW3", height='75px')
             )
             # use for when testing data selection
             # hr(),

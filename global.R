@@ -1,6 +1,6 @@
 library(V8)
 library(feather)
-# library(plyr)
+library(plyr)
 library(data.table)
 # library(dtplyr)
 library(shiny)
@@ -28,6 +28,10 @@ site_data = read.csv('site_data.csv', stringsAsFactors=FALSE)
 
 source('helpers.R')
 
+sensor = read_feather('temp_shinyappsio/dataSensor.feather')
+sensor$watershedID = paste0('W', as.character(sensor$watershedID))
+# sites_with_Q = unique(sensor$watershedID) #temporary fix**
+
 conf = readLines('config.txt')
 postgres_pw = extract_from_config('POSTGRESQL_PW')
 
@@ -38,6 +42,7 @@ grab = DBI::dbGetQuery(con, paste0('select data_grab.datetime, site.site_name, '
         'variable.variable_code, data_grab.value from data_grab, site, variable where ',
         'data_grab.site=site.id and data_grab.variable=variable.id;')) %>%
     dplyr::filter(datetime <= Sys.Date()) %>%
+    # dplyr::filter(site_name %in% sites_with_Q) %>% #**see above
     dplyr::group_by(site_name, variable_code, datetime) %>%
     dplyr::summarize(value=mean(value,na.rm=TRUE)) %>%
     tidyr::spread(variable_code, value) %>%
@@ -45,8 +50,6 @@ grab = DBI::dbGetQuery(con, paste0('select data_grab.datetime, site.site_name, '
 
 grabcols = colnames(grab)
 grabcols = grabcols[grabcols != 'datetime']
-# sensor = read_feather('../data/hbef/sensor.feather')
-# sensor = select_if(sensor, is.numeric)
 
 variables = read.csv('data/variables.csv', stringsAsFactors=FALSE)
 
@@ -76,6 +79,7 @@ sites = DBI::dbGetQuery(con, paste('select site_name as site from site',
         'order by site_name asc;')) %>%
     unlist() %>%
     unname()
+# sites = sites[sites %in% sites_with_Q] #** see above
 
 sites_precip <- list("RG1", "RG11", "RG23", "RG22", "N", "S", "SP")
 
@@ -90,14 +94,6 @@ dataLimits <- read.csv("data/Limits_MDL_LOQ.csv")
 defClasses <- read.csv("data/Rclasses.csv", header = TRUE, stringsAsFactors = FALSE, na.strings=c(""," ","NA"))
 defClassesSample <- read.csv("data/RclassesSample.csv", header=TRUE, stringsAsFactors = FALSE, na.strings=c(""," ","NA"))
 defClassesSample$date <- as.Date(defClassesSample$date, "%m/%d/%y")
-
-# write_feather(dataSensor, '~/git/macrosheds/app/temp_shinyappsio/dataSensor.feather')
-# saveRDS(sensorvars, '~/git/macrosheds/app/temp_shinyappsio/sensorvars.rds')
-dataSensor = as.data.frame(read_feather('temp_shinyappsio/dataSensor.feather'))
-sensorvars = readRDS('temp_shinyappsio/sensorvars.rds')
-sensorvars = sub('S3__', '', sensorvars)
-sensorvars = sensorvars[-which(sensorvars %in% c('datetime', 'id', 'watershedID'))]
-dataSensor$watershedID = paste0('W', as.character(dataSensor$watershedID))
 
 #populate default selections
 initial_dtrng = as.Date(range(grab$datetime[grab$site_name == sites[1]],
