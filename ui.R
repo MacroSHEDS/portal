@@ -3,7 +3,8 @@ source("helpers.R")
 source('ui/oneSiteNVar_ui.R')
 source('ui/nSiteNVar_ui.R')
 # source('ui/site_comparison_ui.R')
-# source('ui/about_ui.R')
+source('ui/about_ui.R')
+source('ui/participants_ui.R')
 # source('ui/summary_biplot_ui.R')
 source('ui/map_ui.R')
 
@@ -22,7 +23,8 @@ shinyUI(fluidPage(
         dashboardSidebar(width='50%',
             div(class='sidebar-sub',
                 tabsetPanel(id='left_tabs',
-                    # about_tab,
+                    about_tab,
+                    participants_tab,
                     map_tab
                 )
             ),

@@ -1,51 +1,18 @@
 output$MAP <- renderLeaflet({
-    # #Setup color values
-    # shed.col <-
-    #     colorFactor(c.col,
-    #         domain = isco.sheds$BigName)
+
     leaflet() %>% addProviderTiles("Esri.WorldTopoMap",
         group = 'Topo Mahttps://www.dropbox.com/s/kjkhwip0t8erh3a/MTM_PQ_data.csv?dl=0p') %>%
         addProviderTiles('Esri.WorldImagery', group = 'Aerial Imagery') %>%
-        addCircleMarkers(lng=~long, lat=~lat,
-
-            popup=paste0(
-                # "<input id='",
-                # site_data$sitegroup, "__", site_data$site,
-                # "_info' type='button' class='btn btn-link ",
-                # "btn-sm btn-block' value='Info'>",
-                "<button data-toggle='collapse' class='btn btn-sm btn-link ",
-                "btn-block' data-target='#", site_data$sitegroup, "__", site_data$site,
-                "_collapse'>Info</button> <div id='",
-                site_data$sitegroup, "__", site_data$site,
-                "_collapse' class='collapse'> ",
-                '<strong>Site name: </strong>',
-
-                site_data$name, '<br>',
-                '<strong>Data source: </strong>', site_data$source, '<br>',
-                '<strong>Site group: </strong>', site_data$sitegroup, '<br>',
-                '<strong>Site code: </strong>', site_data$site, '<br>',
-                '<strong>Latitude: </strong>', 'add this<br>',
-                '<strong>Longitude: </strong>', 'and this',
-
-                " </div> ",
-                "<button class='btn btn-sm btn-link btn-block' ",
-                "id='",
-                # " </div> <input id='",
-                site_data$sitegroup, "__", site_data$site,
-                "_goto'> Go to </button>"),
-            # "_goto' type='button' class='btn btn-link ",
-            # "btn-sm btn-block' value='Go to'>"),
+        addCircleMarkers(lng=~longitude, lat=~latitude,
+            popup=glue(map_buttons, domain=site_data$domain,
+                stream=site_data$stream, site_name=site_data$site_name,
+                latitude=site_data$latitude, longitude=site_data$longitude),
             popupOptions=c(
-                className=paste0(site_data$sitegroup, "__",
-                    site_data$site, '_popup'),
+                className=paste0(site_data$domain, "__",
+                    site_data$site_name, '_popup'),
                 minWidth=200,
                 maxWidth=500
             ),
-            # popup=paste0('<strong>Site name: </strong>',
-            #     site_data$name, '<br>',
-            #     '<strong>Data source: </strong>', site_data$source, '<br>',
-            #     '<strong>Site group: </strong>', site_data$sitegroup, '<br>',
-            #     '<strong>Site code: </strong>', site_data$site),
             data=site_data) %>%
         # addPolygons(
         #     data = isco.sheds,
@@ -69,12 +36,11 @@ output$MAP <- renderLeaflet({
         position = 'topright',
         baseGroups = c('Topo Map', 'Aerial Imagery'),
         overlayGroups = c('Catchments'),
-        options = layersControlOptions(collapsed = F, autoZIndex =
-                T)
+        options = layersControlOptions(collapsed=FALSE, autoZIndex=TRUE)
     ) %>%
-        setView(lng = -81.93603515625,
-            lat = 38.1046650598288,
-            zoom = 10)
+    setView(lng = -81.93603515625,
+        lat = 38.1046650598288,
+        zoom = 10)
 })
 
 

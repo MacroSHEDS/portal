@@ -53,6 +53,14 @@ body {
     font-size: 140% !important;
 }
 
+.wrapper {
+    overflow-y: visible;
+}
+
+body {
+    overflow-y: visible;
+}
+
 .shiny-input-container{
     margin-bottom: 0px;
 }

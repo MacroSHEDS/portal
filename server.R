@@ -24,6 +24,9 @@ shinyServer(function(input, output, session){
             class='content-wrapper-wide')
     })
 
+    # landing_page = read_file('ui/landing_page_ui.R')
+    map_buttons = read_file('ui/map_buttons.html')
+    source('ui/landing_page_ui.R', local=TRUE)
     source('server/site_comparison_server.R', local=TRUE)
     source('server/oneSiteNVar_server.R', local=TRUE)
     source('server/nSiteNVar_server.R', local=TRUE)
@@ -36,48 +39,19 @@ shinyServer(function(input, output, session){
     })
 
     output$NSTREAMS = renderText({
-        15
+        length(unique(site_data$stream))
     })
     output$NSITES = renderText({
-        30
+        nrow(site_data)
     })
     output$NOBS = renderText({
-        'a zillion'
+        nrow(grab) + nrow(sensor)
     })
 
     observeEvent(once=TRUE,ignoreNULL=FALSE, ignoreInit=FALSE,
             eventExpr=landing_page_trigger, {
-        showModal(
-            modalDialog(title=NULL, footer=NULL,
-                fluidRow(class='text-center',
-                    h1('macrosheds'),
-                    # img(src='macrosheds_logo.svg',
-                    #     style='height: 70px; width: 200px'),
-                    br(),
-                    br(),
-                    column(4,
-                        img(src='water-solid-396060.svg',
-                            style='height: 56px; width: 56px'),
-                        h1(textOutput('NSTREAMS')),
-                        p('STREAMS')
-                    ),
-                    column(4,
-                        icon('map-marker', class='fa-4x'),
-                        h1(textOutput('NSITES')),
-                        p('SITES')
-                    ),
-                    column(4,
-                        icon('chart-bar', class='fa-4x'),
-                        h1(textOutput('NOBS')),
-                        p('OBSERVATIONS')
-                    ),
-                    br(),
-                    br(),
-                    p('hear iz data foar rivars'),
-                    actionButton('DISMISS_LANDING', label='Continue')
-                )
-            )
-        )
+        # eval(parse(text=landing_page))
+        landing_page
     })
 
     observeEvent(input$DISMISS_LANDING, {

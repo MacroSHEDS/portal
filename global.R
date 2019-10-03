@@ -20,11 +20,13 @@ library(lubridate)
 library(xts)
 library(leaflet)
 library(tidyverse)
+library(glue)
 
 # rsconnect::deployApp('~/git/macrosheds/app', appName='MacroSheds_demo')
 # setwd('~/git/macrosheds/portal/')
 
 site_data = read.csv('site_data.csv', stringsAsFactors=FALSE)
+site_data = filter(site_data, domain == 'HBEF')
 
 source('helpers.R')
 
