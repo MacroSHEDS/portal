@@ -5,10 +5,13 @@ changesInSelections3$facetA3 = 0
 changesInSelections3$facetB3 = 0
 changesInSelections3$facetC3 = 0
 
-observeEvent(input$DATE3, {
-        changesInSelections3$facetA3 = changesInSelections3$facetA3 + 1
-        changesInSelections3$facetB3 = changesInSelections3$facetB3 + 1
-        changesInSelections3$facetC3 = changesInSelections3$facetC3 + 1
+observeEvent({
+    input$DATE3
+    input$CONC_FLUX3
+}, {
+    changesInSelections3$facetA3 = changesInSelections3$facetA3 + 1
+    changesInSelections3$facetB3 = changesInSelections3$facetB3 + 1
+    changesInSelections3$facetC3 = changesInSelections3$facetC3 + 1
 })
 
 observeEvent({
@@ -57,23 +60,21 @@ observeEvent(input$SITES3, {
 ## Filter data to desired dates
 data3 <- reactive ({
 
-    data3 <- grab %>%
+    data3 = if(input$CONC_FLUX3 == 'concentration') grab else flux
+    data3 <- data3 %>%
         filter(datetime >= input$DATE3[1]) %>%
-        filter(datetime <= input$DATE3[2])
+        filter(datetime <= input$DATE3[2]) %>%
+        filter(site_name %in% input$SITES3) %>%
+        select(one_of("datetime", "site_name", input$SOLUTES3))
 })
 
 ## Extract data for Precip plot
 dataPrecip3 <- reactive ({
 
     # dataPrecip3 <- data3() %>%
-    #     select(precipCatch) %>%
-    #     filter(! is.na(precipCatch)) %>%
-    #     select(one_of("datetime", "site_name", 'precipCatch')) %>%
-    #     group_by(lubridate::days(datetime)) %>%
-    #     summarise(medianPrecip = median(precipCatch, na.rm=TRUE)) %>%
-    #     ungroup()
-
-    dataPrecip3 <- data3() %>%
+    dataPrecip3 = P %>%
+        filter(datetime >= input$DATE3[1]) %>%
+        filter(datetime <= input$DATE3[2]) %>%
         filter(site_name %in% sites_precip) %>%
         select(one_of("datetime", "site", 'precipCatch')) %>%
         # group_by(lubridate::yday(datetime)) %>%
@@ -82,33 +83,31 @@ dataPrecip3 <- reactive ({
         ungroup()
 })
 
-## Extract data for Solutes (Main) plot
-dataMain3 <- reactive ({
-
-    dataMain3 <- data3() %>%
-        filter(site_name %in% input$SITES3) %>%
-        select(one_of("datetime", "site_name", input$SOLUTES3))
-})
+# ## Extract data for Solutes (Main) plot
+# dataMain3 <- reactive ({
+#
+#     dataMain3 <- data3() %>%
+#         filter(site_name %in% input$SITES3) %>%
+#         select(one_of("datetime", "site_name", input$SOLUTES3))
+# })
 
 ## Extract data for Discharge (Flow) plot
 dataFlow3 <- reactive ({
 
-    dataFlow3 <- data3() %>%
-        filter(site_name %in% input$SITES3)
+    # dataFlow3 <- data3() %>%
+    #     filter(site_name %in% input$SITES3)
+    #
+    # dataFlow3 <- dataFlow3 %>%
+    #     select(one_of("datetime", 'flowGageHt')) %>%
+    #     group_by(datetime) %>%
+    #     summarise(flowMaxPerDate = max(flowGageHt, na.rm=TRUE))
 
-    dataFlow3 <- dataFlow3 %>%
-        select(one_of("datetime", 'flowGageHt')) %>%
+    dataFlow3 = filter(sensor, datetime > input$DATE3[1],
+        datetime < input$DATE3[2], watershedID %in% input$SITES3) %>%
+        mutate(datetime=as.Date(datetime)) %>%
+        select(datetime, Q_Ls) %>%
         group_by(datetime) %>%
-        summarise(flowMaxPerDate = max(flowGageHt, na.rm=TRUE))
-
-    # if (SENSORFLOW) {
-    #     dataFlow3 = filter(dataSensor, datetime > input$DATE3[1],
-    #         datetime < input$DATE3[2], watershedID %in% input$SITES3) %>%
-    #         mutate(datetime=as.Date(datetime)) %>%
-    #         select(datetime, Q_Ls) %>%
-    #         group_by(datetime) %>%
-    #         summarise(flowMaxPerDate = max(Q_Ls, na.rm=TRUE))
-    # }
+        summarise(flowMaxPerDate = max(Q_Ls, na.rm=TRUE))
 
     return(dataFlow3)
 })
@@ -144,7 +143,7 @@ output$GRAPH_MAIN3a <- renderDygraph({
         select(variable_name, unit) %>%
         mutate(combined = paste0(variable_name, ' (', unit, ')'))
 
-    widedat = isolate(dataMain3()) %>%
+    widedat = isolate(data3()) %>%
         filter(site_name %in% sites) %>%
         # filter(site_name == siteA) %>%
         select(datetime, site_name, one_of(varA)) %>%
@@ -185,7 +184,7 @@ output$GRAPH_MAIN3b <- renderDygraph({
         select(variable_name, unit) %>%
         mutate(combined = paste0(variable_name, ' (', unit, ')'))
 
-    widedat = isolate(dataMain3()) %>%
+    widedat = isolate(data3()) %>%
         filter(site_name %in% sites) %>%
         select(datetime, site_name, one_of(varB)) %>%
         spread(site_name, !!varB)
@@ -220,7 +219,7 @@ output$GRAPH_MAIN3c <- renderDygraph({
         select(variable_name, unit) %>%
         mutate(combined = paste0(variable_name, ' (', unit, ')'))
 
-    widedat = isolate(dataMain3()) %>%
+    widedat = isolate(data3()) %>%
         filter(site_name %in% sites) %>%
         select(datetime, site_name, one_of(varC)) %>%
         spread(site_name, !!varC)

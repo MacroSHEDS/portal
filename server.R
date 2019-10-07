@@ -15,7 +15,9 @@ shinyServer(function(input, output, session){
     # })
     # js$getHeight50()
 
-    landing_page_trigger = TRUE
+    # landing_page_trigger = TRUE
+    init_vals = reactiveValues()
+    init_vals$enable_facets = FALSE
 
     observeEvent(input$COLLAPSE_SIDEBAR, {
         shinyjs::toggleClass(selector='.sidebar-sub',
@@ -48,11 +50,20 @@ shinyServer(function(input, output, session){
         nrow(grab) + nrow(sensor)
     })
 
-    observeEvent(once=TRUE,ignoreNULL=FALSE, ignoreInit=FALSE,
-            eventExpr=landing_page_trigger, {
-        # eval(parse(text=landing_page))
+    observeEvent(once=TRUE, ignoreNULL=FALSE, ignoreInit=FALSE,
+            eventExpr=TRUE, {
         landing_page
     })
+
+    observeEvent(once=TRUE, ignoreNULL=FALSE, ignoreInit=TRUE,
+            eventExpr=input$SOLUTES4, {
+        init_vals$enable_facets = TRUE
+    })
+
+    # observeEvent(once=TRUE, ignoreNULL=FALSE, ignoreInit=FALSE,
+    #         eventExpr=TRUE, {
+    #
+    # })
 
     observeEvent(input$DISMISS_LANDING, {
         removeModal(session)

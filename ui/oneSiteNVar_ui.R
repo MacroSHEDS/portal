@@ -11,6 +11,8 @@ oneSiteNVar_tab = tabPanel("Single Site", value='site_exploration',
                 selected=grabvars_display_subset[[1]][[1]],
                 multiple=TRUE, choices=grabvars_display_subset),
             div('(Up to 9)', class='widget-subtitle text-center'),
+            radioButtons('CONC_FLUX4', label=NULL,
+                choices=c('concentration', 'flux'), selected='concentration'),
             conditionalPanel('false', #hiding this until it's necessary
                 radioButtons('PRECIP_SOURCE4', label='Precip data source',
                     choices=c('Collector Catch (mm)'='precipCatch',

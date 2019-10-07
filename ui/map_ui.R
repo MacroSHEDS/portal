@@ -1,5 +1,5 @@
 map_tab = tabPanel('Map',
-    leafletOutput("MAP", height=350)
+    leafletOutput("MAP", height=350),
 
     #this button opens the site exploration tab. the button is hidden and unclickable.
     #it's triggered by links in the popups on the map tab.

@@ -34,6 +34,11 @@ sensor = read_feather('temp_shinyappsio/dataSensor.feather')
 sensor$watershedID = paste0('W', as.character(sensor$watershedID))
 # sites_with_Q = unique(sensor$watershedID) #temporary fix**
 
+flux = read_feather('data/flux.feather') %>%
+    rename(datetime=date) %>%
+    select(-Q_Ld)
+fluxnames = colnames(flux)[-(1:2)]
+
 conf = readLines('config.txt')
 postgres_pw = extract_from_config('POSTGRESQL_PW')
 
@@ -50,13 +55,17 @@ grab = DBI::dbGetQuery(con, paste0('select data_grab.datetime, site.site_name, '
     tidyr::spread(variable_code, value) %>%
     dplyr::ungroup()
 
+P = select(grab, site_name, datetime, precipCatch)
+# Q = select(grab, site_name, datetime, flowGageHt)
+
 grabcols = colnames(grab)
 grabcols = grabcols[grabcols != 'datetime']
 
 variables = read.csv('data/variables.csv', stringsAsFactors=FALSE)
 
 grabvars = filter(variables, variable_type == 'grab',
-    ! variable_code %in% c('flowGageHt', 'precipCatch'))
+    ! variable_code %in% c('flowGageHt', 'precipCatch')) %>%
+    filter(variable_code %in% fluxnames) #temporary line probably
 grabvars_display = mutate(grabvars,
         displayname=paste0(variable_name, ' (', unit, ')')) %>%
     select(displayname, variable_code, variable_subtype) %>%
@@ -107,3 +116,6 @@ grabvars_display_subset = populate_vars(grab[-(1:2)])
 # default_var = get_default_var(grab[-(1:2)])
 
 DBI::dbDisconnect(con)
+
+# input$CONC_FLUX = 'concentration'
+# input$DATE4=initial_dtrng

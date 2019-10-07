@@ -65,8 +65,9 @@ changesInSelections4$facetB4 = 0
 changesInSelections4$facetC4 = 0
 
 observeEvent({
-        input$SITES4
-        input$DATE4
+    input$SITES4
+    input$DATE4
+    input$CONC_FLUX4
 }, {
     changesInSelections4$facetA4 = changesInSelections4$facetA4 + 1
     changesInSelections4$facetB4 = changesInSelections4$facetB4 + 1
@@ -195,14 +196,23 @@ observeEvent(input$SITES4, {
     #         site_dtrng[2]))
 })
 
-## Filter data to desired dates
 data4 <- reactive ({
 
-    data4 <- grab %>%
+    data4 = if(input$CONC_FLUX4 == 'concentration') grab else flux
+    data4 = data4 %>%
+        filter(site_name %in% input$SITES4) %>%
         filter(datetime >= input$DATE4[1]) %>%
-        filter(datetime <= input$DATE4[2])
-    return(data4)
+        filter(datetime <= input$DATE4[2]) %>%
+        select(one_of("datetime", "site_name", input$SOLUTES4))
 })
+
+# precip4 <- reactive ({
+#
+#     precip4 = P %>%
+#         filter(datetime >= input$DATE4[1]) %>%
+#         filter(datetime <= input$DATE4[2])
+#     precip4
+# })
 
 dataPrecip4 <- reactive ({
 
@@ -214,7 +224,9 @@ dataPrecip4 <- reactive ({
     #     summarise(medianPrecip = median(precipCatch, na.rm=TRUE)) %>%
     #     ungroup()
 
-    dataPrecip4 <- data4() %>%
+    dataPrecip4 = P %>%
+        filter(datetime >= input$DATE4[1]) %>%
+        filter(datetime <= input$DATE4[2]) %>%
         filter(site_name %in% sites_precip) %>%
         select(one_of("datetime", "site_name", 'precipCatch')) %>%
         # group_by(lubridate::yday(datetime)) %>%
@@ -223,24 +235,24 @@ dataPrecip4 <- reactive ({
         ungroup()
 })
 
-dataMain4 <- reactive ({
-
-    dataMain4 <- data4() %>%
-        filter(site_name %in% input$SITES4) %>%
-        select(one_of("datetime", "site_name", input$SOLUTES4))
-})
+# dataMain4 <- reactive ({
+#
+#     dataMain4 <- data4() %>%
+#         filter(site_name %in% input$SITES4) %>%
+#         select(one_of("datetime", "site_name", input$SOLUTES4))
+# })
 
 dataFlow4 <- reactive ({
 
-    dataFlow4 <- data4() %>%
-        filter(site_name %in% input$SITES4)
-
-    if (input$FLOW_SOURCE4 == "flowGageHt") {
-        dataFlow4 <- dataFlow4 %>%
-            select(one_of("datetime", input$FLOW_SOURCE4)) %>%
-            group_by(datetime) %>%
-            summarise(flowMaxPerDate = max(flowGageHt, na.rm=TRUE))
-    }
+    # dataFlow4 <- data4() %>%
+    #     filter(site_name %in% input$SITES4)
+    #
+    # if (input$FLOW_SOURCE4 == "flowGageHt") { #obsolete; separate flow
+    #     dataFlow4 <- dataFlow4 %>%
+    #         select(one_of("datetime", input$FLOW_SOURCE4)) %>%
+    #         group_by(datetime) %>%
+    #         summarise(flowMaxPerDate = max(flowGageHt, na.rm=TRUE))
+    # }
 
     if (input$FLOW_SOURCE4 == "flowSens") {
         dataFlow4 = filter(sensor, datetime > input$DATE4[1],
@@ -283,20 +295,27 @@ output$GRAPH_MAIN4a <- renderDygraph({
         select(variable_name, unit) %>%
         mutate(combined = paste0(variable_name, ' (', unit, ')'))
 
-    widedat = isolate(dataMain4()) %>%
+    # widedat = isolate(dataMain4()) %>%
+    widedat = isolate(data4()) %>%
         # filter(solute %in% plotvars) %>%
         select(datetime, one_of(plotvars))
 
-    dydat = xts(widedat[, plotvars], order.by=widedat$datetime, tzone='UTC')
-    dimnames(dydat) = list(NULL, varnames$combined)
+    if(nrow(widedat)){
 
-    dg = dygraph(dydat, group='oneSiteNVar') %>%
-        dyOptions(useDataTimezone=TRUE, drawPoints=FALSE,
-            colors=linecolors[1:3], strokeWidth=2) %>%#, pointSize=2) %>%
-        dyLegend(show='onmouseover', labelsSeparateLines=TRUE) %>%
-        dyAxis('y', label=NULL, pixelsPerLabel=20, rangePad=10)
+        dydat = xts(widedat[, plotvars], order.by=widedat$datetime, tzone='UTC')
+        dimnames(dydat) = list(NULL, varnames$combined)
+
+        dg = dygraph(dydat, group='oneSiteNVar') %>%
+            dyOptions(useDataTimezone=TRUE, drawPoints=FALSE,
+                colors=linecolors[1:3], strokeWidth=2) %>% #, pointSize=2) %>%
+            dyLegend(show='onmouseover', labelsSeparateLines=TRUE) %>%
+            dyAxis('y', label=NULL, pixelsPerLabel=20, rangePad=10)
+    } else {
+        dg = plot_empty_dygraph(isolate(input$DATE4), plotgroup='oneSiteNVar',
+            ylab='', px_per_lab=20)
+    }
+
     return(dg)
-    # }
 
     # ordsOfMag = apply(select_if(data, is.numeric), 2, function(x) {
     #     rng = max(x, na.rm=TRUE) - min(x, na.rm=TRUE)
@@ -317,24 +336,13 @@ output$GRAPH_MAIN4a <- renderDygraph({
     #
     #     }
     # }
-
-    # if(input$SOLUTES4_COLOR == "Solutes") {
-
-
-    # } else {
-    #     m <- ggplot(data, aes(x, y, shape=data$solute, color=data$site)) +
-    #         my_theme +
-    #         geom_point(size = 2.5) +
-    #         geom_line(alpha = 0.5) +
-    #         scale_x_date(date_labels = "%Y-%b")+
-    #         coord_cartesian(xlim = c(input$DATE4[1], input$DATE4[2])) +
-    #         scale_color_manual(values = c("black", "#307975", "#691476", "#735E1F", "#6F0D2F", "#7F8D36", "#37096D", "#074670", "#0C2282", "#750D47")) +
-    #         labs(x = "", y = "Solutes")
-    # }
-
 })
 
 output$GRAPH_MAIN4b <- renderDygraph({
+
+    if(! init_vals$enable_facets){
+        return()
+    }
 
     changesInSelections4$facetB4
     n_vars = isolate(changesInSelections4$n_vars)
@@ -344,21 +352,32 @@ output$GRAPH_MAIN4b <- renderDygraph({
         select(variable_name, unit) %>%
         mutate(combined = paste0(variable_name, ' (', unit, ')'))
 
-    widedat = isolate(dataMain4()) %>%
+    widedat = isolate(data4()) %>%
         select(datetime, one_of(plotvars))
 
-    dydat = xts(widedat[, plotvars], order.by=widedat$datetime, tzone='UTC')
-    dimnames(dydat) = list(NULL, varnames$combined)
+    if(nrow(widedat)){
 
-    dg = dygraph(dydat, group='oneSiteNVar') %>%
-        dyOptions(useDataTimezone=TRUE, drawPoints=FALSE,
-            colors=linecolors[4:6], strokeWidth=2) %>%
-        dyLegend(show='onmouseover', labelsSeparateLines=TRUE) %>%
-        dyAxis('y', label=NULL, pixelsPerLabel=20, rangePad=10)
+        dydat = xts(widedat[, plotvars], order.by=widedat$datetime, tzone='UTC')
+        dimnames(dydat) = list(NULL, varnames$combined)
+
+        dg = dygraph(dydat, group='oneSiteNVar') %>%
+            dyOptions(useDataTimezone=TRUE, drawPoints=FALSE,
+                colors=linecolors[4:6], strokeWidth=2) %>%
+            dyLegend(show='onmouseover', labelsSeparateLines=TRUE) %>%
+            dyAxis('y', label=NULL, pixelsPerLabel=20, rangePad=10)
+    } else {
+        dg = plot_empty_dygraph(isolate(input$DATE4), plotgroup='oneSiteNVar',
+            ylab='', px_per_lab=20)
+    }
+
     return(dg)
 })
 
 output$GRAPH_MAIN4c <- renderDygraph({
+
+    if(! init_vals$enable_facets){
+        return()
+    }
 
     changesInSelections4$facetC4
     n_vars = isolate(changesInSelections4$n_vars)
@@ -368,17 +387,23 @@ output$GRAPH_MAIN4c <- renderDygraph({
         select(variable_name, unit) %>%
         mutate(combined = paste0(variable_name, ' (', unit, ')'))
 
-    widedat = isolate(dataMain4()) %>%
+    widedat = isolate(data4()) %>%
         select(datetime, one_of(plotvars))
 
-    dydat = xts(widedat[, plotvars], order.by=widedat$datetime, tzone='UTC')
-    dimnames(dydat) = list(NULL, varnames$combined)
+    if(nrow(widedat)){
 
-    dg = dygraph(dydat, group='oneSiteNVar') %>%
-        dyOptions(useDataTimezone=TRUE, drawPoints=FALSE,
-            colors=linecolors[7:9], strokeWidth=2) %>%
-        dyLegend(show='onmouseover', labelsSeparateLines=TRUE) %>%
-        dyAxis('y', label=NULL, pixelsPerLabel=20, rangePad=10)
+        dydat = xts(widedat[, plotvars], order.by=widedat$datetime, tzone='UTC')
+        dimnames(dydat) = list(NULL, varnames$combined)
+
+        dg = dygraph(dydat, group='oneSiteNVar') %>%
+            dyOptions(useDataTimezone=TRUE, drawPoints=FALSE,
+                colors=linecolors[7:9], strokeWidth=2) %>%
+            dyLegend(show='onmouseover', labelsSeparateLines=TRUE) %>%
+            dyAxis('y', label=NULL, pixelsPerLabel=20, rangePad=10)
+    } else {
+        dg = plot_empty_dygraph(isolate(input$DATE4), plotgroup='oneSiteNVar',
+            ylab='', px_per_lab=20)
+    }
 
     return(dg)
 })

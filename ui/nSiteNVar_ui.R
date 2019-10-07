@@ -12,6 +12,8 @@ nSiteNVar_tab = tabPanel("Multisite", value='multisite_exploration',
                 selected=grabvars_display_subset[[1]][[1]],
                 multiple=TRUE, choices=grabvars_display_subset),
             div('(Up to 3)', class='widget-subtitle text-center'),
+            radioButtons('CONC_FLUX3', label=NULL,
+                choices=c('concentration', 'flux'), selected='concentration'),
         width=3), # closes sidebarPanel
 
         # Plot
