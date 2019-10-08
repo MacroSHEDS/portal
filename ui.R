@@ -22,6 +22,7 @@ shinyUI(fluidPage(
         dashboardHeader(disable=TRUE),
         dashboardSidebar(width='50%',
             div(class='sidebar-sub',
+                # HTML('<input type="text" id="MAPDATA" style="display: none">'),
                 tabsetPanel(id='left_tabs',
                     about_tab,
                     participants_tab,

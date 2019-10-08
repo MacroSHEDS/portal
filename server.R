@@ -18,6 +18,8 @@ shinyServer(function(input, output, session){
     # landing_page_trigger = TRUE
     init_vals = reactiveValues()
     init_vals$enable_facets = FALSE
+    # init_vals$flash_plot = 0
+    # init_vals$flash_plots = 0
 
     observeEvent(input$COLLAPSE_SIDEBAR, {
         shinyjs::toggleClass(selector='.sidebar-sub',
@@ -58,6 +60,16 @@ shinyServer(function(input, output, session){
     observeEvent(once=TRUE, ignoreNULL=FALSE, ignoreInit=TRUE,
             eventExpr=input$SOLUTES4, {
         init_vals$enable_facets = TRUE
+    })
+
+    observeEvent(input$MAPDATA, {
+
+        map_selection = str_match(input$MAPDATA, '__(.+?)_goto$')[,2]
+        updateSelectizeInput(session, 'SITES4',
+            label=NULL, selected=map_selection, choices=sites)
+
+        session$sendCustomMessage('flash_plot', jsonlite::toJSON('placeholder'))
+        # input_vals$flash_plot = input_vals$flash_plot + 1
     })
 
     # observeEvent(once=TRUE, ignoreNULL=FALSE, ignoreInit=FALSE,

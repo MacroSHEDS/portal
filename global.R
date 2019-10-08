@@ -1,22 +1,17 @@
 library(V8)
 library(feather)
 library(plyr)
-library(data.table)
+# library(data.table)
 # library(dtplyr)
 library(shiny)
 library(shinydashboard)
 library(dygraphs)
-library(Cairo)
-# library(RMariaDB)
 # library(DBI)
 # library(ggthemes)
 # library(ggplot2)
 # library(colorspace)
-# library(jsonlite)
-# library(plotly)
+library(jsonlite)
 library(lubridate)
-# library(RColorBrewer)
-# library(reshape2)
 library(xts)
 library(leaflet)
 library(tidyverse)
@@ -32,7 +27,7 @@ source('helpers.R')
 
 sensor = read_feather('temp_shinyappsio/dataSensor.feather')
 sensor$watershedID = paste0('W', as.character(sensor$watershedID))
-# sites_with_Q = unique(sensor$watershedID) #temporary fix**
+sites_with_Q = unique(sensor$watershedID) #temporary fix**
 
 flux = read_feather('data/flux.feather') %>%
     rename(datetime=date) %>%
@@ -49,13 +44,16 @@ grab = DBI::dbGetQuery(con, paste0('select data_grab.datetime, site.site_name, '
         'variable.variable_code, data_grab.value from data_grab, site, variable where ',
         'data_grab.site=site.id and data_grab.variable=variable.id;')) %>%
     dplyr::filter(datetime <= Sys.Date()) %>%
-    # dplyr::filter(site_name %in% sites_with_Q) %>% #**see above
     dplyr::group_by(site_name, variable_code, datetime) %>%
     dplyr::summarize(value=mean(value,na.rm=TRUE)) %>%
     tidyr::spread(variable_code, value) %>%
     dplyr::ungroup()
 
-P = select(grab, site_name, datetime, precipCatch)
+P = dplyr::select(grab, site_name, datetime, precipCatch) %>%
+    dplyr::filter(! is.na(precipCatch))
+
+grab = dplyr::filter(grab, site_name %in% sites_with_Q) #**see above
+
 # Q = select(grab, site_name, datetime, flowGageHt)
 
 grabcols = colnames(grab)
@@ -90,7 +88,7 @@ sites = DBI::dbGetQuery(con, paste('select site_name as site from site',
         'order by site_name asc;')) %>%
     unlist() %>%
     unname()
-# sites = sites[sites %in% sites_with_Q] #** see above
+sites = sites[sites %in% sites_with_Q] #** see above
 
 sites_precip <- list("RG1", "RG11", "RG23", "RG22", "N", "S", "SP")
 

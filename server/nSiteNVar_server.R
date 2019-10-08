@@ -116,16 +116,23 @@ output$GRAPH_PRECIP3 <- renderDygraph({
 
     data <- dataPrecip3()
     # ind_col <- which(input$PRECIP_SOURCE3 == colnames(data), arr.ind = TRUE)
-    dydat = xts(data$medianPrecip, order.by=data$datetime, tzone='UTC')
-    dimnames(dydat) = list(NULL, 'P')
-    ymax = max(dydat, na.rm=TRUE)
 
-    p = dygraph(dydat, group='nSiteNVar') %>%
-        dyOptions(useDataTimezone=TRUE, drawPoints=FALSE, fillGraph=TRUE,
-            fillAlpha=1, colors='#4b92cc', strokeWidth=3,
-            plotter=hyetograph_js, retainDateWindow=TRUE) %>%
-        dyAxis('y', label='P (in)', valueRange=c(ymax + ymax * 0.1, 0),
-            labelWidth=16, labelHeight=10, pixelsPerLabel=10, rangePad=10)
+    if(nrow(data)){
+
+        dydat = xts(data$medianPrecip, order.by=data$datetime, tzone='UTC')
+        dimnames(dydat) = list(NULL, 'P')
+        ymax = max(dydat, na.rm=TRUE)
+
+        p = dygraph(dydat, group='nSiteNVar') %>%
+            dyOptions(useDataTimezone=TRUE, drawPoints=FALSE, fillGraph=TRUE,
+                fillAlpha=1, colors='#4b92cc', strokeWidth=3,
+                plotter=hyetograph_js, retainDateWindow=TRUE) %>%
+            dyAxis('y', label='P (in)', valueRange=c(ymax + ymax * 0.1, 0),
+                labelWidth=16, labelHeight=10, pixelsPerLabel=10, rangePad=10)
+    } else {
+        p = plot_empty_dygraph(isolate(input$DATE3), plotgroup='nSiteNVar',
+            ylab='P (in)', px_per_lab=10)
+    }
 
     return(p)
 })
