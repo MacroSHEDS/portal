@@ -1,63 +1,5 @@
 
-# # Replaces codes -999.9, -1, -2, and -3 from data (used before graphing)
-# removeCodes <- function(dataSet) {
-#     # if value -999.9 is present in certain columns, replace with NA
-#     for (i in 1:6) {
-#         # test data set when needed:
-#         # test<-dataAll[which(dataAll$temp == -999.9),] #selects all temp -999.9
-#         current_col_ofData <- codes999.9[i]
-#         if (current_col_ofData %in% names(dataSet)) {
-#             ind_col <- which(current_col_ofData == colnames(dataSet), arr.ind = TRUE)
-#             if (current_col_ofData == "timeEST") {
-#                 dataSet[ind_col][dataSet[ind_col] == "-9999"] <- NA
-#                 # above is essentially the same as:
-#                 # dataAll2$timeEST[dataAll2$timeEST==-999.9] <- NA
-#             } else {
-#                 dataSet[ind_col][dataSet[ind_col] == -999.9] <- NA
-#             }
-#         }
-#     }
-#     # if values are -1, -2, or -3, replace with NA
-#     for (i in 1:23) {
-#         current_col_ofData <- codes123[i]
-#         if (current_col_ofData %in% names(dataSet)) {
-#             ind_col <- which(current_col_ofData == colnames(dataSet), arr.ind = TRUE)
-#             dataSet[ind_col][dataSet[ind_col] == -1] <- NA
-#             dataSet[ind_col][dataSet[ind_col] == -2] <- NA
-#             dataSet[ind_col][dataSet[ind_col] == -3] <- NA
-#         }
-#     }
-#
-#     return(dataSet)
-# }
-
-# # Graph theme
-# my_theme <- theme_fivethirtyeight() +
-#     theme(rect = element_rect(fill = NA),
-#         panel.grid.major = element_line(colour = "#dddddd"),
-#         text = element_text(family = "Arial", size = 14),
-#         legend.position = "top", legend.direction = "horizontal", legend.box = "horizontal",
-#         legend.box.just = "left", legend.title = element_blank(),
-#         #legend.key.size = unit(2.5, "native"),
-#         strip.text = element_text(hjust = 1, size = 20, face = "bold"),
-#         axis.title= element_text(NULL), axis.title.x= element_blank(),
-#         axis.title.y= element_text(hjust = 1, angle = 90, margin = margin(r=20)))
-
-# Set up color palette for solutes (using 'qual', or qualitative, color palette)
-# n <- 30 # number of colors
-# qual_col_pals = brewer.pal.info[brewer.pal.info$category == 'qual',]
-# col_vector = unlist(mapply(brewer.pal, qual_col_pals$maxcolors, rownames(qual_col_pals)))
-# pie(rep(1,n), col=(col_vector[1:n])) # to see color wheel
-
-
-# # Create reactive value which will be used to signal when core data (e.g. 'current')
-# # has changed and should be updated. Anytime current data is changed, the value
-# # of this variable should be increased by 1.
-# changesInData <- reactiveValues()
-# changesInData$change_dataCurrent <- 0
-# changesInData$change_dataAll <- 0
-
-#this one keeps track of n vars/sites selected, for faceting
+#keep track of # vars selected, for faceting
 changesInSelections4 = reactiveValues()
 changesInSelections4$n_vars = 1
 changesInSelections4$facetA4 = 0
@@ -101,82 +43,6 @@ observeEvent({
     changesInSelections4$n_vars = length(input$SOLUTES4)
 })
 
-# Make a reactive dataAll2 data frame, to be called whenever data is updated
-# (R in dataCurrentR stands for reactive)
-# dataCurrentR <- eventReactive(changesInData$change_dataCurrent, {
-#
-#     # # Open database connection
-#     # y = RMariaDB::MariaDB()
-#     # con = dbConnect(y,
-#     #     user = 'root',
-#     #     password = pass,
-#     #     host = 'localhost',
-#     #     dbname = 'hbef')
-#
-#     # Read current data and disconnect from table
-#     # dataCurrentR <- dbReadTable(con, "current")
-#     # dataCurrentR = read_feather('temp_shinyappsio/dataCurrent.feather')
-#     dataCurrentR = dataCurrent
-#     dataCurrentR <- as.data.frame(dataCurrentR)
-#     # dbDisconnect(con)
-#
-#     # Clean up data
-#     # dataCurrentR <- standardizeClasses(dataCurrentR)
-#
-#     # substituting commas with semi-colons. (necessary to prevent problems when downloading csv files)
-#     # dataCurrentR$notes <- gsub(",", ";", dataCurrentR$notes)
-#     # dataCurrentR$sampleType <- gsub(",", ";", dataCurrentR$sampleType)
-#
-#     # Re-calculate and assign water year variable for current data
-#     # wy_current <- levels(as.factor(dataCurrentR$waterYr))
-#     # wy1_current <- c()
-#     # for (i in 1:length(wy_current)) {
-#     #     wy1_current <- c(wy1_current, wy_current[i])
-#     # }
-#     # wateryears_current <<- as.list(wy1_current) #assign it globally
-#
-#     # Update Panel 5 user interface
-#     # updateSelectInput(session, "WATERYEAR5", label = "Water Year", choices = wateryears_current)
-#
-#     # Trigger update in dataAll
-#     changesInData$change_dataAll <- changesInData$change_dataAll + 1
-#
-#     dataCurrentR
-#
-# })
-
-# dataAllR <- eventReactive(changesInData$change_dataAll, {
-#     # dataAllR <- bind_rows(select(dataHistorical, -canonical), dataCurrentR())
-#     # dataAllR <- standardizeClasses(dataAllR)
-#
-#     # # Re-calculate and assign water year variable for all data
-#     # wy <- levels(as.factor(dataAllR$waterYr))
-#     # wy1 <- c()
-#     # for (i in 1:length(wy)) {
-#     #     wy1 <- c(wy1, wy[i])
-#     # }
-#     # #wy1 <- as.character(sort(as.numeric(wy1), decreasing=TRUE)) # sort so that recent years are first
-#     # wateryears <<- as.list(wy1) #assign it globally
-#
-#     # Get new maximum date ----
-#     # used in ui.R for Panel 4 (QA/QC "Free-for-all" graph)
-#     maxDate <- max(dataAllR$date, na.rm=TRUE)
-#
-#     # Update Panel 1-4 user interfaces
-#     # updateSelectInput(session, "WATERYEAR1", label = "Water Year", choices = wateryears)
-#     # updateSelectInput(session, "WATERYEAR2", label = "Water Year", choices = wateryears)
-#     # updateSelectInput(session, "WATERYEAR3", label = "Water Year", choices = wateryears)
-#     updateSliderInput(session, "DATE4",
-#         label = "Date Range",
-#         value = as.Date(c(maxDate-365, maxDate)),
-#         min =as.Date("1963-06-01"),
-#         max = as.Date(maxDate),
-#         step = 30)
-#
-#     dataAllR
-#
-# })
-
 observeEvent(input$SITES4, {
 
     grab_subset = filter(grab, site_name == input$SITES4)
@@ -198,7 +64,7 @@ observeEvent(input$SITES4, {
 
 data4 <- reactive ({
 
-    data4 = if(input$CONC_FLUX4 == 'concentration') grab else flux
+    data4 = if(input$CONC_FLUX4 == 'Concentration') grab else flux
     data4 = data4 %>%
         filter(site_name %in% input$SITES4) %>%
         filter(datetime >= input$DATE4[1]) %>%
@@ -206,23 +72,7 @@ data4 <- reactive ({
         select(one_of("datetime", "site_name", input$SOLUTES4))
 })
 
-# precip4 <- reactive ({
-#
-#     precip4 = P %>%
-#         filter(datetime >= input$DATE4[1]) %>%
-#         filter(datetime <= input$DATE4[2])
-#     precip4
-# })
-
 dataPrecip4 <- reactive ({
-
-    # dataPrecip4 <- data4() %>%
-    #     select(precipCatch) %>%
-    #     filter(! is.na(precipCatch)) %>%
-    #     select(one_of("datetime", "site_name", 'precipCatch')) %>%
-    #     group_by(lubridate::days(datetime)) %>%
-    #     summarise(medianPrecip = median(precipCatch, na.rm=TRUE)) %>%
-    #     ungroup()
 
     dataPrecip4 = P %>%
         filter(datetime >= input$DATE4[1]) %>%
@@ -235,24 +85,7 @@ dataPrecip4 <- reactive ({
         ungroup()
 })
 
-# dataMain4 <- reactive ({
-#
-#     dataMain4 <- data4() %>%
-#         filter(site_name %in% input$SITES4) %>%
-#         select(one_of("datetime", "site_name", input$SOLUTES4))
-# })
-
 dataFlow4 <- reactive ({
-
-    # dataFlow4 <- data4() %>%
-    #     filter(site_name %in% input$SITES4)
-    #
-    # if (input$FLOW_SOURCE4 == "flowGageHt") { #obsolete; separate flow
-    #     dataFlow4 <- dataFlow4 %>%
-    #         select(one_of("datetime", input$FLOW_SOURCE4)) %>%
-    #         group_by(datetime) %>%
-    #         summarise(flowMaxPerDate = max(flowGageHt, na.rm=TRUE))
-    # }
 
     if (input$FLOW_SOURCE4 == "flowSens") {
         dataFlow4 = filter(sensor, datetime > input$DATE4[1],
@@ -269,7 +102,6 @@ dataFlow4 <- reactive ({
 output$GRAPH_PRECIP4 <- renderDygraph({
 
     data <- dataPrecip4()
-    # ind_col <- which(input$PRECIP_SOURCE4 == colnames(data), arr.ind = TRUE)
 
     if(nrow(data)){
 

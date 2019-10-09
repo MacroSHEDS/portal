@@ -60,7 +60,7 @@ observeEvent(input$SITES3, {
 ## Filter data to desired dates
 data3 <- reactive ({
 
-    data3 = if(input$CONC_FLUX3 == 'concentration') grab else flux
+    data3 = if(input$CONC_FLUX3 == 'Concentration') grab else flux
     data3 <- data3 %>%
         filter(datetime >= input$DATE3[1]) %>%
         filter(datetime <= input$DATE3[2]) %>%
