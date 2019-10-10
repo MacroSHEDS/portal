@@ -31,7 +31,8 @@ source('helpers.R')
 sensor = read_feather('data/sensor.feather')
 sensor$watershedID = paste0('W', as.character(sensor$watershedID))
 sensor = filter(sensor, datetime < as.Date('2013-01-01')) #super temporary***
-sites_with_Q = unique(sensor$watershedID) #temporary fix**
+colnames(sensor)[4] = 'site_name'
+sites_with_Q = unique(sensor$site_name) #temporary fix**
 
 flux = read_feather('data/flux.feather') %>%
     rename(datetime=date) %>%
@@ -81,8 +82,9 @@ grabvars_display = mutate(grabvars,
         })
     })
 
-linecolors = c("#000000", "#307975", "#691476", "#735E1F", "#6F0D2F",
-    "#7F8D36", "#37096D", "#074670", "#0C2282", "#750D47")
+# linecolors = c("#000000", "#307975", "#691476", "#735E1F", "#6F0D2F",
+#     "#7F8D36", "#37096D", "#074670", "#0C2282", "#750D47")
+linecolors = c('black', 'gray', 'red')
 
 # sites = DBI::dbGetQuery(con, paste('select site_name as site from site',
 #         'order by site_name asc;')) %>%

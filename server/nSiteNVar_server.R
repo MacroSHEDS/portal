@@ -103,11 +103,12 @@ dataFlow3 <- reactive ({
     #     summarise(flowMaxPerDate = max(flowGageHt, na.rm=TRUE))
 
     dataFlow3 = filter(sensor, datetime > input$DATE3[1],
-        datetime < input$DATE3[2], watershedID %in% input$SITES3) %>%
+        datetime < input$DATE3[2], site_name %in% input$SITES3) %>%
         mutate(datetime=as.Date(datetime)) %>%
-        select(datetime, Q_Ls) %>%
-        group_by(datetime) %>%
-        summarise(flowMaxPerDate = max(Q_Ls, na.rm=TRUE))
+        select(datetime, Q_Ls, site_name) %>%
+        group_by(datetime, site_name) %>%
+        summarise(flowMaxPerDate=max(Q_Ls, na.rm=TRUE)) %>%
+        ungroup()
 
     return(dataFlow3)
 })
@@ -166,7 +167,7 @@ output$GRAPH_MAIN3a <- renderDygraph({
 
         dg = dygraph(dydat, group='nSiteNVar') %>%
             dyOptions(useDataTimezone=TRUE, drawPoints=FALSE,
-                colors=linecolors[c(4, 5, 7)], strokeWidth=2,
+                colors=linecolors, strokeWidth=2,
                 retainDateWindow=TRUE, connectSeparatedPoints=TRUE) %>%
             dyLegend(show='onmouseover', labelsSeparateLines=TRUE) %>%
             dyAxis('y', label=varA, labelWidth=16, labelHeight=10,
@@ -203,7 +204,7 @@ output$GRAPH_MAIN3b <- renderDygraph({
 
         dg = dygraph(dydat, group='nSiteNVar') %>%
             dyOptions(useDataTimezone=TRUE, drawPoints=FALSE,
-                colors=linecolors[c(4, 5, 7)], strokeWidth=2,
+                colors=linecolors, strokeWidth=2,
                 retainDateWindow=TRUE, connectSeparatedPoints=TRUE) %>%
             dyLegend(show='onmouseover', labelsSeparateLines=TRUE) %>%
             dyAxis('y', label=varB, labelWidth=16, labelHeight=10,
@@ -232,13 +233,14 @@ output$GRAPH_MAIN3c <- renderDygraph({
         spread(site_name, !!varC)
 
     if(nrow(widedat)){
+
         sites = colnames(widedat)[-1]
         dydat = xts(widedat[, sites], order.by=widedat$datetime, tzone='UTC')
         dimnames(dydat) = list(NULL, sites)
 
         dg = dygraph(dydat, group='nSiteNVar') %>%
             dyOptions(useDataTimezone=TRUE, drawPoints=FALSE,
-                colors=linecolors[c(4, 5, 7)], strokeWidth=2,
+                colors=linecolors, strokeWidth=2,
                 retainDateWindow=TRUE, connectSeparatedPoints=TRUE) %>%
             dyLegend(show='onmouseover', labelsSeparateLines=TRUE) %>%
             dyAxis('y', label=varC, labelWidth=16, labelHeight=10,
@@ -253,17 +255,22 @@ output$GRAPH_MAIN3c <- renderDygraph({
 
 output$GRAPH_FLOW3 <- renderDygraph({
 
-    widedat <- dataFlow3()
+    widedat = dataFlow3() %>%
+        spread(site_name, flowMaxPerDate)
 
     if(nrow(widedat)){
-        dydat = xts(widedat[, 'flowMaxPerDate'], order.by=widedat$datetime,
+
+        sites = colnames(widedat)[-1]
+        dydat = xts(widedat[, sites], order.by=widedat$datetime,
             tzone='UTC')
-        dimnames(dydat) = list(NULL, 'Q')
+        dimnames(dydat) = list(NULL, sites)
+        # dimnames(dydat) = list(NULL, 'Q')
 
         dg = dygraph(dydat, group='nSiteNVar') %>%
             dyOptions(useDataTimezone=TRUE, drawPoints=FALSE, fillGraph=TRUE,
-                colors='#4b92cc', strokeWidth=2, fillAlpha=0.25,
-                retainDateWindow=TRUE) %>%
+                strokeBorderColor='#4b92cc', strokeBorderWidth=1,
+                strokeWidth=1, fillAlpha=0.25, retainDateWindow=TRUE,
+                colors=linecolors) %>%
             dyAxis('y', label='Q (L/s)', labelWidth=16, labelHeight=10,
                 pixelsPerLabel=10, rangePad=10)
     } else {

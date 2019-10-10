@@ -89,11 +89,12 @@ dataFlow4 <- reactive ({
 
     if (input$FLOW_SOURCE4 == "flowSens") {
         dataFlow4 = filter(sensor, datetime > input$DATE4[1],
-                datetime < input$DATE4[2], watershedID %in% input$SITES4) %>%
-            mutate(datetime=datetime) %>%
+                datetime < input$DATE4[2],
+                site_name %in% input$SITES4) %>%
             select(datetime, Q_Ls) %>%
             group_by(datetime) %>%
-            summarise(flowMaxPerDate = max(Q_Ls, na.rm=TRUE))
+            summarise(flowMaxPerDate=max(Q_Ls, na.rm=TRUE)) %>%
+            ungroup()
     }
 
     dataFlow4
@@ -146,7 +147,7 @@ output$GRAPH_MAIN4a <- renderDygraph({
 
         dg = dygraph(dydat, group='oneSiteNVar') %>%
             dyOptions(useDataTimezone=TRUE, drawPoints=FALSE,
-                colors=linecolors[1:3], strokeWidth=2) %>% #, pointSize=2) %>%
+                colors=linecolors, strokeWidth=2) %>% #, pointSize=2) %>%
             dyLegend(show='onmouseover', labelsSeparateLines=TRUE) %>%
             dyAxis('y', label=NULL, pixelsPerLabel=20, rangePad=10)
     } else {
@@ -201,7 +202,7 @@ output$GRAPH_MAIN4b <- renderDygraph({
 
         dg = dygraph(dydat, group='oneSiteNVar') %>%
             dyOptions(useDataTimezone=TRUE, drawPoints=FALSE,
-                colors=linecolors[4:6], strokeWidth=2) %>%
+                colors=linecolors, strokeWidth=2) %>%
             dyLegend(show='onmouseover', labelsSeparateLines=TRUE) %>%
             dyAxis('y', label=NULL, pixelsPerLabel=20, rangePad=10)
     } else {
@@ -236,7 +237,7 @@ output$GRAPH_MAIN4c <- renderDygraph({
 
         dg = dygraph(dydat, group='oneSiteNVar') %>%
             dyOptions(useDataTimezone=TRUE, drawPoints=FALSE,
-                colors=linecolors[7:9], strokeWidth=2) %>%
+                colors=linecolors, strokeWidth=2) %>%
             dyLegend(show='onmouseover', labelsSeparateLines=TRUE) %>%
             dyAxis('y', label=NULL, pixelsPerLabel=20, rangePad=10)
     } else {
@@ -252,6 +253,7 @@ output$GRAPH_FLOW4 <- renderDygraph({
     widedat <- dataFlow4()
 
     if(nrow(widedat)){
+
         dydat = xts(widedat[, 'flowMaxPerDate'], order.by=widedat$datetime,
             tzone='UTC')
         dimnames(dydat) = list(NULL, 'Q')
