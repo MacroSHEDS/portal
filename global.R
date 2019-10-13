@@ -82,6 +82,9 @@ grabvars_display = mutate(grabvars,
         })
     })
 
+conc_vars = filter(variables, unit == 'mg/L') %>%
+    pull(variable_code)
+
 # linecolors = c("#000000", "#307975", "#691476", "#735E1F", "#6F0D2F",
 #     "#7F8D36", "#37096D", "#074670", "#0C2282", "#750D47")
 linecolors = c('black', 'gray', 'red')

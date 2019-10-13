@@ -70,6 +70,12 @@ data4 <- reactive ({
         filter(datetime >= input$DATE4[1]) %>%
         filter(datetime <= input$DATE4[2]) %>%
         select(one_of("datetime", "site_name", input$SOLUTES4))
+
+    if(input$CONC_FLUX4 == 'Concentration'){
+        data4 = convert_conc_units(data4, desired_unit=input$CONC_UNIT4)
+    }
+
+    return(data4)
 })
 
 dataPrecip4 <- reactive ({
@@ -114,7 +120,7 @@ output$GRAPH_PRECIP4 <- renderDygraph({
             dyOptions(useDataTimezone=TRUE, drawPoints=FALSE, fillGraph=TRUE,
                 fillAlpha=1, colors='#4b92cc', strokeWidth=3,
                 plotter=hyetograph_js) %>%
-            dyAxis('y', label='P (in)',
+            dyAxis('y', label='P (mm)',
                 valueRange=c(ymax + ymax * 0.1, 0),
                 labelWidth=16, labelHeight=10, pixelsPerLabel=10, rangePad=10)
     } else {

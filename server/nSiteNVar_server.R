@@ -66,6 +66,11 @@ data3 <- reactive ({
         filter(datetime <= input$DATE3[2]) %>%
         filter(site_name %in% input$SITES3) %>%
         select(one_of("datetime", "site_name", input$SOLUTES3))
+
+    if(input$CONC_FLUX3 == 'Concentration'){
+        data3 = convert_conc_units(data3, desired_unit=input$CONC_UNIT4)
+    }
+
 })
 
 ## Extract data for Precip plot
@@ -128,7 +133,7 @@ output$GRAPH_PRECIP3 <- renderDygraph({
             dyOptions(useDataTimezone=TRUE, drawPoints=FALSE, fillGraph=TRUE,
                 fillAlpha=1, colors='#4b92cc', strokeWidth=3,
                 plotter=hyetograph_js, retainDateWindow=TRUE) %>%
-            dyAxis('y', label='P (in)', valueRange=c(ymax + ymax * 0.1, 0),
+            dyAxis('y', label='P (mm)', valueRange=c(ymax + ymax * 0.1, 0),
                 labelWidth=16, labelHeight=10, pixelsPerLabel=10, rangePad=10)
     } else {
         p = plot_empty_dygraph(isolate(input$DATE3), plotgroup='nSiteNVar',
@@ -164,18 +169,20 @@ output$GRAPH_MAIN3a <- renderDygraph({
         dydat = xts(widedat[, sites], order.by=widedat$datetime, tzone='UTC')
         dimnames(dydat) = list(NULL, sites)
         # dimnames(dydat) = list(NULL, varnames$combined)
+        ylab = glue('{var} ({unit})', var=varA,
+            unit=grabvars$unit[grabvars$variable_code == varA])
 
         dg = dygraph(dydat, group='nSiteNVar') %>%
             dyOptions(useDataTimezone=TRUE, drawPoints=FALSE,
                 colors=linecolors, strokeWidth=2,
                 retainDateWindow=TRUE, connectSeparatedPoints=TRUE) %>%
             dyLegend(show='onmouseover', labelsSeparateLines=TRUE) %>%
-            dyAxis('y', label=varA, labelWidth=16, labelHeight=10,
+            dyAxis('y', label=ylab, labelWidth=16, labelHeight=10,
                 pixelsPerLabel=20, rangePad=10)
             # dyAxis('y', label=siteA, labelWidth=16, labelHeight=10)
     } else {
         dg = plot_empty_dygraph(isolate(input$DATE3), plotgroup='nSiteNVar',
-            ylab=varA, px_per_lab=20)
+            ylab=ylab, px_per_lab=20)
             # ylab=siteA)
     }
 
@@ -201,17 +208,19 @@ output$GRAPH_MAIN3b <- renderDygraph({
         sites = colnames(widedat)[-1]
         dydat = xts(widedat[, sites], order.by=widedat$datetime, tzone='UTC')
         dimnames(dydat) = list(NULL, sites)
+        ylab = glue('{var} ({unit})', var=varB,
+            unit=grabvars$unit[grabvars$variable_code == varB])
 
         dg = dygraph(dydat, group='nSiteNVar') %>%
             dyOptions(useDataTimezone=TRUE, drawPoints=FALSE,
                 colors=linecolors, strokeWidth=2,
                 retainDateWindow=TRUE, connectSeparatedPoints=TRUE) %>%
             dyLegend(show='onmouseover', labelsSeparateLines=TRUE) %>%
-            dyAxis('y', label=varB, labelWidth=16, labelHeight=10,
+            dyAxis('y', label=ylab, labelWidth=16, labelHeight=10,
                 pixelsPerLabel=20, rangePad=10)
     } else {
         dg = plot_empty_dygraph(isolate(input$DATE3), plotgroup='nSiteNVar',
-            ylab=varB, px_per_lab=20)
+            ylab=ylab, px_per_lab=20)
     }
 
     return(dg)
@@ -237,17 +246,19 @@ output$GRAPH_MAIN3c <- renderDygraph({
         sites = colnames(widedat)[-1]
         dydat = xts(widedat[, sites], order.by=widedat$datetime, tzone='UTC')
         dimnames(dydat) = list(NULL, sites)
+        ylab = glue('{var} ({unit})', var=varC,
+            unit=grabvars$unit[grabvars$variable_code == varC])
 
         dg = dygraph(dydat, group='nSiteNVar') %>%
             dyOptions(useDataTimezone=TRUE, drawPoints=FALSE,
                 colors=linecolors, strokeWidth=2,
                 retainDateWindow=TRUE, connectSeparatedPoints=TRUE) %>%
             dyLegend(show='onmouseover', labelsSeparateLines=TRUE) %>%
-            dyAxis('y', label=varC, labelWidth=16, labelHeight=10,
+            dyAxis('y', label=ylab, labelWidth=16, labelHeight=10,
                 pixelsPerLabel=20, rangePad=10)
     } else {
         dg = plot_empty_dygraph(isolate(input$DATE3), plotgroup='nSiteNVar',
-            ylab=varC, px_per_lab=20)
+            ylab=ylab, px_per_lab=20)
     }
 
     return(dg)
@@ -268,8 +279,8 @@ output$GRAPH_FLOW3 <- renderDygraph({
 
         dg = dygraph(dydat, group='nSiteNVar') %>%
             dyOptions(useDataTimezone=TRUE, drawPoints=FALSE, fillGraph=TRUE,
-                strokeBorderColor='#4b92cc', strokeBorderWidth=1,
-                strokeWidth=1, fillAlpha=0.25, retainDateWindow=TRUE,
+                # strokeBorderColor='#4b92cc', strokeBorderWidth=1,
+                strokeWidth=1, fillAlpha=0.4, retainDateWindow=TRUE,
                 colors=linecolors) %>%
             dyAxis('y', label='Q (L/s)', labelWidth=16, labelHeight=10,
                 pixelsPerLabel=10, rangePad=10)
