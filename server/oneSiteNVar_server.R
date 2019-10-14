@@ -64,7 +64,7 @@ observeEvent(input$SITES4, {
     #         site_dtrng[2]))
 })
 
-data4 <- reactive ({
+data4 <- reactive({
 
     data4 = if(input$CONC_FLUX4 == 'Concentration') grab else flux
     data4 = data4 %>%
@@ -84,7 +84,7 @@ data4 <- reactive ({
     return(data4)
 })
 
-dataPrecip4 <- reactive ({
+dataPrecip4 <- reactive({
 
     dataPrecip4 = P %>%
         filter(datetime >= input$DATE4[1]) %>%
@@ -97,7 +97,7 @@ dataPrecip4 <- reactive ({
         ungroup()
 })
 
-dataFlow4 <- reactive ({
+dataFlow4 <- reactive({
 
     if (input$FLOW_SOURCE4 == "flowSens") {
         dataFlow4 = filter(sensor, datetime > input$DATE4[1],
@@ -112,9 +112,45 @@ dataFlow4 <- reactive ({
     dataFlow4
 })
 
+concWeighted4 = reactive({
+
+    # dd <<- data4()
+    # ff <<- dataFlow4()
+
+    # monthlyQ = ff %>%
+    monthlyQ = dataFlow4() %>%
+        rename(Q=flowMaxPerDate) %>%
+        group_by(month=floor_date(datetime, 'month')) %>%
+        summarize(Q=mean(Q, na.rm=FALSE)) %>%
+        mutate(year=year(month))
+
+    yearlyQ = monthlyQ %>%
+        group_by(month=floor_date(month, 'year')) %>%
+        summarize(Qsum=sum(Q, na.rm=TRUE)) %>%
+        mutate(year=year(month)) %>%
+        select(-month)
+
+    monthlyQ = left_join(monthlyQ, yearlyQ, by='year') %>%
+        mutate(Qprop=Q / Qsum) %>%
+        select(month, Qprop)
+
+    # dd %>%
+    volWeightedConc = data4() %>%
+        group_by(month=floor_date(datetime, 'month'), site_name) %>%
+        select(-datetime) %>%
+        summarize_all(list(~mean(., na.rm=FALSE))) %>%
+        ungroup() %>%
+        left_join(monthlyQ, by='month') %>%
+        mutate_at(vars(-month, -site_name, -Qprop), ~(. * Qprop)) %>%
+        select(-Qprop)
+
+    return(volWeightedConc)
+})
+
 output$GRAPH_PRECIP4 <- renderDygraph({
 
     data <- dataPrecip4()
+    # temporary = concWeighted4() #delete
 
     if(nrow(data)){
 
