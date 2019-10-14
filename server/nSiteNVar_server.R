@@ -8,6 +8,8 @@ changesInSelections3$facetC3 = 0
 observeEvent({
     input$DATE3
     input$CONC_FLUX3
+    input$CONC_UNIT3
+    input$FLUX_UNIT3
 }, {
     changesInSelections3$facetA3 = changesInSelections3$facetA3 + 1
     changesInSelections3$facetB3 = changesInSelections3$facetB3 + 1
@@ -67,16 +69,18 @@ data3 <- reactive ({
         filter(site_name %in% input$SITES3) %>%
         select(one_of("datetime", "site_name", input$SOLUTES3))
 
-    if(input$CONC_FLUX3 == 'Concentration'){
-        data3 = convert_conc_units(data3, desired_unit=input$CONC_UNIT4)
+    if(init_vals$enable_unitconvert){
+        if(input$CONC_FLUX3 == 'Concentration'){
+            data3 = convert_conc_units(data3, desired_unit=input$CONC_UNIT3)
+        } else if(input$CONC_FLUX3 == 'Flux'){
+            data3 = convert_flux_units(data3, desired_unit=input$FLUX_UNIT3)
+        }
     }
 
 })
 
-## Extract data for Precip plot
 dataPrecip3 <- reactive ({
 
-    # dataPrecip3 <- data3() %>%
     dataPrecip3 = P %>%
         filter(datetime >= input$DATE3[1]) %>%
         filter(datetime <= input$DATE3[2]) %>%
@@ -88,28 +92,11 @@ dataPrecip3 <- reactive ({
         ungroup()
 })
 
-# ## Extract data for Solutes (Main) plot
-# dataMain3 <- reactive ({
-#
-#     dataMain3 <- data3() %>%
-#         filter(site_name %in% input$SITES3) %>%
-#         select(one_of("datetime", "site_name", input$SOLUTES3))
-# })
-
-## Extract data for Discharge (Flow) plot
 dataFlow3 <- reactive ({
-
-    # dataFlow3 <- data3() %>%
-    #     filter(site_name %in% input$SITES3)
-    #
-    # dataFlow3 <- dataFlow3 %>%
-    #     select(one_of("datetime", 'flowGageHt')) %>%
-    #     group_by(datetime) %>%
-    #     summarise(flowMaxPerDate = max(flowGageHt, na.rm=TRUE))
 
     dataFlow3 = filter(sensor, datetime > input$DATE3[1],
         datetime < input$DATE3[2], site_name %in% input$SITES3) %>%
-        mutate(datetime=as.Date(datetime)) %>%
+        # mutate(datetime=as.Date(datetime)) %>%
         select(datetime, Q_Ls, site_name) %>%
         group_by(datetime, site_name) %>%
         summarise(flowMaxPerDate=max(Q_Ls, na.rm=TRUE)) %>%
@@ -121,7 +108,6 @@ dataFlow3 <- reactive ({
 output$GRAPH_PRECIP3 <- renderDygraph({
 
     data <- dataPrecip3()
-    # ind_col <- which(input$PRECIP_SOURCE3 == colnames(data), arr.ind = TRUE)
 
     if(nrow(data)){
 
@@ -148,29 +134,29 @@ output$GRAPH_MAIN3a <- renderDygraph({
     changesInSelections3$facetA3
     sites = na.omit(input$SITES3[1:3])
     varA = isolate(input$SOLUTES3[1])
-    # plotvars = na.omit(input$SOLUTES3[1:3])
-    # siteA = isolate(input$SITES3[1])
 
-    # varnames = filter(grabvars, variable_code %in% plotvars) %>%
     varnames = filter(grabvars, variable_code == varA) %>%
         select(variable_name, unit) %>%
         mutate(combined = paste0(variable_name, ' (', unit, ')'))
 
     widedat = isolate(data3()) %>%
         filter(site_name %in% sites) %>%
-        # filter(site_name == siteA) %>%
         select(datetime, site_name, one_of(varA)) %>%
         spread(site_name, !!varA)
-        # select(datetime, one_of(plotvars))
 
     if(nrow(widedat)){
+
         sites = colnames(widedat)[-1]
-        # dydat = xts(widedat[, plotvars], order.by=widedat$datetime, tzone='UTC')
         dydat = xts(widedat[, sites], order.by=widedat$datetime, tzone='UTC')
         dimnames(dydat) = list(NULL, sites)
-        # dimnames(dydat) = list(NULL, varnames$combined)
-        ylab = glue('{var} ({unit})', var=varA,
-            unit=grabvars$unit[grabvars$variable_code == varA])
+
+        if(input$CONC_FLUX3 == 'Flux'){
+            gunit = input$FLUX_UNIT3
+        } else {
+            gunit = ifelse(varA %in% conc_vars, input$CONC_UNIT3,
+                grabvars$unit[grabvars$variable_code == varA])
+        }
+        ylab = glue('{var} ({unit})', var=varA, unit=gunit)
 
         dg = dygraph(dydat, group='nSiteNVar') %>%
             dyOptions(useDataTimezone=TRUE, drawPoints=FALSE,
@@ -179,11 +165,9 @@ output$GRAPH_MAIN3a <- renderDygraph({
             dyLegend(show='onmouseover', labelsSeparateLines=TRUE) %>%
             dyAxis('y', label=ylab, labelWidth=16, labelHeight=10,
                 pixelsPerLabel=20, rangePad=10)
-            # dyAxis('y', label=siteA, labelWidth=16, labelHeight=10)
     } else {
         dg = plot_empty_dygraph(isolate(input$DATE3), plotgroup='nSiteNVar',
             ylab=ylab, px_per_lab=20)
-            # ylab=siteA)
     }
 
     return(dg)
@@ -208,8 +192,14 @@ output$GRAPH_MAIN3b <- renderDygraph({
         sites = colnames(widedat)[-1]
         dydat = xts(widedat[, sites], order.by=widedat$datetime, tzone='UTC')
         dimnames(dydat) = list(NULL, sites)
-        ylab = glue('{var} ({unit})', var=varB,
-            unit=grabvars$unit[grabvars$variable_code == varB])
+
+        if(input$CONC_FLUX3 == 'Flux'){
+            gunit = input$FLUX_UNIT3
+        } else {
+            gunit = ifelse(varB %in% conc_vars, input$CONC_UNIT3,
+                grabvars$unit[grabvars$variable_code == varB])
+        }
+        ylab = glue('{var} ({unit})', var=varB, unit=gunit)
 
         dg = dygraph(dydat, group='nSiteNVar') %>%
             dyOptions(useDataTimezone=TRUE, drawPoints=FALSE,
@@ -246,8 +236,14 @@ output$GRAPH_MAIN3c <- renderDygraph({
         sites = colnames(widedat)[-1]
         dydat = xts(widedat[, sites], order.by=widedat$datetime, tzone='UTC')
         dimnames(dydat) = list(NULL, sites)
-        ylab = glue('{var} ({unit})', var=varC,
-            unit=grabvars$unit[grabvars$variable_code == varC])
+
+        if(input$CONC_FLUX3 == 'Flux'){
+            gunit = input$FLUX_UNIT3
+        } else {
+            gunit = ifelse(varC %in% conc_vars, input$CONC_UNIT3,
+                grabvars$unit[grabvars$variable_code == varC])
+        }
+        ylab = glue('{var} ({unit})', var=varC, unit=gunit)
 
         dg = dygraph(dydat, group='nSiteNVar') %>%
             dyOptions(useDataTimezone=TRUE, drawPoints=FALSE,
@@ -281,7 +277,8 @@ output$GRAPH_FLOW3 <- renderDygraph({
             dyOptions(useDataTimezone=TRUE, drawPoints=FALSE, fillGraph=TRUE,
                 # strokeBorderColor='#4b92cc', strokeBorderWidth=1,
                 strokeWidth=1, fillAlpha=0.4, retainDateWindow=TRUE,
-                colors=linecolors) %>%
+                colors=linecolors, connectSeparatedPoints=TRUE) %>%
+            dyLegend(show='onmouseover', labelsSeparateLines=TRUE) %>%
             dyAxis('y', label='Q (L/s)', labelWidth=16, labelHeight=10,
                 pixelsPerLabel=10, rangePad=10)
     } else {

@@ -10,6 +10,8 @@ observeEvent({
     input$SITES4
     input$DATE4
     input$CONC_FLUX4
+    input$CONC_UNIT4
+    input$FLUX_UNIT4
 }, {
     changesInSelections4$facetA4 = changesInSelections4$facetA4 + 1
     changesInSelections4$facetB4 = changesInSelections4$facetB4 + 1
@@ -71,8 +73,12 @@ data4 <- reactive ({
         filter(datetime <= input$DATE4[2]) %>%
         select(one_of("datetime", "site_name", input$SOLUTES4))
 
-    if(input$CONC_FLUX4 == 'Concentration'){
-        data4 = convert_conc_units(data4, desired_unit=input$CONC_UNIT4)
+    if(init_vals$enable_unitconvert){
+        if(input$CONC_FLUX4 == 'Concentration'){
+            data4 = convert_conc_units(data4, desired_unit=input$CONC_UNIT4)
+        } else if(input$CONC_FLUX4 == 'Flux'){
+            data4 = convert_flux_units(data4, desired_unit=input$FLUX_UNIT4)
+        }
     }
 
     return(data4)

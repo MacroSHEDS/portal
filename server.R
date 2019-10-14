@@ -18,6 +18,7 @@ shinyServer(function(input, output, session){
     # landing_page_trigger = TRUE
     init_vals = reactiveValues()
     init_vals$enable_facets = FALSE
+    init_vals$enable_unitconvert = FALSE
     # init_vals$flash_plot = 0
     # init_vals$flash_plots = 0
 
@@ -55,6 +56,7 @@ shinyServer(function(input, output, session){
     observeEvent(once=TRUE, ignoreNULL=FALSE, ignoreInit=FALSE,
             eventExpr=TRUE, {
         landing_page
+        init_vals$enable_unitconvert = TRUE
     })
 
     observeEvent(once=TRUE, ignoreNULL=FALSE, ignoreInit=TRUE,

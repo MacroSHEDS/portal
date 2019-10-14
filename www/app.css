@@ -1,8 +1,16 @@
 @charset "UTF-8";
 
+/*
+GENERAL
+*/
+
 body {
 	font-family: 'Montserrat', sans-serif;
 }
+
+/*
+SPLASH PAGE
+*/
 
 .modal.in .modal-dialog {
     width: 100%;
@@ -21,6 +29,10 @@ body {
     display: none;
 }*/
 
+
+/*
+APP TEXT FORMATTING
+*/
 
 .section-heading {
     font-weight: bold;
@@ -41,7 +53,10 @@ body {
     margin: 0px;
 }
 
-/*#SOLUTES4 ~ .selectize-control {*/
+/*
+SELECTIZE MODIFICATIONS
+*/
+
 .selectize-control {
     font-size: 70%;
     margin-bottom: 0px;
@@ -52,6 +67,10 @@ body {
     background-color: #efefef !important;
     font-size: 140% !important;
 }
+
+/*
+PARTICIPANTS PAGE SCROLL CONTROL
+*/
 
 .wrapper {
     overflow-y: visible;
@@ -64,6 +83,10 @@ body {
 .shiny-input-container{
     margin-bottom: 0px;
 }
+
+/*
+COLLAPSE SECTION
+*/
 
 .sidebar-collapse .left-side, .sidebar-collapse .main-sidebar{
     transform: translate(0,0);
@@ -95,6 +118,10 @@ body {
 .content-wrapper-wide {
     margin-left: 36px !important;
 }
+
+/*
+MISC, SOME BORROWED FROM HBEF DATA+
+*/
 
 .recalculating { opacity: 1.0; }
 

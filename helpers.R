@@ -85,13 +85,16 @@ convert_conc_units = function(df, input_unit='mg/L', desired_unit){
 
     require(PeriodicTable)
 
-    # dunchar = nchar(desired_unit)
-    # last_letter = substr(desired_unit, dunchar, dunchar)
+    # df = data.frame(datetime=as.POSIXct(1:4, origin='1970-01-01'),
+    #     sitename=rep('a', 4), Cl=1:4)
+    # dd <<- df
+    # df = dd
+    # desired_unit='meq/L'
 
     conc_cols = colnames(df) %in% conc_vars
     conc_df = df[conc_cols]
 
-    if('g' %in% desired_unit){
+    if(grepl('g', desired_unit)){
 
         converted = switch(desired_unit,
             'ng/L' = conc_df * 1000000,
@@ -112,7 +115,7 @@ convert_conc_units = function(df, input_unit='mg/L', desired_unit){
             'M' = molar_mass / 1000, #desired unit must be 'M'
             'e' = molar_mass / 1000) #desired unit must be 'eq/L'
 
-        if('q' %in% desired_unit){
+        if(grepl('q', desired_unit)){
             valence = variables$valence[variables$variable_code %in% solutes]
             mm_scaled = mm_scaled * valence
         }
@@ -122,7 +125,27 @@ convert_conc_units = function(df, input_unit='mg/L', desired_unit){
 
     df[conc_cols] = converted
 
-    return(converted)
+    return(df)
+}
+
+convert_flux_units = function(df, input_unit='kg/ha/d', desired_unit){
+
+    #df is a data frame or tibble of numeric flux data
+    #input_unit is the unit of flux (must be 'kg/ha/d')
+    #desired unit is one of the keys in the call to `switch` below
+
+    flux_cols = colnames(df) %in% conc_vars
+    flux_df = df[flux_cols]
+
+    converted = switch(desired_unit,
+        'Mg/ha/d' = flux_df / 1000,
+        'kg/ha/d' = flux_df,
+        'g/ha/d' = flux_df * 1000,
+        'mg/ha/d' = flux_df * 1000000)
+
+    df[flux_cols] = converted
+
+    return(df)
 }
 
 # log10_ceiling = function(x) {

@@ -20,6 +20,10 @@ shinyjs.init = function() {
         $('#GRAPH_FLOW4').delay(200).fadeOut(400).fadeIn(400)
     });
 
+    //tooltips and some styling
+    $('input[name^="CONC_FLUX"][value="Flux"]').parent()
+        .attr('title', 'Flux calculation: daily mean concentration times daily mean discharge, linearly interpolated.')
+        .css('color', 'blue')
 }
 
 //shinyjs.calcHeight = function(propHeight) {

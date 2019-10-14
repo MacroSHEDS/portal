@@ -2,18 +2,28 @@ oneSiteNVar_tab = tabPanel("Single Site", value='site_exploration',
     sidebarLayout(
         # Sidebar with tabs for Solute, Sites, Options
         sidebarPanel(
-            div('Choose a site', class='widget-title text-center'),
+            div('Select a site', class='widget-title text-center'),
             selectizeInput('SITES4', label=NULL, selected=default_site,
                 choices=sites),
             br(),
-            div('Choose variables', class='widget-title text-center'),
+            div('Select variables', class='widget-title text-center'),
             selectizeInput('SOLUTES4', label=NULL,
                 selected=grabvars_display_subset[[1]][[1]],
                 multiple=TRUE, choices=grabvars_display_subset),
             div('(Up to 9)', class='widget-subtitle text-center'),
+            br(),
+            div('Select units', class='widget-title text-center'),
             radioButtons('CONC_FLUX4', label=NULL,
                 choices=c('Concentration'='Concentration',
                     'Flux (interpolated)'='Flux'), selected='Concentration'),
+            conditionalPanel('input.CONC_FLUX4 == "Concentration"',
+                selectizeInput('CONC_UNIT4', label=NULL, choices=conc_units,
+                    selected='mg/L')
+            ),
+            conditionalPanel('input.CONC_FLUX4 == "Flux"',
+                selectizeInput('FLUX_UNIT4', label=NULL, choices=flux_units,
+                    selected='kg/ha/d')
+            ),
             conditionalPanel('false', #hiding this until it's necessary
                 radioButtons('PRECIP_SOURCE4', label='Precip data source',
                     choices=c('Collector Catch (mm)'='precipCatch',
