@@ -1,6 +1,5 @@
 nSiteNVar_tab = tabPanel("Multisite", value='multisite_exploration',
     sidebarLayout(
-        # Sidebar with tabs for Solute, Sites, Options
         sidebarPanel(
             div('Select sites', class='widget-title text-center'),
             selectizeInput('SITES3', label=NULL, selected=default_site,
@@ -25,55 +24,39 @@ nSiteNVar_tab = tabPanel("Multisite", value='multisite_exploration',
                 selectizeInput('FLUX_UNIT3', label=NULL, choices=flux_units,
                     selected='kg/ha/d')
             ),
-        width=3), # closes sidebarPanel
+        width=3),
 
-        # Plot
         mainPanel(
-            wellPanel(
-                sliderInput("DATE3", label=NULL,
-                    min=dtrng[1], max=dtrng[2],
-                    value=c(max(dtrng[2] - lubridate::days(365),
-                        initial_dtrng[1], na.rm=TRUE),
-                        dtrng[2]),
-                    width="100%", timeFormat="%b %Y", step=30,
-                    dragRange=TRUE)
-            ),
-            #tags$h4(textOutput("TITLE3")),
-            fluidRow(
-                dygraphOutput("GRAPH_PRECIP3", height='75px'),
-                br()
-            ),
-            # conditionalPanel(
-            #     condition = "input.SOLUTE3_OPTION == true",
-            fluidRow(
-                conditionalPanel(paste('input.SOLUTES3 !== null &&',
-                        'input.SITES3 !== null'),
-                    dygraphOutput("GRAPH_MAIN3a", height='125px'),
-                    br()
-                ),
-                conditionalPanel('input.SOLUTES3.length > 1',
-                    dygraphOutput("GRAPH_MAIN3b", height='125px'),
-                    br()
-                ),
-                conditionalPanel('input.SOLUTES3.length > 2',
-                    dygraphOutput("GRAPH_MAIN3c", height='125px'),
-                    br()
+            fluidRow(class='text-center',
+                wellPanel(
+                    sliderInput("DATE3", label=NULL, min=dtrng[1], max=dtrng[2],
+                        value=c(max(dtrng[2] - lubridate::days(365),
+                            initial_dtrng[1], na.rm=TRUE),
+                            dtrng[2]),
+                        width="100%", timeFormat="%b %Y", step=30,
+                        dragRange=TRUE),
+                    dygraphOutput("GRAPH_PRECIP3", height='75px'),
+                    br(),
+                    div(id='main3a'),
+                    conditionalPanel(paste('input.SOLUTES3 !== null &&',
+                            'input.SITES3 !== null'),
+                        dygraphOutput("GRAPH_MAIN3a", height='125px'),
+                        br()
+                    ),
+                    div(id='main3b'),
+                    conditionalPanel('input.SOLUTES3.length > 1',
+                        dygraphOutput("GRAPH_MAIN3b", height='125px'),
+                        br()
+                    ),
+                    div(id='main3c'),
+                    conditionalPanel('input.SOLUTES3.length > 2',
+                        dygraphOutput("GRAPH_MAIN3c", height='125px'),
+                        br()
+                    ),
+                    div(id='flow3'),
+                    dygraphOutput("GRAPH_FLOW3", height='75px')
                 )
-            ),
-            # ),
-            fluidRow(
-                dygraphOutput("GRAPH_FLOW3", height='75px')
             )
-            # use for when testing data selection
-            # hr(),
-            # h4("Table of Selected Data"),
-            # HTML("<p>Search bar finds specific values within selected
-            #    data (e.g. '2014-06', '5.'). <br> Arrows (to the right
-            #    of column names) sort data in ascending or descending
-            #    order.</p>"
-            # ),
-            # used when testing data sorting
-            # dataTableOutput("TABLE3")
-        ) # closes mainPanel
-    ) # closes sidebarLayout
-) # Closes Panel 3 tabPanel
+        )
+    )
+)

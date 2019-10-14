@@ -162,7 +162,8 @@ output$GRAPH_MAIN3a <- renderDygraph({
             dyOptions(useDataTimezone=TRUE, drawPoints=FALSE,
                 colors=linecolors, strokeWidth=2,
                 retainDateWindow=TRUE, connectSeparatedPoints=TRUE) %>%
-            dyLegend(show='onmouseover', labelsSeparateLines=TRUE) %>%
+            dyLegend(show='always', labelsSeparateLines=FALSE,
+                labelsDiv='main3a') %>%
             dyAxis('y', label=ylab, labelWidth=16, labelHeight=10,
                 pixelsPerLabel=20, rangePad=10)
     } else {
@@ -205,7 +206,8 @@ output$GRAPH_MAIN3b <- renderDygraph({
             dyOptions(useDataTimezone=TRUE, drawPoints=FALSE,
                 colors=linecolors, strokeWidth=2,
                 retainDateWindow=TRUE, connectSeparatedPoints=TRUE) %>%
-            dyLegend(show='onmouseover', labelsSeparateLines=TRUE) %>%
+            dyLegend(show='always', labelsSeparateLines=FALSE,
+                labelsDiv='main3b') %>%
             dyAxis('y', label=ylab, labelWidth=16, labelHeight=10,
                 pixelsPerLabel=20, rangePad=10)
     } else {
@@ -249,7 +251,8 @@ output$GRAPH_MAIN3c <- renderDygraph({
             dyOptions(useDataTimezone=TRUE, drawPoints=FALSE,
                 colors=linecolors, strokeWidth=2,
                 retainDateWindow=TRUE, connectSeparatedPoints=TRUE) %>%
-            dyLegend(show='onmouseover', labelsSeparateLines=TRUE) %>%
+            dyLegend(show='always', labelsSeparateLines=FALSE,
+                labelsDiv='main3c') %>%
             dyAxis('y', label=ylab, labelWidth=16, labelHeight=10,
                 pixelsPerLabel=20, rangePad=10)
     } else {
@@ -278,7 +281,8 @@ output$GRAPH_FLOW3 <- renderDygraph({
                 # strokeBorderColor='#4b92cc', strokeBorderWidth=1,
                 strokeWidth=1, fillAlpha=0.4, retainDateWindow=TRUE,
                 colors=linecolors, connectSeparatedPoints=TRUE) %>%
-            dyLegend(show='onmouseover', labelsSeparateLines=TRUE) %>%
+            dyLegend(show='always', labelsSeparateLines=FALSE,
+                labelsDiv='flow3') %>%
             dyAxis('y', label='Q (L/s)', labelWidth=16, labelHeight=10,
                 pixelsPerLabel=10, rangePad=10)
     } else {

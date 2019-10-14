@@ -85,12 +85,6 @@ convert_conc_units = function(df, input_unit='mg/L', desired_unit){
 
     require(PeriodicTable)
 
-    # df = data.frame(datetime=as.POSIXct(1:4, origin='1970-01-01'),
-    #     sitename=rep('a', 4), Cl=1:4)
-    # dd <<- df
-    # df = dd
-    # desired_unit='meq/L'
-
     conc_cols = colnames(df) %in% conc_vars
     conc_df = df[conc_cols]
 
