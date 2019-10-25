@@ -1,18 +1,18 @@
 nSiteNVar_tab = tabPanel("Multisite", value='multisite_exploration',
     sidebarLayout(
         sidebarPanel(
-            div('Select sites', class='widget-title text-center'),
+            div('Sites', class='widget-title text-center'),
             selectizeInput('SITES3', label=NULL, selected=default_site,
                 choices=sites, multiple=TRUE),
             div('(Up to 3)', class='widget-subtitle text-center'),
             br(),
-            div('Select variables', class='widget-title text-center'),
+            div('Variables', class='widget-title text-center'),
             selectizeInput('SOLUTES3', label=NULL,
                 selected=grabvars_display_subset[[1]][[1]],
                 multiple=TRUE, choices=grabvars_display_subset),
             div('(Up to 3)', class='widget-subtitle text-center'),
             br(),
-            div('Select unit', class='widget-title text-center'),
+            div('Unit', class='widget-title text-center'),
             div('(Applies to solutes only)',
                 class='widget-subtitle text-center'),
             radioButtons('CONC_FLUX3', label=NULL,
@@ -26,6 +26,10 @@ nSiteNVar_tab = tabPanel("Multisite", value='multisite_exploration',
                 selectizeInput('FLUX_UNIT3', label=NULL, choices=flux_units,
                     selected='kg/ha/d')
             ),
+            br(),
+            div('Aggregation', class='widget-title text-center'),
+            radioButtons('AGG3', label=NULL,
+                choices=c('Daily', 'Monthly', 'Yearly'), selected='Monthly'),
         width=3),
 
         mainPanel(

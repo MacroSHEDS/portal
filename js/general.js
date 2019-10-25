@@ -10,9 +10,10 @@ shinyjs.init = function() {
         });
     });
 
-    //set height of participants tab
+    //set height of some tab windows
     var wheight = $(window).height() - 100 + 'px';
     $('[data-value="participants"]').css('max-height', wheight);
+    $('[data-value="hiring"]').css('max-height', wheight);
 
     //highlight plots when sites are selected via map
     Shiny.addCustomMessageHandler('flash_plot', function(message) {

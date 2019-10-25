@@ -117,6 +117,9 @@ concWeighted4 = reactive({
     # dd <<- data4()
     # ff <<- dataFlow4()
 
+    #make this a helper func; should be an aggregation param that
+        #accepts 'monthly', 'yearly'; also params flowdf and concdf
+
     # monthlyQ = ff %>%
     monthlyQ = dataFlow4() %>%
         rename(Q=flowMaxPerDate) %>%

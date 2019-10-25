@@ -7,6 +7,7 @@ source('ui/about_ui.R')
 source('ui/participants_ui.R')
 # source('ui/summary_biplot_ui.R')
 source('ui/map_ui.R')
+source('ui/now_hiring_ui.R')
 
 shinyUI(fluidPage(
 
@@ -24,6 +25,7 @@ shinyUI(fluidPage(
             div(class='sidebar-sub',
                 # HTML('<input type="text" id="MAPDATA" style="display: none">'),
                 tabsetPanel(id='left_tabs',
+                    now_hiring_tab,
                     about_tab,
                     participants_tab,
                     map_tab

@@ -1,5 +1,5 @@
 participants_tab = tabPanel('Participants', value='participants',
-        style = 'overflow-y: scroll; overflow-x: visible;',
+        style='overflow-y: scroll; overflow-x: visible;',
     div(style='padding: 20px',
         fluidRow(class='text-center',
             h2('Principal Investigators'),

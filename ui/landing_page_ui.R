@@ -1,17 +1,18 @@
-landing_page = 
+landing_page =
     showModal(
         modalDialog(title=NULL, footer=NULL, easyClose=TRUE,
             fluidRow(class='text-center',
                 column(12,
-                    img(src='logo.svg',
+                    img(src='new_logo_full.png',
                         style='height: 100px; width: 300px'),
+                    br(),
                     br(),
                     br()
                 )
             ),
             fluidRow(class='text-center',
                 column(4,
-                    img(src='water-solid-396060.svg',
+                    img(src='water-solid-193d85.svg',
                         style='height: 56px; width: 56px'),
                     h1(textOutput('NSTREAMS'), style='color: gray'),
                     p('STREAMS')
