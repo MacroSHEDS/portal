@@ -112,48 +112,9 @@ dataFlow4 <- reactive({
     dataFlow4
 })
 
-concWeighted4 = reactive({
-
-    # dd <<- data4()
-    # ff <<- dataFlow4()
-
-    #make this a helper func; should be an aggregation param that
-        #accepts 'monthly', 'yearly'; also params flowdf and concdf
-
-    # monthlyQ = ff %>%
-    monthlyQ = dataFlow4() %>%
-        rename(Q=flowMaxPerDate) %>%
-        group_by(month=floor_date(datetime, 'month')) %>%
-        summarize(Q=mean(Q, na.rm=FALSE)) %>%
-        mutate(year=year(month))
-
-    yearlyQ = monthlyQ %>%
-        group_by(month=floor_date(month, 'year')) %>%
-        summarize(Qsum=sum(Q, na.rm=TRUE)) %>%
-        mutate(year=year(month)) %>%
-        select(-month)
-
-    monthlyQ = left_join(monthlyQ, yearlyQ, by='year') %>%
-        mutate(Qprop=Q / Qsum) %>%
-        select(month, Qprop)
-
-    # dd %>%
-    volWeightedConc = data4() %>%
-        group_by(month=floor_date(datetime, 'month'), site_name) %>%
-        select(-datetime) %>%
-        summarize_all(list(~mean(., na.rm=FALSE))) %>%
-        ungroup() %>%
-        left_join(monthlyQ, by='month') %>%
-        mutate_at(vars(-month, -site_name, -Qprop), ~(. * Qprop)) %>%
-        select(-Qprop)
-
-    return(volWeightedConc)
-})
-
 output$GRAPH_PRECIP4 <- renderDygraph({
 
     data <- dataPrecip4()
-    # temporary = concWeighted4() #delete
 
     if(nrow(data)){
 

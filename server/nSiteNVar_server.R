@@ -10,6 +10,7 @@ observeEvent({
     input$CONC_FLUX3
     input$CONC_UNIT3
     input$FLUX_UNIT3
+    input$AGG3
 }, {
     changesInSelections3$facetA3 = changesInSelections3$facetA3 + 1
     changesInSelections3$facetB3 = changesInSelections3$facetB3 + 1
@@ -59,15 +60,23 @@ observeEvent(input$SITES3, {
     #         site_dtrng[2]))
 })
 
-## Filter data to desired dates
 data3 <- reactive ({
 
-    data3 = if(input$CONC_FLUX3 == 'Concentration') grab else flux
+    data3 = if(input$CONC_FLUX3 == 'Flux') flux else grab
     data3 <- data3 %>%
         filter(datetime >= input$DATE3[1]) %>%
         filter(datetime <= input$DATE3[2]) %>%
         filter(site_name %in% input$SITES3) %>%
         select(one_of("datetime", "site_name", input$SOLUTES3))
+
+    if(input$AGG3 != 'Instantaneous'){
+        agg_period = switch(input$AGG3, 'Daily'='day', 'Monthly'='month',
+            'Yearly'='year')
+        data3 = data3 %>%
+            group_by(datetime=floor_date(datetime, agg_period), site_name) %>%
+            summarize_all(list(~mean(., na.rm=FALSE)))
+            # ungroup()
+    }
 
     if(init_vals$enable_unitconvert){
         if(input$CONC_FLUX3 == 'Concentration'){
@@ -85,7 +94,18 @@ dataPrecip3 <- reactive ({
         filter(datetime >= input$DATE3[1]) %>%
         filter(datetime <= input$DATE3[2]) %>%
         filter(site_name %in% sites_precip) %>%
-        select(one_of("datetime", "site", 'precipCatch')) %>%
+        select(one_of("datetime", "site_name", 'precipCatch'))
+
+    if(input$AGG3 != 'Instantaneous'){
+        agg_period = switch(input$AGG3, 'Daily'='day', 'Monthly'='month',
+            'Yearly'='year')
+        dataPrecip3 = dataPrecip3 %>%
+            group_by(datetime=floor_date(datetime, agg_period), site_name) %>%
+            summarize_all(list(~mean(., na.rm=FALSE))) %>%
+            ungroup()
+    }
+
+    dataPrecip3 = dataPrecip3 %>%
         # group_by(lubridate::yday(datetime)) %>%
         group_by(datetime) %>%
         summarise(medianPrecip=median(precipCatch, na.rm=TRUE)) %>%
@@ -96,18 +116,78 @@ dataFlow3 <- reactive ({
 
     dataFlow3 = filter(sensor, datetime > input$DATE3[1],
         datetime < input$DATE3[2], site_name %in% input$SITES3) %>%
-        # mutate(datetime=as.Date(datetime)) %>%
-        select(datetime, Q_Ls, site_name) %>%
-        group_by(datetime, site_name) %>%
-        summarise(flowMaxPerDate=max(Q_Ls, na.rm=TRUE)) %>%
-        ungroup()
+        select(datetime, Q_Ls, site_name)
+
+    if(input$AGG3 != 'Instantaneous'){
+        agg_period = switch(input$AGG3, 'Daily'='day', 'Monthly'='month',
+            'Yearly'='year')
+        dataFlow3 = dataFlow3 %>%
+            group_by(datetime=floor_date(datetime, agg_period), site_name) %>%
+            summarize_all(list(~max(., na.rm=FALSE))) %>%
+            ungroup()
+    } else {
+        dataFlow3 = dataFlow3 %>%
+            group_by(datetime, site_name) %>%
+            summarise(Q_Ls=max(Q_Ls, na.rm=TRUE)) %>%
+            ungroup()
+    }
 
     return(dataFlow3)
 })
 
+volWeighted3 = reactive({
+
+    # dd <<- data3()
+    # ff <<- dataFlow3()
+
+    #make this a helper func; should be an aggregation param that
+    #accepts 'monthly', 'yearly'; also params flowdf and concdf
+
+    if(input$AGG3 %in% c('Monthly', 'Yearly')){
+
+        samplevel =  data3() %>%
+        # samplevel = dd %>%
+            full_join(dataFlow3(), by=c('datetime', 'site_name')) %>%
+            # full_join(ff, by=c('datetime', 'site_name')) %>%
+            mutate_at(vars(-datetime, -site_name, -Q_Ls), ~(. * Q_Ls))
+
+        if(input$AGG3 == 'Monthly'){
+
+            samplevel = samplevel %>%
+                mutate(year = year(datetime))
+
+            agglevel = samplevel %>%
+                select(site_name, year, Q_Ls) %>%
+                group_by(year, site_name) %>%
+                summarize(Qsum=sum(Q_Ls, na.rm=TRUE))
+
+            volWeightedConc = samplevel %>%
+                select(-Q_Ls) %>%
+                left_join(agglevel, by=c('year', 'site_name')) %>%
+                mutate_at(vars(-datetime, -site_name, -year, -Qsum),
+                    ~(. / Qsum)) %>%
+                select(-Qsum, -year)
+
+        } else {
+
+            agglevel = samplevel %>%
+                group_by(site_name) %>%
+                summarize(Qsum=sum(Q_Ls, na.rm=TRUE))
+
+            volWeightedConc = samplevel %>%
+                select(-Q_Ls) %>%
+                left_join(agglevel, by='site_name') %>%
+                mutate_at(vars(-datetime, -site_name, -Qsum), ~(. / Qsum)) %>%
+                select(-Qsum)
+        }
+    }
+
+    return(volWeightedConc)
+})
+
 output$GRAPH_PRECIP3 <- renderDygraph({
 
-    data <- dataPrecip3()
+    data = dataPrecip3()
 
     if(nrow(data)){
 
@@ -134,15 +214,18 @@ output$GRAPH_MAIN3a <- renderDygraph({
     changesInSelections3$facetA3
     sites = na.omit(input$SITES3[1:3])
     varA = isolate(input$SOLUTES3[1])
+    vw = volWeighted3()
 
     varnames = filter(grabvars, variable_code == varA) %>%
         select(variable_name, unit) %>%
         mutate(combined = paste0(variable_name, ' (', unit, ')'))
 
+    print(head(data3()))
     widedat = isolate(data3()) %>%
         filter(site_name %in% sites) %>%
         select(datetime, site_name, one_of(varA)) %>%
         spread(site_name, !!varA)
+    print(head(widedat))
 
     if(nrow(widedat)){
 
@@ -266,7 +349,7 @@ output$GRAPH_MAIN3c <- renderDygraph({
 output$GRAPH_FLOW3 <- renderDygraph({
 
     widedat = dataFlow3() %>%
-        spread(site_name, flowMaxPerDate)
+        spread(site_name, Q_Ls)
 
     if(nrow(widedat)){
 

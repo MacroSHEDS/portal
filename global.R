@@ -88,6 +88,10 @@ conc_vars = filter(variables, unit == 'mg/L') %>%
 conc_units = c('ng/L', 'ug/L', 'mg/L', 'g/L', 'nM', 'uM', 'mM', 'M',
     'neq/L', 'ueq/L', 'meq/L', 'eq/L')
 flux_units = c('Mg/ha/d', 'kg/ha/d', 'g/ha/d', 'mg/ha/d')
+conc_flux3_names = c('Concentration'='Concentration','x'='Flux', 'y'='VWC')
+names(conc_flux3_names)[2] = paste('Flux (interpolated)', enc2native('\U2753'))
+names(conc_flux3_names)[3] = paste('Flux (VWC)', enc2native('\U2753'))
+# names(conc_flux3_names)[3] = paste('VWC', enc2native('\U2370'))
 
 # linecolors = c("#000000", "#307975", "#691476", "#735E1F", "#6F0D2F",
 #     "#7F8D36", "#37096D", "#074670", "#0C2282", "#750D47")

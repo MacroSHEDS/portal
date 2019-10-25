@@ -121,12 +121,12 @@ COLLAPSE SECTION
 }
 
 /*
-MISC, SOME BORROWED FROM HBEF DATA+
+MISC
 */
 
 .recalculating { opacity: 1.0; }
 
-/* make the padding around the boxes smaller */
+/* reduce padding around bootstrap sections */
 [class*="col-lg-"],[class*="col-md-"],
 [class*="col-sm-"],[class*="col-xs-"]{
     padding-right: 5pt !important;
