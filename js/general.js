@@ -25,17 +25,22 @@ shinyjs.init = function() {
     $('input[name^="CONC_FLUX"][value="Flux"]').parent()
         .attr('title', 'Interpolated flux: mean concentration times mean discharge over the aggregation period (below), linearly interpolated.')
     $('input[name^="CONC_FLUX"][value="VWC"]').parent()
-        .attr('title', 'Volume-weighted concentration: summation of instantaneous concentration and discharge measurements divided by total discharge over the aggregation period (below).')
+        .attr('title', 'Volume-weighted concentration: summation of instantaneous concentration and discharge measurements divided by total discharge over the aggregation period (below). NOTE: only available when aggregation > daily.')
     //    .css('color', 'blue')
     $('#INCONC3').attr('disabled', 'disabled').parent().parent()
-        .attr('title', 'Enabled only when unit is VWC and aggregation > daily');
+        .attr('title', 'Enabled only when unit is VWC and aggregation > daily.');
 
     //disable input conc checkbox unless monthly or annual VWC selected
     function govern_inconc3(){
-        if( $('input[name=CONC_FLUX3]:checked').val() == 'VWC' && $('input[name=AGG3]:checked').val() != 'Daily' ){
+        if( $('input[name=CONC_FLUX3]:checked').val() == 'VWC' &&
+                ['Monthly', 'Yearly'].includes($('input[name=AGG3]:checked').val()) ){
             $('#INCONC3').removeAttr('disabled').siblings().css('color', '#333');
+            $('input[name=AGG3][value=Daily]').attr('disabled','disabled').siblings().css('color', 'gray');
+            $('input[name=AGG3][value=Instantaneous').attr('disabled','disabled').siblings().css('color', 'gray');
         } else {
             $('#INCONC3').attr('disabled','disabled').siblings().css('color', 'gray');
+            $('input[name=AGG3][value=Daily]').removeAttr('disabled').siblings().css('color', '#333');
+            $('input[name=AGG3][value=Instantaneous]').removeAttr('disabled').siblings().css('color', '#333');
         }
     };
 
@@ -45,6 +50,19 @@ shinyjs.init = function() {
 
     $('body').ready(function(){
         $('#AGG3').change(govern_inconc3);
+    });
+
+    //disable VWC unless monthly or annual aggregation selected
+    function govern_VWC3(){
+        if( ['Monthly', 'Yearly'].includes($('input[name=AGG3]:checked').val()) ){
+            $('input[name=CONC_FLUX3][value=VWC]').removeAttr('disabled').siblings().css('color', '#333');
+        } else {
+            $('input[name=CONC_FLUX3][value=VWC]').attr('disabled', 'disabled').siblings().css('color', 'gray');
+        }
+    };
+
+    $('body').ready(function(){
+        $('input[name=AGG3]').change(govern_VWC3);
     });
 
 }

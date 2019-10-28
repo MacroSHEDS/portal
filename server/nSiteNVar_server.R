@@ -86,6 +86,8 @@ data3 <- reactive ({
         }
     }
 
+    return(data3)
+
 })
 
 dataPrecip3 <- reactive ({
@@ -137,49 +139,40 @@ dataFlow3 <- reactive ({
 
 volWeighted3 = reactive({
 
-    # dd <<- data3()
-    # ff <<- dataFlow3()
+    samplevel =  data3() %>%
+    # samplevel = dd %>%
+        full_join(dataFlow3(), by=c('datetime', 'site_name')) %>%
+        # full_join(ff, by=c('datetime', 'site_name')) %>%
+        mutate_at(vars(-datetime, -site_name, -Q_Ls), ~(. * Q_Ls))
 
-    #make this a helper func; should be an aggregation param that
-    #accepts 'monthly', 'yearly'; also params flowdf and concdf
+    if(input$AGG3 == 'Monthly'){ #otherwise Yearly; flow controlled by js
 
-    if(input$AGG3 %in% c('Monthly', 'Yearly')){
+        samplevel = samplevel %>%
+            mutate(year = year(datetime))
 
-        samplevel =  data3() %>%
-        # samplevel = dd %>%
-            full_join(dataFlow3(), by=c('datetime', 'site_name')) %>%
-            # full_join(ff, by=c('datetime', 'site_name')) %>%
-            mutate_at(vars(-datetime, -site_name, -Q_Ls), ~(. * Q_Ls))
+        agglevel = samplevel %>%
+            select(site_name, year, Q_Ls) %>%
+            group_by(year, site_name) %>%
+            summarize(Qsum=sum(Q_Ls, na.rm=TRUE))
 
-        if(input$AGG3 == 'Monthly'){
+        volWeightedConc = samplevel %>%
+            select(-Q_Ls) %>%
+            left_join(agglevel, by=c('year', 'site_name')) %>%
+            mutate_at(vars(-datetime, -site_name, -year, -Qsum),
+                ~(. / Qsum)) %>%
+            select(-Qsum, -year)
 
-            samplevel = samplevel %>%
-                mutate(year = year(datetime))
+    } else {
 
-            agglevel = samplevel %>%
-                select(site_name, year, Q_Ls) %>%
-                group_by(year, site_name) %>%
-                summarize(Qsum=sum(Q_Ls, na.rm=TRUE))
+        agglevel = samplevel %>%
+            group_by(site_name) %>%
+            summarize(Qsum=sum(Q_Ls, na.rm=TRUE))
 
-            volWeightedConc = samplevel %>%
-                select(-Q_Ls) %>%
-                left_join(agglevel, by=c('year', 'site_name')) %>%
-                mutate_at(vars(-datetime, -site_name, -year, -Qsum),
-                    ~(. / Qsum)) %>%
-                select(-Qsum, -year)
-
-        } else {
-
-            agglevel = samplevel %>%
-                group_by(site_name) %>%
-                summarize(Qsum=sum(Q_Ls, na.rm=TRUE))
-
-            volWeightedConc = samplevel %>%
-                select(-Q_Ls) %>%
-                left_join(agglevel, by='site_name') %>%
-                mutate_at(vars(-datetime, -site_name, -Qsum), ~(. / Qsum)) %>%
-                select(-Qsum)
-        }
+        volWeightedConc = samplevel %>%
+            select(-Q_Ls) %>%
+            left_join(agglevel, by='site_name') %>%
+            mutate_at(vars(-datetime, -site_name, -Qsum), ~(. / Qsum)) %>%
+            select(-Qsum)
     }
 
     return(volWeightedConc)
@@ -214,18 +207,21 @@ output$GRAPH_MAIN3a <- renderDygraph({
     changesInSelections3$facetA3
     sites = na.omit(input$SITES3[1:3])
     varA = isolate(input$SOLUTES3[1])
-    vw = volWeighted3()
 
     varnames = filter(grabvars, variable_code == varA) %>%
         select(variable_name, unit) %>%
         mutate(combined = paste0(variable_name, ' (', unit, ')'))
 
-    print(head(data3()))
-    widedat = isolate(data3()) %>%
+    if(input$CONC_FLUX3 == 'VWC'){
+        widedat = volWeighted3()
+    } else {
+        widedat = isolate(data3())
+    }
+
+    widedat = widedat %>%
         filter(site_name %in% sites) %>%
         select(datetime, site_name, one_of(varA)) %>%
         spread(site_name, !!varA)
-    print(head(widedat))
 
     if(nrow(widedat)){
 
