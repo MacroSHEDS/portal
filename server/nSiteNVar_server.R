@@ -41,28 +41,46 @@ observeEvent({
     changesInSelections3$facetC3 = changesInSelections3$facetC3 + 1
 })
 
-observeEvent(input$SITES3, {
+grab = reactive({
+    domain = input$DOMAINS3
+    grab = read_feather(glue('data/{dmn}/grab.feather', dmn=domain)) %>%
+        filter(datetime < as.Date('2013-01-01')) %>% #temporary
+        filter(site_name %in% sites_with_Q) #temporary
+})
 
-    grab_subset = filter(grab, site_name %in% input$SITES3)
+flux = reactive({
+    domain = input$DOMAINS3
+    flux = read_feather(glue('data/{dmn}/flux.feather', dmn=domain)) %>%
+        rename(datetime=date) %>% #temporary
+        select(-Q_Ld) %>% #temporary
+        filter(datetime < as.Date('2013-01-01')) #temporary
+})
+
+P = reactive({
+    domain = input$DOMAINS3
+    P = read_feather(glue('data/{dmn}/precip.feather', dmn=domain)) %>%
+        filter(datetime < as.Date('2013-01-01')) #temporary
+})
+
+Q = reactive({
+    domain = input$DOMAINS3
+    Q = read_feather(glue('data/{dmn}/discharge.feather', dmn=domain)) %>%
+        filter(datetime < as.Date('2013-01-01')) #temporary
+})
+
+observe({
+
+    grab_subset = filter(grab(), site_name %in% input$SITES3)
     grabvars_display_subset = populate_vars(grab_subset[-(1:2)])
 
     updateSelectizeInput(session, 'SOLUTES3',
         choices=grabvars_display_subset,
         selected=grabvars_display_subset[[1]][[1]])
-
-    # site_dtrng = as.Date(range(grab$datetime[grab$site_name %in% input$SITES3],
-    #     na.rm=TRUE))
-    #
-    # updateSliderInput(session, "DATE3",
-    #     label="Date Range", min=site_dtrng[1], max=site_dtrng[2], step=30,
-    #     value=c(max(site_dtrng[2] - lubridate::days(365),
-    #         site_dtrng[1], na.rm=TRUE),
-    #         site_dtrng[2]))
 })
 
-data3 <- reactive ({
+data3 <- reactive({
 
-    data3 = if(input$CONC_FLUX3 == 'Flux') flux else grab
+    data3 = if(input$CONC_FLUX3 == 'Flux') flux() else grab()
     data3 <- data3 %>%
         filter(datetime >= input$DATE3[1]) %>%
         filter(datetime <= input$DATE3[2]) %>%
@@ -90,13 +108,13 @@ data3 <- reactive ({
 
 })
 
-dataPrecip3 <- reactive ({
+dataPrecip3 <- reactive({
 
-    dataPrecip3 = P %>%
+    dataPrecip3 = P() %>%
         filter(datetime >= input$DATE3[1]) %>%
         filter(datetime <= input$DATE3[2]) %>%
         filter(site_name %in% sites_precip) %>%
-        select(one_of("datetime", "site_name", 'precipCatch'))
+        select(one_of("datetime", "site_name", 'P'))
 
     if(input$AGG3 != 'Instantaneous'){
         agg_period = switch(input$AGG3, 'Daily'='day', 'Monthly'='month',
@@ -110,15 +128,16 @@ dataPrecip3 <- reactive ({
     dataPrecip3 = dataPrecip3 %>%
         # group_by(lubridate::yday(datetime)) %>%
         group_by(datetime) %>%
-        summarise(medianPrecip=median(precipCatch, na.rm=TRUE)) %>%
+        summarise(medianPrecip=median(P, na.rm=TRUE)) %>%
         ungroup()
 })
 
 dataFlow3 <- reactive ({
 
-    dataFlow3 = filter(sensor, datetime > input$DATE3[1],
+    dataFlow3 = Q() %>%
+        filter(datetime > input$DATE3[1],
         datetime < input$DATE3[2], site_name %in% input$SITES3) %>%
-        select(datetime, Q_Ls, site_name)
+        select(datetime, Q, site_name)
 
     if(input$AGG3 != 'Instantaneous'){
         agg_period = switch(input$AGG3, 'Daily'='day', 'Monthly'='month',
@@ -130,7 +149,7 @@ dataFlow3 <- reactive ({
     } else {
         dataFlow3 = dataFlow3 %>%
             group_by(datetime, site_name) %>%
-            summarise(Q_Ls=max(Q_Ls, na.rm=TRUE)) %>%
+            summarise(Q=max(Q, na.rm=TRUE)) %>%
             ungroup()
     }
 
@@ -143,7 +162,7 @@ volWeighted3 = reactive({
     # samplevel = dd %>%
         full_join(dataFlow3(), by=c('datetime', 'site_name')) %>%
         # full_join(ff, by=c('datetime', 'site_name')) %>%
-        mutate_at(vars(-datetime, -site_name, -Q_Ls), ~(. * Q_Ls))
+        mutate_at(vars(-datetime, -site_name, -Q), ~(. * Q))
 
     if(input$AGG3 == 'Monthly'){ #otherwise Yearly; flow controlled by js
 
@@ -151,12 +170,12 @@ volWeighted3 = reactive({
             mutate(year = year(datetime))
 
         agglevel = samplevel %>%
-            select(site_name, year, Q_Ls) %>%
+            select(site_name, year, Q) %>%
             group_by(year, site_name) %>%
-            summarize(Qsum=sum(Q_Ls, na.rm=TRUE))
+            summarize(Qsum=sum(Q, na.rm=TRUE))
 
         volWeightedConc = samplevel %>%
-            select(-Q_Ls) %>%
+            select(-Q) %>%
             left_join(agglevel, by=c('year', 'site_name')) %>%
             mutate_at(vars(-datetime, -site_name, -year, -Qsum),
                 ~(. / Qsum)) %>%
@@ -166,10 +185,10 @@ volWeighted3 = reactive({
 
         agglevel = samplevel %>%
             group_by(site_name) %>%
-            summarize(Qsum=sum(Q_Ls, na.rm=TRUE))
+            summarize(Qsum=sum(Q, na.rm=TRUE))
 
         volWeightedConc = samplevel %>%
-            select(-Q_Ls) %>%
+            select(-Q) %>%
             left_join(agglevel, by='site_name') %>%
             mutate_at(vars(-datetime, -site_name, -Qsum), ~(. / Qsum)) %>%
             select(-Qsum)
@@ -188,18 +207,18 @@ output$GRAPH_PRECIP3 <- renderDygraph({
         dimnames(dydat) = list(NULL, 'P')
         ymax = max(dydat, na.rm=TRUE)
 
-        p = dygraph(dydat, group='nSiteNVar') %>%
+        dg = dygraph(dydat, group='nSiteNVar') %>%
             dyOptions(useDataTimezone=TRUE, drawPoints=FALSE, fillGraph=TRUE,
                 fillAlpha=1, colors='#4b92cc', strokeWidth=3,
                 plotter=hyetograph_js, retainDateWindow=TRUE) %>%
             dyAxis('y', label='P (mm)', valueRange=c(ymax + ymax * 0.1, 0),
                 labelWidth=16, labelHeight=10, pixelsPerLabel=10, rangePad=10)
     } else {
-        p = plot_empty_dygraph(isolate(input$DATE3), plotgroup='nSiteNVar',
+        dg = plot_empty_dygraph(isolate(input$DATE3), plotgroup='nSiteNVar',
             ylab='P (in)', px_per_lab=10)
     }
 
-    return(p)
+    return(dg)
 })
 
 output$GRAPH_MAIN3a <- renderDygraph({
@@ -345,7 +364,7 @@ output$GRAPH_MAIN3c <- renderDygraph({
 output$GRAPH_FLOW3 <- renderDygraph({
 
     widedat = dataFlow3() %>%
-        spread(site_name, Q_Ls)
+        spread(site_name, Q)
 
     if(nrow(widedat)){
 

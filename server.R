@@ -15,12 +15,9 @@ shinyServer(function(input, output, session){
     # })
     # js$getHeight50()
 
-    # landing_page_trigger = TRUE
     init_vals = reactiveValues()
     init_vals$enable_facets = FALSE
     init_vals$enable_unitconvert = FALSE
-    # init_vals$flash_plot = 0
-    # init_vals$flash_plots = 0
 
     observeEvent(input$COLLAPSE_SIDEBAR, {
         shinyjs::toggleClass(selector='.sidebar-sub',
@@ -29,7 +26,6 @@ shinyServer(function(input, output, session){
             class='content-wrapper-wide')
     })
 
-    # landing_page = read_file('ui/landing_page_ui.R')
     map_buttons = read_file('ui/map_buttons.html')
     source('ui/landing_page_ui.R', local=TRUE)
     source('server/site_comparison_server.R', local=TRUE)
@@ -50,7 +46,7 @@ shinyServer(function(input, output, session){
         nrow(site_data)
     })
     output$NOBS = renderText({
-        nrow(grab) + nrow(sensor)
+        nrow(grab) + nrow(Q) + nrow(flux) + nrow(P)
     })
 
     observeEvent(once=TRUE, ignoreNULL=FALSE, ignoreInit=FALSE,
@@ -68,7 +64,7 @@ shinyServer(function(input, output, session){
 
         map_selection = str_match(input$MAPDATA, '__(.+?)_goto$')[,2]
         updateSelectizeInput(session, 'SITES4',
-            label=NULL, selected=map_selection, choices=sites)
+            label=NULL, selected=map_selection, choices=default_sites) #temporary
 
         session$sendCustomMessage('flash_plot', jsonlite::toJSON('placeholder'))
         # input_vals$flash_plot = input_vals$flash_plot + 1

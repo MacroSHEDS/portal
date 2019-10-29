@@ -90,22 +90,22 @@ dataPrecip4 <- reactive({
         filter(datetime >= input$DATE4[1]) %>%
         filter(datetime <= input$DATE4[2]) %>%
         filter(site_name %in% sites_precip) %>%
-        select(one_of("datetime", "site_name", 'precipCatch')) %>%
+        select(one_of("datetime", "site_name", 'P')) %>%
         # group_by(lubridate::yday(datetime)) %>%
         group_by(datetime) %>%
-        summarise(medianPrecip=median(precipCatch, na.rm=TRUE)) %>%
+        summarise(medianPrecip=median(P, na.rm=TRUE)) %>%
         ungroup()
 })
 
 dataFlow4 <- reactive({
 
     if (input$FLOW_SOURCE4 == "flowSens") {
-        dataFlow4 = filter(sensor, datetime > input$DATE4[1],
+        dataFlow4 = filter(Q, datetime > input$DATE4[1],
                 datetime < input$DATE4[2],
                 site_name %in% input$SITES4) %>%
-            select(datetime, Q_Ls) %>%
+            select(datetime, Q) %>%
             group_by(datetime) %>%
-            summarise(flowMaxPerDate=max(Q_Ls, na.rm=TRUE)) %>%
+            summarise(flowMaxPerDate=max(Q, na.rm=TRUE)) %>%
             ungroup()
     }
 

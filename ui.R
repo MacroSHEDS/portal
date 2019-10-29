@@ -43,7 +43,7 @@ shinyUI(fluidPage(
             ),
             tabsetPanel(id='right_tabs',
                 # summary_biplot_tab,
-                oneSiteNVar_tab,
+                # oneSiteNVar_tab,
                 nSiteNVar_tab
                 # site_comparison_tab
             )
