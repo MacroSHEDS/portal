@@ -25,7 +25,7 @@ shinyjs.init = function() {
     $('input[name^="CONC_FLUX"][value="Flux"]').parent()
         .attr('title', 'Interpolated flux: mean concentration times mean discharge over the aggregation period (below), linearly interpolated.')
     $('input[name^="CONC_FLUX"][value="VWC"]').parent()
-        .attr('title', 'Volume-weighted concentration: summation of instantaneous concentration and discharge measurements divided by total discharge over the aggregation period (below). NOTE: only available when aggregation > daily.')
+        .attr('title', 'Volume-weighted concentration: summation of instantaneous concentration and discharge products divided by total discharge over the aggregation period (below). NOTE: only available when aggregation > daily.')
     //    .css('color', 'blue')
     $('#INCONC3').attr('disabled', 'disabled').parent().parent()
         .attr('title', 'Enabled only when unit is VWC and aggregation > daily.');

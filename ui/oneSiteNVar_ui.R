@@ -4,7 +4,7 @@ oneSiteNVar_tab = tabPanel("Single Site", value='site_exploration',
         sidebarPanel(
             div('Site', class='widget-title text-center'),
             selectizeInput('SITES4', label=NULL, selected=default_site,
-                choices=default_sites),
+                choices=default_sitelist),
             br(),
             div('Variables', class='widget-title text-center'),
             selectizeInput('SOLUTES4', label=NULL,

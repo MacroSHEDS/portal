@@ -23,13 +23,13 @@ library(glue)
 
 source('helpers.R')
 
-default_site = 'W1'
 default_domain = 'hbef'
+default_site = list('hbef'='W1', 'hjandrews'='GSLOOK')
 
 site_data = read.csv('data/site_data.csv', stringsAsFactors=FALSE)
 site_data = filter(site_data, domain != 'neon')
 
-default_sites = filter(site_data, domain == default_domain) %>%
+default_sitelist = filter(site_data, domain == default_domain) %>%
     pull(site_name)
 
 domains_df = unique(site_data[,c('domain', 'pretty_domain')])
@@ -67,7 +67,14 @@ names(conc_flux3_names)[3] = paste('Flux (VWC)', enc2native('\U2753'))
 #     "#7F8D36", "#37096D", "#074670", "#0C2282", "#750D47")
 linecolors = c('black', 'gray', 'red')
 
-sites_precip <- list("RG1", "RG11", "RG23", "RG22", "N", "S", "SP") #temporary
+sites_precip <- list('hbef'=c('RG1', 'RG11', 'RG23', 'RG22', 'N', 'S', 'SP'),
+    'hjandrews'=c('RD1507', 'L523RG', 'BLUERD', 'CARPMT', 'CENMET',
+        'EARTHF', 'FORKS_', 'FRISEL', 'WS3GRD', 'GSWS10', 'GSWS01',
+        'GSWS09', 'GSMACK', 'WS3JRD', 'MCRAEB', 'MIDWAY', 'WS3MRD',
+        'MIRKWD', 'MACKWE', 'RS13RG', 'H15PND', 'RS03RG', 'RS05RG',
+        'RS18RG', 'H15RCK', 'H15RDG', 'RDSEND', 'ROSSRG', 'WS1SDL',
+        'SPOTFI', 'SLTRWD', 'TRAILS', 'UNIT3B', 'UNIT3H', 'UPLMET',
+        'VANMET', 'VARMET', 'WS10RG', 'WS09RG')) #temporary (add flex)
 
 # conf = readLines('config.txt')
 # postgres_pw = extract_from_config('POSTGRESQL_PW')
@@ -85,24 +92,32 @@ sites_precip <- list("RG1", "RG11", "RG23", "RG22", "N", "S", "SP") #temporary
 #     dplyr::ungroup() %>%
 #     filter(datetime < as.Date('2013-01-01')) #temporary
 
-Q = read_feather('data/hbef/discharge.feather') %>%
-    filter(datetime < as.Date('2013-01-01')) #temporary
-sites_with_Q = unique(Q$site_name) #temporary (hard-code with andrews sites)
+Q = read_feather('data/hbef/discharge.feather')
+    # filter(datetime < as.Date('2013-01-01')) #temporary
+sites_with_Q = c('W1', 'W2', 'W3', 'W4', 'W5', 'W6', 'W7', 'W8', 'W9',
+    'GSLOOK', 'GSWS01', 'GSWS02', 'GSWS03', 'GSWS06', 'GSWS07', 'GSWS08',
+    'GSWS09', 'GSWS10', 'GSWSMA', 'GSWSMC', 'GSWSMF') #temporary (add flex)
 
 grab = read_feather('data/hbef/grab.feather') %>%
-    filter(datetime < as.Date('2013-01-01')) %>% #temporary
+    # filter(datetime < as.Date('2013-01-01')) %>% #temporary
     filter(site_name %in% sites_with_Q) #temporary
-grabvars_display_subset = populate_vars(grab[-(1:2)]) #hard-code this
 
-P = read_feather('data/hbef/precip.feather') %>%
-    filter(datetime < as.Date('2013-01-01')) #temporary
+grabvars_display_subset = populate_vars(grab[-(1:2)]) #temporary (add flex for multi dmn, also see server.R)
+# grabvars_display_subset = function(){
+#     v = populate_vars(grab[-(1:2)]) #temporary (add flex for multi dmn, also see server.R)
+#     return(v)
+# }
 
-flux = read_feather('data/hbef/flux.feather') %>%
-    rename(datetime=date) %>% #temporary
-    select(-Q_Ld) %>% #temporary
-    filter(datetime < as.Date('2013-01-01')) #temporary
+P = read_feather('data/hbef/precip.feather')
+    # filter(datetime < as.Date('2013-01-01')) #temporary
 
-initial_dtrng = as.Date(range(grab$datetime[grab$site_name == default_sites[1]],
+flux = read_feather('data/hbef/flux.feather')
+    # rename(datetime=date) %>% #temporary
+    # mutate(datetime=as.POSIXct(datetime)) %>%
+    # select(-Q_Ld) #temporary
+    # filter(datetime < as.Date('2013-01-01')) #temporary
+
+initial_dtrng = as.Date(range(grab$datetime[grab$site_name == default_sitelist[1]],
     na.rm=TRUE))
 dtrng = as.Date(range(grab$datetime, na.rm=TRUE))
 

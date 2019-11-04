@@ -48,7 +48,7 @@ parse_molecular_formulae = function(formulae){
     # formulae = 'BCH10He10PLi2'
     # formulae='Mn'
 
-    conc_vars = str_match(formulae, '^(?:OM|TM|DO|TD)?([A-Za-z0-9]+)_?')[,2]
+    conc_vars = str_match(formulae, '^(?:OM|TM|DO|TD|UT|UTK|TK)?([A-Za-z0-9]+)_?')[,2]
     two_let_symb_num = str_extract_all(conc_vars, '([A-Z][a-z][0-9]+)')
     conc_vars = str_remove_all(conc_vars, '([A-Z][a-z][0-9]+)')
     one_let_symb_num = str_extract_all(conc_vars, '([A-Z][0-9]+)')
@@ -145,3 +145,25 @@ convert_flux_units = function(df, input_unit='kg/ha/d', desired_unit){
 # log10_ceiling = function(x) {
 #     10^(ceiling(log10(x)))
 # }
+
+pad_ts3 = function(tsdf, sites, vars, datebounds){
+
+    nsites = length(sites)
+    nvars = length(vars)
+
+    dt_ext_rows = tibble(rep(as.POSIXct(datebounds), nsites),
+        rep(sites, each=2))
+    dt_ext_rows = bind_cols(dt_ext_rows, as.data.frame(matrix(NA_real_,
+        ncol=nvars, nrow=nsites * 2)))
+    colnames(dt_ext_rows) = c('datetime', 'site_name', vars)
+
+    # if(class(tsdf$datetime) == 'Date'){
+    #     dt_ext_rows$datetime = as.Date(dt_ext_rows$datetime)
+    # } else {
+    #     dt_ext_rows$datetime = as.POSIXct(dt_ext_rows$datetime)
+    # }
+
+    df_padded = bind_rows(dt_ext_rows, tsdf)
+
+    return(df_padded)
+}

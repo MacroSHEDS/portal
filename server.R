@@ -18,6 +18,7 @@ shinyServer(function(input, output, session){
     init_vals = reactiveValues()
     init_vals$enable_facets = FALSE
     init_vals$enable_unitconvert = FALSE
+    init_vals$recent_domain = 'hbef'
 
     observeEvent(input$COLLAPSE_SIDEBAR, {
         shinyjs::toggleClass(selector='.sidebar-sub',
@@ -46,7 +47,8 @@ shinyServer(function(input, output, session){
         nrow(site_data)
     })
     output$NOBS = renderText({
-        nrow(grab) + nrow(Q) + nrow(flux) + nrow(P)
+        # nrow(grab) + nrow(Q) + nrow(flux) + nrow(P) #incomplete
+        '~50 bazillion'
     })
 
     observeEvent(once=TRUE, ignoreNULL=FALSE, ignoreInit=FALSE,
@@ -64,7 +66,7 @@ shinyServer(function(input, output, session){
 
         map_selection = str_match(input$MAPDATA, '__(.+?)_goto$')[,2]
         updateSelectizeInput(session, 'SITES4',
-            label=NULL, selected=map_selection, choices=default_sites) #temporary
+            label=NULL, selected=map_selection, choices=default_sitelist) #temporary
 
         session$sendCustomMessage('flash_plot', jsonlite::toJSON('placeholder'))
         # input_vals$flash_plot = input_vals$flash_plot + 1
@@ -78,5 +80,9 @@ shinyServer(function(input, output, session){
     observeEvent(input$DISMISS_LANDING, {
         removeModal(session)
     })
+
+    # grabvars_display_subset = reactive({
+    #     v = populate_vars(grab()[-(1:2)]) #temporary (add flex for multi dmn; also see global.R)
+    # })
 
 })
