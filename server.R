@@ -49,7 +49,7 @@ shinyServer(function(input, output, session){
     output$NOBS = renderText({
         #temporary; crude estimate based on nobs from hbef and hjandrews
         x = sum(site_data$site_type == 'gaging_station') * 143295
-        paste0('~', round(x, -4))
+        format(round(x, -4), scientific=FALSE, big.mark=',')
     })
 
     observeEvent(once=TRUE, ignoreNULL=FALSE, ignoreInit=FALSE,

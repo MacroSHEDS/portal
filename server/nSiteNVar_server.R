@@ -131,6 +131,15 @@ observe({
         selected=grabvars_display_subset[[1]][[1]])
 })
 
+observe({
+
+    dmn = input$DOMAINS3
+
+    updateSelectizeInput(session, 'RAINSITES3',
+        selected=sites_with_P[[dmn]][1],
+        choices=sites_with_P[[dmn]])
+})
+
 data3 = reactive({
 
     data3 = if(input$CONC_FLUX3 == 'Flux') flux() else grab()
@@ -300,7 +309,8 @@ output$GRAPH_PRECIP3 = renderDygraph({
 
         dg = dygraph(dydat, group='nSiteNVar') %>%
             dyOptions(useDataTimezone=TRUE, drawPoints=FALSE, fillGraph=TRUE,
-                fillAlpha=1, colors='#4b92cc', strokeWidth=3,
+                # fillAlpha=1, colors='#4b92cc', strokeWidth=3,
+                fillAlpha=1, colors='#C6DBEF', strokeWidth=3,
                 plotter=hyetograph_js, retainDateWindow=TRUE) %>%
             dyAxis('y', label='P (mm)', valueRange=c(ymax + ymax * 0.1, 0),
                 labelWidth=16, labelHeight=10, pixelsPerLabel=10, rangePad=10)

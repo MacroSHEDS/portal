@@ -64,9 +64,7 @@ conc_flux3_names = c('Concentration'='Concentration','x'='Flux', 'y'='VWC')
 names(conc_flux3_names)[2] = paste('Flux (interpolated)', enc2native('\U2753'))
 names(conc_flux3_names)[3] = paste('Flux (VWC)', enc2native('\U2753'))
 
-# linecolors = c("#000000", "#307975", "#691476", "#735E1F", "#6F0D2F",
-#     "#7F8D36", "#37096D", "#074670", "#0C2282", "#750D47")
-linecolors = c('black', 'gray', 'red')
+linecolors = c('#252525', '#08519C', '#54278F')
 
 sites_with_P = list('hbef'=c('RG1', 'RG11', 'RG23', 'RG22', 'N', 'S', 'SP'),
     'hjandrews'=c('RD1507', 'L523RG', 'BLUERD', 'CARPMT', 'CENMET',

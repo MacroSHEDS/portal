@@ -47,7 +47,14 @@ APP TEXT FORMATTING
     font-weight: bold;
 }
 
-.widget-subtitle {
+.widget-title-sm {
+    font-size: 0.9em;
+    padding: 0px;
+    margin: 0px;
+    font-weight: bold;
+}
+
+.widget-caption {
     font-size: 0.8em;
     color: gray;
     padding: 0px;
