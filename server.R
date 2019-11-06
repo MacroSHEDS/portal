@@ -41,14 +41,15 @@ shinyServer(function(input, output, session){
     })
 
     output$NSTREAMS = renderText({
-        length(unique(site_data$stream))
+        nrow(unique(site_data[, c('stream', 'domain')]))
     })
     output$NSITES = renderText({
-        nrow(site_data)
+        sum(site_data$site_type == 'gaging_station')
     })
     output$NOBS = renderText({
-        # nrow(grab) + nrow(Q) + nrow(flux) + nrow(P) #incomplete
-        '~50 bazillion'
+        #temporary; crude estimate based on nobs from hbef and hjandrews
+        x = sum(site_data$site_type == 'gaging_station') * 143295
+        paste0('~', round(x, -4))
     })
 
     observeEvent(once=TRUE, ignoreNULL=FALSE, ignoreInit=FALSE,

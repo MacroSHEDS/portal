@@ -54,14 +54,14 @@ grab = reactive({
         grab = read_feather(glue('data/{dmn}/grab.feather', dmn=domain))
     }
 
-    grab = grab %>%
-        # filter(datetime < as.Date('2013-01-01')) %>% #temporary
-        filter(site_name %in% sites_with_Q) #temporary
+    grab = filter(grab, site_name %in% sites_with_Q)
 
     init_vals$recent_domain = domain
 
-    new_sitelist = filter(site_data, domain == input$DOMAINS3) %>%
+    new_sitelist = site_data %>%
+        filter(domain == input$DOMAINS3, site_type == 'gaging_station') %>%
         pull(site_name)
+
     updateSelectizeInput(session, 'SITES3', choices=new_sitelist,
         selected=default_site[[input$DOMAINS3]])
 
@@ -131,7 +131,7 @@ observe({
         selected=grabvars_display_subset[[1]][[1]])
 })
 
-data3 <- reactive({
+data3 = reactive({
 
     data3 = if(input$CONC_FLUX3 == 'Flux') flux() else grab()
     data3 = data3 %>%
@@ -140,6 +140,8 @@ data3 <- reactive({
         filter(site_name %in% input$SITES3) %>%
         select(one_of("datetime", "site_name", input$SOLUTES3))
         # mutate(datetime=as.POSIXct(datetime))
+
+    if(nrow(data3) == 0) return(data3)
 
     # isi <<- input$SITES3
     # ida <<- input$DATE3
@@ -171,7 +173,7 @@ data3 <- reactive({
 
 })
 
-dataPrecip3 <- reactive({
+dataPrecip3 = reactive({
 
     # pp <<- P()
     # ida <<- input$DATE3
@@ -184,11 +186,12 @@ dataPrecip3 <- reactive({
     dataPrecip3 = P() %>%
         filter(datetime >= input$DATE3[1]) %>%
         filter(datetime <= input$DATE3[2]) %>%
-        filter(site_name %in% sites_precip[[input$DOMAINS3]]) %>%
+        filter(site_name %in% sites_with_P[[input$DOMAINS3]]) %>%
         select(one_of("datetime", "site_name", 'precip'))
         # mutate(datetime=as.POSIXct(datetime))
 
-    dataPrecip3 = pad_ts3(dataPrecip3, input$SITES3, 'precip', input$DATE3)
+    dataPrecip3 = pad_ts3(dataPrecip3, unique(dataPrecip3$site_name),
+        'precip', input$DATE3)
     # nsites = length(input$SITES3)
     # dt_ext_rows = tibble(datetime=rep(as.POSIXct(input$DATE3), nsites),
     #     site_name=rep(input$SITES3, each=nsites),
@@ -211,13 +214,15 @@ dataPrecip3 <- reactive({
         ungroup()
 })
 
-dataFlow3 <- reactive ({
+dataFlow3 = reactive ({
 
     dataFlow3 = Q() %>%
         filter(datetime > input$DATE3[1],
         datetime < input$DATE3[2], site_name %in% input$SITES3) %>%
         select(datetime, site_name, Q)
         # mutate(datetime=as.POSIXct(datetime, tz='UTC'))
+
+    if(nrow(dataFlow3) == 0) return(dataFlow3)
 
     dataFlow3 = pad_ts3(dataFlow3, input$SITES3, 'Q', input$DATE3)
 
@@ -283,7 +288,7 @@ volWeighted3 = reactive({
     return(volWeightedConc)
 })
 
-output$GRAPH_PRECIP3 <- renderDygraph({
+output$GRAPH_PRECIP3 = renderDygraph({
 
     data = dataPrecip3()
 
@@ -307,15 +312,11 @@ output$GRAPH_PRECIP3 <- renderDygraph({
     return(dg)
 })
 
-output$GRAPH_MAIN3a <- renderDygraph({
+output$GRAPH_MAIN3a = renderDygraph({
 
     changesInSelections3$facetA3
     sites = na.omit(input$SITES3[1:3])
     varA = isolate(input$SOLUTES3[1])
-
-    # varnames = filter(grabvars, variable_code == varA) %>%
-    #     select(variable_name, unit) %>%
-    #     mutate(combined = paste0(variable_name, ' (', unit, ')'))
 
     if(input$CONC_FLUX3 == 'VWC'){
         widedat = volWeighted3()
@@ -358,21 +359,25 @@ output$GRAPH_MAIN3a <- renderDygraph({
     return(dg)
 })
 
-output$GRAPH_MAIN3b <- renderDygraph({
+output$GRAPH_MAIN3b = renderDygraph({
 
     changesInSelections3$facetB3
     sites = na.omit(input$SITES3[1:3])
     varB = isolate(input$SOLUTES3[2])
 
-    # varnames = filter(grabvars, variable_code == varB) %>%
-    #     select(variable_name, unit) %>%
-    #     mutate(combined = paste0(variable_name, ' (', unit, ')'))
-
     if(length(input$SOLUTES3) > 1){
-        widedat = isolate(data3()) %>%
+
+        if(input$CONC_FLUX3 == 'VWC'){
+            widedat = volWeighted3()
+        } else {
+            widedat = isolate(data3())
+        }
+
+        widedat = widedat %>%
             filter(site_name %in% sites) %>%
             select(datetime, site_name, one_of(varB)) %>%
             spread(site_name, !!varB)
+
     } else {
         widedat = data.frame()
     }
@@ -406,21 +411,25 @@ output$GRAPH_MAIN3b <- renderDygraph({
     return(dg)
 })
 
-output$GRAPH_MAIN3c <- renderDygraph({
+output$GRAPH_MAIN3c = renderDygraph({
 
     changesInSelections3$facetC3
     sites = na.omit(input$SITES3[1:3])
     varC = isolate(input$SOLUTES3[3])
 
-    # varnames = filter(grabvars, variable_code == varC) %>%
-    #     select(variable_name, unit) %>%
-    #     mutate(combined = paste0(variable_name, ' (', unit, ')'))
-
     if(length(input$SOLUTES3) > 2){
-        widedat = isolate(data3()) %>%
+
+        if(input$CONC_FLUX3 == 'VWC'){
+            widedat = volWeighted3()
+        } else {
+            widedat = isolate(data3())
+        }
+
+        widedat = widedat %>%
             filter(site_name %in% sites) %>%
             select(datetime, site_name, one_of(varC)) %>%
             spread(site_name, !!varC)
+
     } else {
         widedat = data.frame()
     }
@@ -455,7 +464,7 @@ output$GRAPH_MAIN3c <- renderDygraph({
     return(dg)
 })
 
-output$GRAPH_FLOW3 <- renderDygraph({
+output$GRAPH_FLOW3 = renderDygraph({
 
     widedat = dataFlow3() %>%
         spread(site_name, Q)

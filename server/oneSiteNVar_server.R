@@ -89,7 +89,7 @@ dataPrecip4 <- reactive({
     dataPrecip4 = P %>%
         filter(datetime >= input$DATE4[1]) %>%
         filter(datetime <= input$DATE4[2]) %>%
-        filter(site_name %in% sites_precip) %>%
+        filter(site_name %in% sites_with_P) %>%
         select(one_of("datetime", "site_name", 'P')) %>%
         # group_by(lubridate::yday(datetime)) %>%
         group_by(datetime) %>%

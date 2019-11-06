@@ -27,12 +27,13 @@ default_domain = 'hbef'
 default_site = list('hbef'='W1', 'hjandrews'='GSLOOK')
 
 site_data = read.csv('data/site_data.csv', stringsAsFactors=FALSE)
-site_data = filter(site_data, domain != 'neon')
+site_data = filter(site_data, as.logical(in_workflow))
 
-default_sitelist = filter(site_data, domain == default_domain) %>%
+default_sitelist = site_data %>%
+    filter(domain == default_domain, site_type == 'gaging_station') %>%
     pull(site_name)
 
-domains_df = unique(site_data[,c('domain', 'pretty_domain')])
+domains_df = unique(site_data[, c('domain', 'pretty_domain')])
 domains = domains_df$domain
 names(domains) = domains_df$pretty_domain
 
@@ -67,7 +68,7 @@ names(conc_flux3_names)[3] = paste('Flux (VWC)', enc2native('\U2753'))
 #     "#7F8D36", "#37096D", "#074670", "#0C2282", "#750D47")
 linecolors = c('black', 'gray', 'red')
 
-sites_precip <- list('hbef'=c('RG1', 'RG11', 'RG23', 'RG22', 'N', 'S', 'SP'),
+sites_with_P = list('hbef'=c('RG1', 'RG11', 'RG23', 'RG22', 'N', 'S', 'SP'),
     'hjandrews'=c('RD1507', 'L523RG', 'BLUERD', 'CARPMT', 'CENMET',
         'EARTHF', 'FORKS_', 'FRISEL', 'WS3GRD', 'GSWS10', 'GSWS01',
         'GSWS09', 'GSMACK', 'WS3JRD', 'MCRAEB', 'MIDWAY', 'WS3MRD',
@@ -75,6 +76,10 @@ sites_precip <- list('hbef'=c('RG1', 'RG11', 'RG23', 'RG22', 'N', 'S', 'SP'),
         'RS18RG', 'H15RCK', 'H15RDG', 'RDSEND', 'ROSSRG', 'WS1SDL',
         'SPOTFI', 'SLTRWD', 'TRAILS', 'UNIT3B', 'UNIT3H', 'UPLMET',
         'VANMET', 'VARMET', 'WS10RG', 'WS09RG')) #temporary (add flex)
+
+sites_with_Q = c('W1', 'W2', 'W3', 'W4', 'W5', 'W6', 'W7', 'W8', 'W9',
+    'GSLOOK', 'GSWS01', 'GSWS02', 'GSWS03', 'GSWS06', 'GSWS07', 'GSWS08',
+    'GSWS09', 'GSWS10', 'GSWSMA', 'GSWSMC', 'GSWSMF') #temporary (add flex)
 
 # conf = readLines('config.txt')
 # postgres_pw = extract_from_config('POSTGRESQL_PW')
@@ -89,18 +94,12 @@ sites_precip <- list('hbef'=c('RG1', 'RG11', 'RG23', 'RG22', 'N', 'S', 'SP'),
 #     dplyr::group_by(site_name, variable_code, datetime) %>%
 #     dplyr::summarize(value=mean(value,na.rm=TRUE)) %>%
 #     tidyr::spread(variable_code, value) %>%
-#     dplyr::ungroup() %>%
-#     filter(datetime < as.Date('2013-01-01')) #temporary
+#     dplyr::ungroup()
 
+P = read_feather('data/hbef/precip.feather')
 Q = read_feather('data/hbef/discharge.feather')
-    # filter(datetime < as.Date('2013-01-01')) #temporary
-sites_with_Q = c('W1', 'W2', 'W3', 'W4', 'W5', 'W6', 'W7', 'W8', 'W9',
-    'GSLOOK', 'GSWS01', 'GSWS02', 'GSWS03', 'GSWS06', 'GSWS07', 'GSWS08',
-    'GSWS09', 'GSWS10', 'GSWSMA', 'GSWSMC', 'GSWSMF') #temporary (add flex)
-
 grab = read_feather('data/hbef/grab.feather') %>%
-    # filter(datetime < as.Date('2013-01-01')) %>% #temporary
-    filter(site_name %in% sites_with_Q) #temporary
+    filter(site_name %in% sites_with_Q)
 
 grabvars_display_subset = populate_vars(grab[-(1:2)]) #temporary (add flex for multi dmn, also see server.R)
 # grabvars_display_subset = function(){
@@ -108,17 +107,12 @@ grabvars_display_subset = populate_vars(grab[-(1:2)]) #temporary (add flex for m
 #     return(v)
 # }
 
-P = read_feather('data/hbef/precip.feather')
-    # filter(datetime < as.Date('2013-01-01')) #temporary
-
 flux = read_feather('data/hbef/flux.feather')
-    # rename(datetime=date) %>% #temporary
-    # mutate(datetime=as.POSIXct(datetime)) %>%
-    # select(-Q_Ld) #temporary
-    # filter(datetime < as.Date('2013-01-01')) #temporary
 
 initial_dtrng = as.Date(range(grab$datetime[grab$site_name == default_sitelist[1]],
     na.rm=TRUE))
 dtrng = as.Date(range(grab$datetime, na.rm=TRUE))
 
 # DBI::dbDisconnect(con)
+
+# Q = feather::read_feather('~/git/macrosheds/portal/data/hjandrews/discharge.feather')
