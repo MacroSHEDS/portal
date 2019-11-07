@@ -27,7 +27,8 @@ shinyServer(function(input, output, session){
             class='content-wrapper-wide')
     })
 
-    map_buttons = read_file('ui/map_buttons.html')
+    stream_gauge_buttons = read_file('ui/stream_gauge_buttons.html')
+    rain_gauge_buttons = read_file('ui/rain_gauge_buttons.html')
     source('ui/landing_page_ui.R', local=TRUE)
     source('server/site_comparison_server.R', local=TRUE)
     source('server/oneSiteNVar_server.R', local=TRUE)
@@ -45,11 +46,11 @@ shinyServer(function(input, output, session){
         nrow(unique(site_data[, c('stream', 'domain')]))
     })
     output$NSITES = renderText({
-        sum(site_data$site_type == 'gaging_station')
+        sum(site_data$site_type == 'stream_gauge')
     })
     output$NOBS = renderText({
         #temporary; crude estimate based on nobs from hbef and hjandrews
-        x = sum(site_data$site_type == 'gaging_station') * 143295
+        x = sum(site_data$site_type == 'stream_gauge') * 143295
         format(round(x, -4), scientific=FALSE, big.mark=',')
     })
 

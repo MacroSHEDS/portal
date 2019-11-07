@@ -30,7 +30,7 @@ site_data = read_csv('data/site_data.csv') %>%
     filter(as.logical(in_workflow))
 
 default_sitelist = site_data %>%
-    filter(domain == default_domain, site_type == 'gaging_station') %>%
+    filter(domain == default_domain, site_type == 'stream_gauge') %>%
     pull(site_name)
 
 domains_df = unique(site_data[, c('domain', 'pretty_domain')])

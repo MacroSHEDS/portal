@@ -60,7 +60,7 @@ grab = reactive({
     init_vals$recent_domain = domain
 
     new_sitelist = site_data %>%
-        filter(domain == input$DOMAINS3, site_type == 'gaging_station') %>%
+        filter(domain == input$DOMAINS3, site_type == 'stream_gauge') %>%
         pull(site_name)
 
     updateSelectizeInput(session, 'SITES3', choices=new_sitelist,
