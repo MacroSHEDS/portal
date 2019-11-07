@@ -45,6 +45,7 @@ observeEvent({
 })
 
 grab = reactive({
+
     domain = input$DOMAINS3
 
     if(is.null(domain)){
@@ -71,7 +72,24 @@ grab = reactive({
     return(grab)
 })
 
+pchem = reactive({
+
+    domain = input$DOMAINS3
+
+    if(is.null(domain)){
+        pchem = read_feather(glue('data/{dmn}/pchem.feather',
+            dmn=init_vals$recent_domain))
+    } else {
+        pchem = read_feather(glue('data/{dmn}/pchem.feather', dmn=domain))
+    }
+
+    init_vals$recent_domain = domain
+
+    return(pchem)
+})
+
 flux = reactive({
+
     domain = input$DOMAINS3
 
     if(is.null(domain)){
@@ -90,6 +108,7 @@ flux = reactive({
 })
 
 P = reactive({
+
     domain = input$DOMAINS3
 
     if(is.null(domain)){
@@ -106,6 +125,7 @@ P = reactive({
 })
 
 Q = reactive({
+
     domain = input$DOMAINS3
 
     if(is.null(domain)){
@@ -134,10 +154,18 @@ observe({
 observe({
 
     dmn = input$DOMAINS3
+    dmnsites = sites_with_pchem[[dmn]]
 
-    updateSelectizeInput(session, 'RAINSITES3',
-        selected=sites_with_P[[dmn]][1],
-        choices=sites_with_P[[dmn]])
+    updateSelectizeInput(session, 'RAINSITES3', choices=dmnsites,
+        selected=dmnsites[1])
+
+    pchem_subset = filter(pchem(), site_name %in% dmnsites[1])
+    pchemvars_display_subset = populate_vars(pchem_subset[-(1:2)],
+        vartype='precip')
+
+    updateSelectizeInput(session, 'RAINVARS3',
+        choices=pchemvars_display_subset,
+        selected=pchemvars_display_subset[[1]][[1]])
 })
 
 data3 = reactive({

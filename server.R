@@ -37,7 +37,8 @@ shinyServer(function(input, output, session){
 
     #register clicking of map popup links
     observeEvent(input$SITE_EXPLORE, {
-        updateTabsetPanel(session, "right_tabs", selected="site_exploration")
+        #updateTabsetPanel(session, "right_tabs", selected="site_exploration")
+        updateTabsetPanel(session, "right_tabs", selected="multisite_exploration")
     })
 
     output$NSTREAMS = renderText({
@@ -65,8 +66,9 @@ shinyServer(function(input, output, session){
 
     observeEvent(input$MAPDATA, {
 
-        map_selection = str_match(input$MAPDATA, '__(.+?)_goto$')[,2]
-        updateSelectizeInput(session, 'SITES4',
+        map_selection = str_match(input$MAPDATA, '__(.+?)_goto.*$')[,2]
+        # updateSelectizeInput(session, 'SITES4',
+        updateSelectizeInput(session, 'SITES3', #temporary (switch back to SITES4 and update js call below)
             label=NULL, selected=map_selection, choices=default_sitelist) #temporary
 
         session$sendCustomMessage('flash_plot', jsonlite::toJSON('placeholder'))
