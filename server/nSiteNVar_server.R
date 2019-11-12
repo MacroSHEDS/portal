@@ -215,25 +215,56 @@ data3 = reactive({
 
 dataPchem3 = reactive({
 
+    # ppp <<- pchem() %>%
+    #     filter(datetime >= input$DATE3[1]) %>%
+    #     filter(datetime <= input$DATE3[2])
     pchem3 = pchem() %>%
         filter(datetime >= input$DATE3[1]) %>%
         filter(datetime <= input$DATE3[2]) %>%
-        filter(site_name %in% input$RAINSITES3) %>%
-        select(one_of("datetime", "site_name", input$RAINVARS3))
+        # filter(site_name %in% input$SITES3) %>%
+        # pchem3 = ppp %>%
+        group_by(datetime) %>%
+        summarize_at(vars(-site_name), ~mean(., na.rm=TRUE)) %>%
+        ungroup() %>%
+        select(one_of('datetime', input$SOLUTES3))
+        # filter(site_name %in% input$RAINSITES3) %>%
+        # select(one_of("datetime", "site_name", input$RAINVARS3))
+    # ppp <<- pchem3
 
     if(nrow(pchem3) == 0) return(pchem3)
+    # si <<- input$SITES3
+    # so <<- input$SOLUTES3
+    # da <<- input$DATE3
+    # tsdf = ppp; sites=NULL; vars=so; datebounds=da
 
-    pchem3 = pad_ts3(pchem3, input$RAINSITES3, input$RAINVARS3, input$DATE3)
+    pchem3 = pad_ts3(pchem3, sites=NULL, vars=input$SOLUTES3,
+        datebounds=input$DATE3)
+    # pchem3 = pad_ts3(pchem3, input$RAINSITES3, input$RAINVARS3, input$DATE3)
 
     agg_period = switch(input$AGG3, 'Monthly'='month', 'Yearly'='year')
     pchem3 = pchem3 %>%
-        group_by(datetime=floor_date(datetime, agg_period), site_name) %>%
+        group_by(datetime=floor_date(datetime, agg_period)) %>%
         summarize_all(list(~mean(., na.rm=TRUE))) %>%
         ungroup()
 
     if(init_vals$enable_unitconvert){
         pchem3 = convert_conc_units(pchem3, desired_unit=input$CONC_UNIT3)
     }#temporary: modify the above when RAIN_UNIT3 and PCHEM_CONC_FLUX3 exist
+
+    nsites = length(input$SITES3)
+    if(nsites > 1){
+
+        pchem3$site_name = input$SITES3[1]
+        pcopy = pchem3
+
+        for(i in 2:nsites){
+            pcopy$site_name = input$SITES3[i]
+            pchem3 = bind_rows(pchem3, pcopy)
+        }
+
+    } else {
+        pchem3$site_name = input$SITES3
+    }
 
     return(pchem3)
 
@@ -274,9 +305,9 @@ dataPrecip3 = reactive({
     }
 
     dataPrecip3 = dataPrecip3 %>%
-        # group_by(lubridate::yday(datetime)) %>%
         group_by(datetime) %>%
-        summarise(medianPrecip=median(precip, na.rm=TRUE)) %>%
+        summarize(sumPrecip=sum(precip, na.rm=TRUE),
+            medianPrecip=median(precip, na.rm=TRUE)) %>%
         ungroup()
 })
 
@@ -312,17 +343,24 @@ dataFlow3 = reactive ({
 volWeighted3 = reactive({
 
     if(input$INCONC3){
-        d = dataPchem3()
-        pp = dataPrecip3()
-        d <<- d
-        pp <<- pp
-        d %>%
-            full_join(pp, by='datetime') %>%
-            #HERE; GOTTA EITHER BRING IN RAIN VOLUME OR CALCULATE IT
-            mutate_at(vars(-datetime, -site_name, -precipVol), ~(. * precipVol))
+        samplevel = dataPchem3()
+        # d = dataPchem3()
+        # pp = dataPrecip3()
+        # d <<- d
+        # pp <<- pp
+        # # site_df = tibble(site_name=input$
+        # d %>%
+        #     left_join(pp, by='datetime') %>%
+        #     group_by(datetime) %>%
+        #     summarize_at(vars(-site_name, -medianPrecip), mean(., na.rm=TRUE)) %>%
+        #     ungroup() %>%
+        #     left_join(site_data, by='site_name') %>%
+        #     # select(datetime, site_name, one_of(isolate(input$RAINVARS3)),
+        #     #     sumPrecip,
+        #     mutate_at(vars(-datetime, -site_name, -precipVol), ~(. * precipVol))
     } else {
         samplevel = data3() %>%
-            full_join(dataFlow3(), by=c('datetime', 'site_name')) %>%
+            left_join(dataFlow3(), by=c('datetime', 'site_name')) %>%
             mutate_at(vars(-datetime, -site_name, -Q), ~(. * Q))
     }
 
@@ -390,12 +428,12 @@ output$GRAPH_MAIN3a = renderDygraph({
 
     changesInSelections3$facetA3
     sites = na.omit(input$SITES3[1:3])
-    rainsites = na.omit(input$RAINSITES3[1:3])
+    # rainsites = na.omit(input$RAINSITES3[1:3])
     varA = isolate(input$SOLUTES3[1])
-    rainvarA = isolate(input$RAINVARS3[1])
-    # ss <<- sites
+    # rainvarA = isolate(input$RAINVARS3[1])
+    ss <<- sites
     # rr <<- rainsites
-    # vv <<- varA
+    vv <<- varA
     # rv <<- rainvarA
 
     if(input$CONC_FLUX3 == 'VWC'){
@@ -419,29 +457,42 @@ output$GRAPH_MAIN3a = renderDygraph({
     if(isolate(input$INCONC3)){
         # linecolors = c(linecolors, 'green')
         # pp <<- dataPchem3() %>%
+        ppp <<- dataPchem3()
+        # print(ppp)
         rainwide = dataPchem3() %>%
-            filter(site_name %in% rainsites) %>%
-            select(datetime, site_name, one_of(rainvarA)) %>%
-            spread(site_name, !!rainvarA) %>%
+        # rainwide = ppp %>%
+            filter(site_name %in% sites) %>%
+            # filter(site_name %in% rainsites) %>%
+            select(datetime, site_name, one_of(varA)) %>%
+            # select(datetime, site_name, one_of(rainvarA)) %>%
+            spread(site_name, !!varA) %>%
+            rename_at(vars(-datetime), ~paste0('P_', .)) %>%
+            # spread(site_name, !!rainvarA) %>%
             data.table()
         # rw <<- rainwide
 
         if(! nrow(rainwide)){
-            rainwide = data.table(datetime=streamwide$datetime, x=NA)
-            colnames(rainwide)[-1] = rainsites
+            rainwide = data.table(datetime=streamwide$datetime)
+            for(s in sites) rainwide[[s]] = NA
+            # rainwide = data.table(datetime=streamwide$datetime, x=NA)
+            # colnames(rainwide)[-1] = rainsites
         }
 
         # rainwide = data.table(rainwide)
         # streamwide = data.table(streamwide)
         #forward rolling join by datetime
+        rainsites = paste0('P_', sites)
         setkey(rainwide, 'datetime')
         setkey(streamwide, 'datetime')
         allwide = rainwide[streamwide, roll=TRUE]
         allwide = as_tibble(allwide) %>%
             select(datetime, one_of(sites), one_of(rainsites))
-        gratuitous_end_roll = streamwide$datetime >
+        gratuitous_end_roll_r = streamwide$datetime >
             rainwide$datetime[nrow(rainwide) - 1]
-        allwide[gratuitous_end_roll, rainsites] = NA
+        allwide[gratuitous_end_roll_r, rainsites] = NA
+        gratuitous_end_roll_s = rainwide$datetime >
+            streamwide$datetime[nrow(streamwide) - 1]
+        allwide[gratuitous_end_roll_s, sites] = NA
         # p2 = data.table(pp)
         # w2 = data.table(ww)
         # setkey(p2, 'datetime')

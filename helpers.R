@@ -147,6 +147,8 @@ convert_flux_units = function(df, input_unit='kg/ha/d', desired_unit){
 
 pad_ts3 = function(tsdf, sites, vars, datebounds){
 
+    if(is.null(sites)) sites = 'placeholder'
+
     nsites = length(sites)
     nvars = length(vars)
 
@@ -163,6 +165,10 @@ pad_ts3 = function(tsdf, sites, vars, datebounds){
     # }
 
     df_padded = bind_rows(dt_ext_rows, tsdf)
+
+    if(sites[1] == 'placeholder'){
+        df_padded = select(df_padded, -site_name)
+    }
 
     return(df_padded)
 }
