@@ -25,6 +25,7 @@ populate_vars = function(df, vartype='stream'){
 }
 
 plot_empty_dygraph = function(datelims, plotgroup, ylab, px_per_lab){
+
     datelims = as.POSIXct(datelims)
     dateseq = seq(datelims[1], datelims[2], by='day')
     emptydat = xts(rep(0, length.out=length(dateseq)),

@@ -29,20 +29,30 @@ shinyjs.init = function() {
     $('input[name^="CONC_FLUX"][value="VWC"]').parent()
         .attr('title', 'Volume-weighted concentration: summation of instantaneous concentration and discharge products divided by total discharge over the aggregation period (below). NOTE: only available when aggregation > daily.')
     //    .css('color', 'blue')
-    $('#INCONC3').attr('disabled', 'disabled').parent().parent()
-        .attr('title', 'Enabled only when unit is VWC and aggregation > daily.');
+    $('#INCONC3').parent().parent().attr('title', 'Enabled only when unit is concentration or VWC and aggregation > daily.');
 
-    //disable input conc checkbox unless monthly or annual VWC selected
+    //disable input conc checkbox unless monthly or annual conc or VWC selected; manage aggregation options too
     function govern_inconc3(){
-        if( $('input[name=CONC_FLUX3]:checked').val() == 'VWC' &&
+
+        var datatype = $('input[name=CONC_FLUX3]:checked').val()
+
+        if( ['Concentration', 'VWC'].includes(datatype) &&
                 ['Monthly', 'Yearly'].includes($('input[name=AGG3]:checked').val()) ){
             $('#INCONC3').removeAttr('disabled').siblings().css('color', '#333');
-            $('input[name=AGG3][value=Daily]').attr('disabled','disabled').siblings().css('color', 'gray');
-            $('input[name=AGG3][value=Instantaneous').attr('disabled','disabled').siblings().css('color', 'gray');
+
+            if(datatype == 'VWC'){
+                $('input[name=AGG3][value=Daily]').attr('disabled','disabled').siblings().css('color', 'gray');
+                $('input[name=AGG3][value=Instantaneous').attr('disabled','disabled').siblings().css('color', 'gray');
+            }
+
         } else {
+
             $('#INCONC3').attr('disabled','disabled').siblings().css('color', 'gray');
-            $('input[name=AGG3][value=Daily]').removeAttr('disabled').siblings().css('color', '#333');
-            $('input[name=AGG3][value=Instantaneous]').removeAttr('disabled').siblings().css('color', '#333');
+
+            if(datatype == 'VWC'){
+                $('input[name=AGG3][value=Daily]').removeAttr('disabled').siblings().css('color', '#333');
+                $('input[name=AGG3][value=Instantaneous]').removeAttr('disabled').siblings().css('color', '#333');
+            }
         }
     };
 
@@ -65,6 +75,23 @@ shinyjs.init = function() {
 
     $('body').ready(function(){
         $('input[name=AGG3]').change(govern_VWC3);
+    });
+
+    //disable interp flux if rain viz selected
+    function govern_flux3(){
+        if( $('#INCONC3').is(':checked') ){
+            $('input[name=CONC_FLUX3][value=Flux]').attr('disabled', 'disabled').siblings().css('color', 'gray');
+            $('input[name=AGG3][value=Instantaneous]').attr('disabled', 'disabled').siblings().css('color', 'gray');
+            $('input[name=AGG3][value=Daily]').attr('disabled', 'disabled').siblings().css('color', 'gray');
+        } else {
+            $('input[name=CONC_FLUX3][value=Flux]').removeAttr('disabled').siblings().css('color', '#333');
+            $('input[name=AGG3][value=Instantaneous]').removeAttr('disabled').siblings().css('color', '#333');
+            $('input[name=AGG3][value=Daily]').removeAttr('disabled').siblings().css('color', '#333');
+        }
+    };
+
+    $('body').ready(function(){
+        $('#INCONC3').click(govern_flux3);
     });
 
 }

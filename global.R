@@ -1,7 +1,7 @@
 library(V8)
 library(feather)
 library(plyr)
-# library(data.table)
+library(data.table)
 # library(dtplyr)
 library(shiny)
 library(shinydashboard)
@@ -89,7 +89,10 @@ conc_flux3_names = c('Concentration'='Concentration','x'='Flux', 'y'='VWC')
 names(conc_flux3_names)[2] = paste('Flux (interpolated)', enc2native('\U2753'))
 names(conc_flux3_names)[3] = paste('Flux (VWC)', enc2native('\U2753'))
 
-linecolors = c('#252525', '#08519C', '#54278F')
+raincolor = '#8ab5de'
+raincolorbold = '#4e8fcd'
+raincolorpale = '#c6dbef'
+linecolors = c('#323232', '#008040', '#800080', raincolor) #'#08519C''#54278F'
 
 sites_with_P = list(hbef=c('RG1', 'RG11', 'RG23', 'RG22', 'N', 'S', 'SP'),
     hjandrews=c('RD1507', 'L523RG', 'BLUERD', 'CARPMT', 'CENMET',
