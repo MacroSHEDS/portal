@@ -172,3 +172,36 @@ pad_ts3 = function(tsdf, sites, vars, datebounds){
 
     return(df_padded)
 }
+
+rolljoin = function(raindf, streamdf, rainsitevec, streamsitevec){
+    #raindf and streamdf must be datqa.tables
+
+    #forward rolling join by datetime
+    setkey(raindf, 'datetime')
+    setkey(streamdf, 'datetime')
+    alldf = raindf[streamdf, roll=TRUE]
+    alldf = as_tibble(alldf) %>%
+        select(datetime, one_of(streamsitevec), one_of(rainsitevec))
+
+    #prevent excessive forward extrapolating of rain vars
+    gratuitous_end_roll_r = streamdf$datetime >
+        raindf$datetime[nrow(raindf) - 1]
+
+    if(sum(gratuitous_end_roll_r, na.rm=TRUE) == 1){
+        gratuitous_end_roll_r[length(gratuitous_end_roll_r)] = FALSE
+    }
+
+    if(nrow(alldf)) alldf[gratuitous_end_roll_r, rainsitevec] = NA
+
+    #prevent excessive forward extrapolating of stream vars
+    gratuitous_end_roll_s = raindf$datetime >
+        streamdf$datetime[nrow(streamdf) - 1]
+
+    if(sum(gratuitous_end_roll_s, na.rm=TRUE) == 1){
+        gratuitous_end_roll_s[length(gratuitous_end_roll_s)] = FALSE
+    }
+
+    if(nrow(alldf)) alldf[gratuitous_end_roll_s, streamsitevec] = NA
+
+    return(alldf)
+}
