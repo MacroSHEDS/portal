@@ -92,7 +92,8 @@ names(conc_flux3_names)[3] = paste('Flux (VWC)', enc2native('\U2753'))
 raincolor = '#8ab5de'
 # raincolorbold = '#4e8fcd'
 # raincolorpale = '#c6dbef'
-linecolors = c('#323232', '#008040', '#800080', raincolor) #'#08519C''#54278F'
+linecolors = c('#323232', '#008040', '#800080')#, raincolor) #'#08519C''#54278F'
+pchemcolors = c('#585858', '#1bff8c', '#ff1bff')
 
 sites_with_P = list(hbef=c('RG1', 'RG11', 'RG23', 'RG22', 'N', 'S', 'SP'),
     hjandrews=c('RD1507', 'L523RG', 'BLUERD', 'CARPMT', 'CENMET',
