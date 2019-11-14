@@ -16,6 +16,7 @@ library(xts)
 library(leaflet)
 library(tidyverse)
 library(glue)
+library(shinyjs)
 
 # rsconnect::deployApp('/home/mike/git/macrosheds/portal',
 #     appName='MacroSheds_demo')

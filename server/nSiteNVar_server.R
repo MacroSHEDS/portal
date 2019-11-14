@@ -479,7 +479,7 @@ volWeightedPrecip3 = reactive({
     return(volWeightedConc)
 })
 
-output$GRAPH_PRECIP3 = renderDygraph({
+output$GRAPH_PRECIP3 = output$GRAPH_PRECIP3EXP = renderDygraph({
 
     data = dataPrecip3()
 
@@ -504,7 +504,7 @@ output$GRAPH_PRECIP3 = renderDygraph({
     return(dg)
 })
 
-output$GRAPH_MAIN3a = renderDygraph({
+output$GRAPH_MAIN3a = output$GRAPH_MAIN3aEXP = renderDygraph({
 
     changesInSelections3$facetA3
     sites = na.omit(input$SITES3[1:3])
@@ -611,7 +611,7 @@ output$GRAPH_MAIN3a = renderDygraph({
     return(dg)
 })
 
-output$GRAPH_MAIN3b = renderDygraph({
+output$GRAPH_MAIN3b = output$GRAPH_MAIN3bEXP = renderDygraph({
 
     changesInSelections3$facetB3
     sites = na.omit(input$SITES3[1:3])
@@ -719,7 +719,7 @@ output$GRAPH_MAIN3b = renderDygraph({
     return(dg)
 })
 
-output$GRAPH_MAIN3c = renderDygraph({
+output$GRAPH_MAIN3c = output$GRAPH_MAIN3cEXP = renderDygraph({
 
     changesInSelections3$facetC3
     sites = na.omit(input$SITES3[1:3])
@@ -828,7 +828,7 @@ output$GRAPH_MAIN3c = renderDygraph({
     return(dg)
 })
 
-output$GRAPH_FLOW3 = renderDygraph({
+output$GRAPH_FLOW3 = output$GRAPH_FLOW3EXP = renderDygraph({
 
     widedat = dataFlow3() %>%
         spread(site_name, Q)
@@ -856,6 +856,76 @@ output$GRAPH_FLOW3 = renderDygraph({
     }
 
     return(dg)
+})
+
+observeEvent(input$EXPAND_PRECIP3, {
+    showModal(
+        modalDialog(title=NULL, size='l', id='modal3precip', easyClose=TRUE,
+            footer=NULL,
+            fluidRow(class='text-center',
+                div(id='precip3DUPE'),
+                dygraphOutput('GRAPH_PRECIP3EXP'),
+                br()
+            )
+        )
+    )
+    runjs("$('#precip3').clone().appendTo('#precip3DUPE')")
+})
+
+observeEvent(input$EXPAND_MAIN3a, {
+    showModal(
+        modalDialog(title=NULL, size='l', id='modal3a', easyClose=TRUE,
+            footer=NULL,
+            fluidRow(class='text-center',
+                div(id='main3aDUPE'),
+                dygraphOutput('GRAPH_MAIN3aEXP'),
+                br()
+            )
+        )
+    )
+    runjs("$('#main3a').clone().appendTo('#main3aDUPE')")
+})
+
+observeEvent(input$EXPAND_MAIN3b, {
+    showModal(
+        modalDialog(title=NULL, size='l', id='modal3b', easyClose=TRUE,
+            footer=NULL,
+            fluidRow(class='text-center',
+                div(id='main3bDUPE'),
+                dygraphOutput('GRAPH_MAIN3bEXP'),
+                br()
+            )
+        )
+    )
+    runjs("$('#main3b').clone().appendTo('#main3bDUPE')")
+})
+
+observeEvent(input$EXPAND_MAIN3c, {
+    showModal(
+        modalDialog(title=NULL, size='l', id='modal3c', easyClose=TRUE,
+            footer=NULL,
+            fluidRow(class='text-center',
+                div(id='main3cDUPE'),
+                dygraphOutput('GRAPH_MAIN3cEXP'),
+                br()
+            )
+        )
+    )
+    runjs("$('#main3c').clone().appendTo('#main3cDUPE')")
+})
+
+observeEvent(input$EXPAND_FLOW3, {
+    showModal(
+        modalDialog(title=NULL, size='l', id='flow3', easyClose=TRUE,
+            footer=NULL,
+            fluidRow(class='text-center',
+                div(id='flow3DUPE'),
+                dygraphOutput('GRAPH_FLOW3EXP'),
+                br()
+            )
+        )
+    )
+    runjs("$('#flow3').clone().appendTo('#flow3DUPE')")
 })
 
 #with comments:

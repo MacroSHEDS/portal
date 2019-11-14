@@ -1,10 +1,26 @@
 shinyjs.init = function() {
     //$(window).resize(shinyjs.getHeight50);
 
+    //gotta style landing page this way because css can't uniquely reach it
+    var checkExist = setInterval(function() {
+        if ($('#landing').length) {
+           $('#landing').parent().parent().parent().css({'width': '100%', 'height': '100%', 'margin': '0px'});
+           $('#landing').parent().parent().css({'width': '100%', 'height': '100%', 'margin': '0px'});
+           $('#landing').parent().css({'width': '100%', 'height': '100%', 'color': '#193d85'});
+           clearInterval(checkExist);
+        }
+    }, 100);
+
+   // var checkExist = setInterval(function() {
+   //     if ($('#landing').length) {
+   //         $('#main3a').clone().appendTo('#aaa')
+   //     }
+   // }, 100);
+
     //connect map buttons to app tabs
     $('body').ready(function(){
         $('body').on('click', '[id$="_goto"]', function(){
-            var goto_id = $(this).attr('id') + new Date(); //trigger react
+            var goto_id = $(this).attr('id') + new Date(); //trigger reactivity
             Shiny.setInputValue('MAPDATA', goto_id);
             $('#SITE_EXPLORE').trigger('click');
         });

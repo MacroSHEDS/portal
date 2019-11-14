@@ -9,10 +9,10 @@ body {
 }
 
 /*
-SPLASH PAGE
+SPLASH PAGE (handled by js now that modals are used elsewhere in app)
 */
 
-.modal.in .modal-dialog {
+/*.modal.in .modal-dialog {
     width: 100%;
     height: 100%;
     margin: 0px;
@@ -22,9 +22,9 @@ SPLASH PAGE
     width: 100%;
     height: 100%;
     color: #193d85;
-    /*color: #396060;*/
-    /*0088AA*/
-} 
+}*/
+/*color: #396060;*/
+/*0088AA*/
 
 /*.modal-footer button {
     display: none;

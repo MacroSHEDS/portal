@@ -1,6 +1,6 @@
 landing_page =
     showModal(
-        modalDialog(title=NULL, footer=NULL, easyClose=TRUE,
+        modalDialog(title=NULL, footer=NULL, easyClose=TRUE, id='landing',
             fluidRow(class='text-center',
                 column(12,
                     img(src='new_logo_full.png',

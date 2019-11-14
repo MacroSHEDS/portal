@@ -16,8 +16,8 @@ shinyUI(fluidPage(
     tags$head(tags$style(HTML(
         "@import url('https://fonts.googleapis.com/css?family=Montserrat');"))),
     tags$head(tags$link(rel="stylesheet", type="text/css", href="app.css")),
-    shinyjs::useShinyjs(),
-    shinyjs::extendShinyjs(script='js/general.js'),
+    useShinyjs(),
+    extendShinyjs(script='js/general.js'),
 
     dashboardPage(
         dashboardHeader(disable=TRUE),
