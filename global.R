@@ -25,7 +25,7 @@ library(shinyjs)
 source('helpers.R')
 
 default_domain = 'hbef'
-default_site = list('hbef'='W1', 'hjandrews'='GSLOOK')
+default_site = list('hbef'='W1', 'hjandrews'='GSLOOK', 'neon'='ARIK')
 
 site_data = read_csv('data/site_data.csv') %>%
     filter(as.logical(in_workflow))

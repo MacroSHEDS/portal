@@ -146,12 +146,17 @@ Q = reactive({
 
 observe({
 
+    # gg <<- grab()
+    # qq <<- grab_subset
+    # grab_subset = qq
+    # filter(gg, site_name %in% default_site[['neon']])
     grab_subset = filter(grab(), site_name %in% default_site[[input$DOMAINS3]])
-    grabvars_display_subset = populate_vars(grab_subset[-(1:2)])
+    grabvars_display_subset = populate_vars(grab_subset[, -(1:2)])
+
+    selected = unname(unlist(grabvars_display_subset)[1])
 
     updateSelectizeInput(session, 'SOLUTES3',
-        choices=grabvars_display_subset,
-        selected=grabvars_display_subset[[1]][[1]])
+        choices=grabvars_display_subset, selected=selected)
 })
 
 observe({
@@ -166,9 +171,10 @@ observe({
     pchemvars_display_subset = populate_vars(pchem_subset[-(1:2)],
         vartype='precip')
 
+    selected = unname(unlist(pchemvars_display_subset)[1])
+
     updateSelectizeInput(session, 'RAINVARS3',
-        choices=pchemvars_display_subset,
-        selected=pchemvars_display_subset[[1]][[1]])
+        choices=pchemvars_display_subset, selected=selected)
 })
 
 data3 = reactive({
@@ -307,6 +313,10 @@ dataPrecip3 = reactive({
         select(one_of("datetime", "site_name", 'precip'))
         # mutate(datetime=as.POSIXct(datetime))
 
+    # zzz <<- dataPrecip3
+    # dataPrecip3 = zzz
+    # ddd <<- input$DATE3
+    # input = list(DATE3=ddd)
     dataPrecip3 = pad_ts3(dataPrecip3, unique(dataPrecip3$site_name),
         'precip', input$DATE3)
     # nsites = length(input$SITES3)
@@ -516,6 +526,8 @@ output$GRAPH_MAIN3a = output$GRAPH_MAIN3aEXP = renderDygraph({
         streamwide = isolate(data3())
     }
 
+    # ss <<- streamwide
+    # ss -> streamwide
     streamwide = streamwide %>%
         filter(site_name %in% sites) %>%
         select(datetime, site_name, one_of(varA)) %>%

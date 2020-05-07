@@ -1,36 +1,34 @@
 output$MAP = renderLeaflet({
 
-    rain_gauges = filter(site_data, site_type == 'rain_gauge')
-    stream_gauges = filter(site_data, site_type == 'stream_gauge')
+    rg = filter(site_data, site_type == 'rain_gauge')
+    sg = filter(site_data, site_type == 'stream_gauge')
 
     leaflet() %>% addProviderTiles("Esri.WorldTopoMap",
         group='Topo Mahttps://www.dropbox.com/s/kjkhwip0t8erh3a/MTM_PQ_data.csv?dl=0p') %>%
         addProviderTiles('Esri.WorldImagery', group='Aerial Imagery') %>%
         addCircleMarkers(lng=~longitude, lat=~latitude, color='#228B22',
-            popup=glue(stream_gauge_buttons, domain=site_data$domain,
-                pretty_domain=site_data$pretty_domain,
-                stream=site_data$stream, site_code=site_data$site_name,
-                site_name=site_data$full_name, site_type=site_data$site_type,
-                latitude=site_data$latitude, longitude=site_data$longitude),
+        # addCircleMarkers(lng=~longitude, lat=~latitude, color='#228B22',
+            popup=glue(stream_gauge_buttons, domain=sg$domain,
+                pretty_domain=sg$pretty_domain, stream=sg$stream,
+                site_code=sg$site_name, site_name=sg$full_name,
+                site_type=sg$site_type, latitude=sg$latitude,
+                longitude=sg$longitude),
             popupOptions=c(
-                className=paste0(site_data$domain, "__",
-                    site_data$site_name, '_popup'),
+                className=paste0(sg$domain, "__", sg$site_name, '_popup'),
                 minWidth=200, maxWidth=500
             ),
-            data=stream_gauges) %>%
+            data=sg) %>%
         addCircleMarkers(lng=~longitude, lat=~latitude, color='#0000FF',
             fillColor='#c6dbef', radius=8, opacity=0.6, weight=4,
-            popup=glue(rain_gauge_buttons, domain=site_data$domain,
-                pretty_domain=site_data$pretty_domain,
-                site_type=site_data$site_type,
-                site_code=site_data$site_name, site_name=site_data$full_name,
-                latitude=site_data$latitude, longitude=site_data$longitude),
+            popup=glue(rain_gauge_buttons, domain=rg$domain,
+                pretty_domain=rg$pretty_domain, site_type=rg$site_type,
+                site_code=rg$site_name, site_name=rg$full_name,
+                latitude=rg$latitude, longitude=rg$longitude),
             popupOptions=c(
-                className=paste0(site_data$domain, "__",
-                    site_data$site_name, '_popup'),
+                className=paste0(rg$domain, "__", rg$site_name, '_popup'),
                 minWidth=200, maxWidth=500
             ),
-            data=rain_gauges) %>%
+            data=rg) %>%
         # addPolygons(
         #     data = isco.sheds,
         #     weight = 3,

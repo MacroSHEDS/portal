@@ -4,6 +4,7 @@ extract_from_config = function(key){
     return(val)
 }
 
+# df = grab_subset[, -(1:2)]
 populate_vars = function(df, vartype='stream'){
 
     populated_vars_bool = sapply(df, function(x) ! all(is.na(x)))
@@ -145,9 +146,11 @@ convert_flux_units = function(df, input_unit='kg/ha/d', desired_unit){
 #     10^(ceiling(log10(x)))
 # }
 
+# tsdf=dataPrecip3; sites=unique(dataPrecip3$site_name)
+# vars='precip'; datebounds=input$DATE3
 pad_ts3 = function(tsdf, sites, vars, datebounds){
 
-    if(is.null(sites)) sites = 'placeholder'
+    if(is.null(sites) || length(sites) == 0) sites = 'placeholder'
 
     nsites = length(sites)
     nvars = length(vars)
