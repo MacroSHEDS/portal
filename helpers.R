@@ -147,9 +147,10 @@ convert_flux_units = function(df, input_unit='kg/ha/d', desired_unit){
 # }
 
 # tsdf=dataPrecip3; sites=unique(dataPrecip3$site_name)
-# vars='precip'; datebounds=input$DATE3
+# vars='precip'; datebounds=dd
 pad_ts3 = function(tsdf, sites, vars, datebounds){
 
+    # if(is.null(sites)) sites = 'placeholder'
     if(is.null(sites) || length(sites) == 0) sites = 'placeholder'
 
     nsites = length(sites)
@@ -167,7 +168,7 @@ pad_ts3 = function(tsdf, sites, vars, datebounds){
     #     dt_ext_rows$datetime = as.POSIXct(dt_ext_rows$datetime)
     # }
 
-    df_padded = bind_rows(dt_ext_rows, tsdf)
+    df_padded = bind_rows(dt_ext_rows, tsdf) #CONVERTS TZ. VERIFY LEGITNESS
 
     if(sites[1] == 'placeholder'){
         df_padded = select(df_padded, -site_name)

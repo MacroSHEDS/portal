@@ -58,7 +58,8 @@ grab = reactive({
         grab = read_feather(glue('data/{dmn}/grab.feather', dmn=domain))
     }
 
-    grab = filter(grab, site_name %in% sites_with_Q)
+    # test commented:
+    # grab = filter(grab, site_name %in% sites_with_Q)
 
     init_vals$recent_domain = domain
 
@@ -146,11 +147,16 @@ Q = reactive({
 
 observe({
 
+    #THIS SHOULD PROBABLY PRODUCE A REACTIVE OBJECT, SO SITE-FILTERED DATA
+    #CAN BE ACTED UPON FLEXIBLY WHEN THEY CHANGE
+
     # gg <<- grab()
-    # qq <<- grab_subset
     # grab_subset = qq
+    # dd <<- input$DOMAINS3
     # filter(gg, site_name %in% default_site[['neon']])
+    # grab_subset = filter(gg, site_name %in% dd)
     grab_subset = filter(grab(), site_name %in% default_site[[input$DOMAINS3]])
+    # qq <<- grab_subset
     grabvars_display_subset = populate_vars(grab_subset[, -(1:2)])
 
     selected = unname(unlist(grabvars_display_subset)[1])
@@ -299,6 +305,8 @@ dataPchem3 = reactive({
 dataPrecip3 = reactive({
 
     # pp <<- P()
+    # dd <<- input$DATE3
+    # dm <<- input$DOMAINS3
     # ida <<- input$DATE3
     # isi <<- input$SITES3
     # ido <<- input$DOMAINS3
@@ -306,7 +314,14 @@ dataPrecip3 = reactive({
     # input = list(DATE3=ida, DOMAINS3=ido, AGG3=iag, SITES3=isi)
     # sites=input$SITES3; vars=input$SOLUTES3; datebounds=input$DATE3; tsdf=pp
 
-    dataPrecip3 = P() %>%
+    # dataPrecip3 = pp %>%
+    #     filter(datetime >= dd[1]) %>%
+    #     filter(datetime <= dd[2]) %>%
+    #     filter(site_name %in% sites_with_P[[dm]]) %>%
+    #     select(one_of("datetime", "site_name", 'precip'))
+    dp3 = P()
+    show_precip = nrow(dp3) > 1
+    dataPrecip3 = dp3 %>%
         filter(datetime >= input$DATE3[1]) %>%
         filter(datetime <= input$DATE3[2]) %>%
         filter(site_name %in% sites_with_P[[input$DOMAINS3]]) %>%
@@ -325,7 +340,7 @@ dataPrecip3 = reactive({
     #     precip=rep(NA, nsites * 2))
     # dataPrecip3 = bind_rows(dt_ext_rows[1,], dataPrecip3, dt_ext_rows[2,])
 
-    if(input$AGG3 != 'Instantaneous'){
+    if(input$AGG3 != 'Instantaneous' & show_precip){
         agg_period = switch(input$AGG3, 'Daily'='day', 'Monthly'='month',
             'Yearly'='year')
         dataPrecip3 = dataPrecip3 %>%
@@ -520,6 +535,7 @@ output$GRAPH_MAIN3a = output$GRAPH_MAIN3aEXP = renderDygraph({
     sites = na.omit(input$SITES3[1:3])
     varA = isolate(input$SOLUTES3[1])
 
+    # ss <<- input$SOLUTES3
     if(input$CONC_FLUX3 == 'VWC'){
         streamwide = volWeighted3()
     } else {
@@ -527,7 +543,7 @@ output$GRAPH_MAIN3a = output$GRAPH_MAIN3aEXP = renderDygraph({
     }
 
     # ss <<- streamwide
-    # ss -> streamwide
+    # vv <<- varA
     streamwide = streamwide %>%
         filter(site_name %in% sites) %>%
         select(datetime, site_name, one_of(varA)) %>%
@@ -535,6 +551,9 @@ output$GRAPH_MAIN3a = output$GRAPH_MAIN3aEXP = renderDygraph({
         summarize_all(mean, na.rm=TRUE) %>%
         spread(site_name, !!varA) %>%
         data.table()
+    # ss -> streamwide
+    # cc <<- input$CONC_UNIT3
+    # aa <<- input$AGG3
 
     if(isolate(input$INCONC3)){
 

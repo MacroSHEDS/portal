@@ -158,7 +158,9 @@ flux = read_feather('data/hbef/flux.feather')
 
 initial_dtrng = as.Date(range(grab$datetime[grab$site_name == default_sitelist[1]],
     na.rm=TRUE))
+#THIS NEEDS TO BE FLEX CODED INSIDE NSITENVAR_SERVER.R, ETC.
 dtrng = as.Date(range(grab$datetime, na.rm=TRUE))
+dtrng[2] = as.Date('2019-07-30')
 
 # DBI::dbDisconnect(con)
 
