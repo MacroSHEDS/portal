@@ -52,23 +52,35 @@ grab = reactive({
     domain = input$DOMAINS3
 
     if(is.null(domain)){
-        grab = read_feather(glue('data/{dmn}/grab.feather',
-            dmn=init_vals$recent_domain))
-    } else {
-        grab = read_feather(glue('data/{dmn}/grab.feather', dmn=domain))
-    }
 
-    # test commented:
-    # grab = filter(grab, site_name %in% sites_with_Q)
+        rd = init_vals$recent_domain
+        grab = read_feather(glue('data/{d}/chemistry/{s}.feather',
+            d=rd, s=default_site[[rd]]))
+
+        domain = 'hbef'
+
+    } else {
+
+        grab = tibble()
+        for(s in input$SITES3){
+            grab = read_feather(glue('data/{d}/chemistry/{s}.feather',
+                    d=domain, s=s)) %>%
+                bind_rows(grab)
+        }
+    }
 
     init_vals$recent_domain = domain
 
-    new_sitelist = site_data %>%
-        filter(domain == input$DOMAINS3, site_type == 'stream_gauge') %>%
-        pull(site_name)
+    # test commented. is next line useful?
+    # grab = filter(grab, site_name %in% sites_with_Q)
 
-    updateSelectizeInput(session, 'SITES3', choices=new_sitelist,
-        selected=default_site[[input$DOMAINS3]])
+    #test commented this too
+    # new_sitelist = site_data %>%
+    #     filter(domain == input$DOMAINS3, site_type == 'stream_gauge') %>%
+    #     pull(site_name)
+    #
+    # updateSelectizeInput(session, 'SITES3', choices=new_sitelist,
+    #     selected=default_site[[domain]])
 
     # dt_extent = changesInSelections3$dt_extent
     # changesInSelections3$dt_extent = range(c(dt_extent, input$DATE3))
@@ -81,13 +93,13 @@ pchem = reactive({
     domain = input$DOMAINS3
 
     if(is.null(domain)){
-        pchem = read_feather(glue('data/{dmn}/pchem.feather',
-            dmn=init_vals$recent_domain))
+        pchem = read_feather(glue('data/{d}/pchem.feather',
+            d=init_vals$recent_domain))
     } else {
-        pchem = read_feather(glue('data/{dmn}/pchem.feather', dmn=domain))
+        pchem = read_feather(glue('data/{d}/pchem.feather', d=domain))
     }
 
-    init_vals$recent_domain = domain
+    # init_vals$recent_domain = domain
 
     return(pchem)
 })
@@ -97,16 +109,17 @@ flux = reactive({
     domain = input$DOMAINS3
 
     if(is.null(domain)){
-        flux = read_feather(glue('data/{dmn}/flux.feather',
-            dmn=init_vals$recent_domain))
+        rd = init_vals$recent_domain
+        flux = read_feather(glue('data/{d}/flux/{s}.feather',
+            d=rd, s=default_site[[rd]]))
     } else {
-        flux = read_feather(glue('data/{dmn}/flux.feather', dmn=domain))
+        flux = tibble()
+        for(s in input$SITES3){
+            flux = read_feather(glue('data/{d}/flux/{s}.feather',
+                    d=domain, s=s)) %>%
+                bind_rows(flux)
+        }
     }
-
-    # flux = flux %>%
-    #     rename(datetime=date) %>% #temporary
-    #     select(-Q_Ld) #temporary
-        # filter(datetime < as.Date('2013-01-01')) #temporary
 
     return(flux)
 })
@@ -116,14 +129,11 @@ P = reactive({
     domain = input$DOMAINS3
 
     if(is.null(domain)){
-        P = read_feather(glue('data/{dmn}/precip.feather',
-            dmn=init_vals$recent_domain))
+        P = read_feather(glue('data/{d}/precip.feather',
+            d=init_vals$recent_domain))
     } else {
-        P = read_feather(glue('data/{dmn}/precip.feather', dmn=domain))
+        P = read_feather(glue('data/{d}/precip.feather', d=domain))
     }
-
-    # P = P %>%
-    #     filter(datetime < as.Date('2013-01-01')) #temporary
 
     return(P)
 })
@@ -133,31 +143,25 @@ Q = reactive({
     domain = input$DOMAINS3
 
     if(is.null(domain)){
-        Q = read_feather(glue('data/{dmn}/discharge.feather',
-            dmn=init_vals$recent_domain))
+        rd = init_vals$recent_domain
+        Q = read_feather(glue('data/{d}/discharge/{s}.feather',
+            d=rd, s=default_site[[rd]]))
     } else {
-        Q = read_feather(glue('data/{dmn}/discharge.feather', dmn=domain))
+        Q = tibble()
+        for(s in input$SITES3){
+            Q = read_feather(glue('data/{d}/discharge/{s}.feather',
+                d=domain, s=s)) %>%
+                bind_rows(Q)
+        }
     }
-
-    # Q = Q %>%
-    #     filter(datetime < as.Date('2013-01-01')) #temporary
 
     return(Q)
 })
 
 observe({
 
-    #THIS SHOULD PROBABLY PRODUCE A REACTIVE OBJECT, SO SITE-FILTERED DATA
-    #CAN BE ACTED UPON FLEXIBLY WHEN THEY CHANGE
-
-    # gg <<- grab()
-    # grab_subset = qq
-    # dd <<- input$DOMAINS3
-    # filter(gg, site_name %in% default_site[['neon']])
-    # grab_subset = filter(gg, site_name %in% dd)
-    grab_subset = filter(grab(), site_name %in% default_site[[input$DOMAINS3]])
-    # qq <<- grab_subset
-    grabvars_display_subset = populate_vars(grab_subset[, -(1:2)])
+    # grab_subset = filter(grab(), site_name %in% default_site[[input$DOMAINS3]])
+    grabvars_display_subset = populate_display_vars(grab()[, -(1:2)])
 
     selected = unname(unlist(grabvars_display_subset)[1])
 
@@ -174,7 +178,7 @@ observe({
         selected=dmnsites[1])
 
     pchem_subset = filter(pchem(), site_name %in% dmnsites[1])
-    pchemvars_display_subset = populate_vars(pchem_subset[-(1:2)],
+    pchemvars_display_subset = populate_display_vars(pchem_subset[-(1:2)],
         vartype='precip')
 
     selected = unname(unlist(pchemvars_display_subset)[1])
@@ -186,21 +190,16 @@ observe({
 data3 = reactive({
 
     data3 = if(input$CONC_FLUX3 == 'Flux') flux() else grab()
-    data3 = data3 %>%
-        filter(datetime >= input$DATE3[1]) %>%
-        filter(datetime <= input$DATE3[2]) %>%
-        filter(site_name %in% input$SITES3) %>%
-        select(one_of("datetime", "site_name", input$SOLUTES3))
-        # mutate(datetime=as.POSIXct(datetime))
 
     if(nrow(data3) == 0) return(data3)
 
-    # isi <<- input$SITES3
-    # ida <<- input$DATE3
-    # iso <<- input$SOLUTES3
-    # dd <<- data3
-    # input = list(SITES3=isi, DATE3=ida, SOLUTES3=iso)
-    # sites=input$SITES3; vars=input$SOLUTES3; datebounds=input$DATE3
+    data3 = data3 %>%
+        filter(datetime >= input$DATE3[1]) %>%
+        filter(datetime <= input$DATE3[2]) %>%
+        # filter(site_name %in% input$SITES3) %>%
+        select(one_of("datetime", "site_name", input$SOLUTES3))
+
+    if(nrow(data3) == 0) return(data3)
 
     data3 = pad_ts3(data3, input$SITES3, input$SOLUTES3, input$DATE3)
 
@@ -304,41 +303,17 @@ dataPchem3 = reactive({
 
 dataPrecip3 = reactive({
 
-    # pp <<- P()
-    # dd <<- input$DATE3
-    # dm <<- input$DOMAINS3
-    # ida <<- input$DATE3
-    # isi <<- input$SITES3
-    # ido <<- input$DOMAINS3
-    # iag <<- input$AGG3
-    # input = list(DATE3=ida, DOMAINS3=ido, AGG3=iag, SITES3=isi)
-    # sites=input$SITES3; vars=input$SOLUTES3; datebounds=input$DATE3; tsdf=pp
-
-    # dataPrecip3 = pp %>%
-    #     filter(datetime >= dd[1]) %>%
-    #     filter(datetime <= dd[2]) %>%
-    #     filter(site_name %in% sites_with_P[[dm]]) %>%
-    #     select(one_of("datetime", "site_name", 'precip'))
     dp3 = P()
     show_precip = nrow(dp3) > 1
     dataPrecip3 = dp3 %>%
         filter(datetime >= input$DATE3[1]) %>%
         filter(datetime <= input$DATE3[2]) %>%
-        filter(site_name %in% sites_with_P[[input$DOMAINS3]]) %>%
+        filter(site_name %in% sites_with_P[[input$DOMAINS3]]) %>% #superfluous?
         select(one_of("datetime", "site_name", 'precip'))
         # mutate(datetime=as.POSIXct(datetime))
 
-    # zzz <<- dataPrecip3
-    # dataPrecip3 = zzz
-    # ddd <<- input$DATE3
-    # input = list(DATE3=ddd)
     dataPrecip3 = pad_ts3(dataPrecip3, unique(dataPrecip3$site_name),
         'precip', input$DATE3)
-    # nsites = length(input$SITES3)
-    # dt_ext_rows = tibble(datetime=rep(as.POSIXct(input$DATE3), nsites),
-    #     site_name=rep(input$SITES3, each=nsites),
-    #     precip=rep(NA, nsites * 2))
-    # dataPrecip3 = bind_rows(dt_ext_rows[1,], dataPrecip3, dt_ext_rows[2,])
 
     if(input$AGG3 != 'Instantaneous' & show_precip){
         agg_period = switch(input$AGG3, 'Daily'='day', 'Monthly'='month',
@@ -359,10 +334,9 @@ dataPrecip3 = reactive({
 dataFlow3 = reactive ({
 
     dataFlow3 = Q() %>%
-        filter(datetime > input$DATE3[1],
-        datetime < input$DATE3[2], site_name %in% input$SITES3) %>%
+        filter(datetime > input$DATE3[1], datetime < input$DATE3[2]) %>%
+        #, site_name %in% input$SITES3) %>%
         select(datetime, site_name, Q)
-        # mutate(datetime=as.POSIXct(datetime, tz='UTC'))
 
     if(nrow(dataFlow3) == 0) return(dataFlow3)
 

@@ -1,3 +1,4 @@
+
 extract_from_config = function(key){
     ind = which(lapply(conf, function(x) grepl(key, x)) == TRUE)
     val = stringr::str_match(conf[ind], '.*\\"(.*)\\"')[2]
@@ -5,7 +6,7 @@ extract_from_config = function(key){
 }
 
 # df = grab_subset[, -(1:2)]
-populate_vars = function(df, vartype='stream'){
+populate_display_vars = function(df, vartype='stream'){
 
     populated_vars_bool = sapply(df, function(x) ! all(is.na(x)))
     populated_vars = names(populated_vars_bool[populated_vars_bool])
@@ -208,4 +209,33 @@ rolljoin = function(raindf, streamdf, rainsitevec, streamsitevec){
     if(nrow(alldf)) alldf[gratuitous_end_roll_s, streamsitevec] = NA
 
     return(alldf)
+}
+
+sites_from_feathers = function(directory){
+    sitenames = unlist(strsplit(list.files(directory), '.feather'))
+    return(sitenames)
+}
+
+sites_by_domain = function(var){
+
+    sitelist = list()
+    for(i in 1:length(domains)){
+        psitevec = sites_from_feathers(glue('data/{d}/{v}',
+            d=domains[i], v=var))
+        sitelist = append(sitelist, list(psitevec))
+        names(sitelist)[i] = domains[i]
+    }
+
+    return(sitelist)
+}
+
+most_recent_year = function(date_range){
+    mry = c(
+        max(date_range[2] - lubridate::days(365),
+            date_range[1],
+            na.rm=TRUE),
+        date_range[2]
+    )
+
+    return(mry)
 }

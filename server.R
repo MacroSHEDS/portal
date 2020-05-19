@@ -86,7 +86,7 @@ shinyServer(function(input, output, session){
     })
 
     # grabvars_display_subset = reactive({
-    #     v = populate_vars(grab()[-(1:2)]) #temporary (add flex for multi dmn; also see global.R)
+    #     v = populate_display_vars(grab()[-(1:2)]) #temporary (add flex for multi dmn; also see global.R)
     # })
 
 })
