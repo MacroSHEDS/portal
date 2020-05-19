@@ -54,14 +54,14 @@ variables = readr::read_csv('data/variables.csv')
 
 #set defaults, which determine what data are shown when user lands
 default_domain = 'hbef'
-default_sites = list(
+default_sites_by_domain = list(
     'hbef'='W1',
     'hjandrews'='GSLOOK',
     'neon'='ARIK') #this can be generated automatically and overridden here
-default_site = default_sites[[default_domain]]
 default_sitelist = site_data %>%
     filter(domain == default_domain, site_type == 'stream_gauge') %>%
     pull(site_name)
+default_site = default_sites_by_domain[[default_domain]]
 
 #load landing datasets
 P = read_feather(glue('data/{d}/precip.feather',

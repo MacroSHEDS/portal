@@ -55,7 +55,7 @@ grab = reactive({
 
         rd = init_vals$recent_domain
         grab = read_feather(glue('data/{d}/chemistry/{s}.feather',
-            d=rd, s=default_site[[rd]]))
+            d=rd, s=default_sites_by_domain[[rd]]))
 
         domain = 'hbef'
 
@@ -80,7 +80,7 @@ grab = reactive({
     #     pull(site_name)
     #
     # updateSelectizeInput(session, 'SITES3', choices=new_sitelist,
-    #     selected=default_site[[domain]])
+    #     selected=default_sites_by_domain[[domain]])
 
     # dt_extent = changesInSelections3$dt_extent
     # changesInSelections3$dt_extent = range(c(dt_extent, input$DATE3))
@@ -111,7 +111,7 @@ flux = reactive({
     if(is.null(domain)){
         rd = init_vals$recent_domain
         flux = read_feather(glue('data/{d}/flux/{s}.feather',
-            d=rd, s=default_site[[rd]]))
+            d=rd, s=default_sites_by_domain[[rd]]))
     } else {
         flux = tibble()
         for(s in input$SITES3){
@@ -145,7 +145,7 @@ Q = reactive({
     if(is.null(domain)){
         rd = init_vals$recent_domain
         Q = read_feather(glue('data/{d}/discharge/{s}.feather',
-            d=rd, s=default_site[[rd]]))
+            d=rd, s=default_sites_by_domain[[rd]]))
     } else {
         Q = tibble()
         for(s in input$SITES3){
@@ -160,7 +160,7 @@ Q = reactive({
 
 observe({
 
-    # grab_subset = filter(grab(), site_name %in% default_site[[input$DOMAINS3]])
+    # grab_subset = filter(grab(), site_name %in% default_sites_by_domain[[input$DOMAINS3]])
     grabvars_display_subset = populate_display_vars(grab()[, -(1:2)])
 
     selected = unname(unlist(grabvars_display_subset)[1])
