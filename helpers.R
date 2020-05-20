@@ -1,3 +1,4 @@
+sm = suppressMessages
 
 extract_from_config = function(key){
     ind = which(lapply(conf, function(x) grepl(key, x)) == TRUE)
@@ -238,4 +239,13 @@ most_recent_year = function(date_range){
     )
 
     return(mry)
+}
+
+sitelist_from_domain = function(dmn, site_type){
+
+    sitelist = site_data %>%
+        filter(domain == dmn, site_type == site_type) %>%
+        pull(site_name)
+
+    return(sitelist)
 }

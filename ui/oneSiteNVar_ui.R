@@ -45,9 +45,7 @@ oneSiteNVar_tab = tabPanel("Single Site", value='site_exploration',
                 wellPanel(
                     sliderInput("DATE4", label=NULL,
                         min=dtrng[1], max=dtrng[2],
-                        value=c(max(dtrng[2] - lubridate::days(365),
-                            initial_dtrng[1], na.rm=TRUE),
-                            dtrng[2]),
+                        value=most_recent_year(dtrng),
                         width="100%", timeFormat="%b %Y", step=30,
                         dragRange=TRUE)
                 ),

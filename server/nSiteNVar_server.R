@@ -47,9 +47,21 @@ observeEvent({
     changesInSelections3$facetC3 = changesInSelections3$facetC3 + 1
 })
 
-grab = reactive({
+get_domains3 = eventReactive(input$DOMAINS3, {
 
     domain = input$DOMAINS3
+
+    updateSelectizeInput(session, 'SITES3',
+        choices=sitelist_from_domain(domain, site_type='stream_gauge'),
+        selected=default_sites_by_domain[[domain]],
+        options=list(maxItems=3))
+
+    return(domain)
+})
+
+grab = eventReactive(input$SITES3, {
+
+    domain = get_domains3()
 
     if(is.null(domain)){
 
@@ -76,7 +88,7 @@ grab = reactive({
 
     #test commented this too
     # new_sitelist = site_data %>%
-    #     filter(domain == input$DOMAINS3, site_type == 'stream_gauge') %>%
+    #     filter(domain == get_domains3(), site_type == 'stream_gauge') %>%
     #     pull(site_name)
     #
     # updateSelectizeInput(session, 'SITES3', choices=new_sitelist,
@@ -88,9 +100,9 @@ grab = reactive({
     return(grab)
 })
 
-pchem = reactive({
+pchem = eventReactive(input$SITES3, {
 
-    domain = input$DOMAINS3
+    domain = get_domains3()
 
     if(is.null(domain)){
         pchem = read_feather(glue('data/{d}/pchem.feather',
@@ -104,9 +116,9 @@ pchem = reactive({
     return(pchem)
 })
 
-flux = reactive({
+flux = eventReactive(input$SITES3, {
 
-    domain = input$DOMAINS3
+    domain = get_domains3()
 
     if(is.null(domain)){
         rd = init_vals$recent_domain
@@ -124,9 +136,9 @@ flux = reactive({
     return(flux)
 })
 
-P = reactive({
+P = eventReactive(input$SITES3, {
 
-    domain = input$DOMAINS3
+    domain = get_domains3()
 
     if(is.null(domain)){
         P = read_feather(glue('data/{d}/precip.feather',
@@ -138,9 +150,9 @@ P = reactive({
     return(P)
 })
 
-Q = reactive({
+Q = eventReactive(input$SITES3, {
 
-    domain = input$DOMAINS3
+    domain = get_domains3()
 
     if(is.null(domain)){
         rd = init_vals$recent_domain
@@ -160,7 +172,7 @@ Q = reactive({
 
 observe({
 
-    # grab_subset = filter(grab(), site_name %in% default_sites_by_domain[[input$DOMAINS3]])
+    # grab_subset = filter(grab(), site_name %in% default_sites_by_domain[[get_domains3()]])
     grabvars_display_subset = populate_display_vars(grab()[, -(1:2)])
 
     selected = unname(unlist(grabvars_display_subset)[1])
@@ -171,7 +183,7 @@ observe({
 
 observe({
 
-    dmn = input$DOMAINS3
+    dmn = get_domains3()
     dmnsites = sites_with_pchem[[dmn]]
 
     updateSelectizeInput(session, 'RAINSITES3', choices=dmnsites,
@@ -295,7 +307,7 @@ dataPchem3 = reactive({
     # } else {
     #     pchem3$site_name = input$SITES3
     # }
-    pchem3$site_name = paste(isolate(input$DOMAINS3), 'pchem')
+    pchem3$site_name = paste(isolate(get_domains3()), 'pchem')
 
     return(pchem3)
 
@@ -308,7 +320,7 @@ dataPrecip3 = reactive({
     dataPrecip3 = dp3 %>%
         filter(datetime >= input$DATE3[1]) %>%
         filter(datetime <= input$DATE3[2]) %>%
-        filter(site_name %in% sites_with_P[[input$DOMAINS3]]) %>% #superfluous?
+        filter(site_name %in% sites_with_P[[get_domains3()]]) %>% #superfluous?
         select(one_of("datetime", "site_name", 'precip'))
         # mutate(datetime=as.POSIXct(datetime))
 
@@ -442,7 +454,7 @@ volWeightedPrecip3 = reactive({
         # rename_at(vars(one_of(input$SOLUTES3)), ~paste0('p_', .)) %>%
         rename(P=sumPrecip)
 
-    # samplevel$site_name = paste(isolate(input$DOMAINS3), 'pchem')
+    # samplevel$site_name = paste(isolate(get_domains3()), 'pchem')
 
     if(input$AGG3 == 'Monthly'){ #otherwise Yearly; conditionals controlled by js
 
@@ -547,7 +559,7 @@ output$GRAPH_MAIN3a = output$GRAPH_MAIN3aEXP = renderDygraph({
         if(input$CONC_FLUX3 == 'VWC'){
             rainsites = colnames(rainwide)[-1]
         } else {
-            rainsites = paste(isolate(input$DOMAINS3), 'pchem')
+            rainsites = paste(isolate(get_domains3()), 'pchem')
         }
 
         if(! nrow(rainwide)){
@@ -655,7 +667,7 @@ output$GRAPH_MAIN3b = output$GRAPH_MAIN3bEXP = renderDygraph({
         if(input$CONC_FLUX3 == 'VWC'){
             rainsites = colnames(rainwide)[-1]
         } else {
-            rainsites = paste(isolate(input$DOMAINS3), 'pchem')
+            rainsites = paste(isolate(get_domains3()), 'pchem')
         }
 
         if(! nrow(rainwide)){
@@ -764,7 +776,7 @@ output$GRAPH_MAIN3c = output$GRAPH_MAIN3cEXP = renderDygraph({
         if(input$CONC_FLUX3 == 'VWC'){
             rainsites = colnames(rainwide)[-1]
         } else {
-            rainsites = paste(isolate(input$DOMAINS3), 'pchem')
+            rainsites = paste(isolate(get_domains3()), 'pchem')
         }
 
         if(! nrow(rainwide)){
@@ -995,7 +1007,7 @@ observeEvent(input$EXPAND_FLOW3, {
 #         if(input$CONC_FLUX3 == 'VWC'){
 #             rainsites = colnames(rainwide)[-1]
 #         } else {
-#             rainsites = paste(isolate(input$DOMAINS3), 'pchem')
+#             rainsites = paste(isolate(get_domains3()), 'pchem')
 #         }
 #
 #         if(! nrow(rainwide)){

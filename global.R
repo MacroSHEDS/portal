@@ -48,9 +48,9 @@ distinct = dplyr::distinct
 source('helpers.R') #maybe package these or put them in a namespace called "ms"
 
 #load global datasets
-site_data = readr::read_csv('data/site_data.csv') %>%
+site_data = sm(readr::read_csv('data/site_data.csv')) %>%
     filter(as.logical(in_workflow))
-variables = readr::read_csv('data/variables.csv')
+variables = sm(readr::read_csv('data/variables.csv'))
 
 #set defaults, which determine what data are shown when user lands
 default_domain = 'hbef'
@@ -58,9 +58,7 @@ default_sites_by_domain = list(
     'hbef'='W1',
     'hjandrews'='GSLOOK',
     'neon'='ARIK') #this can be generated automatically and overridden here
-default_sitelist = site_data %>%
-    filter(domain == default_domain, site_type == 'stream_gauge') %>%
-    pull(site_name)
+default_sitelist = sitelist_from_domain(default_domain, site_type='stream_gauge')
 default_site = default_sites_by_domain[[default_domain]]
 
 #load landing datasets
