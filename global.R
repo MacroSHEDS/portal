@@ -61,18 +61,20 @@ default_sites_by_domain = list(
 default_sitelist = sitelist_from_domain(default_domain, site_type='stream_gauge')
 default_site = default_sites_by_domain[[default_domain]]
 
-#load landing datasets
-P = read_feather(glue('data/{d}/precip.feather',
-    d=default_domain)) #update once rain gages are aggregated more finely
-Q = read_feather(glue('data/{d}/discharge/{s}.feather',
-    d=default_domain, s=default_site))
-pchem = read_feather(glue('data/{d}/pchem.feather',
-    d=default_domain)) #update once rain gages are aggregated more finely
-grab = read_feather(glue('data/{d}/chemistry/{s}.feather',
-    d=default_domain, s=default_site))
-    #filter(site_name %in% sites_with_Q) #still desirable?
-flux = read_feather(glue('data/{d}/flux/{s}.feather',
-    d=default_domain, s=default_site))
+#load base data for when user lands in app
+basedata = list(
+    P = read_feather(glue('data/{d}/precip.feather',
+        d=default_domain)), #update once rain gages are aggregated more finely
+    Q = read_feather(glue('data/{d}/discharge/{s}.feather',
+        d=default_domain, s=default_site)),
+    pchem = read_feather(glue('data/{d}/pchem.feather',
+        d=default_domain)), #update once rain gages are aggregated more finely
+    grab = read_feather(glue('data/{d}/chemistry/{s}.feather',
+        d=default_domain, s=default_site)),
+        #filter(site_name %in% sites_with_Q) #still desirable?
+    flux = read_feather(glue('data/{d}/flux/{s}.feather',
+        d=default_domain, s=default_site))
+)
 
 #make vector of domain IDs and their pretty names
 domains_df = unique(site_data[, c('domain', 'pretty_domain')])
@@ -89,15 +91,7 @@ grabvars = variables %>%
         variable_type == 'grab',
         ! variable_code %in% c('flowGageHt', 'P'))
     # filter(variable_code %in% fluxvars) #might need this back temporarily
-
-grabvars_display = grabvars %>%
-    mutate(displayname=paste0(variable_name, ' (', unit, ')')) %>%
-    select(displayname, variable_code, variable_subtype) %>%
-    plyr::dlply(plyr::.(variable_subtype), function(x){
-        plyr::daply(x, plyr::.(displayname), function(y){
-            y['variable_code']
-        })
-    })
+grabvars_display = generate_dropdown_varlist(grabvars)
 
 pchemvars = list( #temporary: update this list as part of a daily scheduled task
     hbef=c('pH', 'spCond', 'Ca', 'Mg', 'K', 'Na', 'TMAl', 'OMAl', 'Al_ICP',
@@ -106,16 +100,8 @@ pchemvars = list( #temporary: update this list as part of a daily scheduled task
     hjandrews=c('alk', 'Ca', 'Cl', 'spCond', 'DOC', 'K', 'Mg', 'Na', 'NH3_N',
         'NO3_N', 'pH', 'PO4_P', 'SiO2', 'SO4_S', 'suspSed', 'TDN', 'TDP', 'TKN',
         'UTKN', 'UTN', 'UTP'))
-
-pchemvars_display = grabvars %>% #might eventually encounter a pchemvar that's not in grabvars.
-    filter(variable_code %in% Reduce(union, pchemvars)) %>%
-    mutate(displayname=paste0(variable_name, ' (', unit, ')')) %>%
-    select(displayname, variable_code, variable_subtype) %>%
-    plyr::dlply(plyr::.(variable_subtype), function(x){
-        plyr::daply(x, plyr::.(displayname), function(y){
-            y['variable_code']
-        })
-    })
+pchemvars_display = generate_dropdown_varlist(grabvars,
+        filter_set=Reduce(union, pchemvars))
 
 conc_vars = variables %>%
     filter(
@@ -143,9 +129,7 @@ sites_with_Q = sites_by_domain('discharge')
 sites_with_pchem = sites_by_domain('precipchem')
 
 #might need modification now that files are read site-by-site
-grabvars_display_subset = populate_display_vars(grab[-(1:2)])
-pchemvars_display_subset = populate_display_vars(pchem[-(1:2)])
+grabvars_display_subset = filter_dropdown_varlist(basedata$grab)
+pchemvars_display_subset = filter_dropdown_varlist(basedata$pchem)
 
-dtrng = as.Date(range(grab$datetime, na.rm=TRUE))
-
-
+dtrng = as.Date(range(basedata$grab$datetime, na.rm=TRUE))

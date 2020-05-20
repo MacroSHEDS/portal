@@ -1,4 +1,5 @@
 sm = suppressMessages
+sw = suppressWarnings
 
 extract_from_config = function(key){
     ind = which(lapply(conf, function(x) grepl(key, x)) == TRUE)
@@ -7,25 +8,6 @@ extract_from_config = function(key){
 }
 
 # df = grab_subset[, -(1:2)]
-populate_display_vars = function(df, vartype='stream'){
-
-    populated_vars_bool = sapply(df, function(x) ! all(is.na(x)))
-    populated_vars = names(populated_vars_bool[populated_vars_bool])
-
-    if(vartype == 'stream'){
-        vars_display_subset = grabvars_display
-    } else if(vartype == 'precip'){
-        vars_display_subset = pchemvars_display
-    }
-
-    for(i in 1:length(vars_display_subset)){
-        l = vars_display_subset[[i]]
-        l[! l %in% populated_vars] = NULL
-        vars_display_subset[[i]] = l
-    }
-
-    return(vars_display_subset)
-}
 
 plot_empty_dygraph = function(datelims, plotgroup, ylab, px_per_lab){
 
@@ -248,4 +230,52 @@ sitelist_from_domain = function(dmn, site_type){
         pull(site_name)
 
     return(sitelist)
+}
+
+try_read_feather = function(path){
+
+    out = try(feather::read_feather(path), silent=TRUE)
+    if('try-error' %in% class(out)) out = tibble()
+
+    return(out)
+}
+
+generate_dropdown_varlist = function(grabvars, filter_set=NULL){
+
+    if(! is.null(filter_set)){
+        grabvars = filter(grabvars, variable_code %in% filter_set)
+    }
+
+    grabvars = grabvars %>%
+        mutate(displayname=paste0(variable_name, ' (', unit, ')')) %>%
+        select(displayname, variable_code, variable_subtype) %>%
+        plyr::dlply(plyr::.(variable_subtype), function(x){
+            plyr::daply(x, plyr::.(displayname), function(y){
+                y['variable_code']
+            })
+        })
+
+    return(grabvars)
+}
+
+filter_dropdown_varlist = function(filter_set, vartype='stream'){
+
+    filter_set = sw(select(filter_set, -one_of('site_name', 'datetime')))
+
+    populated_vars_bool = sapply(filter_set, function(x) ! all(is.na(x)))
+    populated_vars = names(populated_vars_bool[populated_vars_bool])
+
+    if(vartype == 'stream'){
+        vars_display_subset = grabvars_display
+    } else if(vartype == 'precip'){
+        vars_display_subset = pchemvars_display
+    }
+
+    for(i in 1:length(vars_display_subset)){
+        l = vars_display_subset[[i]]
+        l[! l %in% populated_vars] = NULL
+        vars_display_subset[[i]] = l
+    }
+
+    return(vars_display_subset)
 }

@@ -44,6 +44,9 @@ observeEvent({
     changesInSelections3$facetC3 = changesInSelections3$facetC3 + 1
 })
 
+#reactivity flow control ####
+
+#when domain(s) change, site options change, and selected site changes
 get_domains3 = eventReactive(input$DOMAINS3, {
 
     domain = input$DOMAINS3
@@ -56,41 +59,35 @@ get_domains3 = eventReactive(input$DOMAINS3, {
     return(domain)
 })
 
-# get_sites3 = eventReactive(input$SITES3, {
-#
-#     sites = input$SITES3
-#
-#     # updateSelectizeInput(session, 'SOLUTES3',
-#     #     choices=,
-#     #     selected=,
-#     #     options=list(maxItems=3))
-#
-#     return(sites)
-# })
-
-grab = eventReactive(input$SITES3, {
+#when site(s) change, basedata changes
+load_basedata = eventReactive(input$SITES3, {
 
     domain = get_domains3()
 
     if(is.null(domain)){ #for empty domain dropdown
-
-        rd = init_vals$recent_domain
-        grab = read_feather(glue('data/{d}/chemistry/{s}.feather',
-            d=rd, s=default_sites_by_domain[[rd]]))
-
-        domain = 'hbef'
-
+        domain = init_vals$recent_domain
+        sites = default_sites_by_domain[[dmn]]
     } else {
-
-        grab = tibble()
-        for(s in input$SITES3){
-            grab = read_feather(glue('data/{d}/chemistry/{s}.feather',
-                    d=domain, s=s)) %>%
-                bind_rows(grab)
-        }
+        sites = input$SITES3
     }
 
-    init_vals$recent_domain = domain
+    gluestr1 = 'data/{d}/{v}/{s}.feather'
+    gluestr2 = 'data/{d}/{v}.feather'
+
+    pchem = try_read_feather(glue(gluestr2, d=domain, v='pchem'))
+    P = try_read_feather(glue(gluestr2, d=domain, v='precip'))
+
+    grab = flux = Q = tibble()
+    for(s in sites){
+        grab = try_read_feather(glue(gluestr1, d=domain, v='chemistry', s=s)) %>%
+            bind_rows(grab)
+        flux = try_read_feather(glue(gluestr1, d=domain, v='flux', s=s)) %>%
+            bind_rows(flux)
+        Q = try_read_feather(glue(gluestr1, d=domain, v='discharge', s=s)) %>%
+            bind_rows(Q)
+    }
+
+    init_vals$recent_domain = domain #needed?
 
     # test commented. is next line useful?
     # grab = filter(grab, site_name %in% sites_with_Q)
@@ -106,107 +103,46 @@ grab = eventReactive(input$SITES3, {
     # dt_extent = changesInSelections3$dt_extent
     # changesInSelections3$dt_extent = range(c(dt_extent, input$DATE3))
 
-    return(grab)
+    basedata = list(grab=grab, P=P, Q=Q, pchem=pchem, flux=flux)
+    return(basedata)
 })
 
-pchem = eventReactive(input$SITES3, {
-
-    domain = get_domains3()
-
-    if(is.null(domain)){
-        pchem = read_feather(glue('data/{d}/pchem.feather',
-            d=init_vals$recent_domain))
-    } else {
-        pchem = read_feather(glue('data/{d}/pchem.feather', d=domain))
-    }
-
-    # init_vals$recent_domain = domain
-
-    return(pchem)
-})
-
-flux = eventReactive(input$SITES3, {
-
-    domain = get_domains3()
-
-    if(is.null(domain)){
-        rd = init_vals$recent_domain
-        flux = read_feather(glue('data/{d}/flux/{s}.feather',
-            d=rd, s=default_sites_by_domain[[rd]]))
-    } else {
-        flux = tibble()
-        for(s in input$SITES3){
-            flux = read_feather(glue('data/{d}/flux/{s}.feather',
-                    d=domain, s=s)) %>%
-                bind_rows(flux)
-        }
-    }
-
-    return(flux)
-})
-
-P = eventReactive(input$SITES3, {
-
-    domain = get_domains3()
-
-    if(is.null(domain)){
-        P = read_feather(glue('data/{d}/precip.feather',
-            d=init_vals$recent_domain))
-    } else {
-        P = read_feather(glue('data/{d}/precip.feather', d=domain))
-    }
-
-    return(P)
-})
-
-Q = eventReactive(input$SITES3, {
-
-    domain = get_domains3()
-
-    if(is.null(domain)){
-        rd = init_vals$recent_domain
-        Q = read_feather(glue('data/{d}/discharge/{s}.feather',
-            d=rd, s=default_sites_by_domain[[rd]]))
-    } else {
-        Q = tibble()
-        for(s in input$SITES3){
-            Q = read_feather(glue('data/{d}/discharge/{s}.feather',
-                d=domain, s=s)) %>%
-                bind_rows(Q)
-        }
-    }
-
-    return(Q)
-})
-
+#when basedata changes, variable list and time slider change
 observe({
 
-    # grab_subset = filter(grab(), site_name %in% default_sites_by_domain[[get_domains3()]])
-    grabvars_display_subset = populate_display_vars(grab()[, -(1:2)])
+    basedata = load_basedata()
 
+    grabvars_display_subset = filter_dropdown_varlist(basedata$grab)
     selected = unname(unlist(grabvars_display_subset)[1])
 
     updateSelectizeInput(session, 'SOLUTES3',
         choices=grabvars_display_subset, selected=selected)
+
+    dtrng = basedata$grab %>%
+        select(datetime, one_of(selected)) %>%
+        pull(datetime) %>%
+        range(., na.rm=TRUE)
+
+    updateSliderInput(session, 'DATE3', min=dtrng[1], max=dtrng[2],
+        value=most_recent_year(dtrng))
 })
 
+#when variable(s) change, time slider changes
 observe({
 
-    dmn = get_domains3()
-    dmnsites = sites_with_pchem[[dmn]]
+    var = input$SOLUTES3
+    basedata = isolate(load_basedata())
 
-    updateSelectizeInput(session, 'RAINSITES3', choices=dmnsites,
-        selected=dmnsites[1])
+    dtrng = basedata$grab %>%
+        select(datetime, one_of(var)) %>%
+        pull(datetime) %>%
+        range(., na.rm=TRUE)
 
-    pchem_subset = filter(pchem(), site_name %in% dmnsites[1])
-    pchemvars_display_subset = populate_display_vars(pchem_subset[-(1:2)],
-        vartype='precip')
-
-    selected = unname(unlist(pchemvars_display_subset)[1])
-
-    updateSelectizeInput(session, 'RAINVARS3',
-        choices=pchemvars_display_subset, selected=selected)
+    updateSliderInput(session, 'DATE3', min=dtrng[1], max=dtrng[2],
+        value=most_recent_year(dtrng))
 })
+
+#HERE: continue from
 
 data3 = reactive({
 

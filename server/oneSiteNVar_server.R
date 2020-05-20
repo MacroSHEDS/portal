@@ -48,7 +48,7 @@ observeEvent({
 observeEvent(input$SITES4, {
 
     grab_subset = filter(grab, site_name == input$SITES4)
-    grabvars_display_subset = populate_display_vars(grab_subset[-(1:2)])
+    grabvars_display_subset = filter_dropdown_varlist(grab_subset)
 
     updateSelectizeInput(session, 'SOLUTES4',
         choices=grabvars_display_subset,

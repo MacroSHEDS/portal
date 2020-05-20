@@ -76,17 +76,8 @@ shinyServer(function(input, output, session){
         # input_vals$flash_plot = input_vals$flash_plot + 1
     })
 
-    # observeEvent(once=TRUE, ignoreNULL=FALSE, ignoreInit=FALSE,
-    #         eventExpr=TRUE, {
-    #
-    # })
-
     observeEvent(input$DISMISS_LANDING, {
         removeModal(session)
     })
-
-    # grabvars_display_subset = reactive({
-    #     v = populate_display_vars(grab()[-(1:2)]) #temporary (add flex for multi dmn; also see global.R)
-    # })
 
 })
