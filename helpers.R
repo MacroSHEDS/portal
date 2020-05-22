@@ -279,3 +279,90 @@ filter_dropdown_varlist = function(filter_set, vartype='stream'){
 
     return(vars_display_subset)
 }
+
+ms_aggregate = function(df, agg_selection, which_dataset,
+    conc_flux_selection=NULL){
+
+    #agg_selection is a user input object, e.g. input$AGG3
+    #which_dataset is one of 'grab', 'q', 'p', 'pchem'
+    #conc_flux_selection must be supplied as e.g. input$CONC_FLUX3 if
+    #which_dataset is 'grab' or 'pchem'
+
+    if(! which_dataset %in% c('grab', 'q', 'p', 'pchem')){
+        stop("which_dataset must be one of 'grab', 'q', 'p', 'pchem'")
+    }
+
+    if(which_dataset %in% c('grab', 'pchem') && is.null(conc_flux_selection)){
+        stop(paste0("conc_flux_selection must be supplied when which_dataset",
+            "is 'grab' or'pchem'"))
+    }
+
+    if(nrow(df) == 0) return(df)
+    if(agg_selection == 'Instantaneous') return(df)
+    if(agg_selection == 'Daily' && which_dataset == 'pchem') return(df)
+
+    agg_period = switch(agg_selection, 'Daily'='day', 'Monthly'='month',
+        'Yearly'='year')
+    df = group_by(df, datetime=floor_date(datetime, agg_period), site_name)
+
+    if(which_dataset %in% c('grab', 'pchem')){
+
+        if(conc_flux_selection == 'VWC'){
+            df = summarize_all(df, list(~sum(., na.rm=TRUE)))
+        } else {
+            df = summarize_all(df, list(~mean(., na.rm=TRUE)))
+        }
+
+    } else if(which_dataset == 'p'){
+        df = summarize_all(df, list(~mean(., na.rm=TRUE)))
+    } else if(which_dataset == 'q'){
+        df = summarize_all(df, list(~max(., na.rm=TRUE)))
+    }
+
+    df = ungroup(df)
+
+    return(df)
+}
+
+prep_mainfacets3 = function(v, dmn, sites, streamdata, raindata,
+    conc_flux_selection, show_input_concentration){
+
+    if(is.na(v)) return()
+
+    streamdata = streamdata %>%
+        filter(site_name %in% sites) %>%
+        select(datetime, site_name, one_of(v)) %>%
+        group_by(datetime, site_name) %>%
+        summarize_all(mean, na.rm=TRUE) %>%
+        spread(site_name, !!v) %>%
+        data.table()
+
+    if(show_input_concentration & ! is.null(raindata)){
+
+        raindata = raindata %>%
+            select(datetime, site_name, one_of(v)) %>%
+            spread(site_name, !!v) %>%
+            rename_at(vars(-one_of('datetime', 'hbef pchem')), #shouldnt be hardcoded
+                ~paste0('P_', .)) %>%
+            data.table()
+
+        if(conc_flux_selection == 'VWC'){
+            rainsites = colnames(raindata)[-1]
+        } else {
+            rainsites = paste(dmn, 'pchem')
+        }
+
+        if(! nrow(raindata)){
+            raindata = tibble(datetime=streamdata$datetime)
+            raindata[rainsites] = NA
+            raindata = as.data.table(raindata)
+        }
+
+        alldata = rolljoin(raindata, streamdata, rainsites, sites)
+
+    } else {
+        alldata = as_tibble(streamdata)
+    }
+
+    return(alldata)
+}
