@@ -63,6 +63,7 @@ source('helpers.R') #maybe package these or put them in a namespace called "ms"
 #load global datasets
 site_data = sm(readr::read_csv('data/site_data.csv')) %>%
     filter(as.logical(in_workflow))
+if(any(duplicated(site_data$site_name))) stop('site_names must be unique, even across domains')
 variables = sm(readr::read_csv('data/variables.csv'))
 
 #set defaults, which determine what data are shown when user lands
@@ -71,10 +72,10 @@ default_sites_by_domain = list(
     'hbef'='W1',
     'hjandrews'='GSLOOK',
     'neon'='ARIK') #this can be generated automatically and overridden here
-default_sitelist = sitelist_from_domain(default_domain, site_type='stream_gauge')
+default_sitelist = sitelist_from_domain(default_domain, type='stream_gauge')
 default_site = default_sites_by_domain[[default_domain]]
 
-#load base data for when user lands in app
+#load base data for when user lands in app (could use convenience functions here)
 basedata = list(
     P = read_feather(glue('data/{d}/precip.feather',
         d=default_domain)), #update once rain gages are aggregated more finely
@@ -131,15 +132,16 @@ conc_flux_names = c('Concentration'='Concentration','x'='Flux', 'y'='VWC')
 names(conc_flux_names)[2] = paste('Flux (interpolated)', enc2native('\U2753'))
 names(conc_flux_names)[3] = paste('Flux (VWC)', enc2native('\U2753'))
 
-raincolor = '#8ab5de'
+raincolors = '#8ab5de' #light blue
 # raincolorbold = '#4e8fcd'
 # raincolorpale = '#c6dbef'
-linecolors = c('#323232', '#008040', '#800080')#, raincolor) #'#08519C''#54278F'
-pchemcolors = c('#585858', '#1bff8c', '#ff1bff')
+#'#08519C''#54278F'
+linecolors = c('#323232', '#008040', '#800080') #black, green, purple
+pchemcolors = c('#585858', '#1bff8c', '#ff1bff') #lighter shades of the above
 
-sites_with_P = sites_by_domain('precip')
-sites_with_Q = sites_by_domain('discharge')
-sites_with_pchem = sites_by_domain('precipchem')
+sites_with_P = sites_by_var('precip')
+sites_with_Q = sites_by_var('discharge')
+sites_with_pchem = sites_by_var('precipchem')
 
 #might need modification now that files are read site-by-site
 grabvars_display_subset = filter_dropdown_varlist(basedata$grab)

@@ -78,85 +78,64 @@ observeEvent({
 
 #reactivity flow control ####
 
-#when domain(s) change, site options change, and selected site changes
+#when domain(s) change, site options change, but not site selections
 get_domains3 = eventReactive(input$DOMAINS3, {
 
-    domain = input$DOMAINS3
+    domains = input$DOMAINS3
 
     updateSelectizeInput(session, 'SITES3',
-        choices=sitelist_from_domain(domain, site_type='stream_gauge'),
-        selected=default_sites_by_domain[[domain]],
+        choices=generate_dropdown_sitelist(domains),
+        selected=input$SITES3,
         options=list(maxItems=3))
 
-    return(domain)
+    return(domains)
 })
 
 #when site(s) change, basedata changes
 load_basedata = eventReactive(input$SITES3, {
 
-    domain = get_domains3()
+    dmns = get_domains3()
 
-    if(is.null(domain)){ #for empty domain dropdown
-        domain = init_vals$recent_domain
-        sites = default_sites_by_domain[[dmn]]
+    if(is.null(dmns)){ #for empty domain dropdown
+        dmns = init_vals$recent_domain
+        sites = default_sites_by_domain[[dmns[1]]] #overkill?
     } else {
         sites = input$SITES3
     }
 
-    gluestr1 = 'data/{d}/{v}/{s}.feather'
-    gluestr2 = 'data/{d}/{v}.feather'
+    #NOTE: read_combine_feathers will have to be modified once rain data are
+    #no longer aggregated for each domain
+    pchem = read_combine_feathers('pchem', dmns=dmns)
+    P = read_combine_feathers('precip', dmns=dmns)
+    grab = read_combine_feathers('chemistry', dmns=dmns, sites=sites)
+    flux = read_combine_feathers('flux', dmns=dmns, sites=sites)
+    Q = read_combine_feathers('discharge', dmns=dmns, sites=sites)
 
-    pchem = try_read_feather(glue(gluestr2, d=domain, v='pchem'))
-    P = try_read_feather(glue(gluestr2, d=domain, v='precip'))
-
-    grab = flux = Q = tibble()
-    for(s in sites){
-        grab = try_read_feather(glue(gluestr1, d=domain, v='chemistry', s=s)) %>%
-            bind_rows(grab)
-        flux = try_read_feather(glue(gluestr1, d=domain, v='flux', s=s)) %>%
-            bind_rows(flux)
-        Q = try_read_feather(glue(gluestr1, d=domain, v='discharge', s=s)) %>%
-            bind_rows(Q)
-    }
-
-    init_vals$recent_domain = domain #needed?
-
-    # test commented. is next line useful?
-    # grab = filter(grab, site_name %in% sites_with_Q)
-
-    #test commented this too
-    # new_sitelist = site_data %>%
-    #     filter(domain == get_domains3(), site_type == 'stream_gauge') %>%
-    #     pull(site_name)
-    #
-    # updateSelectizeInput(session, 'SITES3', choices=new_sitelist,
-    #     selected=default_sites_by_domain[[domain]])
-
-    # dt_extent = changesInSelections3$dt_extent
-    # changesInSelections3$dt_extent = range(c(dt_extent, input$DATE3))
+    init_vals$recent_domain = dmns[1] #needed?
 
     basedata = list(grab=grab, P=P, Q=Q, pchem=pchem, flux=flux)
     return(basedata)
 })
 
-#when basedata changes, variable list and time slider change
+#when basedata changes, variable list and time slider change, but not selections
 observe({
 
     basedata = load_basedata()
+    solutes3 = isolate(input$SOLUTES3)
+    dates3 = isolate(input$DATE3)
 
     grabvars_display_subset = filter_dropdown_varlist(basedata$grab)
-    selected = unname(unlist(grabvars_display_subset)[1])
-
     updateSelectizeInput(session, 'SOLUTES3',
-        choices=grabvars_display_subset, selected=selected)
+        choices=grabvars_display_subset, selected=solutes3)
 
     dtrng = basedata$grab %>%
-        select(datetime, one_of(selected)) %>%
+        select(datetime, one_of(solutes3)) %>%
+        mutate(datetime = as.Date(datetime)) %>%
         pull(datetime) %>%
         range(., na.rm=TRUE)
 
     updateSliderInput(session, 'DATE3', min=dtrng[1], max=dtrng[2],
-        value=most_recent_year(dtrng))
+        value=dates3, timeFormat='%b %Y')
 })
 
 #when variable(s) change, time slider changes
@@ -167,43 +146,43 @@ observe({
 
     dtrng = basedata$grab %>%
         select(datetime, one_of(var)) %>%
+        mutate(datetime = as.Date(datetime)) %>%
         pull(datetime) %>%
         range(., na.rm=TRUE)
 
     updateSliderInput(session, 'DATE3', min=dtrng[1], max=dtrng[2],
-        value=most_recent_year(dtrng))
+        value=most_recent_year(dtrng), timeFormat='%b %Y')
 })
 
 #if variables(s), aggregation, units, site, or time window change, re-filter datasets
 data3 = reactive({
-#     input$DATE3
-#     input$SOLUTES3
-#     input$AGG3
-#     input$CONC_FLUX3
-#     input$CONC_UNIT3
-#     input$FLUX_UNIT3
-# }, {
 
+    dates3 = input$DATE3
+    solutes3 = input$SOLUTES3
+    conc_flux3 = input$CONC_FLUX3
+    conc_unit3 = input$CONC_UNIT3
+    agg3 = input$AGG3
+    sites3 = input$SITES3
     basedata = load_basedata()
+
     data3 = if(input$CONC_FLUX3 == 'Flux') basedata$flux else basedata$grab
 
     if(nrow(data3) == 0) return(data3)
 
     data3 = data3 %>%
-        filter(datetime >= input$DATE3[1], datetime <= input$DATE3[2]) %>%
-        select(one_of('datetime', 'site_name', input$SOLUTES3))
+        filter(datetime >= dates3[1], datetime <= dates3[2]) %>%
+        select(one_of('datetime', 'site_name', solutes3))
 
     if(nrow(data3) == 0) return(data3)
 
-    data3 = pad_ts3(data3, input$SITES3, input$SOLUTES3, input$DATE3)
-    data3 = ms_aggregate(data3, input$AGG3, which_dataset='grab',
-        input$CONC_FLUX3)
+    data3 = pad_ts3(data3, vars=solutes3, datebounds=dates3)
+    data3 = ms_aggregate(data3, agg3, which_dataset='grab', conc_flux3)
 
     if(init_vals$enable_unitconvert){
-        if(input$CONC_FLUX3 %in% c('Concentration', 'VWC')){
-            data3 = convert_conc_units(data3, desired_unit=input$CONC_UNIT3)
-        } else if(input$CONC_FLUX3 == 'Flux'){
-            data3 = convert_flux_units(data3, desired_unit=input$FLUX_UNIT3)
+        if(conc_flux3 %in% c('Concentration', 'VWC')){
+            data3 = convert_conc_units(data3, desired_unit=conc_unit3)
+        } else if(conc_flux3 == 'Flux'){
+            data3 = convert_flux_units(data3, desired_unit=flux_unit3)
         }
     }
 
@@ -211,58 +190,60 @@ data3 = reactive({
 })
 
 dataPchem3 = reactive({
-#     input$DATE3
-#     input$SOLUTES3
-#     input$AGG3
-#     input$CONC_UNIT3
-# }, {
 
+    dates3 = input$DATE3
+    solutes3 = input$SOLUTES3
+    conc_flux3 = input$CONC_FLUX3
+    conc_unit3 = input$CONC_UNIT3
+    agg3 = input$AGG3
+    dmns = get_domains3()
     basedata = load_basedata()
+
     pchem3 = basedata$pchem
 
     if(nrow(pchem3) == 0) return(pchem3)
 
     pchem3 = pchem3 %>%
-        filter(datetime >= input$DATE3[1], datetime <= input$DATE3[2]) %>%
-        group_by(datetime) %>% #remove dupes
-        summarize_at(vars(-site_name), ~mean(., na.rm=TRUE)) %>%
-        ungroup() %>%
-        select(one_of('datetime', input$SOLUTES3))
+        filter(datetime >= dates3[1], datetime <= dates3[2]) %>%
+        select(datetime, domain, one_of(solutes3))
 
     if(nrow(pchem3) == 0) return(pchem3)
 
-    pchem3 = pad_ts3(pchem3, sites=NULL, vars=input$SOLUTES3,
-        datebounds=input$DATE3)
-    pchem3 = ms_aggregate(pchem3, input$AGG3, which_dataset='pchem',
-        input$CONC_FLUX3)
+    pchem3 = pad_ts3(pchem3, vars=solutes3, datebounds=dates3)
+    pchem3 = ms_aggregate(pchem3, agg3, which_dataset='pchem', conc_flux3)
 
     if(init_vals$enable_unitconvert){
-        pchem3 = convert_conc_units(pchem3, desired_unit=input$CONC_UNIT3)
+        pchem3 = convert_conc_units(pchem3, desired_unit=conc_unit3)
     }#temporary? modify the above if rain flux and rain units become modifiable
 
-    pchem3$site_name = paste(get_domains3(), 'pchem')
+    #format domain name for display as a "site name"
+    pchem3 = pchem3 %>%
+        mutate(domain = paste(domain, 'pchem')) %>%
+        rename(site_name=domain)
 
     return(pchem3)
 })
 
 dataPrecip3 = reactive({
-    # input$DATE3; input$SOLUTES3; input$AGG3}, {
 
+    dates3 = input$DATE3
+    agg3 = input$AGG3
     basedata = load_basedata()
+
     dataPrecip3 = basedata$P
 
     if(nrow(dataPrecip3) == 0) return(dataPrecip3)
 
     dataPrecip3 = dataPrecip3 %>%
-        filter(datetime >= input$DATE3[1], datetime <= input$DATE3[2]) %>%
-        # filter(site_name %in% sites_with_P[[get_domains3()]]) %>% #superfluous?
+        filter(datetime >= dates3[1], datetime <= dates3[2]) %>%
         select(one_of("datetime", "site_name", 'precip'))
 
     if(nrow(dataPrecip3) == 0) return(dataPrecip3)
 
-    dataPrecip3 = pad_ts3(dataPrecip3, unique(dataPrecip3$site_name),
-        'precip', input$DATE3)
-    dataPrecip3 = ms_aggregate(dataPrecip3, input$AGG3, which_dataset='p')
+    # dataPrecip3 = pad_ts3(dataPrecip3, unique(dataPrecip3$site_name),
+    #     'precip', dates3)
+    dataPrecip3 = pad_ts3(dataPrecip3, vars='precip', datebounds=dates3)
+    dataPrecip3 = ms_aggregate(dataPrecip3, agg3, which_dataset='p')
 
     dataPrecip3 = dataPrecip3 %>%
         group_by(datetime) %>%
@@ -274,23 +255,26 @@ dataPrecip3 = reactive({
 })
 
 dataFlow3 = reactive({
-    # input$DATE3; input$SOLUTES3; input$AGG3}, {
 
+    dates3 = input$DATE3
+    sites3 = input$SITES3
+    agg3 = input$AGG3
     basedata = load_basedata()
+
     dataFlow3 = basedata$Q
 
     if(nrow(dataFlow3) == 0) return(dataFlow3)
 
     dataFlow3 = dataFlow3 %>%
-        filter(datetime > input$DATE3[1], datetime < input$DATE3[2]) %>%
+        filter(datetime > dates3[1], datetime < dates3[2]) %>%
         select(datetime, site_name, Q)
 
     if(nrow(dataFlow3) == 0) return(dataFlow3)
 
-    dataFlow3 = pad_ts3(dataFlow3, input$SITES3, 'Q', input$DATE3)
-    dataFlow3 = ms_aggregate(dataFlow3, input$AGG3, which_dataset='q')
+    dataFlow3 = pad_ts3(dataFlow3, vars='Q', datebounds=dates3)
+    dataFlow3 = ms_aggregate(dataFlow3, agg3, which_dataset='q')
 
-    if(input$AGG3 == 'Instantaneous'){ #revisit this. needed?
+    if(agg3 == 'Instantaneous'){ #revisit this. needed?
         dataFlow3 = dataFlow3 %>%
             group_by(datetime, site_name) %>%
             summarise(Q=max(Q, na.rm=TRUE)) %>%
@@ -308,10 +292,13 @@ dataFlow3 = reactive({
 #only possible at monthly and yearly agg. conditionals controlled by ui
 volWeighted3 = reactive({
 
-    samplevel = data3() %>%
-        left_join(dataFlow3(), by=c('datetime', 'site_name')) %>%
-        mutate_at(vars(-datetime, -site_name, -Q), ~(. * Q))
+    data3 = data3()
+    dataflow3 = dataFlow3()
     agg_input = isolate(input$AGG3)
+
+    samplevel = data3 %>%
+        left_join(dataflow3, by=c('datetime', 'site_name')) %>%
+        mutate_at(vars(-datetime, -site_name, -Q), ~(. * Q))
 
     if(agg_input == 'Monthly'){
 
@@ -352,6 +339,7 @@ volWeighted3 = reactive({
 volWeightedPrecip3 = reactive({
 
     samplevel = dataPchem3()
+    dataprecip3 = dataPrecip3()
     agg_input = isolate(input$AGG3)
     sites = isolate(input$SITES3)
     solutes = isolate(input$SOLUTES3)
@@ -373,7 +361,7 @@ volWeightedPrecip3 = reactive({
     }
 
     samplevel = samplevel %>%
-        left_join(select(dataPrecip3(), -medianPrecip), by='datetime') %>%
+        left_join(select(dataprecip3, -medianPrecip), by='datetime') %>%
         left_join(site_data, by='site_name') %>%
         mutate(precipVol=sumPrecip * ws_area_ha) %>%
         mutate_at(vars(one_of(solutes)), ~(. * precipVol)) %>%
@@ -447,36 +435,63 @@ output$GRAPH_PRECIP3 = output$GRAPH_PRECIP3EXP = renderDygraph({
 
 output$GRAPH_MAIN3a = output$GRAPH_MAIN3aEXP = renderDygraph({
 
-    sites = na.omit(isolate(input$SITES3[1:3]))
-    varA = isolate(input$SOLUTES3[1])
-    dmn = isolate(get_domains3())
-    conc_flux3 = isolate(input$CONC_FLUX3)
-    flux_unit3 = isolate(input$FLUX_UNIT3)
-    conc_unit3 = isolate(input$CONC_UNIT3)
-    inconc3 = isolate(input$INCONC3)
-    agg3 = isolate(input$AGG3)
-    date3 = isolate(input$DATE3)
+    sites <<- na.omit(isolate(input$SITES3[1:3]))
+    varA <<- isolate(input$SOLUTES3[1])
+    dmns <<- isolate(get_domains3())
+    conc_flux3 <<- isolate(input$CONC_FLUX3)
+    flux_unit3 <<- isolate(input$FLUX_UNIT3)
+    conc_unit3 <<- isolate(input$CONC_UNIT3)
+    inconc3 <<- isolate(input$INCONC3)
+    agg3 <<- isolate(input$AGG3)
+    date3 <<- isolate(input$DATE3)
+    # sites = na.omit(isolate(input$SITES3[1:3]))
+    # varA = isolate(input$SOLUTES3[1])
+    # dmns = isolate(get_domains3())
+    # conc_flux3 = isolate(input$CONC_FLUX3)
+    # flux_unit3 = isolate(input$FLUX_UNIT3)
+    # conc_unit3 = isolate(input$CONC_UNIT3)
+    # inconc3 = isolate(input$INCONC3)
+    # agg3 = isolate(input$AGG3)
+    # date3 = isolate(input$DATE3)
 
     changesInSelections3$facetA3
 
     if(conc_flux3 == 'VWC'){
-        streamdata = volWeighted3()
+        streamdata <<- volWeighted3()
+        # streamdata = volWeighted3()
     } else {
-        streamdata = data3()
+        streamdata <<- data3()
+        # streamdata = data3()
     }
 
     if(inconc3){
+
         if(conc_flux3 == 'VWC'){
-            raindata = volWeightedPrecip3()
+            raindata <<- volWeightedPrecip3()
+            # raindata = volWeightedPrecip3()
         } else {
-            raindata = dataPchem3()
+            raindata <<- dataPchem3()
+            # raindata = dataPchem3()
         }
+
     } else {
         raindata = NULL
     }
 
-    alldata = prep_mainfacets3(varA, dmn, sites, streamdata, raindata,
+    alldata = prep_mainfacets3(varA, dmns, sites, streamdata, raindata,
         conc_flux_selection=conc_flux3, show_input_concentration=inconc3)
+
+    if(inconc3){
+
+        if(conc_flux3 == 'VWC'){
+            cnms = colnames(alldata)
+            rainsites = cnms[grep('^P_', cnms)]
+            siteorder = order(sites)
+            rainsites = sort(rainsites)[siteorder] #ensure rainsites line up with sites
+        } else {
+            rainsites = unique(raindata$site_name) #e.g. "hbef pchem"
+        }
+    }
 
     if(nrow(alldata)){
 
@@ -508,18 +523,16 @@ output$GRAPH_MAIN3a = output$GRAPH_MAIN3aEXP = renderDygraph({
 
             if(conc_flux3 == 'Concentration'){
 
-                dg = dg %>%
-                    dySeries(name=rainsites[1], color=raincolor, axis='y',
-                        drawPoints=FALSE, strokeWidth=2, pointSize=2,
-                        strokePattern='dashed')
+                dg = dySeries(dg, name=rainsites[1], color=raincolor, axis='y',
+                    drawPoints=FALSE, strokeWidth=2, pointSize=2,
+                    strokePattern='dashed')
 
             } else {
 
                 for(i in 1:length(rainsites)){
-                    dg = dg %>%
-                        dySeries(name=rainsites[i], color=pchemcolors[i],
-                            axis='y', drawPoints=FALSE, strokeWidth=2,
-                            pointSize=2, strokePattern='dashed')
+                    dg = dySeries(dg, name=rainsites[i], color=pchemcolors[i],
+                        axis='y', drawPoints=FALSE, strokeWidth=2,
+                        pointSize=2, strokePattern='dashed')
                 }
             }
         }
@@ -536,7 +549,7 @@ output$GRAPH_MAIN3b = output$GRAPH_MAIN3bEXP = renderDygraph({
 
     sites = na.omit(isolate(input$SITES3[1:3]))
     varB = isolate(input$SOLUTES3[2])
-    dmn = isolate(get_domains3())
+    dmns = isolate(get_domains3())
     conc_flux3 = isolate(input$CONC_FLUX3)
     flux_unit3 = isolate(input$FLUX_UNIT3)
     conc_unit3 = isolate(input$CONC_UNIT3)
@@ -553,17 +566,33 @@ output$GRAPH_MAIN3b = output$GRAPH_MAIN3bEXP = renderDygraph({
     }
 
     if(inconc3){
+
         if(conc_flux3 == 'VWC'){
             raindata = volWeightedPrecip3()
         } else {
             raindata = dataPchem3()
         }
+
+        rainsites = raindata$site_name
+
     } else {
         raindata = NULL
     }
 
-    alldata = prep_mainfacets3(varB, dmn, sites, streamdata, raindata,
+    alldata = prep_mainfacets3(varB, dmns, sites, streamdata, raindata,
         conc_flux_selection=conc_flux3, show_input_concentration=inconc3)
+
+    if(inconc3){
+
+        if(conc_flux3 == 'VWC'){
+            cnms = colnames(alldata)
+            rainsites = cnms[grep('^P_', cnms)]
+            siteorder = order(sites)
+            rainsites = sort(rainsites)[siteorder] #ensure rainsites line up with sites
+        } else {
+            rainsites = unique(raindata$site_name) #e.g. "hbef pchem"
+        }
+    }
 
     if(nrow(alldata)){
 
@@ -623,7 +652,7 @@ output$GRAPH_MAIN3c = output$GRAPH_MAIN3cEXP = renderDygraph({
 
     sites = na.omit(isolate(input$SITES3[1:3]))
     varC = isolate(input$SOLUTES3[3])
-    dmn = isolate(get_domains3())
+    dmns = isolate(get_domains3())
     conc_flux3 = isolate(input$CONC_FLUX3)
     flux_unit3 = isolate(input$FLUX_UNIT3)
     conc_unit3 = isolate(input$CONC_UNIT3)
@@ -640,17 +669,33 @@ output$GRAPH_MAIN3c = output$GRAPH_MAIN3cEXP = renderDygraph({
     }
 
     if(inconc3){
+
         if(conc_flux3 == 'VWC'){
             raindata = isolate(volWeightedPrecip3())
         } else {
             raindata = isolate(dataPchem3())
         }
+
+        rainsites = raindata$site_name
+
     } else {
         raindata = NULL
     }
 
-    alldata = prep_mainfacets3(varC, dmn, sites, streamdata, raindata,
+    alldata = prep_mainfacets3(varC, dmns, sites, streamdata, raindata,
         conc_flux_selection=conc_flux3, show_input_concentration=inconc3)
+
+    if(inconc3){
+
+        if(conc_flux3 == 'VWC'){
+            cnms = colnames(alldata)
+            rainsites = cnms[grep('^P_', cnms)]
+            siteorder = order(sites)
+            rainsites = sort(rainsites)[siteorder] #ensure rainsites line up with sites
+        } else {
+            rainsites = unique(raindata$site_name) #e.g. "hbef pchem"
+        }
+    }
 
     if(nrow(alldata)){
 

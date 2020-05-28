@@ -130,21 +130,35 @@ convert_flux_units = function(df, input_unit='kg/ha/d', desired_unit){
 #     10^(ceiling(log10(x)))
 # }
 
-# tsdf=dataPrecip3; sites=unique(dataPrecip3$site_name)
-# vars='precip'; datebounds=dd
-pad_ts3 = function(tsdf, sites, vars, datebounds){
+# tsdf=pchem3;
+# sites=NULL
+# vars=solutes3
+# datebounds=dates3
+pad_ts3 = function(tsdf, vars, datebounds){
 
-    # if(is.null(sites)) sites = 'placeholder'
-    if(is.null(sites) || length(sites) == 0) sites = 'placeholder'
+    #if tsdf is precip or pchem, data are aggregated by domain, so a domain
+    #column is passed. otherwise a site_name column is passed
 
-    nsites = length(sites)
+    if('site_name' %in% colnames(tsdf)){
+        spatial_unit = 'site_name'
+        sites_or_dmns = unique(tsdf$site_name)
+    } else if('domain' %in% colnames(tsdf)){
+        spatial_unit = 'domain'
+        sites_or_dmns = unique(tsdf$domain)
+    } else{ #probably never run, but here for unforseen back-compatibility needs
+        spatial_unit = 'site_name'
+        sites_or_dmns = 'placeholder'
+    }
+
+    n_sites_or_dmns = length(sites_or_dmns)
     nvars = length(vars)
 
-    dt_ext_rows = tibble(rep(as.POSIXct(datebounds), nsites),
-        rep(sites, each=2))
+    dt_ext_rows = tibble(rep(as.POSIXct(datebounds), n_sites_or_dmns),
+        rep(sites_or_dmns, each=2))
     dt_ext_rows = bind_cols(dt_ext_rows, as.data.frame(matrix(NA_real_,
-        ncol=nvars, nrow=nsites * 2)))
-    colnames(dt_ext_rows) = c('datetime', 'site_name', vars)
+        ncol=nvars, nrow=n_sites_or_dmns * 2)))
+    colnames(dt_ext_rows) = c('datetime', spatial_unit, vars)
+    dt_ext_rows$datetime = lubridate::force_tz(dt_ext_rows$datetime, 'UTC')
 
     # if(class(tsdf$datetime) == 'Date'){
     #     dt_ext_rows$datetime = as.Date(dt_ext_rows$datetime)
@@ -152,17 +166,20 @@ pad_ts3 = function(tsdf, sites, vars, datebounds){
     #     dt_ext_rows$datetime = as.POSIXct(dt_ext_rows$datetime)
     # }
 
-    df_padded = bind_rows(dt_ext_rows, tsdf) #CONVERTS TZ. VERIFY LEGITNESS
+    df_padded = tsdf %>%
+        bind_rows(dt_ext_rows) %>%
+        arrange(datetime)
 
-    if(sites[1] == 'placeholder'){
+    if(sites_or_dmns[1] == 'placeholder'){
         df_padded = select(df_padded, -site_name)
     }
 
     return(df_padded)
 }
 
+# raindf=raindata; streamdf=streamdata; rainsitevec=rainsites; streamsitevec=sites
 rolljoin = function(raindf, streamdf, rainsitevec, streamsitevec){
-    #raindf and streamdf must be datqa.tables
+    #raindf and streamdf must be data.tables
 
     #forward rolling join by datetime
     setkey(raindf, 'datetime')
@@ -199,7 +216,7 @@ sites_from_feathers = function(directory){
     return(sitenames)
 }
 
-sites_by_domain = function(var){
+sites_by_var = function(var){
 
     sitelist = list()
     for(i in 1:length(domains)){
@@ -223,10 +240,12 @@ most_recent_year = function(date_range){
     return(mry)
 }
 
-sitelist_from_domain = function(dmn, site_type){
+sitelist_from_domain = function(dmn, type){
+
+    #type is one of the types listed in site_data.csv, e.g. 'stream_gauge'
 
     sitelist = site_data %>%
-        filter(domain == dmn, site_type == site_type) %>%
+        filter(domain == dmn, site_type == type) %>%
         pull(site_name)
 
     return(sitelist)
@@ -238,6 +257,42 @@ try_read_feather = function(path){
     if('try-error' %in% class(out)) out = tibble()
 
     return(out)
+}
+
+# var='chemistry'; dmns=c('hbef', 'neon'); sites=c('CUPE', 'W1', 'BIGC')
+read_combine_feathers = function(var, dmns, sites=NULL){
+
+    #in order to allow duplicate sitenames across domains, must invoke js here
+    #see ms_todo
+
+    #in case duplicate sitenames do appear, this will make it a bit less
+    #likely that there's a collision. this can be simplified if js solution
+    #is implemented
+    if(var %in% c('precip', 'pchem')){
+        dmn_sites = tibble(domain=dmns, site_name=NA)
+    } else {
+        dmn_sites = site_data %>%
+            filter(domain %in% dmns, site_type == 'stream_gauge') %>%
+            filter(site_name %in% sites) %>%
+            select(domain, site_name)
+    }
+
+    combined_data = tibble()
+    for(i in 1:nrow(dmn_sites)){
+
+        if(var %in% c('precip', 'pchem')){
+            filestr = glue('data/{d}/{v}.feather', d=dmn_sites$domain[i], v=var)
+        } else {
+            filestr = glue('data/{d}/{v}/{s}.feather',
+                d=dmn_sites$domain[i], v=var, s=dmn_sites$site_name[i])
+        }
+
+        data_part = try_read_feather(filestr)
+        if(var %in% c('precip', 'pchem')) data_part$domain = dmn_sites$domain[i]
+        combined_data = bind_rows(combined_data, data_part)
+    }
+
+    return(combined_data)
 }
 
 generate_dropdown_varlist = function(grabvars, filter_set=NULL){
@@ -280,6 +335,7 @@ filter_dropdown_varlist = function(filter_set, vartype='stream'){
     return(vars_display_subset)
 }
 
+# df=pchem3; agg_selection=agg3; which_dataset='pchem'; conc_flux_selection=conc_flux3
 ms_aggregate = function(df, agg_selection, which_dataset,
     conc_flux_selection=NULL){
 
@@ -303,7 +359,16 @@ ms_aggregate = function(df, agg_selection, which_dataset,
 
     agg_period = switch(agg_selection, 'Daily'='day', 'Monthly'='month',
         'Yearly'='year')
-    df = group_by(df, datetime=floor_date(datetime, agg_period), site_name)
+
+    df = mutate(df, datetime = lubridate::floor_date(datetime, agg_period))
+
+    if('site_name' %in% colnames(df)){
+        df = group_by(df, datetime, site_name)
+    } else if('domain' %in% colnames(df)){
+        df = group_by(df, datetime, domain)
+    } else {
+        df = group_by(df, datetime)
+    }
 
     if(which_dataset %in% c('grab', 'pchem')){
 
@@ -324,7 +389,8 @@ ms_aggregate = function(df, agg_selection, which_dataset,
     return(df)
 }
 
-prep_mainfacets3 = function(v, dmn, sites, streamdata, raindata,
+# v=varA; conc_flux_selection=conc_flux3; show_input_concentration=inconc3
+prep_mainfacets3 = function(v, dmns, sites, streamdata, raindata,
     conc_flux_selection, show_input_concentration){
 
     if(is.na(v)) return()
@@ -342,15 +408,15 @@ prep_mainfacets3 = function(v, dmn, sites, streamdata, raindata,
         raindata = raindata %>%
             select(datetime, site_name, one_of(v)) %>%
             spread(site_name, !!v) %>%
-            rename_at(vars(-one_of('datetime', 'hbef pchem')), #shouldnt be hardcoded
+            rename_at(vars(-one_of('datetime'), -ends_with(' pchem')),
                 ~paste0('P_', .)) %>%
             data.table()
 
-        if(conc_flux_selection == 'VWC'){
-            rainsites = colnames(raindata)[-1]
-        } else {
-            rainsites = paste(dmn, 'pchem')
-        }
+        # if(conc_flux_selection == 'VWC'){
+        rainsites = colnames(raindata)[-1]
+        # } else {
+        #     rainsites = paste(dmns, 'pchem')
+        # }
 
         if(! nrow(raindata)){
             raindata = tibble(datetime=streamdata$datetime)
@@ -365,4 +431,16 @@ prep_mainfacets3 = function(v, dmn, sites, streamdata, raindata,
     }
 
     return(alldata)
+}
+
+generate_dropdown_sitelist = function(domain_vec){
+
+    sitelist = list()
+    for(i in 1:length(domain_vec)){
+        domain_sites = sitelist_from_domain(domain_vec[i], 'stream_gauge')
+        sitelist[[i]] = domain_sites
+    }
+    names(sitelist) = names(domains[match(domain_vec, domains)])
+
+    return(sitelist)
 }

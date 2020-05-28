@@ -3,7 +3,7 @@ nSiteNVar_tab = tabPanel("Multisite", value='multisite_exploration',
         sidebarPanel(
             div('Domains', class='widget-title text-center'),
             selectizeInput('DOMAINS3', label=NULL, selected=default_domain,
-                choices=domains, multiple=FALSE),
+                choices=domains, multiple=TRUE, options=list(maxItems=3)),
             div('(Up to 3; populates sites)',
                 class='widget-caption text-center'),
                 # choices=domains, multiple=TRUE, options=list(maxItems=2)),
@@ -85,7 +85,7 @@ nSiteNVar_tab = tabPanel("Multisite", value='multisite_exploration',
                 wellPanel(
                     sliderInput("DATE3", label=NULL, min=dtrng[1], max=dtrng[2],
                         value=most_recent_year(dtrng),
-                        width="100%", timeFormat="%b %Y", step=30,
+                        width='100%', timeFormat='%b %Y', step=30,
                         dragRange=TRUE),
                     # fluidRow(class='text-right',
                     #     actionButton('EXPAND_PRECIP3', icon('external-link-alt'))
@@ -106,14 +106,8 @@ nSiteNVar_tab = tabPanel("Multisite", value='multisite_exploration',
                         br()
                     ),
                     conditionalPanel('input.SOLUTES3.length > 1',
-                        # fluidRow(
-                        #     column(10, offset=1,
-                                div(id='main3b'),
-                        #     ),
-                        #     column(1,
-                        #         actionButton('EXPAND_MAIN3b', icon('external-link-alt'))
-                        #     )
-                        # ),
+                    # conditionalPanel('false',
+                        div(id='main3b'),
                         dygraphOutput("GRAPH_MAIN3b", height='125px'),
                         br()
                     ),
