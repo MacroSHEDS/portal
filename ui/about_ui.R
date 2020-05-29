@@ -1,9 +1,5 @@
 about_tab = tabPanel('About', value='about',
     br(),
-    p("Looking for some river data? Here's all of it."),
-
-    #this button opens the site exploration tab. the button is hidden and unclickable.
-    #it's triggered by links in the popups on the map tab.
-    #right now the site is hardcoded
-    actionButton('SITE_EXPLORE', '', style='display: none')
+    div(includeHTML('ui/landing_blurb.html'),
+        style='padding: 20px')
 )

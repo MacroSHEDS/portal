@@ -1,52 +1,34 @@
-output$MAP <- renderLeaflet({
-    # #Setup color values
-    # shed.col <-
-    #     colorFactor(c.col,
-    #         domain = isco.sheds$BigName)
+output$MAP = renderLeaflet({
+
+    rg = filter(site_data, site_type == 'rain_gauge')
+    sg = filter(site_data, site_type == 'stream_gauge')
+
     leaflet() %>% addProviderTiles("Esri.WorldTopoMap",
-        group = 'Topo Mahttps://www.dropbox.com/s/kjkhwip0t8erh3a/MTM_PQ_data.csv?dl=0p') %>%
-        addProviderTiles('Esri.WorldImagery', group = 'Aerial Imagery') %>%
-        addCircleMarkers(lng=~long, lat=~lat,
-
-            popup=paste0(
-                # "<input id='",
-                # site_data$sitegroup, "__", site_data$site,
-                # "_info' type='button' class='btn btn-link ",
-                # "btn-sm btn-block' value='Info'>",
-                "<button data-toggle='collapse' class='btn btn-sm btn-link ",
-                "btn-block' data-target='#", site_data$sitegroup, "__", site_data$site,
-                "_collapse'>Info</button> <div id='",
-                site_data$sitegroup, "__", site_data$site,
-                "_collapse' class='collapse'> ",
-                '<strong>Site name: </strong>',
-
-                site_data$name, '<br>',
-                '<strong>Data source: </strong>', site_data$source, '<br>',
-                '<strong>Site group: </strong>', site_data$sitegroup, '<br>',
-                '<strong>Site code: </strong>', site_data$site, '<br>',
-                '<strong>Latitude: </strong>', 'add this<br>',
-                '<strong>Longitude: </strong>', 'and this',
-
-                " </div> ",
-                "<button class='btn btn-sm btn-link btn-block' ",
-                "id='",
-                # " </div> <input id='",
-                site_data$sitegroup, "__", site_data$site,
-                "_goto'> Go to </button>"),
-            # "_goto' type='button' class='btn btn-link ",
-            # "btn-sm btn-block' value='Go to'>"),
+        group='Topo Mahttps://www.dropbox.com/s/kjkhwip0t8erh3a/MTM_PQ_data.csv?dl=0p') %>%
+        addProviderTiles('Esri.WorldImagery', group='Aerial Imagery') %>%
+        addCircleMarkers(lng=~longitude, lat=~latitude, color='#228B22',
+        # addCircleMarkers(lng=~longitude, lat=~latitude, color='#228B22',
+            popup=glue(stream_gauge_buttons, domain=sg$domain,
+                pretty_domain=sg$pretty_domain, stream=sg$stream,
+                site_code=sg$site_name, site_name=sg$full_name,
+                site_type=sg$site_type, latitude=sg$latitude,
+                longitude=sg$longitude),
             popupOptions=c(
-                className=paste0(site_data$sitegroup, "__",
-                    site_data$site, '_popup'),
-                minWidth=200,
-                maxWidth=500
+                className=paste0(sg$domain, "__", sg$site_name, '_popup'),
+                minWidth=200, maxWidth=500
             ),
-            # popup=paste0('<strong>Site name: </strong>',
-            #     site_data$name, '<br>',
-            #     '<strong>Data source: </strong>', site_data$source, '<br>',
-            #     '<strong>Site group: </strong>', site_data$sitegroup, '<br>',
-            #     '<strong>Site code: </strong>', site_data$site),
-            data=site_data) %>%
+            data=sg) %>%
+        addCircleMarkers(lng=~longitude, lat=~latitude, color='#0000FF',
+            fillColor='#c6dbef', radius=8, opacity=0.6, weight=4,
+            popup=glue(rain_gauge_buttons, domain=rg$domain,
+                pretty_domain=rg$pretty_domain, site_type=rg$site_type,
+                site_code=rg$site_name, site_name=rg$full_name,
+                latitude=rg$latitude, longitude=rg$longitude),
+            popupOptions=c(
+                className=paste0(rg$domain, "__", rg$site_name, '_popup'),
+                minWidth=200, maxWidth=500
+            ),
+            data=rg) %>%
         # addPolygons(
         #     data = isco.sheds,
         #     weight = 3,
@@ -65,27 +47,25 @@ output$MAP <- renderLeaflet({
     #   pal = shed.col,
     #   title = 'Study Catchment'
     # ) %>%
-    addLayersControl(
-        position = 'topright',
-        baseGroups = c('Topo Map', 'Aerial Imagery'),
-        overlayGroups = c('Catchments'),
-        options = layersControlOptions(collapsed = F, autoZIndex =
-                T)
-    ) %>%
-        setView(lng = -81.93603515625,
-            lat = 38.1046650598288,
-            zoom = 10)
+    addLayersControl(position='topright',
+        baseGroups=c('Topo Map', 'Aerial Imagery'),
+        # overlayGroups = c('Catchments'),
+        options=layersControlOptions(collapsed=FALSE, autoZIndex=TRUE)) %>%
+    # setView(lng=mean(site_data$longitude, na.rm=TRUE),
+    #     lat=mean(site_data$latitude, na.rm=TRUE), zoom=3)
+    setView(lng=-97.380979, lat=42.877742, zoom=3) #center of lower 48
+    #flyTo() #temporary: improve ux with this and marker groupings
 })
 
 
-#Get id from map click
-id <- reactive({
-    validate(
-        need(
-            input$MapMine_shape_click != "",
-            "Please select a catchment from the map to the left to view plots and data.
-        App may take a few seconds to load data after selecting data (depending on internet connection speed)."
-        )
-    )
-    (input$MapMine_shape_click)
-})
+# #Get id from map click
+# id <- reactive({
+#     validate(
+#         need(
+#             input$MapMine_shape_click != "",
+#             "Please select a catchment from the map to the left to view plots and data.
+#         App may take a few seconds to load data after selecting data (depending on internet connection speed)."
+#         )
+#     )
+#     (input$MapMine_shape_click)
+# })

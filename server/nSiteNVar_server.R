@@ -1,18 +1,30 @@
 
-#this one keeps track of n vars/sites selected, for faceting
 changesInSelections3 = reactiveValues()
 changesInSelections3$facetA3 = 0
 changesInSelections3$facetB3 = 0
 changesInSelections3$facetC3 = 0
+# dt_extent = rep(Sys.time(), 2)
+# attr(dt_extent, 'tzone') = 'UTC'
+# changesInSelections3$dt_extent = dt_extent
 
-observeEvent(input$DATE3, {
-        changesInSelections3$facetA3 = changesInSelections3$facetA3 + 1
-        changesInSelections3$facetB3 = changesInSelections3$facetB3 + 1
-        changesInSelections3$facetC3 = changesInSelections3$facetC3 + 1
+
+observeEvent({
+    input$DATE3
+    input$CONC_FLUX3
+    input$CONC_UNIT3
+    input$FLUX_UNIT3
+    input$AGG3
+    input$INCONC3
+    # input$RAINSITES3
+    # input$RAINVARS3
+}, {
+    changesInSelections3$facetA3 = changesInSelections3$facetA3 + 1
+    changesInSelections3$facetB3 = changesInSelections3$facetB3 + 1
+    changesInSelections3$facetC3 = changesInSelections3$facetC3 + 1
 })
 
 observeEvent({
-    if(length(input$SITES3) == 1){
+    if(length(input$SOLUTES3) == 1){
         TRUE
     } else return()
 }, {
@@ -20,7 +32,7 @@ observeEvent({
 })
 
 observeEvent({
-    if(length(input$SITES3) == 2){
+    if(length(input$SOLUTES3) == 2){
         TRUE
     } else return()
 }, {
@@ -28,227 +40,1155 @@ observeEvent({
 })
 
 observeEvent({
-    if(length(input$SITES3) == 3){
+    if(length(input$SOLUTES3) == 3){
         TRUE
     } else return()
 }, {
     changesInSelections3$facetC3 = changesInSelections3$facetC3 + 1
 })
 
-observeEvent(input$SITES3, {
+grab = reactive({
 
-    grab_subset = filter(grab, site_name %in% input$SITES3)
-    grabvars_display_subset = populate_vars(grab_subset[-(1:2)])
+    domain = input$DOMAINS3
+
+    if(is.null(domain)){
+        grab = read_feather(glue('data/{dmn}/grab.feather',
+            dmn=init_vals$recent_domain))
+    } else {
+        grab = read_feather(glue('data/{dmn}/grab.feather', dmn=domain))
+    }
+
+    # test commented:
+    # grab = filter(grab, site_name %in% sites_with_Q)
+
+    init_vals$recent_domain = domain
+
+    new_sitelist = site_data %>%
+        filter(domain == input$DOMAINS3, site_type == 'stream_gauge') %>%
+        pull(site_name)
+
+    updateSelectizeInput(session, 'SITES3', choices=new_sitelist,
+        selected=default_site[[input$DOMAINS3]])
+
+    # dt_extent = changesInSelections3$dt_extent
+    # changesInSelections3$dt_extent = range(c(dt_extent, input$DATE3))
+
+    return(grab)
+})
+
+pchem = reactive({
+
+    domain = input$DOMAINS3
+
+    if(is.null(domain)){
+        pchem = read_feather(glue('data/{dmn}/pchem.feather',
+            dmn=init_vals$recent_domain))
+    } else {
+        pchem = read_feather(glue('data/{dmn}/pchem.feather', dmn=domain))
+    }
+
+    init_vals$recent_domain = domain
+
+    return(pchem)
+})
+
+flux = reactive({
+
+    domain = input$DOMAINS3
+
+    if(is.null(domain)){
+        flux = read_feather(glue('data/{dmn}/flux.feather',
+            dmn=init_vals$recent_domain))
+    } else {
+        flux = read_feather(glue('data/{dmn}/flux.feather', dmn=domain))
+    }
+
+    # flux = flux %>%
+    #     rename(datetime=date) %>% #temporary
+    #     select(-Q_Ld) #temporary
+        # filter(datetime < as.Date('2013-01-01')) #temporary
+
+    return(flux)
+})
+
+P = reactive({
+
+    domain = input$DOMAINS3
+
+    if(is.null(domain)){
+        P = read_feather(glue('data/{dmn}/precip.feather',
+            dmn=init_vals$recent_domain))
+    } else {
+        P = read_feather(glue('data/{dmn}/precip.feather', dmn=domain))
+    }
+
+    # P = P %>%
+    #     filter(datetime < as.Date('2013-01-01')) #temporary
+
+    return(P)
+})
+
+Q = reactive({
+
+    domain = input$DOMAINS3
+
+    if(is.null(domain)){
+        Q = read_feather(glue('data/{dmn}/discharge.feather',
+            dmn=init_vals$recent_domain))
+    } else {
+        Q = read_feather(glue('data/{dmn}/discharge.feather', dmn=domain))
+    }
+
+    # Q = Q %>%
+    #     filter(datetime < as.Date('2013-01-01')) #temporary
+
+    return(Q)
+})
+
+observe({
+
+    #THIS SHOULD PROBABLY PRODUCE A REACTIVE OBJECT, SO SITE-FILTERED DATA
+    #CAN BE ACTED UPON FLEXIBLY WHEN THEY CHANGE
+
+    # gg <<- grab()
+    # grab_subset = qq
+    # dd <<- input$DOMAINS3
+    # filter(gg, site_name %in% default_site[['neon']])
+    # grab_subset = filter(gg, site_name %in% dd)
+    grab_subset = filter(grab(), site_name %in% default_site[[input$DOMAINS3]])
+    # qq <<- grab_subset
+    grabvars_display_subset = populate_vars(grab_subset[, -(1:2)])
+
+    selected = unname(unlist(grabvars_display_subset)[1])
 
     updateSelectizeInput(session, 'SOLUTES3',
-        choices=grabvars_display_subset,
-        selected=grabvars_display_subset[[1]][[1]])
-
-    # site_dtrng = as.Date(range(grab$datetime[grab$site_name %in% input$SITES3],
-    #     na.rm=TRUE))
-    #
-    # updateSliderInput(session, "DATE3",
-    #     label="Date Range", min=site_dtrng[1], max=site_dtrng[2], step=30,
-    #     value=c(max(site_dtrng[2] - lubridate::days(365),
-    #         site_dtrng[1], na.rm=TRUE),
-    #         site_dtrng[2]))
+        choices=grabvars_display_subset, selected=selected)
 })
 
-## Filter data to desired dates
-data3 <- reactive ({
+observe({
 
-    data3 <- grab %>%
+    dmn = input$DOMAINS3
+    dmnsites = sites_with_pchem[[dmn]]
+
+    updateSelectizeInput(session, 'RAINSITES3', choices=dmnsites,
+        selected=dmnsites[1])
+
+    pchem_subset = filter(pchem(), site_name %in% dmnsites[1])
+    pchemvars_display_subset = populate_vars(pchem_subset[-(1:2)],
+        vartype='precip')
+
+    selected = unname(unlist(pchemvars_display_subset)[1])
+
+    updateSelectizeInput(session, 'RAINVARS3',
+        choices=pchemvars_display_subset, selected=selected)
+})
+
+data3 = reactive({
+
+    data3 = if(input$CONC_FLUX3 == 'Flux') flux() else grab()
+    data3 = data3 %>%
         filter(datetime >= input$DATE3[1]) %>%
-        filter(datetime <= input$DATE3[2])
+        filter(datetime <= input$DATE3[2]) %>%
+        filter(site_name %in% input$SITES3) %>%
+        select(one_of("datetime", "site_name", input$SOLUTES3))
+        # mutate(datetime=as.POSIXct(datetime))
+
+    if(nrow(data3) == 0) return(data3)
+
+    # isi <<- input$SITES3
+    # ida <<- input$DATE3
+    # iso <<- input$SOLUTES3
+    # dd <<- data3
+    # input = list(SITES3=isi, DATE3=ida, SOLUTES3=iso)
+    # sites=input$SITES3; vars=input$SOLUTES3; datebounds=input$DATE3
+
+    data3 = pad_ts3(data3, input$SITES3, input$SOLUTES3, input$DATE3)
+
+    if(input$AGG3 != 'Instantaneous'){
+        agg_period = switch(input$AGG3, 'Daily'='day', 'Monthly'='month',
+            'Yearly'='year')
+
+        data3 = data3 %>%
+            group_by(datetime=floor_date(datetime, agg_period), site_name)
+
+        if(input$CONC_FLUX3 == 'VWC'){
+            data3 = data3 %>%
+                summarize_all(list(~sum(., na.rm=TRUE))) %>%
+                ungroup()
+        } else {
+            data3 = data3 %>%
+                summarize_all(list(~mean(., na.rm=TRUE))) %>%
+                ungroup()
+        }
+    }
+
+    if(init_vals$enable_unitconvert){
+        if(input$CONC_FLUX3 %in% c('Concentration', 'VWC')){
+            data3 = convert_conc_units(data3, desired_unit=input$CONC_UNIT3)
+        } else if(input$CONC_FLUX3 == 'Flux'){
+            data3 = convert_flux_units(data3, desired_unit=input$FLUX_UNIT3)
+        }
+    }
+
+    return(data3)
+
 })
 
-## Extract data for Precip plot
-dataPrecip3 <- reactive ({
+dataPchem3 = reactive({
 
-    # dataPrecip3 <- data3() %>%
-    #     select(precipCatch) %>%
-    #     filter(! is.na(precipCatch)) %>%
-    #     select(one_of("datetime", "site_name", 'precipCatch')) %>%
-    #     group_by(lubridate::days(datetime)) %>%
-    #     summarise(medianPrecip = median(precipCatch, na.rm=TRUE)) %>%
-    #     ungroup()
-
-    dataPrecip3 <- data3() %>%
-        filter(site_name %in% sites_precip) %>%
-        select(one_of("datetime", "site", 'precipCatch')) %>%
-        # group_by(lubridate::yday(datetime)) %>%
+    # ppp <<- pchem() %>%
+    #     filter(datetime >= input$DATE3[1]) %>%
+    #     filter(datetime <= input$DATE3[2])
+    pchem3 = pchem() %>%
+        filter(datetime >= input$DATE3[1]) %>%
+        filter(datetime <= input$DATE3[2]) %>%
+        # filter(site_name %in% input$SITES3) %>%
+        # pchem3 = ppp %>%
         group_by(datetime) %>%
-        summarise(medianPrecip=median(precipCatch, na.rm=TRUE)) %>%
+        summarize_at(vars(-site_name), ~mean(., na.rm=TRUE)) %>%
+        ungroup() %>%
+        select(one_of('datetime', input$SOLUTES3))
+        # filter(site_name %in% input$RAINSITES3) %>%
+        # select(one_of("datetime", "site_name", input$RAINVARS3))
+    # ppp <<- pchem3
+
+    if(nrow(pchem3) == 0) return(pchem3)
+    # si <<- input$SITES3
+    # so <<- input$SOLUTES3
+    # da <<- input$DATE3
+    # tsdf = ppp; sites=NULL; vars=so; datebounds=da
+
+    pchem3 = pad_ts3(pchem3, sites=NULL, vars=input$SOLUTES3,
+        datebounds=input$DATE3)
+    # pchem3 = pad_ts3(pchem3, input$RAINSITES3, input$RAINVARS3, input$DATE3)
+
+    agg_period = switch(input$AGG3, 'Monthly'='month', 'Yearly'='year')
+
+    pchem3 = pchem3 %>%
+        group_by(datetime=floor_date(datetime, agg_period))
+
+    if(input$CONC_FLUX3 == 'VWC'){
+        pchem3 = pchem3 %>%
+            summarize_all(list(~sum(., na.rm=TRUE))) %>%
+            ungroup()
+    } else {
+        pchem3 = pchem3 %>%
+            summarize_all(list(~mean(., na.rm=TRUE))) %>%
+            ungroup()
+    }
+
+    if(init_vals$enable_unitconvert){
+        pchem3 = convert_conc_units(pchem3, desired_unit=input$CONC_UNIT3)
+    }#temporary: modify the above when RAIN_UNIT3 and PCHEM_CONC_FLUX3 exist
+
+    #artificially extend pchem dataset to represent each individual watershed
+    # nsites = length(input$SITES3)
+    # if(nsites > 1){
+    #
+    #     pchem3$site_name = input$SITES3[1]
+    #     pcopy = pchem3
+    #
+    #     for(i in 2:nsites){
+    #         pcopy$site_name = input$SITES3[i]
+    #         pchem3 = bind_rows(pchem3, pcopy)
+    #     }
+    #
+    # } else {
+    #     pchem3$site_name = input$SITES3
+    # }
+    pchem3$site_name = paste(isolate(input$DOMAINS3), 'pchem')
+
+    return(pchem3)
+
+})
+
+dataPrecip3 = reactive({
+
+    # pp <<- P()
+    # dd <<- input$DATE3
+    # dm <<- input$DOMAINS3
+    # ida <<- input$DATE3
+    # isi <<- input$SITES3
+    # ido <<- input$DOMAINS3
+    # iag <<- input$AGG3
+    # input = list(DATE3=ida, DOMAINS3=ido, AGG3=iag, SITES3=isi)
+    # sites=input$SITES3; vars=input$SOLUTES3; datebounds=input$DATE3; tsdf=pp
+
+    # dataPrecip3 = pp %>%
+    #     filter(datetime >= dd[1]) %>%
+    #     filter(datetime <= dd[2]) %>%
+    #     filter(site_name %in% sites_with_P[[dm]]) %>%
+    #     select(one_of("datetime", "site_name", 'precip'))
+    dp3 = P()
+    show_precip = nrow(dp3) > 1
+    dataPrecip3 = dp3 %>%
+        filter(datetime >= input$DATE3[1]) %>%
+        filter(datetime <= input$DATE3[2]) %>%
+        filter(site_name %in% sites_with_P[[input$DOMAINS3]]) %>%
+        select(one_of("datetime", "site_name", 'precip'))
+        # mutate(datetime=as.POSIXct(datetime))
+
+    # zzz <<- dataPrecip3
+    # dataPrecip3 = zzz
+    # ddd <<- input$DATE3
+    # input = list(DATE3=ddd)
+    dataPrecip3 = pad_ts3(dataPrecip3, unique(dataPrecip3$site_name),
+        'precip', input$DATE3)
+    # nsites = length(input$SITES3)
+    # dt_ext_rows = tibble(datetime=rep(as.POSIXct(input$DATE3), nsites),
+    #     site_name=rep(input$SITES3, each=nsites),
+    #     precip=rep(NA, nsites * 2))
+    # dataPrecip3 = bind_rows(dt_ext_rows[1,], dataPrecip3, dt_ext_rows[2,])
+
+    if(input$AGG3 != 'Instantaneous' & show_precip){
+        agg_period = switch(input$AGG3, 'Daily'='day', 'Monthly'='month',
+            'Yearly'='year')
+        dataPrecip3 = dataPrecip3 %>%
+            group_by(datetime=floor_date(datetime, agg_period), site_name) %>%
+            summarize_all(list(~mean(., na.rm=TRUE))) %>%
+            ungroup()
+    }
+
+    dataPrecip3 = dataPrecip3 %>%
+        group_by(datetime) %>%
+        summarize(sumPrecip=sum(precip, na.rm=TRUE),
+            medianPrecip=median(precip, na.rm=TRUE)) %>%
         ungroup()
 })
 
-## Extract data for Solutes (Main) plot
-dataMain3 <- reactive ({
+dataFlow3 = reactive ({
 
-    dataMain3 <- data3() %>%
-        filter(site_name %in% input$SITES3) %>%
-        select(one_of("datetime", "site_name", input$SOLUTES3)) %>%
-        group_by(datetime, site_name) %>%
-        gather(key = solute, value = solute_value, -site_name, -datetime)
-})
+    dataFlow3 = Q() %>%
+        filter(datetime > input$DATE3[1],
+        datetime < input$DATE3[2], site_name %in% input$SITES3) %>%
+        select(datetime, site_name, Q)
+        # mutate(datetime=as.POSIXct(datetime, tz='UTC'))
 
-## Extract data for Discharge (Flow) plot
-dataFlow3 <- reactive ({
+    if(nrow(dataFlow3) == 0) return(dataFlow3)
 
-    dataFlow3 <- data3() %>%
-        filter(site_name %in% input$SITES3)
+    dataFlow3 = pad_ts3(dataFlow3, input$SITES3, 'Q', input$DATE3)
 
-    dataFlow3 <- dataFlow3 %>%
-        select(one_of("datetime", 'flowGageHt')) %>%
-        group_by(datetime) %>%
-        summarise(flowMaxPerDate = max(flowGageHt, na.rm=TRUE))
-
-    # if (SENSORFLOW) {
-    #     dataFlow3 = filter(dataSensor, datetime > input$DATE3[1],
-    #         datetime < input$DATE3[2], watershedID %in% input$SITES3) %>%
-    #         mutate(datetime=as.Date(datetime)) %>%
-    #         select(datetime, Q_Ls) %>%
-    #         group_by(datetime) %>%
-    #         summarise(flowMaxPerDate = max(Q_Ls, na.rm=TRUE))
-    # }
+    if(input$AGG3 != 'Instantaneous'){
+        agg_period = switch(input$AGG3, 'Daily'='day', 'Monthly'='month',
+            'Yearly'='year')
+        dataFlow3 = dataFlow3 %>%
+            group_by(datetime=floor_date(datetime, agg_period), site_name) %>%
+            summarize_all(list(~max(., na.rm=TRUE))) %>%
+            ungroup()
+    } else {
+        dataFlow3 = dataFlow3 %>%
+            group_by(datetime, site_name) %>%
+            summarise(Q=max(Q, na.rm=TRUE)) %>%
+            ungroup()
+    }
 
     return(dataFlow3)
 })
 
-output$GRAPH_PRECIP3 <- renderDygraph({
+volWeighted3 = reactive({
 
-    data <- dataPrecip3()
-    # ind_col <- which(input$PRECIP_SOURCE3 == colnames(data), arr.ind = TRUE)
-    dydat = xts(data$medianPrecip, order.by=data$datetime, tzone='UTC')
-    dimnames(dydat) = list(NULL, 'P')
-    ymax = max(dydat, na.rm=TRUE)
+    samplevel = data3() %>%
+        left_join(dataFlow3(), by=c('datetime', 'site_name')) %>%
+        mutate_at(vars(-datetime, -site_name, -Q), ~(. * Q))
 
-    p = dygraph(dydat, group='nSiteNVar') %>%
-        dyOptions(useDataTimezone=TRUE, drawPoints=FALSE, fillGraph=TRUE,
-            fillAlpha=1, colors='#4b92cc', strokeWidth=3,
-            plotter=hyetograph_js,
-            retainDateWindow=TRUE) %>%
-        dyAxis('y', label='Daily mean precip (in.)',
-            valueRange=c(ymax + ymax * 0.1, 0),
-            labelWidth=16, labelHeight=10)
+    if(input$AGG3 == 'Monthly'){ #otherwise Yearly; conditionals controlled by js
 
-    return(p)
+        samplevel = samplevel %>%
+            mutate(year=year(datetime))
+
+        agglevel = samplevel %>%
+            select(site_name, year, Q) %>%
+            group_by(year, site_name) %>%
+            summarize(Qsum=sum(Q, na.rm=TRUE)) %>%
+            ungroup()
+
+        volWeightedConc = samplevel %>%
+            select(-Q) %>%
+            left_join(agglevel, by=c('year', 'site_name')) %>%
+            mutate_at(vars(-datetime, -site_name, -year, -Qsum),
+                ~(. / Qsum)) %>%
+            select(-Qsum, -year)
+
+    } else {
+
+        agglevel = samplevel %>%
+            group_by(site_name) %>%
+            summarize(Qsum=sum(Q, na.rm=TRUE))
+
+        volWeightedConc = samplevel %>%
+            select(-Q) %>%
+            left_join(agglevel, by='site_name') %>%
+            mutate_at(vars(-datetime, -site_name, -Qsum), ~(. / Qsum)) %>%
+            select(-Qsum)
+    }
+
+    return(volWeightedConc)
 })
 
-output$GRAPH_MAIN3a <- renderDygraph({
+volWeightedPrecip3 = reactive({
+
+    # samplevel = dataPchem3()
+    samplevel = dataPchem3()
+    # pp = dataPrecip3()
+    # d <<- samplevel
+    # d -> samplevel
+    # pp <<- pp
+    # input = list(SITES3=c('W1'), SOLUTES3=c('Cl'))
+    # site_df = tibble(site_name=input$
+
+    # artificially extend pchem dataset to represent each individual watershed
+    nsites = length(input$SITES3)
+    if(nsites > 1){
+
+        samplevel$site_name = input$SITES3[1]
+        dcopy = samplevel
+
+        for(i in 2:nsites){
+            dcopy$site_name = input$SITES3[i]
+            samplevel = bind_rows(samplevel, dcopy)
+        }
+
+    } else {
+        samplevel$site_name = input$SITES3
+    }
+
+    samplevel = samplevel %>%
+        left_join(select(dataPrecip3(), -medianPrecip), by='datetime') %>%
+        # left_join(select(pp, -medianPrecip), by='datetime') %>%
+        # group_by(datetime) %>%
+        # summarize_at(vars(-site_name), mean(., na.rm=TRUE)) %>%
+        # ungroup() %>%
+        left_join(site_data, by='site_name') %>%
+        mutate(precipVol=sumPrecip * ws_area_ha) %>%
+        # mutate_at(vars(-datetime, -site_name, -precipVol, -sumPrecip, -ws_area_ha),
+        mutate_at(vars(one_of(isolate(input$SOLUTES3))), ~(. * precipVol)) %>%
+        select(datetime, site_name, one_of(isolate(input$SOLUTES3)),
+            sumPrecip, ws_area_ha) %>%
+        select(-ws_area_ha) %>%
+        # rename_at(vars(one_of(input$SOLUTES3)), ~paste0('p_', .)) %>%
+        rename(P=sumPrecip)
+
+    # samplevel$site_name = paste(isolate(input$DOMAINS3), 'pchem')
+
+    if(input$AGG3 == 'Monthly'){ #otherwise Yearly; conditionals controlled by js
+
+        samplevel = samplevel %>%
+            mutate(year=year(datetime))
+
+        agglevel = samplevel %>%
+            select(site_name, year, P) %>%
+            group_by(year, site_name) %>%
+            summarize(Psum=sum(P, na.rm=TRUE)) %>%
+            ungroup()
+
+        volWeightedConc = samplevel %>%
+            select(-P) %>%
+            left_join(agglevel, by=c('year', 'site_name')) %>%
+            mutate_at(vars(-datetime, -site_name, -year, -Psum),
+                ~(. / Psum)) %>%
+            select(-Psum, -year)
+
+    } else {
+
+        agglevel = samplevel %>%
+            group_by(site_name) %>%
+            summarize(Psum=sum(P, na.rm=TRUE))
+
+        volWeightedConc = samplevel %>%
+            select(-P) %>%
+            left_join(agglevel, by='site_name') %>%
+            mutate_at(vars(-datetime, -site_name, -Psum), ~(. / Psum)) %>%
+            select(-Psum)
+    }
+
+    return(volWeightedConc)
+})
+
+output$GRAPH_PRECIP3 = output$GRAPH_PRECIP3EXP = renderDygraph({
+
+    data = dataPrecip3()
+
+    if(nrow(data)){
+
+        dydat = xts(data$medianPrecip, order.by=data$datetime, tzone='UTC')
+        dimnames(dydat) = list(NULL, 'P')
+        ymax = max(dydat, na.rm=TRUE)
+
+        dg = dygraph(dydat, group='nSiteNVar') %>%
+            dyOptions(useDataTimezone=TRUE, drawPoints=FALSE, fillGraph=TRUE,
+                # fillAlpha=1, colors='#4b92cc', strokeWidth=3,
+                fillAlpha=1, colors=raincolor, strokeWidth=3,
+                plotter=hyetograph_js, retainDateWindow=TRUE) %>%
+            dyAxis('y', label='P (mm)', valueRange=c(ymax + ymax * 0.1, 0),
+                labelWidth=16, labelHeight=10, pixelsPerLabel=10, rangePad=10)
+    } else {
+        dg = plot_empty_dygraph(isolate(input$DATE3), plotgroup='nSiteNVar',
+            ylab='P (in)', px_per_lab=10)
+    }
+
+    return(dg)
+})
+
+output$GRAPH_MAIN3a = output$GRAPH_MAIN3aEXP = renderDygraph({
 
     changesInSelections3$facetA3
-    plotvars = na.omit(input$SOLUTES3[1:3])
-    siteA = isolate(input$SITES3[1])
+    sites = na.omit(input$SITES3[1:3])
+    varA = isolate(input$SOLUTES3[1])
 
-    varnames = filter(grabvars, variable_code %in% plotvars) %>%
-        select(variable_name, unit) %>%
-        mutate(combined = paste0(variable_name, ' (', unit, ')'))
+    # ss <<- input$SOLUTES3
+    if(input$CONC_FLUX3 == 'VWC'){
+        streamwide = volWeighted3()
+    } else {
+        streamwide = isolate(data3())
+    }
 
-    widedat = isolate(dataMain3()) %>%
-        filter(site_name == siteA, solute %in% plotvars) %>%
-        group_by(datetime, solute) %>%
-        summarize(solute_value=mean(solute_value)) %>%
-        spread(solute, solute_value)
+    # ss <<- streamwide
+    # vv <<- varA
+    streamwide = streamwide %>%
+        filter(site_name %in% sites) %>%
+        select(datetime, site_name, one_of(varA)) %>%
+        group_by(datetime, site_name) %>%
+        summarize_all(mean, na.rm=TRUE) %>%
+        spread(site_name, !!varA) %>%
+        data.table()
+    # ss -> streamwide
+    # cc <<- input$CONC_UNIT3
+    # aa <<- input$AGG3
 
-    if(nrow(widedat)){
-        dydat = xts(widedat[, plotvars], order.by=widedat$datetime, tzone='UTC')
-        dimnames(dydat) = list(NULL, varnames$combined)
+    if(isolate(input$INCONC3)){
 
+        if(input$CONC_FLUX3 == 'VWC'){
+            rainwide = volWeightedPrecip3()
+        } else {
+            rainwide = isolate(dataPchem3())
+        }
+
+        rainwide = rainwide %>%
+            select(datetime, site_name, one_of(varA)) %>%
+            spread(site_name, !!varA) %>%
+            rename_at(vars(-one_of('datetime', 'hbef pchem')),
+                ~paste0('P_', .)) %>%
+            data.table()
+
+        if(input$CONC_FLUX3 == 'VWC'){
+            rainsites = colnames(rainwide)[-1]
+        } else {
+            rainsites = paste(isolate(input$DOMAINS3), 'pchem')
+        }
+
+        if(! nrow(rainwide)){
+            rainwide = tibble(datetime=streamwide$datetime)
+            rainwide[rainsites] = NA
+            rainwide = as.data.table(rainwide)
+        }
+
+        allwide = rolljoin(rainwide, streamwide, rainsites, sites)
+
+    } else {
+        allwide = as_tibble(streamwide)
+    }
+
+    if(nrow(allwide)){
+
+        sites = colnames(allwide)[-1]
+        dydat = xts(allwide[, sites], order.by=allwide$datetime, tzone='UTC')
+        dimnames(dydat) = list(NULL, sites)
+
+        if(input$CONC_FLUX3 == 'Flux'){
+            gunit = input$FLUX_UNIT3
+        } else {
+            gunit = ifelse(varA %in% conc_vars, input$CONC_UNIT3,
+                grabvars$unit[grabvars$variable_code == varA])
+        }
+
+        ylab = glue('{var} ({unit})', var=varA, unit=gunit)
+
+        is_inst = ifelse(input$AGG3 == 'Instantaneous', TRUE, FALSE)
         dg = dygraph(dydat, group='nSiteNVar') %>%
             dyOptions(useDataTimezone=TRUE, drawPoints=FALSE,
-                colors=linecolors[1:3], strokeWidth=2,
-                retainDateWindow=TRUE) %>%
-            dyLegend(show='onmouseover', labelsSeparateLines=TRUE) %>%
-            dyAxis('y', label=siteA, labelWidth=16, labelHeight=10)
+                colors=linecolors[1:length(sites)], strokeWidth=2, pointSize=2,
+                retainDateWindow=TRUE, drawGapEdgePoints=TRUE,
+                connectSeparatedPoints=is_inst) %>%
+            dyLegend(show='always', labelsSeparateLines=FALSE,
+                labelsDiv='main3a') %>%
+            dyAxis('y', label=ylab, labelWidth=16, labelHeight=10,
+                pixelsPerLabel=20, rangePad=10)
+
+        if(input$INCONC3 == TRUE){
+
+            if(input$CONC_FLUX3 == 'Concentration'){
+
+                dg = dg %>%
+                    dySeries(name=rainsites[1], color=raincolor, axis='y',
+                        drawPoints=FALSE, strokeWidth=2, pointSize=2,
+                        strokePattern='dashed')
+
+            } else {
+
+                for(i in 1:length(rainsites)){
+                    dg = dg %>%
+                        dySeries(name=rainsites[i], color=pchemcolors[i],
+                            axis='y', drawPoints=FALSE, strokeWidth=2,
+                            pointSize=2, strokePattern='dashed')
+                }
+            }
+        }
+
     } else {
         dg = plot_empty_dygraph(isolate(input$DATE3), plotgroup='nSiteNVar',
-            ylab=siteA)
+            ylab=ylab, px_per_lab=20)
     }
 
     return(dg)
 })
 
-output$GRAPH_MAIN3b <- renderDygraph({
+output$GRAPH_MAIN3b = output$GRAPH_MAIN3bEXP = renderDygraph({
 
     changesInSelections3$facetB3
-    plotvars = na.omit(input$SOLUTES3[1:3])
-    siteB = isolate(input$SITES3[2])
+    sites = na.omit(input$SITES3[1:3])
+    varB = isolate(input$SOLUTES3[2])
+    if(is.na(varB)) return()
 
-    varnames = filter(grabvars, variable_code %in% plotvars) %>%
-        select(variable_name, unit) %>%
-        mutate(combined = paste0(variable_name, ' (', unit, ')'))
+    if(input$CONC_FLUX3 == 'VWC'){
+        streamwide = volWeighted3()
+    } else {
+        streamwide = isolate(data3())
+    }
 
-    widedat = isolate(dataMain3()) %>%
-        filter(site_name == siteB, solute %in% plotvars) %>%
-        group_by(datetime, solute) %>%
-        summarize(solute_value=mean(solute_value)) %>%
-        spread(solute, solute_value)
+    streamwide = streamwide %>%
+        filter(site_name %in% sites) %>%
+        select(datetime, site_name, one_of(varB)) %>%
+        group_by(datetime, site_name) %>%
+        summarize_all(mean, na.rm=TRUE) %>%
+        spread(site_name, !!varB) %>%
+        data.table()
 
-    if(nrow(widedat)){
-        dydat = xts(widedat[, plotvars], order.by=widedat$datetime, tzone='UTC')
-        dimnames(dydat) = list(NULL, varnames$combined)
+    if(isolate(input$INCONC3)){
 
+        if(input$CONC_FLUX3 == 'VWC'){
+            rainwide = volWeightedPrecip3()
+        } else {
+            rainwide = isolate(dataPchem3())
+        }
+
+        rainwide = rainwide %>%
+            select(datetime, site_name, one_of(varB)) %>%
+            spread(site_name, !!varB) %>%
+            rename_at(vars(-one_of('datetime', 'hbef pchem')),
+                ~paste0('P_', .)) %>%
+            data.table()
+
+        if(input$CONC_FLUX3 == 'VWC'){
+            rainsites = colnames(rainwide)[-1]
+        } else {
+            rainsites = paste(isolate(input$DOMAINS3), 'pchem')
+        }
+
+        if(! nrow(rainwide)){
+            rainwide = tibble(datetime=streamwide$datetime)
+            rainwide[rainsites] = NA
+            rainwide = as.data.table(rainwide)
+        }
+
+        allwide = rolljoin(rainwide, streamwide, rainsites, sites)
+
+    } else {
+        allwide = as_tibble(streamwide)
+    }
+
+    if(nrow(allwide)){
+
+        sites = colnames(allwide)[-1]
+        dydat = xts(allwide[, sites], order.by=allwide$datetime, tzone='UTC')
+        dimnames(dydat) = list(NULL, sites)
+
+        if(input$CONC_FLUX3 == 'Flux'){
+            gunit = input$FLUX_UNIT3
+        } else {
+            gunit = ifelse(varB %in% conc_vars, input$CONC_UNIT3,
+                grabvars$unit[grabvars$variable_code == varB])
+        }
+
+        ylab = glue('{var} ({unit})', var=varB, unit=gunit)
+
+        is_inst = ifelse(input$AGG3 == 'Instantaneous', TRUE, FALSE)
         dg = dygraph(dydat, group='nSiteNVar') %>%
             dyOptions(useDataTimezone=TRUE, drawPoints=FALSE,
-                colors=linecolors[1:3], strokeWidth=2,
-                retainDateWindow=TRUE) %>%
-            dyLegend(show='onmouseover', labelsSeparateLines=TRUE) %>%
-            dyAxis('y', label=siteB, labelWidth=16, labelHeight=10)
+                colors=linecolors[1:length(sites)], strokeWidth=2, pointSize=2,
+                retainDateWindow=TRUE, drawGapEdgePoints=TRUE,
+                connectSeparatedPoints=is_inst) %>%
+            dyLegend(show='always', labelsSeparateLines=FALSE,
+                labelsDiv='main3b') %>%
+            dyAxis('y', label=ylab, labelWidth=16, labelHeight=10,
+                pixelsPerLabel=20, rangePad=10)
+
+        if(isolate(input$INCONC3) == TRUE){
+
+            if(input$CONC_FLUX3 == 'Concentration'){
+
+                dg = dg %>%
+                    dySeries(name=rainsites[1], color=raincolor, axis='y',
+                        drawPoints=FALSE, strokeWidth=2, pointSize=2,
+                        strokePattern='dashed')
+
+            } else {
+
+                for(i in 1:length(rainsites)){
+                    dg = dg %>%
+                        dySeries(name=rainsites[i], color=pchemcolors[i],
+                            axis='y', drawPoints=FALSE, strokeWidth=2,
+                            pointSize=2, strokePattern='dashed')
+                }
+            }
+        }
+
     } else {
         dg = plot_empty_dygraph(isolate(input$DATE3), plotgroup='nSiteNVar',
-            ylab=siteB)
+            ylab=ylab, px_per_lab=20)
     }
 
     return(dg)
 })
 
-output$GRAPH_MAIN3c <- renderDygraph({
+output$GRAPH_MAIN3c = output$GRAPH_MAIN3cEXP = renderDygraph({
 
     changesInSelections3$facetC3
-    plotvars = na.omit(input$SOLUTES3[1:3])
-    siteC = isolate(input$SITES3[3])
+    sites = na.omit(input$SITES3[1:3])
+    varC = isolate(input$SOLUTES3[3])
+    # print(varC)
+    if(is.na(varC)) return()
 
-    varnames = filter(grabvars, variable_code %in% plotvars) %>%
-        select(variable_name, unit) %>%
-        mutate(combined = paste0(variable_name, ' (', unit, ')'))
+    if(input$CONC_FLUX3 == 'VWC'){
+        streamwide = volWeighted3()
+    } else {
+        streamwide = isolate(data3())
+    }
 
-    widedat = isolate(dataMain3()) %>%
-        filter(site_name == siteC, solute %in% plotvars) %>%
-        group_by(datetime, solute) %>%
-        summarize(solute_value=mean(solute_value)) %>%
-        spread(solute, solute_value)
+    streamwide = streamwide %>%
+        filter(site_name %in% sites) %>%
+        select(datetime, site_name, one_of(varC)) %>%
+        group_by(datetime, site_name) %>%
+        summarize_all(mean, na.rm=TRUE) %>%
+        spread(site_name, !!varC) %>%
+        data.table()
 
-    if(nrow(widedat)){
-        dydat = xts(widedat[, plotvars], order.by=widedat$datetime, tzone='UTC')
-        dimnames(dydat) = list(NULL, varnames$combined)
+    if(isolate(input$INCONC3)){
 
+        if(input$CONC_FLUX3 == 'VWC'){
+            rainwide = volWeightedPrecip3()
+        } else {
+            rainwide = isolate(dataPchem3())
+        }
+
+        rainwide = rainwide %>%
+            select(datetime, site_name, one_of(varC)) %>%
+            spread(site_name, !!varC) %>%
+            rename_at(vars(-one_of('datetime', 'hbef pchem')),
+                ~paste0('P_', .)) %>%
+            data.table()
+
+        if(input$CONC_FLUX3 == 'VWC'){
+            rainsites = colnames(rainwide)[-1]
+        } else {
+            rainsites = paste(isolate(input$DOMAINS3), 'pchem')
+        }
+
+        if(! nrow(rainwide)){
+            rainwide = tibble(datetime=streamwide$datetime)
+            rainwide[rainsites] = NA
+            rainwide = as.data.table(rainwide)
+        }
+
+        allwide = rolljoin(rainwide, streamwide, rainsites, sites)
+
+    } else {
+        allwide = as_tibble(streamwide)
+    }
+
+    if(nrow(allwide)){
+
+        sites = colnames(allwide)[-1]
+        dydat = xts(allwide[, sites], order.by=allwide$datetime, tzone='UTC')
+        dimnames(dydat) = list(NULL, sites)
+
+        if(input$CONC_FLUX3 == 'Flux'){
+            gunit = input$FLUX_UNIT3
+        } else {
+            gunit = ifelse(varC %in% conc_vars, input$CONC_UNIT3,
+                grabvars$unit[grabvars$variable_code == varC])
+        }
+
+        ylab = glue('{var} ({unit})', var=varC, unit=gunit)
+
+        is_inst = ifelse(input$AGG3 == 'Instantaneous', TRUE, FALSE)
         dg = dygraph(dydat, group='nSiteNVar') %>%
             dyOptions(useDataTimezone=TRUE, drawPoints=FALSE,
-                colors=linecolors[1:3], strokeWidth=2,
-                retainDateWindow=TRUE) %>%
-            dyLegend(show='onmouseover', labelsSeparateLines=TRUE) %>%
-            dyAxis('y', label=siteC, labelWidth=16, labelHeight=10)
+                colors=linecolors[1:length(sites)], strokeWidth=2, pointSize=2,
+                retainDateWindow=TRUE, drawGapEdgePoints=TRUE,
+                connectSeparatedPoints=is_inst) %>%
+            dyLegend(show='always', labelsSeparateLines=FALSE,
+                labelsDiv='main3c') %>%
+            dyAxis('y', label=ylab, labelWidth=16, labelHeight=10,
+                pixelsPerLabel=20, rangePad=10)
+
+        if(isolate(input$INCONC3) == TRUE){
+
+            if(input$CONC_FLUX3 == 'Concentration'){
+
+                dg = dg %>%
+                    dySeries(name=rainsites[1], color=raincolor, axis='y',
+                        drawPoints=FALSE, strokeWidth=2, pointSize=2,
+                        strokePattern='dashed')
+
+            } else {
+
+                for(i in 1:length(rainsites)){
+                    dg = dg %>%
+                        dySeries(name=rainsites[i], color=pchemcolors[i],
+                            axis='y', drawPoints=FALSE, strokeWidth=2,
+                            pointSize=2, strokePattern='dashed')
+                }
+            }
+        }
+
     } else {
         dg = plot_empty_dygraph(isolate(input$DATE3), plotgroup='nSiteNVar',
-            ylab=siteC)
+            ylab=ylab, px_per_lab=20)
     }
 
     return(dg)
 })
 
-output$GRAPH_FLOW3 <- renderDygraph({
+output$GRAPH_FLOW3 = output$GRAPH_FLOW3EXP = renderDygraph({
 
-    widedat <- dataFlow3()
-    dydat = xts(widedat[, 'flowMaxPerDate'], order.by=widedat$datetime,
-        tzone='UTC')
-    dimnames(dydat) = list(NULL, 'Q')
+    widedat = dataFlow3() %>%
+        spread(site_name, Q)
 
-    dg = dygraph(dydat, group='nSiteNVar') %>%
-        dyOptions(useDataTimezone=TRUE, drawPoints=FALSE, fillGraph=TRUE,
-            colors='#4b92cc', strokeWidth=2, fillAlpha=0.25,
-            retainDateWindow=TRUE) %>%
-        dyAxis('y', label='Discharge (L/s)', labelWidth=16, labelHeight=10)
+    if(nrow(widedat)){
+
+        sites = colnames(widedat)[-1]
+        dydat = xts(widedat[, sites], order.by=widedat$datetime,
+            tzone='UTC')
+        dimnames(dydat) = list(NULL, sites)
+        # dimnames(dydat) = list(NULL, 'Q')
+
+        dg = dygraph(dydat, group='nSiteNVar') %>%
+            dyOptions(useDataTimezone=TRUE, drawPoints=FALSE, fillGraph=TRUE,
+                # strokeBorderColor='#4b92cc', strokeBorderWidth=1,
+                strokeWidth=1, fillAlpha=0.4, retainDateWindow=TRUE,
+                colors=linecolors, drawGapEdgePoints=TRUE) %>%
+            dyLegend(show='always', labelsSeparateLines=FALSE,
+                labelsDiv='flow3') %>%
+            dyAxis('y', label='Q (L/s)', labelWidth=16, labelHeight=10,
+                pixelsPerLabel=10, rangePad=10)
+    } else {
+        dg = plot_empty_dygraph(isolate(input$DATE3), plotgroup='nSiteNVar',
+            ylab='Q (L/s)', px_per_lab=10)
+    }
 
     return(dg)
 })
+
+observeEvent(input$EXPAND_PRECIP3, {
+    showModal(
+        modalDialog(title=NULL, size='l', id='modal3precip', easyClose=TRUE,
+            footer=NULL,
+            fluidRow(class='text-center',
+                div(id='precip3DUPE'),
+                dygraphOutput('GRAPH_PRECIP3EXP'),
+                br()
+            )
+        )
+    )
+    runjs("$('#precip3').clone().appendTo('#precip3DUPE')")
+})
+
+observeEvent(input$EXPAND_MAIN3a, {
+    showModal(
+        modalDialog(title=NULL, size='l', id='modal3a', easyClose=TRUE,
+            footer=NULL,
+            fluidRow(class='text-center',
+                div(id='main3aDUPE'),
+                dygraphOutput('GRAPH_MAIN3aEXP'),
+                br()
+            )
+        )
+    )
+    runjs("$('#main3a').clone().appendTo('#main3aDUPE')")
+})
+
+observeEvent(input$EXPAND_MAIN3b, {
+    showModal(
+        modalDialog(title=NULL, size='l', id='modal3b', easyClose=TRUE,
+            footer=NULL,
+            fluidRow(class='text-center',
+                div(id='main3bDUPE'),
+                dygraphOutput('GRAPH_MAIN3bEXP'),
+                br()
+            )
+        )
+    )
+    runjs("$('#main3b').clone().appendTo('#main3bDUPE')")
+})
+
+observeEvent(input$EXPAND_MAIN3c, {
+    showModal(
+        modalDialog(title=NULL, size='l', id='modal3c', easyClose=TRUE,
+            footer=NULL,
+            fluidRow(class='text-center',
+                div(id='main3cDUPE'),
+                dygraphOutput('GRAPH_MAIN3cEXP'),
+                br()
+            )
+        )
+    )
+    runjs("$('#main3c').clone().appendTo('#main3cDUPE')")
+})
+
+observeEvent(input$EXPAND_FLOW3, {
+    showModal(
+        modalDialog(title=NULL, size='l', id='flow3', easyClose=TRUE,
+            footer=NULL,
+            fluidRow(class='text-center',
+                div(id='flow3DUPE'),
+                dygraphOutput('GRAPH_FLOW3EXP'),
+                br()
+            )
+        )
+    )
+    runjs("$('#flow3').clone().appendTo('#flow3DUPE')")
+})
+
+#with comments:
+# output$GRAPH_MAIN3a = renderDygraph({
+#
+#     changesInSelections3$facetA3
+#     sites = na.omit(input$SITES3[1:3])
+#     # rainsites = na.omit(input$RAINSITES3[1:3])
+#     varA = isolate(input$SOLUTES3[1])
+#     # rainvarA = isolate(input$RAINVARS3[1])
+#     # ss <<- sites
+#     # rr <<- rainsites
+#     # vv <<- varA
+#     # rv <<- rainvarA
+#
+#     if(input$CONC_FLUX3 == 'VWC'){
+#         streamwide = volWeighted3()
+#     } else {
+#         streamwide = isolate(data3())
+#     }
+#
+#     # plot_rain = ifelse(isolate(input$INCONC3) && nrow(rainwide), TRUE, FALSE)
+#
+#     streamwide = streamwide %>%
+#         filter(site_name %in% sites) %>%
+#         select(datetime, site_name, one_of(varA)) %>%
+#         group_by(datetime, site_name) %>%
+#         summarize_all(mean, na.rm=TRUE) %>%
+#         spread(site_name, !!varA) %>%
+#         data.table()
+#     # sw <<- streamwide
+#     # print(streamwide)
+#     # sw -> streamwide
+#
+#     if(isolate(input$INCONC3)){
+#         # linecolors = c(linecolors, 'green')
+#         # pp <<- dataPchem3() %>%
+#         # ppp <<- dataPchem3()
+#         # print(ppp)
+#         if(input$CONC_FLUX3 == 'VWC'){
+#             rainwide = volWeightedPrecip3()
+#         } else {
+#             rainwide = isolate(dataPchem3())
+#         }
+#         # rw <<- rainwide
+#         # print(rainwide)
+#         # rw -> rainwide
+#         # varA = 'Cl'
+#
+#         rainwide = rainwide %>%
+#             # rainwide = ppp %>%
+#             # filter(site_name %in% sites) %>%
+#             # filter(site_name %in% rainsites) %>%
+#             select(datetime, site_name, one_of(varA)) %>%
+#             # select(datetime, site_name, one_of(rainvarA)) %>%
+#             spread(site_name, !!varA) %>%
+#             rename_at(vars(-one_of('datetime', 'hbef pchem')),
+#                 ~paste0('P_', .)) %>%
+#             # spread(site_name, !!rainvarA) %>%
+#             data.table()
+#
+#         if(input$CONC_FLUX3 == 'VWC'){
+#             rainsites = colnames(rainwide)[-1]
+#         } else {
+#             rainsites = paste(isolate(input$DOMAINS3), 'pchem')
+#         }
+#
+#         if(! nrow(rainwide)){
+#             rainwide = tibble(datetime=streamwide$datetime)
+#             # for(s in sites) rainwide[[s]] = NA
+#             rainwide[rainsites] = NA
+#             rainwide = as.data.table(rainwide)
+#             # rainwide = data.table(datetime=streamwide$datetime, x=NA)
+#             # colnames(rainwide)[-1] = rainsites
+#         }
+#
+#         # rw <<- rainwide
+#         # rainwide = data.table(rainwide)
+#         # streamwide = data.table(streamwide)
+#         #forward rolling join by datetime
+#         # rainsites = paste0('P_', sites)
+#         setkey(rainwide, 'datetime')
+#         setkey(streamwide, 'datetime')
+#         allwide = rainwide[streamwide, roll=TRUE]
+#         allwide = as_tibble(allwide) %>%
+#             select(datetime, one_of(sites), one_of(rainsites))
+#
+#         #prevent excessive forward extrapolating
+#         gratuitous_end_roll_r = streamwide$datetime >
+#             rainwide$datetime[nrow(rainwide) - 1]
+#         if(sum(gratuitous_end_roll_r, na.rm=TRUE) == 1){
+#             gratuitous_end_roll_r[length(gratuitous_end_roll_r)] = FALSE
+#         }
+#         if(nrow(allwide)) allwide[gratuitous_end_roll_r, rainsites] = NA
+#
+#         gratuitous_end_roll_s = rainwide$datetime >
+#             streamwide$datetime[nrow(streamwide) - 1]
+#         if(sum(gratuitous_end_roll_s, na.rm=TRUE) == 1){
+#             gratuitous_end_roll_s[length(gratuitous_end_roll_s)] = FALSE
+#         }
+#         if(nrow(allwide)) allwide[gratuitous_end_roll_s, sites] = NA
+#         # p2 = data.table(pp)
+#         # w2 = data.table(ww)
+#         # setkey(p2, 'datetime')
+#         # setkey(w2, 'datetime')
+#         # z2 = p2[w2, roll=TRUE]
+#         # z3 = w2[p2, roll=TRUE]
+#     } else {
+#         allwide = as_tibble(streamwide)
+#     }
+#
+#     # aa <<- allwide
+#     # print(allwide)
+#
+#     if(nrow(allwide)){
+#
+#         sites = colnames(allwide)[-1]
+#         dydat = xts(allwide[, sites], order.by=allwide$datetime, tzone='UTC')
+#         dimnames(dydat) = list(NULL, sites)
+#
+#         if(input$CONC_FLUX3 == 'Flux'){
+#             gunit = input$FLUX_UNIT3
+#         } else {
+#             gunit = ifelse(varA %in% conc_vars, input$CONC_UNIT3,
+#                 grabvars$unit[grabvars$variable_code == varA])
+#         }
+#         # gg <<- gunit
+#         # ss -> sites
+#         # rr -> rainsites
+#         # vv -> varA
+#         # rv -> rainvarA
+#         # rw -> rainwide
+#         # sw -> streamwide
+#         # aa -> allwide
+#         # gg -> gunit
+#         ylab1 = glue('{var} ({unit})', var=varA, unit=gunit)
+#
+#         # if(plot_rain){
+#         #     linecolors = c('green', linecolors) #expects a color for rain series too
+#         # }
+#         is_inst = ifelse(input$AGG3 == 'Instantaneous', TRUE, FALSE)
+#         dg = dygraph(dydat, group='nSiteNVar') %>%
+#             dyOptions(useDataTimezone=TRUE, drawPoints=FALSE,
+#                 colors=linecolors[1:length(sites)], strokeWidth=2, pointSize=2,
+#                 retainDateWindow=TRUE, drawGapEdgePoints=TRUE,
+#                 connectSeparatedPoints=is_inst) %>%
+#             dyLegend(show='always', labelsSeparateLines=FALSE,
+#                 labelsDiv='main3a') %>%
+#             dyAxis('y', label=ylab1, labelWidth=16, labelHeight=10,
+#                 pixelsPerLabel=20, rangePad=10)
+#
+#         if(input$INCONC3 == TRUE){
+#
+#             # ylab2 = glue('{rv} ({unit})', rv=rainvarA, unit=input$CONC_UNIT3)
+#             # dyAxis(name='y2', label=ylab2, labelWidth=16, labelHeight=10,
+#             #     pixelsPerLabel=20, rangePad=10, axisLabelColor=raincolorbold,
+#             #     axisLineColor=raincolorbold) %>%
+#             if(input$CONC_FLUX3 == 'Concentration'){
+#
+#                 dg = dg %>%
+#                     dySeries(name=rainsites[1], color=raincolor, axis='y',
+#                         drawPoints=FALSE, strokeWidth=2, pointSize=2,
+#                         strokePattern='dashed')
+#
+#             } else {
+#
+#                 for(i in 1:length(rainsites)){
+#                     dg = dg %>%
+#                         dySeries(name=rainsites[i], color=pchemcolors[i],
+#                             axis='y', drawPoints=FALSE, strokeWidth=2,
+#                             pointSize=2, strokePattern='dashed')
+#                 }
+#             }
+#         }
+#
+#     } else {
+#         dg = plot_empty_dygraph(isolate(input$DATE3), plotgroup='nSiteNVar',
+#             ylab=ylab, px_per_lab=20)
+#     }
+#
+#     return(dg)
+# })
+
+#old
+# output$GRAPH_MAIN3b = renderDygraph({
+#
+#     changesInSelections3$facetB3
+#     sites = na.omit(input$SITES3[1:3])
+#     varB = isolate(input$SOLUTES3[2])
+#
+#     if(length(input$SOLUTES3) > 1){
+#
+#         if(input$CONC_FLUX3 == 'VWC'){
+#             widedat = volWeighted3()
+#         } else {
+#             widedat = isolate(data3())
+#         }
+#
+#         widedat = widedat %>%
+#             filter(site_name %in% sites) %>%
+#             select(datetime, site_name, one_of(varB)) %>%
+#             spread(site_name, !!varB)
+#
+#     } else {
+#         widedat = data.frame()
+#     }
+#
+#     if(nrow(widedat)){
+#         sites = colnames(widedat)[-1]
+#         dydat = xts(widedat[, sites], order.by=widedat$datetime, tzone='UTC')
+#         dimnames(dydat) = list(NULL, sites)
+#
+#         if(input$CONC_FLUX3 == 'Flux'){
+#             gunit = input$FLUX_UNIT3
+#         } else {
+#             gunit = ifelse(varB %in% conc_vars, input$CONC_UNIT3,
+#                 grabvars$unit[grabvars$variable_code == varB])
+#         }
+#         ylab = glue('{var} ({unit})', var=varB, unit=gunit)
+#
+#         dg = dygraph(dydat, group='nSiteNVar') %>%
+#             dyOptions(useDataTimezone=TRUE, drawPoints=FALSE,
+#                 colors=linecolors, strokeWidth=2,
+#                 retainDateWindow=TRUE, drawGapEdgePoints=TRUE) %>%
+#             dyLegend(show='always', labelsSeparateLines=FALSE,
+#                 labelsDiv='main3b') %>%
+#             dyAxis('y', label=ylab, labelWidth=16, labelHeight=10,
+#                 pixelsPerLabel=20, rangePad=10)
+#     } else {
+#         dg = plot_empty_dygraph(isolate(input$DATE3), plotgroup='nSiteNVar',
+#             ylab=ylab, px_per_lab=20)
+#     }
+#
+#     return(dg)
+# })
