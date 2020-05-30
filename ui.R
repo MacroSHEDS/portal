@@ -9,7 +9,8 @@ source('ui/participants_ui.R')
 source('ui/map_ui.R')
 source('ui/now_hiring_ui.R')
 
-shinyUI(fluidPage(
+ui = fluidPage(
+# shinyUI(fluidPage(
 
     #screen shouldn't go gray when plots are updating.
     # tags$style(type="text/css", ".recalculating { opacity: 1.0; }" ),
@@ -49,4 +50,5 @@ shinyUI(fluidPage(
             )
         )
     )
-))
+)
+# ))

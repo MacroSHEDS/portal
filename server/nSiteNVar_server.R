@@ -120,6 +120,9 @@ load_basedata = eventReactive(input$SITES3, {
 #when basedata changes, variable list and time slider change, but not selections
 observe({
 
+    # basedata <<- load_basedata()
+    # solutes3 <<- isolate(input$SOLUTES3)
+    # dates3 <<- isolate(input$DATE3)
     basedata = load_basedata()
     solutes3 = isolate(input$SOLUTES3)
     dates3 = isolate(input$DATE3)
@@ -128,11 +131,7 @@ observe({
     updateSelectizeInput(session, 'SOLUTES3',
         choices=grabvars_display_subset, selected=solutes3)
 
-    dtrng = basedata$grab %>%
-        select(datetime, one_of(solutes3)) %>%
-        mutate(datetime = as.Date(datetime)) %>%
-        pull(datetime) %>%
-        range(., na.rm=TRUE)
+    dtrng = get_timeslider_extent(basedata, dates3)
 
     updateSliderInput(session, 'DATE3', min=dtrng[1], max=dtrng[2],
         value=dates3, timeFormat='%b %Y')
@@ -142,13 +141,10 @@ observe({
 observe({
 
     var = input$SOLUTES3
+    dates3 = isolate(input$DATE3)
     basedata = isolate(load_basedata())
 
-    dtrng = basedata$grab %>%
-        select(datetime, one_of(var)) %>%
-        mutate(datetime = as.Date(datetime)) %>%
-        pull(datetime) %>%
-        range(., na.rm=TRUE)
+    dtrng = get_timeslider_extent(basedata, dates3)
 
     updateSliderInput(session, 'DATE3', min=dtrng[1], max=dtrng[2],
         value=most_recent_year(dtrng), timeFormat='%b %Y')
@@ -421,7 +417,7 @@ output$GRAPH_PRECIP3 = output$GRAPH_PRECIP3EXP = renderDygraph({
 
         dg = dygraph(dydat, group='nSiteNVar') %>%
             dyOptions(useDataTimezone=TRUE, drawPoints=FALSE, fillGraph=TRUE,
-                fillAlpha=1, colors=raincolor, strokeWidth=3,
+                fillAlpha=1, colors=raincolors[1], strokeWidth=3,
                 plotter=hyetograph_js, retainDateWindow=TRUE) %>%
             dyAxis('y', label='P (mm)', valueRange=c(ymax + ymax * 0.1, 0),
                 labelWidth=16, labelHeight=10, pixelsPerLabel=10, rangePad=10)
@@ -475,29 +471,20 @@ output$GRAPH_MAIN3a = output$GRAPH_MAIN3aEXP = renderDygraph({
         }
 
     } else {
-        raindata = NULL
+        raindata = tibble()
     }
 
     alldata = prep_mainfacets3(varA, dmns, sites, streamdata, raindata,
         conc_flux_selection=conc_flux3, show_input_concentration=inconc3)
 
-    if(inconc3){
-
-        if(conc_flux3 == 'VWC'){
-            cnms = colnames(alldata)
-            rainsites = cnms[grep('^P_', cnms)]
-            siteorder = order(sites)
-            rainsites = sort(rainsites)[siteorder] #ensure rainsites line up with sites
-        } else {
-            rainsites = unique(raindata$site_name) #e.g. "hbef pchem"
-        }
-    }
+    rainsites = get_rainsites(raindata, alldata, streamsites=sites,
+        conc_flux_selection=conc_flux3, show_input_concentration=inconc3)
 
     if(nrow(alldata)){
 
-        sites = colnames(alldata)[-1]
-        dydat = xts(alldata[, sites], order.by=alldata$datetime, tzone='UTC')
-        dimnames(dydat) = list(NULL, sites)
+        displabs = colnames(alldata)[-1]
+        dydat = xts(alldata[, displabs], order.by=alldata$datetime, tzone='UTC')
+        dimnames(dydat) = list(NULL, displabs)
 
         if(conc_flux3 == 'Flux'){
             gunit = flux_unit3
@@ -511,7 +498,10 @@ output$GRAPH_MAIN3a = output$GRAPH_MAIN3aEXP = renderDygraph({
         is_inst = ifelse(agg3 == 'Instantaneous', TRUE, FALSE)
         dg = dygraph(dydat, group='nSiteNVar') %>%
             dyOptions(useDataTimezone=TRUE, drawPoints=FALSE,
-                colors=linecolors[1:length(sites)], strokeWidth=2, pointSize=2,
+                colors=selection_color_match(sites,
+                    displabs[displabs %in% sites],
+                    linecolors, pad_length=length(displabs)),
+                strokeWidth=2, pointSize=2,
                 retainDateWindow=TRUE, drawGapEdgePoints=TRUE,
                 connectSeparatedPoints=is_inst) %>%
             dyLegend(show='always', labelsSeparateLines=FALSE,
@@ -522,22 +512,23 @@ output$GRAPH_MAIN3a = output$GRAPH_MAIN3aEXP = renderDygraph({
         if(inconc3 == TRUE){
 
             if(conc_flux3 == 'Concentration'){
-
-                dg = dySeries(dg, name=rainsites[1], color=raincolor, axis='y',
-                    drawPoints=FALSE, strokeWidth=2, pointSize=2,
-                    strokePattern='dashed')
-
+                rain_or_pchem_cols = selection_color_match(paste(dmns, 'pchem'),
+                    rainsites, raincolors)
             } else {
+                rain_or_pchem_cols = selection_color_match(paste0('P_', sites),
+                    paste0('P_', displabs[displabs %in% sites]),
+                    pchemcolors) #untested. might need to work with rainsites instead
+            }
 
-                for(i in 1:length(rainsites)){
-                    dg = dySeries(dg, name=rainsites[i], color=pchemcolors[i],
-                        axis='y', drawPoints=FALSE, strokeWidth=2,
-                        pointSize=2, strokePattern='dashed')
-                }
+            for(i in 1:length(rainsites)){
+                dg = dySeries(dg, name=rainsites[i], color=rain_or_pchem_cols[i],
+                    axis='y', drawPoints=FALSE, strokeWidth=2,
+                    pointSize=2, strokePattern='dashed')
             }
         }
 
     } else {
+
         dg = plot_empty_dygraph(date3, plotgroup='nSiteNVar',
             ylab=ylab, px_per_lab=20)
     }
@@ -582,23 +573,14 @@ output$GRAPH_MAIN3b = output$GRAPH_MAIN3bEXP = renderDygraph({
     alldata = prep_mainfacets3(varB, dmns, sites, streamdata, raindata,
         conc_flux_selection=conc_flux3, show_input_concentration=inconc3)
 
-    if(inconc3){
-
-        if(conc_flux3 == 'VWC'){
-            cnms = colnames(alldata)
-            rainsites = cnms[grep('^P_', cnms)]
-            siteorder = order(sites)
-            rainsites = sort(rainsites)[siteorder] #ensure rainsites line up with sites
-        } else {
-            rainsites = unique(raindata$site_name) #e.g. "hbef pchem"
-        }
-    }
+    rainsites = get_rainsites(raindata, alldata, streamsites=sites,
+        conc_flux_selection=conc_flux3, show_input_concentration=inconc3)
 
     if(nrow(alldata)){
 
-        sites = colnames(alldata)[-1]
-        dydat = xts(alldata[, sites], order.by=alldata$datetime, tzone='UTC')
-        dimnames(dydat) = list(NULL, sites)
+        displabs = colnames(alldata)[-1]
+        dydat = xts(alldata[, displabs], order.by=alldata$datetime, tzone='UTC')
+        dimnames(dydat) = list(NULL, displabs)
 
         if(conc_flux3 == 'Flux'){
             gunit = flux_unit3
@@ -612,7 +594,10 @@ output$GRAPH_MAIN3b = output$GRAPH_MAIN3bEXP = renderDygraph({
         is_inst = ifelse(agg3 == 'Instantaneous', TRUE, FALSE)
         dg = dygraph(dydat, group='nSiteNVar') %>%
             dyOptions(useDataTimezone=TRUE, drawPoints=FALSE,
-                colors=linecolors[1:length(sites)], strokeWidth=2, pointSize=2,
+                colors=selection_color_match(sites,
+                    displabs[displabs %in% sites],
+                    linecolors, pad_length=length(displabs)),
+                strokeWidth=2, pointSize=2,
                 retainDateWindow=TRUE, drawGapEdgePoints=TRUE,
                 connectSeparatedPoints=is_inst) %>%
             dyLegend(show='always', labelsSeparateLines=FALSE,
@@ -620,23 +605,21 @@ output$GRAPH_MAIN3b = output$GRAPH_MAIN3bEXP = renderDygraph({
             dyAxis('y', label=ylab, labelWidth=16, labelHeight=10,
                 pixelsPerLabel=20, rangePad=10)
 
-        if(isolate(inconc3) == TRUE){
+        if(inconc3 == TRUE){
 
             if(conc_flux3 == 'Concentration'){
-
-                dg = dg %>%
-                    dySeries(name=rainsites[1], color=raincolor, axis='y',
-                        drawPoints=FALSE, strokeWidth=2, pointSize=2,
-                        strokePattern='dashed')
-
+                rain_or_pchem_cols = selection_color_match(paste(dmns, 'pchem'),
+                    rainsites, raincolors)
             } else {
+                rain_or_pchem_cols = selection_color_match(paste0('P_', sites),
+                    paste0('P_', displabs[displabs %in% sites]),
+                    pchemcolors)
+            }
 
-                for(i in 1:length(rainsites)){
-                    dg = dg %>%
-                        dySeries(name=rainsites[i], color=pchemcolors[i],
-                            axis='y', drawPoints=FALSE, strokeWidth=2,
-                            pointSize=2, strokePattern='dashed')
-                }
+            for(i in 1:length(rainsites)){
+                dg = dySeries(dg, name=rainsites[i], color=rain_or_pchem_cols[i],
+                    axis='y', drawPoints=FALSE, strokeWidth=2,
+                    pointSize=2, strokePattern='dashed')
             }
         }
 
@@ -685,23 +668,14 @@ output$GRAPH_MAIN3c = output$GRAPH_MAIN3cEXP = renderDygraph({
     alldata = prep_mainfacets3(varC, dmns, sites, streamdata, raindata,
         conc_flux_selection=conc_flux3, show_input_concentration=inconc3)
 
-    if(inconc3){
-
-        if(conc_flux3 == 'VWC'){
-            cnms = colnames(alldata)
-            rainsites = cnms[grep('^P_', cnms)]
-            siteorder = order(sites)
-            rainsites = sort(rainsites)[siteorder] #ensure rainsites line up with sites
-        } else {
-            rainsites = unique(raindata$site_name) #e.g. "hbef pchem"
-        }
-    }
+    rainsites = get_rainsites(raindata, alldata, streamsites=sites,
+        conc_flux_selection=conc_flux3, show_input_concentration=inconc3)
 
     if(nrow(alldata)){
 
-        sites = colnames(alldata)[-1]
-        dydat = xts(alldata[, sites], order.by=alldata$datetime, tzone='UTC')
-        dimnames(dydat) = list(NULL, sites)
+        displabs = colnames(alldata)[-1]
+        dydat = xts(alldata[, displabs], order.by=alldata$datetime, tzone='UTC')
+        dimnames(dydat) = list(NULL, displabs)
 
         if(conc_flux3 == 'Flux'){
             gunit = flux_unit3
@@ -715,7 +689,10 @@ output$GRAPH_MAIN3c = output$GRAPH_MAIN3cEXP = renderDygraph({
         is_inst = ifelse(agg3 == 'Instantaneous', TRUE, FALSE)
         dg = dygraph(dydat, group='nSiteNVar') %>%
             dyOptions(useDataTimezone=TRUE, drawPoints=FALSE,
-                colors=linecolors[1:length(sites)], strokeWidth=2, pointSize=2,
+                colors=selection_color_match(sites,
+                    displabs[displabs %in% sites],
+                    linecolors, pad_length=length(displabs)),
+                strokeWidth=2, pointSize=2,
                 retainDateWindow=TRUE, drawGapEdgePoints=TRUE,
                 connectSeparatedPoints=is_inst) %>%
             dyLegend(show='always', labelsSeparateLines=FALSE,
@@ -726,20 +703,18 @@ output$GRAPH_MAIN3c = output$GRAPH_MAIN3cEXP = renderDygraph({
         if(inconc3 == TRUE){
 
             if(conc_flux3 == 'Concentration'){
-
-                dg = dg %>%
-                    dySeries(name=rainsites[1], color=raincolor, axis='y',
-                        drawPoints=FALSE, strokeWidth=2, pointSize=2,
-                        strokePattern='dashed')
-
+                rain_or_pchem_cols = selection_color_match(paste(dmns, 'pchem'),
+                    rainsites, raincolors)
             } else {
+                rain_or_pchem_cols = selection_color_match(paste0('P_', sites),
+                    paste0('P_', displabs[displabs %in% sites]),
+                    pchemcolors)
+            }
 
-                for(i in 1:length(rainsites)){
-                    dg = dg %>%
-                        dySeries(name=rainsites[i], color=pchemcolors[i],
-                            axis='y', drawPoints=FALSE, strokeWidth=2,
-                            pointSize=2, strokePattern='dashed')
-                }
+            for(i in 1:length(rainsites)){
+                dg = dySeries(dg, name=rainsites[i], color=rain_or_pchem_cols[i],
+                    axis='y', drawPoints=FALSE, strokeWidth=2,
+                    pointSize=2, strokePattern='dashed')
             }
         }
 
@@ -753,20 +728,24 @@ output$GRAPH_MAIN3c = output$GRAPH_MAIN3cEXP = renderDygraph({
 
 output$GRAPH_FLOW3 = output$GRAPH_FLOW3EXP = renderDygraph({
 
-    widedat = spread(dataFlow3(), site_name, Q)
+    flowdat = spread(dataFlow3(), site_name, Q)
     date3 = isolate(input$DATE3)
+    sites = na.omit(isolate(input$SITES3[1:3]))
 
-    if(nrow(widedat)){
+    if(nrow(flowdat)){
 
-        sites = colnames(widedat)[-1]
-        dydat = xts(widedat[, sites], order.by=widedat$datetime,
+        displabs = colnames(flowdat)[-1]
+        dydat = xts(flowdat[, displabs], order.by=flowdat$datetime,
             tzone='UTC')
-        dimnames(dydat) = list(NULL, sites)
+        dimnames(dydat) = list(NULL, displabs)
 
         dg = dygraph(dydat, group='nSiteNVar') %>%
             dyOptions(useDataTimezone=TRUE, drawPoints=FALSE, fillGraph=TRUE,
                 strokeWidth=1, fillAlpha=0.4, retainDateWindow=TRUE,
-                colors=linecolors, drawGapEdgePoints=TRUE) %>%
+                colors=selection_color_match(sites,
+                    displabs[displabs %in% sites],
+                    linecolors),
+                drawGapEdgePoints=TRUE) %>%
             dyLegend(show='always', labelsSeparateLines=FALSE,
                 labelsDiv='flow3') %>%
             dyAxis('y', label='Q (L/s)', labelWidth=16, labelHeight=10,

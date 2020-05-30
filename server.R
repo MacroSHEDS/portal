@@ -7,7 +7,8 @@ options(shiny.usecairo=TRUE)
 hyetograph_file = 'js/hyetograph.js'
 hyetograph_js = readChar(hyetograph_file, file.info(hyetograph_file)$size)
 
-shinyServer(function(input, output, session){
+server = function(input, output, session){
+# shinyServer(function(input, output, session){
 
     # #hacky way to specify div height by % with js
     # height50 = reactive({
@@ -80,4 +81,5 @@ shinyServer(function(input, output, session){
         removeModal(session)
     })
 
-})
+}
+# })

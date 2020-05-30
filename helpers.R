@@ -11,6 +11,10 @@ extract_from_config = function(key){
 
 plot_empty_dygraph = function(datelims, plotgroup, ylab, px_per_lab){
 
+    # if(all(is.na(datelims))){
+    #     datelims = as.POSIXct(c(1, 86401), origin='1970-01-01', tz='UTC')
+    # }
+
     datelims = as.POSIXct(datelims)
     dateseq = seq(datelims[1], datelims[2], by='day')
     emptydat = xts(rep(0, length.out=length(dateseq)),
@@ -22,6 +26,27 @@ plot_empty_dygraph = function(datelims, plotgroup, ylab, px_per_lab){
             pixelsPerLabel=px_per_lab, rangePad=10)
 
     return(dg)
+}
+
+get_timeslider_extent = function(basedata, selected_daterange){
+
+    if(nrow(basedata$grab)){
+        dset = basedata$grab
+    } else if(nrow(basedata$Q)){
+        dset = basedata$Q
+    } else if(nrow(basedata$P)){
+        dset = basedata$P
+    } else {
+        dset = tibble(datetime=selected_daterange)
+    }
+
+    dtrng = dset %>%
+        # select(datetime, one_of(solutes3)) %>%
+        mutate(datetime = as.Date(datetime)) %>%
+        pull(datetime) %>%
+        range(., na.rm=TRUE)
+
+    return(dtrng)
 }
 
 parse_molecular_formulae = function(formulae){
@@ -167,8 +192,8 @@ pad_ts3 = function(tsdf, vars, datebounds){
     # }
 
     df_padded = tsdf %>%
-        bind_rows(dt_ext_rows) %>%
-        arrange(datetime)
+        bind_rows(dt_ext_rows)
+        # arrange(datetime)
 
     if(sites_or_dmns[1] == 'placeholder'){
         df_padded = select(df_padded, -site_name)
@@ -177,36 +202,45 @@ pad_ts3 = function(tsdf, vars, datebounds){
     return(df_padded)
 }
 
-# raindf=raindata; streamdf=streamdata; rainsitevec=rainsites; streamsitevec=sites
-rolljoin = function(raindf, streamdf, rainsitevec, streamsitevec){
-    #raindf and streamdf must be data.tables
+# r=raindata; l=streamdata#; keepcols_r=rainsites; keepcols_l=sites
+left_forward_rolljoin = function(l, r){#, keepcols_r=NULL, keepcols_l=NULL){
 
-    #forward rolling join by datetime
-    setkey(raindf, 'datetime')
-    setkey(streamdf, 'datetime')
-    alldf = raindf[streamdf, roll=TRUE]
-    alldf = as_tibble(alldf) %>%
-        select(datetime, one_of(streamsitevec), one_of(rainsitevec))
+    # kcr = ifelse(is.null(keepcols_r), keepcols_r = '___', keepcols_r)
+    # kcl = ifelse(is.null(keepcols_l), keepcols_l = '___', keepcols_l)
+
+    r = as.data.table(r)
+    l = as.data.table(l)
+    setkey(r, 'datetime')
+    setkey(l, 'datetime')
+
+    alldf = r[l, roll=TRUE]
+    alldf = as_tibble(alldf)# %>%
+        # select(datetime, one_of(kcl), one_of(kcr))
 
     #prevent excessive forward extrapolating of rain vars
-    gratuitous_end_roll_r = streamdf$datetime >
-        raindf$datetime[nrow(raindf) - 1]
+    if(nrow(r)){
 
-    if(sum(gratuitous_end_roll_r, na.rm=TRUE) == 1){
-        gratuitous_end_roll_r[length(gratuitous_end_roll_r)] = FALSE
+        gratuitous_end_roll_r = l$datetime > r$datetime[nrow(r) - 1]
+
+        if(sum(gratuitous_end_roll_r, na.rm=TRUE) == 1){
+            gratuitous_end_roll_r[length(gratuitous_end_roll_r)] = FALSE
+        }
+
+        if(nrow(alldf)){# && ! is.null(keepcols_r)){
+            alldf[gratuitous_end_roll_r, ! colnames(alldf) == 'datetime'] = NA
+        }
     }
 
-    if(nrow(alldf)) alldf[gratuitous_end_roll_r, rainsitevec] = NA
-
-    #prevent excessive forward extrapolating of stream vars
-    gratuitous_end_roll_s = raindf$datetime >
-        streamdf$datetime[nrow(streamdf) - 1]
-
-    if(sum(gratuitous_end_roll_s, na.rm=TRUE) == 1){
-        gratuitous_end_roll_s[length(gratuitous_end_roll_s)] = FALSE
-    }
-
-    if(nrow(alldf)) alldf[gratuitous_end_roll_s, streamsitevec] = NA
+    # #prevent excessive forward extrapolating of stream vars
+    # gratuitous_end_roll_s = r$datetime > l$datetime[nrow(l) - 1]
+    # keepcols_r
+    # if(sum(gratuitous_end_roll_s, na.rm=TRUE) == 1){
+    #     gratuitous_end_roll_s[length(gratuitous_end_roll_s)] = FALSE
+    # }
+    #
+    # if(nrow(alldf) && ! is.null(kcl)){
+    #     alldf[gratuitous_end_roll_s, kcl] = NA
+    # }
 
     return(alldf)
 }
@@ -230,6 +264,9 @@ sites_by_var = function(var){
 }
 
 most_recent_year = function(date_range){
+
+    # if(is.null(date_range)) return(as.POSIXct(c(NA, NA)))
+
     mry = c(
         max(date_range[2] - lubridate::days(365),
             date_range[1],
@@ -317,6 +354,10 @@ filter_dropdown_varlist = function(filter_set, vartype='stream'){
 
     filter_set = sw(select(filter_set, -one_of('site_name', 'datetime')))
 
+    if(nrow(filter_set) == 0){
+        return(list(Anions=c(), Cations=c(), Other=c()))
+    }
+
     populated_vars_bool = sapply(filter_set, function(x) ! all(is.na(x)))
     populated_vars = names(populated_vars_bool[populated_vars_bool])
 
@@ -393,44 +434,107 @@ ms_aggregate = function(df, agg_selection, which_dataset,
 prep_mainfacets3 = function(v, dmns, sites, streamdata, raindata,
     conc_flux_selection, show_input_concentration){
 
-    if(is.na(v)) return()
+    # raindata=rr; streamdata=ll
 
-    streamdata = streamdata %>%
-        filter(site_name %in% sites) %>%
-        select(datetime, site_name, one_of(v)) %>%
-        group_by(datetime, site_name) %>%
-        summarize_all(mean, na.rm=TRUE) %>%
-        spread(site_name, !!v) %>%
-        data.table()
+    if(length(v) == 0) return(tibble())
 
-    if(show_input_concentration & ! is.null(raindata)){
+    streamdata_exist = nrow(streamdata)
+    raindata_exist = nrow(raindata)
+    # streamdata_exist = ! is.null(streamdata) && nrow(streamdata)
+    # raindata_exist = ! is.null(raindata) && nrow(raindata)
 
-        raindata = raindata %>%
+    if(streamdata_exist){
+
+        streamdata = streamdata %>%
+            filter(site_name %in% sites) %>%
             select(datetime, site_name, one_of(v)) %>%
-            spread(site_name, !!v) %>%
-            rename_at(vars(-one_of('datetime'), -ends_with(' pchem')),
-                ~paste0('P_', .)) %>%
-            data.table()
-
-        # if(conc_flux_selection == 'VWC'){
-        rainsites = colnames(raindata)[-1]
-        # } else {
-        #     rainsites = paste(dmns, 'pchem')
-        # }
-
-        if(! nrow(raindata)){
-            raindata = tibble(datetime=streamdata$datetime)
-            raindata[rainsites] = NA
-            raindata = as.data.table(raindata)
-        }
-
-        alldata = rolljoin(raindata, streamdata, rainsites, sites)
+            group_by(datetime, site_name) %>%
+            summarize_all(mean, na.rm=TRUE) %>%
+            spread(site_name, !!v)
 
     } else {
+        streamdata = manufacture_empty_plotdata(set='streamdata', sites=sites)
+        # streamdata = tibble(datetime=as.POSIXct(NA))
+    }
+
+    if(show_input_concentration){
+
+        if(raindata_exist){
+
+            raindata = raindata %>%
+                select(datetime, site_name, one_of(v)) %>%
+                spread(site_name, !!v) %>%
+                rename_at(vars(-one_of('datetime'), -ends_with(' pchem')),
+                    ~paste0('P_', .))
+
+        } else {
+            raindata = manufacture_empty_plotdata(set='raindata', dmns=dmns,
+                sites=sites, conc_flux_selection=conc_flux_selection)
+        }
+
+        # rainsites = colnames(raindata)[-1]
+    }
+
+    if(streamdata_exist && show_input_concentration){
+        alldata = left_forward_rolljoin(streamdata, raindata)
+    } else if(streamdata_exist){
         alldata = as_tibble(streamdata)
+    } else {
+        alldata = as_tibble(raindata)
     }
 
     return(alldata)
+}
+
+manufacture_empty_plotdata = function(set, dmns=NULL, sites=NULL,
+    conc_flux_selection=NULL){
+
+    #if set=='raindata', conc_flux_selection must be supplied,
+    #and if conc_flux_selection != 'VWC', dmns must additionally be supplied.
+    #write error catchers for these conditions
+
+    if(set == 'raindata'){
+
+        if(conc_flux_selection == 'VWC'){
+            sites_or_domains = paste0('P_', sites)
+        } else {
+            sites_or_domains = paste(dmns, 'pchem')
+        }
+
+    } else if(set == 'streamdata'){
+        sites_or_domains = sites
+    }
+
+        outdata = matrix(NA, ncol=length(sites_or_domains) + 1, nrow=0,
+            dimnames=list(NULL, c('datetime', sites_or_domains)))
+        outdata = as_tibble(outdata) %>%
+            mutate_all(as.numeric) %>%
+            mutate(datetime = as.POSIXct(datetime, origin='1970-01-01'))
+
+    return(outdata)
+}
+
+get_rainsites = function(raindata, alldata, streamsites,
+    conc_flux_selection, show_input_concentration){
+
+    #streamsites needed to correctly order rainsites
+
+    if(show_input_concentration && nrow(alldata)){
+
+        if(conc_flux_selection == 'VWC'){
+            cnms = colnames(alldata)
+            rainsites = cnms[grep('^P_', cnms)]
+            siteorder = order(streamsites)
+            rainsites = sort(rainsites)[siteorder]
+        } else {
+            rainsites = unique(raindata$site_name) #e.g. "hbef pchem"
+        }
+
+    } else {
+        rainsites = vector(length=0, mode='character')
+    }
+
+    return(rainsites)
 }
 
 generate_dropdown_sitelist = function(domain_vec){
@@ -443,4 +547,17 @@ generate_dropdown_sitelist = function(domain_vec){
     names(sitelist) = names(domains[match(domain_vec, domains)])
 
     return(sitelist)
+}
+
+selection_color_match = function(sites_selected, sites_shown, colorvec,
+    pad_length=NA){
+
+    matched_colors = colorvec[match(sites_shown, sites_selected)]
+
+    if(! is.na(pad_length)){
+        n_NAs_needed = pad_length - length(matched_colors)
+        matched_colors = append(matched_colors, rep(NA, n_NAs_needed))
+    }
+
+    return(matched_colors)
 }

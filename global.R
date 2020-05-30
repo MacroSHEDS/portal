@@ -18,6 +18,8 @@ library(tidyverse)
 library(glue)
 library(shinyjs)
 
+# options(error=recover)
+
 #todo:
 #most of the variables created in this script can be automatically generated.
     #those that can't should be read from a config file or spreadsheet eventually.
@@ -132,10 +134,7 @@ conc_flux_names = c('Concentration'='Concentration','x'='Flux', 'y'='VWC')
 names(conc_flux_names)[2] = paste('Flux (interpolated)', enc2native('\U2753'))
 names(conc_flux_names)[3] = paste('Flux (VWC)', enc2native('\U2753'))
 
-raincolors = '#8ab5de' #light blue
-# raincolorbold = '#4e8fcd'
-# raincolorpale = '#c6dbef'
-#'#08519C''#54278F'
+raincolors = c('#8ab5de', '#36486b', '#618685')
 linecolors = c('#323232', '#008040', '#800080') #black, green, purple
 pchemcolors = c('#585858', '#1bff8c', '#ff1bff') #lighter shades of the above
 
