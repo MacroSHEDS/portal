@@ -7,23 +7,44 @@ extract_from_config = function(key){
     return(val)
 }
 
-# df = grab_subset[, -(1:2)]
+get_ylab = function(v, conc_or_flux, yunit){
 
-plot_empty_dygraph = function(datelims, plotgroup, ylab, px_per_lab){
+    if(conc_or_flux == 'Flux'){
+        unit = yunit
+    } else {
+        unit = ifelse(v %in% conc_vars, yunit,
+            grabvars$unit[grabvars$variable_code == v])
+    }
 
-    # if(all(is.na(datelims))){
-    #     datelims = as.POSIXct(c(1, 86401), origin='1970-01-01', tz='UTC')
-    # }
+    ylab = glue('{var} ({u})', var=v, u=unit)
+
+    return(ylab)
+}
+
+# datelims=date3; mainlab=colnames(alldata)[-1]; plotgroup='nSiteNVar'; ylab=ylab; px_per_lab=20
+plot_empty_dygraph = function(datelims, mainlab='', maindiv=NULL, plotgroup,
+    ylab, px_per_lab){
 
     datelims = as.POSIXct(datelims)
     dateseq = seq(datelims[1], datelims[2], by='day')
-    emptydat = xts(rep(0, length.out=length(dateseq)),
-        order.by=dateseq, tzone='UTC')
+
+    nrows = length(dateseq)
+    ncols = length(mainlab)
+    emptydat = matrix(rep(rep(0, length.out=nrows), times=ncols), ncol=ncols)
+    emptydat = xts(emptydat, order.by=dateseq, tzone='UTC')
+    dimnames(emptydat) = list(NULL, mainlab)
+
     dg = dygraph(emptydat, group=plotgroup) %>%
         dyOptions(useDataTimezone=TRUE, drawPoints=FALSE,
             colors='transparent', retainDateWindow=TRUE) %>%
         dyAxis('y', label=ylab, labelWidth=16, labelHeight=10,
             pixelsPerLabel=px_per_lab, rangePad=10)
+
+    if(! is.null(maindiv)){
+        dg = dg %>%
+            dyLegend(show='always', labelsSeparateLines=FALSE,
+                labelsDiv=maindiv)
+    }
 
     return(dg)
 }
@@ -155,11 +176,7 @@ convert_flux_units = function(df, input_unit='kg/ha/d', desired_unit){
 #     10^(ceiling(log10(x)))
 # }
 
-# tsdf=pchem3;
-# sites=NULL
-# vars=solutes3
-# datebounds=dates3
-pad_ts3 = function(tsdf, vars, datebounds){
+pad_ts = function(tsdf, vars, datebounds){
 
     #if tsdf is precip or pchem, data are aggregated by domain, so a domain
     #column is passed. otherwise a site_name column is passed
@@ -185,15 +202,9 @@ pad_ts3 = function(tsdf, vars, datebounds){
     colnames(dt_ext_rows) = c('datetime', spatial_unit, vars)
     dt_ext_rows$datetime = lubridate::force_tz(dt_ext_rows$datetime, 'UTC')
 
-    # if(class(tsdf$datetime) == 'Date'){
-    #     dt_ext_rows$datetime = as.Date(dt_ext_rows$datetime)
-    # } else {
-    #     dt_ext_rows$datetime = as.POSIXct(dt_ext_rows$datetime)
-    # }
 
     df_padded = tsdf %>%
         bind_rows(dt_ext_rows)
-        # arrange(datetime)
 
     if(sites_or_dmns[1] == 'placeholder'){
         df_padded = select(df_padded, -site_name)
@@ -202,11 +213,8 @@ pad_ts3 = function(tsdf, vars, datebounds){
     return(df_padded)
 }
 
-# r=raindata; l=streamdata#; keepcols_r=rainsites; keepcols_l=sites
-left_forward_rolljoin = function(l, r){#, keepcols_r=NULL, keepcols_l=NULL){
-
-    # kcr = ifelse(is.null(keepcols_r), keepcols_r = '___', keepcols_r)
-    # kcl = ifelse(is.null(keepcols_l), keepcols_l = '___', keepcols_l)
+# r=raindata; l=streamdata#
+left_forward_rolljoin = function(l, r){
 
     r = as.data.table(r)
     l = as.data.table(l)
@@ -214,8 +222,7 @@ left_forward_rolljoin = function(l, r){#, keepcols_r=NULL, keepcols_l=NULL){
     setkey(l, 'datetime')
 
     alldf = r[l, roll=TRUE]
-    alldf = as_tibble(alldf)# %>%
-        # select(datetime, one_of(kcl), one_of(kcr))
+    alldf = as_tibble(alldf)
 
     #prevent excessive forward extrapolating of rain vars
     if(nrow(r)){
@@ -226,21 +233,10 @@ left_forward_rolljoin = function(l, r){#, keepcols_r=NULL, keepcols_l=NULL){
             gratuitous_end_roll_r[length(gratuitous_end_roll_r)] = FALSE
         }
 
-        if(nrow(alldf)){# && ! is.null(keepcols_r)){
+        if(nrow(alldf)){
             alldf[gratuitous_end_roll_r, ! colnames(alldf) == 'datetime'] = NA
         }
     }
-
-    # #prevent excessive forward extrapolating of stream vars
-    # gratuitous_end_roll_s = r$datetime > l$datetime[nrow(l) - 1]
-    # keepcols_r
-    # if(sum(gratuitous_end_roll_s, na.rm=TRUE) == 1){
-    #     gratuitous_end_roll_s[length(gratuitous_end_roll_s)] = FALSE
-    # }
-    #
-    # if(nrow(alldf) && ! is.null(kcl)){
-    #     alldf[gratuitous_end_roll_s, kcl] = NA
-    # }
 
     return(alldf)
 }
@@ -376,6 +372,7 @@ filter_dropdown_varlist = function(filter_set, vartype='stream'){
     return(vars_display_subset)
 }
 
+# df=data3; agg_selection=agg3; which_dataset='pchem'; conc_flux_selection=conc_flux3
 # df=pchem3; agg_selection=agg3; which_dataset='pchem'; conc_flux_selection=conc_flux3
 ms_aggregate = function(df, agg_selection, which_dataset,
     conc_flux_selection=NULL){
@@ -425,7 +422,40 @@ ms_aggregate = function(df, agg_selection, which_dataset,
         df = summarize_all(df, list(~max(., na.rm=TRUE)))
     }
 
-    df = ungroup(df)
+    df = inject_timeseries_NAs(ungroup(df), fill_by=agg_period)
+
+    return(df)
+}
+
+# df=ungroup(df); fill_by=agg_period
+inject_timeseries_NAs = function(df, fill_by){
+
+    dt_fill = seq.POSIXt(df$datetime[1], df$datetime[nrow(df)], by=fill_by)
+    ndates = length(dt_fill)
+
+    if('site_name' %in% colnames(df)){
+
+        sites = unique(df$site_name)
+        nsites = length(sites)
+
+        dt_fill_tb = tibble(datetime=rep(dt_fill, times=nsites),
+            site_name=rep(sites, each=ndates))
+        df = right_join(df, dt_fill_tb, by=c('site_name', 'datetime'))
+
+    } else if('domain' %in% colnames(df)){
+
+        domains = unique(df$domain)
+        ndomains = length(domains)
+
+        dt_fill_tb = tibble(datetime=rep(dt_fill, times=ndomains),
+            domain=rep(domains, each=ndates))
+        df = right_join(df, dt_fill_tb, by=c('domain', 'datetime'))
+
+    } else {
+
+        dt_fill_tb = tibble(datetime=dt_fill)
+        df = right_join(df, dt_fill_tb, by='datetime')
+    }
 
     return(df)
 }
@@ -436,7 +466,10 @@ prep_mainfacets3 = function(v, dmns, sites, streamdata, raindata,
 
     # raindata=rr; streamdata=ll
 
-    if(length(v) == 0) return(tibble())
+    if(is.null(sites) || length(sites) == 0) sites = ' '
+    if(length(v) == 0){
+        return(manufacture_empty_plotdata(set='streamdata', sites=sites))
+    }
 
     streamdata_exist = nrow(streamdata)
     raindata_exist = nrow(raindata)
@@ -479,13 +512,16 @@ prep_mainfacets3 = function(v, dmns, sites, streamdata, raindata,
         alldata = left_forward_rolljoin(streamdata, raindata)
     } else if(streamdata_exist){
         alldata = as_tibble(streamdata)
-    } else {
+    } else if(raindata_exist){
         alldata = as_tibble(raindata)
+    } else {
+        alldata = as_tibble(streamdata)
     }
 
     return(alldata)
 }
 
+# set=streamdata; sites=' '
 manufacture_empty_plotdata = function(set, dmns=NULL, sites=NULL,
     conc_flux_selection=NULL){
 
@@ -549,15 +585,12 @@ generate_dropdown_sitelist = function(domain_vec){
     return(sitelist)
 }
 
-selection_color_match = function(sites_selected, sites_shown, colorvec,
-    pad_length=NA){
+# sites_selected=sites; sites_all=displabs
+# colorvec=linecolors; pad_length=length(displabs)
+selection_color_match = function(sites_selected, sites_all, colorvec){
 
-    matched_colors = colorvec[match(sites_shown, sites_selected)]
-
-    if(! is.na(pad_length)){
-        n_NAs_needed = pad_length - length(matched_colors)
-        matched_colors = append(matched_colors, rep(NA, n_NAs_needed))
-    }
+    as.character(factor(sites_all, levels=sites_selected))
+    matched_colors = colorvec[match(sites_all, sites_selected)]
 
     return(matched_colors)
 }

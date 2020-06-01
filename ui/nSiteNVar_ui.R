@@ -78,6 +78,7 @@ nSiteNVar_tab = tabPanel("Multisite", value='multisite_exploration',
                     'flux by sum, and discharge by max')),
             radioButtons('AGG3', label=NULL, selected='Monthly',
                 choices=c('Instantaneous', 'Daily', 'Monthly', 'Yearly')),
+            # actionButton('DEBUG', 'debug'),
         width=3),
 
         mainPanel(
