@@ -7,7 +7,8 @@ options(shiny.usecairo=TRUE)
 hyetograph_file = 'js/hyetograph.js'
 hyetograph_js = readChar(hyetograph_file, file.info(hyetograph_file)$size)
 
-shinyServer(function(input, output, session){
+server = function(input, output, session){
+# shinyServer(function(input, output, session){
 
     # #hacky way to specify div height by % with js
     # height50 = reactive({
@@ -76,17 +77,9 @@ shinyServer(function(input, output, session){
         # input_vals$flash_plot = input_vals$flash_plot + 1
     })
 
-    # observeEvent(once=TRUE, ignoreNULL=FALSE, ignoreInit=FALSE,
-    #         eventExpr=TRUE, {
-    #
-    # })
-
     observeEvent(input$DISMISS_LANDING, {
         removeModal(session)
     })
 
-    # grabvars_display_subset = reactive({
-    #     v = populate_vars(grab()[-(1:2)]) #temporary (add flex for multi dmn; also see global.R)
-    # })
-
-})
+}
+# })

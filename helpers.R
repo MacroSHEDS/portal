@@ -1,3 +1,6 @@
+sm = suppressMessages
+sw = suppressWarnings
+
 extract_from_config = function(key){
     ind = which(lapply(conf, function(x) grepl(key, x)) == TRUE)
     val = stringr::str_match(conf[ind], '.*\\"(.*)\\"')[2]
@@ -5,27 +8,12 @@ extract_from_config = function(key){
 }
 
 # df = grab_subset[, -(1:2)]
-populate_vars = function(df, vartype='stream'){
-
-    populated_vars_bool = sapply(df, function(x) ! all(is.na(x)))
-    populated_vars = names(populated_vars_bool[populated_vars_bool])
-
-    if(vartype == 'stream'){
-        vars_display_subset = grabvars_display
-    } else if(vartype == 'precip'){
-        vars_display_subset = pchemvars_display
-    }
-
-    for(i in 1:length(vars_display_subset)){
-        l = vars_display_subset[[i]]
-        l[! l %in% populated_vars] = NULL
-        vars_display_subset[[i]] = l
-    }
-
-    return(vars_display_subset)
-}
 
 plot_empty_dygraph = function(datelims, plotgroup, ylab, px_per_lab){
+
+    # if(all(is.na(datelims))){
+    #     datelims = as.POSIXct(c(1, 86401), origin='1970-01-01', tz='UTC')
+    # }
 
     datelims = as.POSIXct(datelims)
     dateseq = seq(datelims[1], datelims[2], by='day')
@@ -38,6 +26,27 @@ plot_empty_dygraph = function(datelims, plotgroup, ylab, px_per_lab){
             pixelsPerLabel=px_per_lab, rangePad=10)
 
     return(dg)
+}
+
+get_timeslider_extent = function(basedata, selected_daterange){
+
+    if(nrow(basedata$grab)){
+        dset = basedata$grab
+    } else if(nrow(basedata$Q)){
+        dset = basedata$Q
+    } else if(nrow(basedata$P)){
+        dset = basedata$P
+    } else {
+        dset = tibble(datetime=selected_daterange)
+    }
+
+    dtrng = dset %>%
+        # select(datetime, one_of(solutes3)) %>%
+        mutate(datetime = as.Date(datetime)) %>%
+        pull(datetime) %>%
+        range(., na.rm=TRUE)
+
+    return(dtrng)
 }
 
 parse_molecular_formulae = function(formulae){
@@ -146,21 +155,35 @@ convert_flux_units = function(df, input_unit='kg/ha/d', desired_unit){
 #     10^(ceiling(log10(x)))
 # }
 
-# tsdf=dataPrecip3; sites=unique(dataPrecip3$site_name)
-# vars='precip'; datebounds=dd
-pad_ts3 = function(tsdf, sites, vars, datebounds){
+# tsdf=pchem3;
+# sites=NULL
+# vars=solutes3
+# datebounds=dates3
+pad_ts3 = function(tsdf, vars, datebounds){
 
-    # if(is.null(sites)) sites = 'placeholder'
-    if(is.null(sites) || length(sites) == 0) sites = 'placeholder'
+    #if tsdf is precip or pchem, data are aggregated by domain, so a domain
+    #column is passed. otherwise a site_name column is passed
 
-    nsites = length(sites)
+    if('site_name' %in% colnames(tsdf)){
+        spatial_unit = 'site_name'
+        sites_or_dmns = unique(tsdf$site_name)
+    } else if('domain' %in% colnames(tsdf)){
+        spatial_unit = 'domain'
+        sites_or_dmns = unique(tsdf$domain)
+    } else{ #probably never run, but here for unforseen back-compatibility needs
+        spatial_unit = 'site_name'
+        sites_or_dmns = 'placeholder'
+    }
+
+    n_sites_or_dmns = length(sites_or_dmns)
     nvars = length(vars)
 
-    dt_ext_rows = tibble(rep(as.POSIXct(datebounds), nsites),
-        rep(sites, each=2))
+    dt_ext_rows = tibble(rep(as.POSIXct(datebounds), n_sites_or_dmns),
+        rep(sites_or_dmns, each=2))
     dt_ext_rows = bind_cols(dt_ext_rows, as.data.frame(matrix(NA_real_,
-        ncol=nvars, nrow=nsites * 2)))
-    colnames(dt_ext_rows) = c('datetime', 'site_name', vars)
+        ncol=nvars, nrow=n_sites_or_dmns * 2)))
+    colnames(dt_ext_rows) = c('datetime', spatial_unit, vars)
+    dt_ext_rows$datetime = lubridate::force_tz(dt_ext_rows$datetime, 'UTC')
 
     # if(class(tsdf$datetime) == 'Date'){
     #     dt_ext_rows$datetime = as.Date(dt_ext_rows$datetime)
@@ -168,44 +191,373 @@ pad_ts3 = function(tsdf, sites, vars, datebounds){
     #     dt_ext_rows$datetime = as.POSIXct(dt_ext_rows$datetime)
     # }
 
-    df_padded = bind_rows(dt_ext_rows, tsdf) #CONVERTS TZ. VERIFY LEGITNESS
+    df_padded = tsdf %>%
+        bind_rows(dt_ext_rows)
+        # arrange(datetime)
 
-    if(sites[1] == 'placeholder'){
+    if(sites_or_dmns[1] == 'placeholder'){
         df_padded = select(df_padded, -site_name)
     }
 
     return(df_padded)
 }
 
-rolljoin = function(raindf, streamdf, rainsitevec, streamsitevec){
-    #raindf and streamdf must be datqa.tables
+# r=raindata; l=streamdata#; keepcols_r=rainsites; keepcols_l=sites
+left_forward_rolljoin = function(l, r){#, keepcols_r=NULL, keepcols_l=NULL){
 
-    #forward rolling join by datetime
-    setkey(raindf, 'datetime')
-    setkey(streamdf, 'datetime')
-    alldf = raindf[streamdf, roll=TRUE]
-    alldf = as_tibble(alldf) %>%
-        select(datetime, one_of(streamsitevec), one_of(rainsitevec))
+    # kcr = ifelse(is.null(keepcols_r), keepcols_r = '___', keepcols_r)
+    # kcl = ifelse(is.null(keepcols_l), keepcols_l = '___', keepcols_l)
+
+    r = as.data.table(r)
+    l = as.data.table(l)
+    setkey(r, 'datetime')
+    setkey(l, 'datetime')
+
+    alldf = r[l, roll=TRUE]
+    alldf = as_tibble(alldf)# %>%
+        # select(datetime, one_of(kcl), one_of(kcr))
 
     #prevent excessive forward extrapolating of rain vars
-    gratuitous_end_roll_r = streamdf$datetime >
-        raindf$datetime[nrow(raindf) - 1]
+    if(nrow(r)){
 
-    if(sum(gratuitous_end_roll_r, na.rm=TRUE) == 1){
-        gratuitous_end_roll_r[length(gratuitous_end_roll_r)] = FALSE
+        gratuitous_end_roll_r = l$datetime > r$datetime[nrow(r) - 1]
+
+        if(sum(gratuitous_end_roll_r, na.rm=TRUE) == 1){
+            gratuitous_end_roll_r[length(gratuitous_end_roll_r)] = FALSE
+        }
+
+        if(nrow(alldf)){# && ! is.null(keepcols_r)){
+            alldf[gratuitous_end_roll_r, ! colnames(alldf) == 'datetime'] = NA
+        }
     }
 
-    if(nrow(alldf)) alldf[gratuitous_end_roll_r, rainsitevec] = NA
-
-    #prevent excessive forward extrapolating of stream vars
-    gratuitous_end_roll_s = raindf$datetime >
-        streamdf$datetime[nrow(streamdf) - 1]
-
-    if(sum(gratuitous_end_roll_s, na.rm=TRUE) == 1){
-        gratuitous_end_roll_s[length(gratuitous_end_roll_s)] = FALSE
-    }
-
-    if(nrow(alldf)) alldf[gratuitous_end_roll_s, streamsitevec] = NA
+    # #prevent excessive forward extrapolating of stream vars
+    # gratuitous_end_roll_s = r$datetime > l$datetime[nrow(l) - 1]
+    # keepcols_r
+    # if(sum(gratuitous_end_roll_s, na.rm=TRUE) == 1){
+    #     gratuitous_end_roll_s[length(gratuitous_end_roll_s)] = FALSE
+    # }
+    #
+    # if(nrow(alldf) && ! is.null(kcl)){
+    #     alldf[gratuitous_end_roll_s, kcl] = NA
+    # }
 
     return(alldf)
+}
+
+sites_from_feathers = function(directory){
+    sitenames = unlist(strsplit(list.files(directory), '.feather'))
+    return(sitenames)
+}
+
+sites_by_var = function(var){
+
+    sitelist = list()
+    for(i in 1:length(domains)){
+        psitevec = sites_from_feathers(glue('data/{d}/{v}',
+            d=domains[i], v=var))
+        sitelist = append(sitelist, list(psitevec))
+        names(sitelist)[i] = domains[i]
+    }
+
+    return(sitelist)
+}
+
+most_recent_year = function(date_range){
+
+    # if(is.null(date_range)) return(as.POSIXct(c(NA, NA)))
+
+    mry = c(
+        max(date_range[2] - lubridate::days(365),
+            date_range[1],
+            na.rm=TRUE),
+        date_range[2]
+    )
+
+    return(mry)
+}
+
+sitelist_from_domain = function(dmn, type){
+
+    #type is one of the types listed in site_data.csv, e.g. 'stream_gauge'
+
+    sitelist = site_data %>%
+        filter(domain == dmn, site_type == type) %>%
+        pull(site_name)
+
+    return(sitelist)
+}
+
+try_read_feather = function(path){
+
+    out = try(feather::read_feather(path), silent=TRUE)
+    if('try-error' %in% class(out)) out = tibble()
+
+    return(out)
+}
+
+# var='chemistry'; dmns=c('hbef', 'neon'); sites=c('CUPE', 'W1', 'BIGC')
+read_combine_feathers = function(var, dmns, sites=NULL){
+
+    #in order to allow duplicate sitenames across domains, must invoke js here
+    #see ms_todo
+
+    #in case duplicate sitenames do appear, this will make it a bit less
+    #likely that there's a collision. this can be simplified if js solution
+    #is implemented
+    if(var %in% c('precip', 'pchem')){
+        dmn_sites = tibble(domain=dmns, site_name=NA)
+    } else {
+        dmn_sites = site_data %>%
+            filter(domain %in% dmns, site_type == 'stream_gauge') %>%
+            filter(site_name %in% sites) %>%
+            select(domain, site_name)
+    }
+
+    combined_data = tibble()
+    for(i in 1:nrow(dmn_sites)){
+
+        if(var %in% c('precip', 'pchem')){
+            filestr = glue('data/{d}/{v}.feather', d=dmn_sites$domain[i], v=var)
+        } else {
+            filestr = glue('data/{d}/{v}/{s}.feather',
+                d=dmn_sites$domain[i], v=var, s=dmn_sites$site_name[i])
+        }
+
+        data_part = try_read_feather(filestr)
+        if(var %in% c('precip', 'pchem')) data_part$domain = dmn_sites$domain[i]
+        combined_data = bind_rows(combined_data, data_part)
+    }
+
+    return(combined_data)
+}
+
+generate_dropdown_varlist = function(grabvars, filter_set=NULL){
+
+    if(! is.null(filter_set)){
+        grabvars = filter(grabvars, variable_code %in% filter_set)
+    }
+
+    grabvars = grabvars %>%
+        mutate(displayname=paste0(variable_name, ' (', unit, ')')) %>%
+        select(displayname, variable_code, variable_subtype) %>%
+        plyr::dlply(plyr::.(variable_subtype), function(x){
+            plyr::daply(x, plyr::.(displayname), function(y){
+                y['variable_code']
+            })
+        })
+
+    return(grabvars)
+}
+
+filter_dropdown_varlist = function(filter_set, vartype='stream'){
+
+    filter_set = sw(select(filter_set, -one_of('site_name', 'datetime')))
+
+    if(nrow(filter_set) == 0){
+        return(list(Anions=c(), Cations=c(), Other=c()))
+    }
+
+    populated_vars_bool = sapply(filter_set, function(x) ! all(is.na(x)))
+    populated_vars = names(populated_vars_bool[populated_vars_bool])
+
+    if(vartype == 'stream'){
+        vars_display_subset = grabvars_display
+    } else if(vartype == 'precip'){
+        vars_display_subset = pchemvars_display
+    }
+
+    for(i in 1:length(vars_display_subset)){
+        l = vars_display_subset[[i]]
+        l[! l %in% populated_vars] = NULL
+        vars_display_subset[[i]] = l
+    }
+
+    return(vars_display_subset)
+}
+
+# df=pchem3; agg_selection=agg3; which_dataset='pchem'; conc_flux_selection=conc_flux3
+ms_aggregate = function(df, agg_selection, which_dataset,
+    conc_flux_selection=NULL){
+
+    #agg_selection is a user input object, e.g. input$AGG3
+    #which_dataset is one of 'grab', 'q', 'p', 'pchem'
+    #conc_flux_selection must be supplied as e.g. input$CONC_FLUX3 if
+    #which_dataset is 'grab' or 'pchem'
+
+    if(! which_dataset %in% c('grab', 'q', 'p', 'pchem')){
+        stop("which_dataset must be one of 'grab', 'q', 'p', 'pchem'")
+    }
+
+    if(which_dataset %in% c('grab', 'pchem') && is.null(conc_flux_selection)){
+        stop(paste0("conc_flux_selection must be supplied when which_dataset",
+            "is 'grab' or'pchem'"))
+    }
+
+    if(nrow(df) == 0) return(df)
+    if(agg_selection == 'Instantaneous') return(df)
+    if(agg_selection == 'Daily' && which_dataset == 'pchem') return(df)
+
+    agg_period = switch(agg_selection, 'Daily'='day', 'Monthly'='month',
+        'Yearly'='year')
+
+    df = mutate(df, datetime = lubridate::floor_date(datetime, agg_period))
+
+    if('site_name' %in% colnames(df)){
+        df = group_by(df, datetime, site_name)
+    } else if('domain' %in% colnames(df)){
+        df = group_by(df, datetime, domain)
+    } else {
+        df = group_by(df, datetime)
+    }
+
+    if(which_dataset %in% c('grab', 'pchem')){
+
+        if(conc_flux_selection == 'VWC'){
+            df = summarize_all(df, list(~sum(., na.rm=TRUE)))
+        } else {
+            df = summarize_all(df, list(~mean(., na.rm=TRUE)))
+        }
+
+    } else if(which_dataset == 'p'){
+        df = summarize_all(df, list(~mean(., na.rm=TRUE)))
+    } else if(which_dataset == 'q'){
+        df = summarize_all(df, list(~max(., na.rm=TRUE)))
+    }
+
+    df = ungroup(df)
+
+    return(df)
+}
+
+# v=varA; conc_flux_selection=conc_flux3; show_input_concentration=inconc3
+prep_mainfacets3 = function(v, dmns, sites, streamdata, raindata,
+    conc_flux_selection, show_input_concentration){
+
+    # raindata=rr; streamdata=ll
+
+    if(length(v) == 0) return(tibble())
+
+    streamdata_exist = nrow(streamdata)
+    raindata_exist = nrow(raindata)
+    # streamdata_exist = ! is.null(streamdata) && nrow(streamdata)
+    # raindata_exist = ! is.null(raindata) && nrow(raindata)
+
+    if(streamdata_exist){
+
+        streamdata = streamdata %>%
+            filter(site_name %in% sites) %>%
+            select(datetime, site_name, one_of(v)) %>%
+            group_by(datetime, site_name) %>%
+            summarize_all(mean, na.rm=TRUE) %>%
+            spread(site_name, !!v)
+
+    } else {
+        streamdata = manufacture_empty_plotdata(set='streamdata', sites=sites)
+        # streamdata = tibble(datetime=as.POSIXct(NA))
+    }
+
+    if(show_input_concentration){
+
+        if(raindata_exist){
+
+            raindata = raindata %>%
+                select(datetime, site_name, one_of(v)) %>%
+                spread(site_name, !!v) %>%
+                rename_at(vars(-one_of('datetime'), -ends_with(' pchem')),
+                    ~paste0('P_', .))
+
+        } else {
+            raindata = manufacture_empty_plotdata(set='raindata', dmns=dmns,
+                sites=sites, conc_flux_selection=conc_flux_selection)
+        }
+
+        # rainsites = colnames(raindata)[-1]
+    }
+
+    if(streamdata_exist && show_input_concentration){
+        alldata = left_forward_rolljoin(streamdata, raindata)
+    } else if(streamdata_exist){
+        alldata = as_tibble(streamdata)
+    } else {
+        alldata = as_tibble(raindata)
+    }
+
+    return(alldata)
+}
+
+manufacture_empty_plotdata = function(set, dmns=NULL, sites=NULL,
+    conc_flux_selection=NULL){
+
+    #if set=='raindata', conc_flux_selection must be supplied,
+    #and if conc_flux_selection != 'VWC', dmns must additionally be supplied.
+    #write error catchers for these conditions
+
+    if(set == 'raindata'){
+
+        if(conc_flux_selection == 'VWC'){
+            sites_or_domains = paste0('P_', sites)
+        } else {
+            sites_or_domains = paste(dmns, 'pchem')
+        }
+
+    } else if(set == 'streamdata'){
+        sites_or_domains = sites
+    }
+
+        outdata = matrix(NA, ncol=length(sites_or_domains) + 1, nrow=0,
+            dimnames=list(NULL, c('datetime', sites_or_domains)))
+        outdata = as_tibble(outdata) %>%
+            mutate_all(as.numeric) %>%
+            mutate(datetime = as.POSIXct(datetime, origin='1970-01-01'))
+
+    return(outdata)
+}
+
+get_rainsites = function(raindata, alldata, streamsites,
+    conc_flux_selection, show_input_concentration){
+
+    #streamsites needed to correctly order rainsites
+
+    if(show_input_concentration && nrow(alldata)){
+
+        if(conc_flux_selection == 'VWC'){
+            cnms = colnames(alldata)
+            rainsites = cnms[grep('^P_', cnms)]
+            siteorder = order(streamsites)
+            rainsites = sort(rainsites)[siteorder]
+        } else {
+            rainsites = unique(raindata$site_name) #e.g. "hbef pchem"
+        }
+
+    } else {
+        rainsites = vector(length=0, mode='character')
+    }
+
+    return(rainsites)
+}
+
+generate_dropdown_sitelist = function(domain_vec){
+
+    sitelist = list()
+    for(i in 1:length(domain_vec)){
+        domain_sites = sitelist_from_domain(domain_vec[i], 'stream_gauge')
+        sitelist[[i]] = domain_sites
+    }
+    names(sitelist) = names(domains[match(domain_vec, domains)])
+
+    return(sitelist)
+}
+
+selection_color_match = function(sites_selected, sites_shown, colorvec,
+    pad_length=NA){
+
+    matched_colors = colorvec[match(sites_shown, sites_selected)]
+
+    if(! is.na(pad_length)){
+        n_NAs_needed = pad_length - length(matched_colors)
+        matched_colors = append(matched_colors, rep(NA, n_NAs_needed))
+    }
+
+    return(matched_colors)
 }

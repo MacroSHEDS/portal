@@ -66,8 +66,8 @@ participants_tab = tabPanel('Participants', value='participants',
                 br()
             ),
             column(4,
-                HTML('<p><b>Maybe you!<br>&nbsp;</b></p>'),
-                img(src='water-solid-396060.svg',
+                HTML('<p><b>Spencer Rhea<br>&nbsp;</b></p>'),
+                img(src='participants/spencer_rhea.jpg',
                     style='height: 100px;'),
                 br()
             )
