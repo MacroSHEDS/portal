@@ -1,10 +1,11 @@
 
 #govern showing/hiding of facets ####
 
-changesInSelections3 = reactiveValues()
-changesInSelections3$facetA3 = 0
-changesInSelections3$facetB3 = 0
-changesInSelections3$facetC3 = 0
+reactive_vals = reactiveValues()
+reactive_vals$facetA3 = 0
+reactive_vals$facetB3 = 0
+reactive_vals$facetC3 = 0
+reactive_vals$update_basedata = 0
 
 # observeEvent({
 #     input$DATE3
@@ -14,9 +15,9 @@ changesInSelections3$facetC3 = 0
 #     input$AGG3
 #     input$INCONC3
 # }, {
-#     changesInSelections3$facetA3 = changesInSelections3$facetA3 + 1
-#     changesInSelections3$facetB3 = changesInSelections3$facetB3 + 1
-#     changesInSelections3$facetC3 = changesInSelections3$facetC3 + 1
+#     reactive_vals$facetA3 = reactive_vals$facetA3 + 1
+#     reactive_vals$facetB3 = reactive_vals$facetB3 + 1
+#     reactive_vals$facetC3 = reactive_vals$facetC3 + 1
 # })
 
 observeEvent({
@@ -32,7 +33,7 @@ observeEvent({
         length(input$SOLUTES3) == 1
     ){ TRUE } else return()
 }, {
-    changesInSelections3$facetA3 = changesInSelections3$facetA3 + 1
+    reactive_vals$facetA3 = reactive_vals$facetA3 + 1
 })
 
 observeEvent({
@@ -51,8 +52,8 @@ observeEvent({
     #     TRUE
     # } else return()
 }, {
-    changesInSelections3$facetA3 = changesInSelections3$facetA3 + 1
-    changesInSelections3$facetB3 = changesInSelections3$facetB3 + 1
+    reactive_vals$facetA3 = reactive_vals$facetA3 + 1
+    reactive_vals$facetB3 = reactive_vals$facetB3 + 1
 })
 
 observeEvent({
@@ -71,9 +72,9 @@ observeEvent({
     #     TRUE
     # } else return()
 }, {
-    changesInSelections3$facetA3 = changesInSelections3$facetA3 + 1
-    changesInSelections3$facetB3 = changesInSelections3$facetB3 + 1
-    changesInSelections3$facetC3 = changesInSelections3$facetC3 + 1
+    reactive_vals$facetA3 = reactive_vals$facetA3 + 1
+    reactive_vals$facetB3 = reactive_vals$facetB3 + 1
+    reactive_vals$facetC3 = reactive_vals$facetC3 + 1
 })
 
 #reactivity flow control ####
@@ -91,8 +92,21 @@ get_domains3 = eventReactive(input$DOMAINS3, {
     return(domains)
 })
 
-#when site(s) change, basedata changes
-load_basedata = eventReactive(input$SITES3, {
+#when domain(s) change and INCONC3==TRUE, update basedata reactive value
+observeEvent({
+    if(
+        ! is.null(get_domains3()) &&
+        input$INCONC3
+    ){ TRUE } else return()
+}, {
+    reactive_vals$update_basedata = reactive_vals$update_basedata + 1
+})
+
+#when site(s) change or basedata reactive value updates, basedata changes
+load_basedata = eventReactive({
+    input$SITES3
+    reactive_vals$update_basedata
+}, {
 
     dmns = get_domains3()
 
@@ -137,18 +151,18 @@ observe({
         value=dates3, timeFormat='%b %Y')
 })
 
-#when variable(s) change, time slider changes
-observe({
-
-    var = input$SOLUTES3
-    dates3 = isolate(input$DATE3)
-    basedata = isolate(load_basedata())
-
-    dtrng = get_timeslider_extent(basedata, dates3)
-
-    updateSliderInput(session, 'DATE3', min=dtrng[1], max=dtrng[2],
-        value=most_recent_year(dtrng), timeFormat='%b %Y')
-})
+#when variable(s) change, time slider changes (disabled)
+# observe({
+#
+#     var = input$SOLUTES3
+#     dates3 = isolate(input$DATE3)
+#     basedata = isolate(load_basedata())
+#
+#     dtrng = get_timeslider_extent(basedata, dates3)
+#
+#     updateSliderInput(session, 'DATE3', min=dtrng[1], max=dtrng[2],
+#         value=most_recent_year(dtrng), timeFormat='%b %Y')
+# })
 
 #if variables(s), aggregation, units, site, or time window change, re-filter datasets
 data3 = reactive({
@@ -157,11 +171,12 @@ data3 = reactive({
     solutes3 = input$SOLUTES3
     conc_flux3 = input$CONC_FLUX3
     conc_unit3 = input$CONC_UNIT3
+    flux_unit3 = input$FLUX_UNIT3
     agg3 = input$AGG3
     sites3 = input$SITES3
     basedata = load_basedata()
 
-    data3 = if(input$CONC_FLUX3 == 'Flux') basedata$flux else basedata$grab
+    data3 = if(conc_flux3 == 'Flux') basedata$flux else basedata$grab
 
     if(nrow(data3) == 0) return(data3)
 
@@ -171,7 +186,7 @@ data3 = reactive({
 
     if(nrow(data3) == 0) return(data3)
 
-    data3 = pad_ts3(data3, vars=solutes3, datebounds=dates3)
+    data3 = pad_ts(data3, vars=solutes3, datebounds=dates3)
     data3 = ms_aggregate(data3, agg3, which_dataset='grab', conc_flux3)
 
     if(init_vals$enable_unitconvert){
@@ -187,6 +202,13 @@ data3 = reactive({
 
 dataPchem3 = reactive({
 
+    # dates3 <<- input$DATE3
+    # solutes3 <<- input$SOLUTES3
+    # conc_flux3 <<- input$CONC_FLUX3
+    # conc_unit3 <<- input$CONC_UNIT3
+    # agg3 <<- input$AGG3
+    # dmns <<- get_domains3()
+    # basedata <<- load_basedata()
     dates3 = input$DATE3
     solutes3 = input$SOLUTES3
     conc_flux3 = input$CONC_FLUX3
@@ -205,7 +227,7 @@ dataPchem3 = reactive({
 
     if(nrow(pchem3) == 0) return(pchem3)
 
-    pchem3 = pad_ts3(pchem3, vars=solutes3, datebounds=dates3)
+    pchem3 = pad_ts(pchem3, vars=solutes3, datebounds=dates3)
     pchem3 = ms_aggregate(pchem3, agg3, which_dataset='pchem', conc_flux3)
 
     if(init_vals$enable_unitconvert){
@@ -236,9 +258,9 @@ dataPrecip3 = reactive({
 
     if(nrow(dataPrecip3) == 0) return(dataPrecip3)
 
-    # dataPrecip3 = pad_ts3(dataPrecip3, unique(dataPrecip3$site_name),
+    # dataPrecip3 = pad_ts(dataPrecip3, unique(dataPrecip3$site_name),
     #     'precip', dates3)
-    dataPrecip3 = pad_ts3(dataPrecip3, vars='precip', datebounds=dates3)
+    dataPrecip3 = pad_ts(dataPrecip3, vars='precip', datebounds=dates3)
     dataPrecip3 = ms_aggregate(dataPrecip3, agg3, which_dataset='p')
 
     dataPrecip3 = dataPrecip3 %>%
@@ -252,6 +274,10 @@ dataPrecip3 = reactive({
 
 dataFlow3 = reactive({
 
+    # dates3 <<- input$DATE3
+    # sites3 <<- input$SITES3
+    # agg3 <<- input$AGG3
+    # basedata <<- load_basedata()
     dates3 = input$DATE3
     sites3 = input$SITES3
     agg3 = input$AGG3
@@ -267,7 +293,7 @@ dataFlow3 = reactive({
 
     if(nrow(dataFlow3) == 0) return(dataFlow3)
 
-    dataFlow3 = pad_ts3(dataFlow3, vars='Q', datebounds=dates3)
+    dataFlow3 = pad_ts(dataFlow3, vars='Q', datebounds=dates3)
     dataFlow3 = ms_aggregate(dataFlow3, agg3, which_dataset='q')
 
     if(agg3 == 'Instantaneous'){ #revisit this. needed?
@@ -334,11 +360,24 @@ volWeighted3 = reactive({
 #only possible at monthly and yearly agg. conditionals controlled by ui
 volWeightedPrecip3 = reactive({
 
+    # samplevel <<- dataPchem3()
+    # dataprecip3 <<- dataPrecip3()
+    # agg_input <<- isolate(input$AGG3)
+    # sites <<- isolate(input$SITES3)
+    # solutes <<- isolate(input$SOLUTES3)
     samplevel = dataPchem3()
     dataprecip3 = dataPrecip3()
     agg_input = isolate(input$AGG3)
     sites = isolate(input$SITES3)
     solutes = isolate(input$SOLUTES3)
+
+    #TEMPORARY SHORT-CIRCUIT UNTIL WE WORK OUT PRECIP INTERPOLATION
+    if(isolate(input$INCONC3) && isolate(input$CONC_FLUX3 == 'VWC') &&
+            length(isolate(get_domains3())) > 1){
+        fake_tibble = tibble(datetime=as.POSIXct('2000-01-01'),
+            site_name='vwc bollocks', Cl=as.numeric(NA))
+        return(fake_tibble)
+    }
 
     # artificially extend pchem dataset to represent each individual watershed
     nsites = length(sites)
@@ -431,47 +470,53 @@ output$GRAPH_PRECIP3 = output$GRAPH_PRECIP3EXP = renderDygraph({
 
 output$GRAPH_MAIN3a = output$GRAPH_MAIN3aEXP = renderDygraph({
 
-    sites <<- na.omit(isolate(input$SITES3[1:3]))
-    varA <<- isolate(input$SOLUTES3[1])
-    dmns <<- isolate(get_domains3())
-    conc_flux3 <<- isolate(input$CONC_FLUX3)
-    flux_unit3 <<- isolate(input$FLUX_UNIT3)
-    conc_unit3 <<- isolate(input$CONC_UNIT3)
-    inconc3 <<- isolate(input$INCONC3)
-    agg3 <<- isolate(input$AGG3)
-    date3 <<- isolate(input$DATE3)
-    # sites = na.omit(isolate(input$SITES3[1:3]))
-    # varA = isolate(input$SOLUTES3[1])
-    # dmns = isolate(get_domains3())
-    # conc_flux3 = isolate(input$CONC_FLUX3)
-    # flux_unit3 = isolate(input$FLUX_UNIT3)
-    # conc_unit3 = isolate(input$CONC_UNIT3)
-    # inconc3 = isolate(input$INCONC3)
-    # agg3 = isolate(input$AGG3)
-    # date3 = isolate(input$DATE3)
+    # sites <<- na.omit(isolate(input$SITES3[1:3]))
+    # varA <<- isolate(input$SOLUTES3[1])
+    # dmns <<- isolate(get_domains3())
+    # conc_flux3 <<- isolate(input$CONC_FLUX3)
+    # flux_unit3 <<- isolate(input$FLUX_UNIT3)
+    # conc_unit3 <<- isolate(input$CONC_UNIT3)
+    # inconc3 <<- isolate(input$INCONC3)
+    # agg3 <<- isolate(input$AGG3)
+    # date3 <<- isolate(input$DATE3)
+    sites = na.omit(isolate(input$SITES3[1:3]))
+    varA = isolate(input$SOLUTES3[1])
+    dmns = isolate(get_domains3())
+    conc_flux3 = isolate(input$CONC_FLUX3)
+    flux_unit3 = isolate(input$FLUX_UNIT3)
+    conc_unit3 = isolate(input$CONC_UNIT3)
+    inconc3 = isolate(input$INCONC3)
+    agg3 = isolate(input$AGG3)
+    date3 = isolate(input$DATE3)
 
-    changesInSelections3$facetA3
+    reactive_vals$facetA3
 
     if(conc_flux3 == 'VWC'){
-        streamdata <<- volWeighted3()
-        # streamdata = volWeighted3()
+        # streamdata <<- volWeighted3()
+        streamdata = volWeighted3()
     } else {
-        streamdata <<- data3()
-        # streamdata = data3()
+        # streamdata <<- data3()
+        streamdata = data3()
     }
 
     if(inconc3){
 
         if(conc_flux3 == 'VWC'){
-            raindata <<- volWeightedPrecip3()
-            # raindata = volWeightedPrecip3()
+            # raindata <<- volWeightedPrecip3()
+            raindata = volWeightedPrecip3()
         } else {
-            raindata <<- dataPchem3()
-            # raindata = dataPchem3()
+            # raindata <<- dataPchem3()
+            raindata = dataPchem3()
         }
 
     } else {
         raindata = tibble()
+    }
+
+    #TEMPORARY SHORT-CIRCUIT UNTIL WE WORK OUT PRECIP INTERPOLATION
+    if(nrow(raindata) == 1 && 'site_name' %in% colnames(raindata) &&
+        raindata$site_name == 'vwc bollocks'){
+        stop('This feature will be available once we work out precip interpolation.')
     }
 
     alldata = prep_mainfacets3(varA, dmns, sites, streamdata, raindata,
@@ -480,27 +525,19 @@ output$GRAPH_MAIN3a = output$GRAPH_MAIN3aEXP = renderDygraph({
     rainsites = get_rainsites(raindata, alldata, streamsites=sites,
         conc_flux_selection=conc_flux3, show_input_concentration=inconc3)
 
+    yunit = ifelse(conc_flux3 == 'Flux', flux_unit3, conc_unit3)
+    ylab = get_ylab(varA, conc_flux3, yunit)
+
     if(nrow(alldata)){
 
         displabs = colnames(alldata)[-1]
         dydat = xts(alldata[, displabs], order.by=alldata$datetime, tzone='UTC')
         dimnames(dydat) = list(NULL, displabs)
 
-        if(conc_flux3 == 'Flux'){
-            gunit = flux_unit3
-        } else {
-            gunit = ifelse(varA %in% conc_vars, conc_unit3,
-                grabvars$unit[grabvars$variable_code == varA])
-        }
-
-        ylab = glue('{var} ({unit})', var=varA, unit=gunit)
-
         is_inst = ifelse(agg3 == 'Instantaneous', TRUE, FALSE)
         dg = dygraph(dydat, group='nSiteNVar') %>%
             dyOptions(useDataTimezone=TRUE, drawPoints=FALSE,
-                colors=selection_color_match(sites,
-                    displabs[displabs %in% sites],
-                    linecolors, pad_length=length(displabs)),
+                colors=selection_color_match(sites, displabs, linecolors),#, pad_length=length(displabs)),
                 strokeWidth=2, pointSize=2,
                 retainDateWindow=TRUE, drawGapEdgePoints=TRUE,
                 connectSeparatedPoints=is_inst) %>%
@@ -529,8 +566,8 @@ output$GRAPH_MAIN3a = output$GRAPH_MAIN3aEXP = renderDygraph({
 
     } else {
 
-        dg = plot_empty_dygraph(date3, plotgroup='nSiteNVar',
-            ylab=ylab, px_per_lab=20)
+        dg = plot_empty_dygraph(date3, mainlab=colnames(alldata)[-1],
+            maindiv='main3a', plotgroup='nSiteNVar', ylab=ylab, px_per_lab=20)
     }
 
     return(dg)
@@ -548,7 +585,7 @@ output$GRAPH_MAIN3b = output$GRAPH_MAIN3bEXP = renderDygraph({
     agg3 = isolate(input$AGG3)
     date3 = isolate(input$DATE3)
 
-    if(changesInSelections3$facetB3 == 0) return(NULL)
+    if(reactive_vals$facetB3 == 0) return(NULL)
 
     if(conc_flux3 == 'VWC'){
         streamdata = volWeighted3()
@@ -570,11 +607,20 @@ output$GRAPH_MAIN3b = output$GRAPH_MAIN3bEXP = renderDygraph({
         raindata = NULL
     }
 
+    #TEMPORARY SHORT-CIRCUIT UNTIL WE WORK OUT PRECIP INTERPOLATION
+    if(nrow(raindata) == 1 && 'site_name' %in% colnames(raindata) &&
+            raindata$site_name == 'vwc bollocks'){
+        stop('This feature will be available once we work out precip interpolation.')
+    }
+
     alldata = prep_mainfacets3(varB, dmns, sites, streamdata, raindata,
         conc_flux_selection=conc_flux3, show_input_concentration=inconc3)
 
     rainsites = get_rainsites(raindata, alldata, streamsites=sites,
         conc_flux_selection=conc_flux3, show_input_concentration=inconc3)
+
+    yunit = ifelse(conc_flux3 == 'Flux', flux_unit3, conc_unit3)
+    ylab = get_ylab(varB, conc_flux3, yunit)
 
     if(nrow(alldata)){
 
@@ -582,21 +628,10 @@ output$GRAPH_MAIN3b = output$GRAPH_MAIN3bEXP = renderDygraph({
         dydat = xts(alldata[, displabs], order.by=alldata$datetime, tzone='UTC')
         dimnames(dydat) = list(NULL, displabs)
 
-        if(conc_flux3 == 'Flux'){
-            gunit = flux_unit3
-        } else {
-            gunit = ifelse(varB %in% conc_vars, conc_unit3,
-                grabvars$unit[grabvars$variable_code == varB])
-        }
-
-        ylab = glue('{var} ({unit})', var=varB, unit=gunit)
-
         is_inst = ifelse(agg3 == 'Instantaneous', TRUE, FALSE)
         dg = dygraph(dydat, group='nSiteNVar') %>%
             dyOptions(useDataTimezone=TRUE, drawPoints=FALSE,
-                colors=selection_color_match(sites,
-                    displabs[displabs %in% sites],
-                    linecolors, pad_length=length(displabs)),
+                colors=selection_color_match(sites, displabs, linecolors),
                 strokeWidth=2, pointSize=2,
                 retainDateWindow=TRUE, drawGapEdgePoints=TRUE,
                 connectSeparatedPoints=is_inst) %>%
@@ -624,8 +659,8 @@ output$GRAPH_MAIN3b = output$GRAPH_MAIN3bEXP = renderDygraph({
         }
 
     } else {
-        dg = plot_empty_dygraph(date3, plotgroup='nSiteNVar',
-            ylab=ylab, px_per_lab=20)
+        dg = plot_empty_dygraph(date3, mainlab=colnames(alldata)[-1],
+            maindiv='main3b', plotgroup='nSiteNVar', ylab=ylab, px_per_lab=20)
     }
 
     return(dg)
@@ -643,7 +678,7 @@ output$GRAPH_MAIN3c = output$GRAPH_MAIN3cEXP = renderDygraph({
     agg3 = isolate(input$AGG3)
     date3 = isolate(input$DATE3)
 
-    if(changesInSelections3$facetC3 == 0) return(NULL)
+    if(reactive_vals$facetC3 == 0) return(NULL)
 
     if(conc_flux3 == 'VWC'){
         streamdata = volWeighted3()
@@ -665,11 +700,20 @@ output$GRAPH_MAIN3c = output$GRAPH_MAIN3cEXP = renderDygraph({
         raindata = NULL
     }
 
+    #TEMPORARY SHORT-CIRCUIT UNTIL WE WORK OUT PRECIP INTERPOLATION
+    if(nrow(raindata) == 1 && 'site_name' %in% colnames(raindata) &&
+            raindata$site_name == 'vwc bollocks'){
+        stop('This feature will be available once we work out precip interpolation.')
+    }
+
     alldata = prep_mainfacets3(varC, dmns, sites, streamdata, raindata,
         conc_flux_selection=conc_flux3, show_input_concentration=inconc3)
 
     rainsites = get_rainsites(raindata, alldata, streamsites=sites,
         conc_flux_selection=conc_flux3, show_input_concentration=inconc3)
+
+    yunit = ifelse(conc_flux3 == 'Flux', flux_unit3, conc_unit3)
+    ylab = get_ylab(varC, conc_flux3, yunit)
 
     if(nrow(alldata)){
 
@@ -677,21 +721,10 @@ output$GRAPH_MAIN3c = output$GRAPH_MAIN3cEXP = renderDygraph({
         dydat = xts(alldata[, displabs], order.by=alldata$datetime, tzone='UTC')
         dimnames(dydat) = list(NULL, displabs)
 
-        if(conc_flux3 == 'Flux'){
-            gunit = flux_unit3
-        } else {
-            gunit = ifelse(varC %in% conc_vars, conc_unit3,
-                grabvars$unit[grabvars$variable_code == varC])
-        }
-
-        ylab = glue('{var} ({unit})', var=varC, unit=gunit)
-
         is_inst = ifelse(agg3 == 'Instantaneous', TRUE, FALSE)
         dg = dygraph(dydat, group='nSiteNVar') %>%
             dyOptions(useDataTimezone=TRUE, drawPoints=FALSE,
-                colors=selection_color_match(sites,
-                    displabs[displabs %in% sites],
-                    linecolors, pad_length=length(displabs)),
+                colors=selection_color_match(sites, displabs, linecolors),
                 strokeWidth=2, pointSize=2,
                 retainDateWindow=TRUE, drawGapEdgePoints=TRUE,
                 connectSeparatedPoints=is_inst) %>%
@@ -719,8 +752,8 @@ output$GRAPH_MAIN3c = output$GRAPH_MAIN3cEXP = renderDygraph({
         }
 
     } else {
-        dg = plot_empty_dygraph(date3, plotgroup='nSiteNVar',
-            ylab=ylab, px_per_lab=20)
+        dg = plot_empty_dygraph(date3, mainlab=colnames(alldata)[-1],
+            maindiv='main3a', plotgroup='nSiteNVar', ylab=ylab, px_per_lab=20)
     }
 
     return(dg)
@@ -728,14 +761,17 @@ output$GRAPH_MAIN3c = output$GRAPH_MAIN3cEXP = renderDygraph({
 
 output$GRAPH_FLOW3 = output$GRAPH_FLOW3EXP = renderDygraph({
 
-    flowdat = spread(dataFlow3(), site_name, Q)
+    dataflow3 = dataFlow3()
+    tryCatch({
+        dataflow3 = spread(dataflow3, site_name, Q)
+    }, error=function(e) NULL)
     date3 = isolate(input$DATE3)
     sites = na.omit(isolate(input$SITES3[1:3]))
 
-    if(nrow(flowdat)){
+    if(nrow(dataflow3)){
 
-        displabs = colnames(flowdat)[-1]
-        dydat = xts(flowdat[, displabs], order.by=flowdat$datetime,
+        displabs = colnames(dataflow3)[-1]
+        dydat = xts(dataflow3[, displabs], order.by=dataflow3$datetime,
             tzone='UTC')
         dimnames(dydat) = list(NULL, displabs)
 
@@ -828,3 +864,9 @@ observeEvent(input$EXPAND_FLOW3, {
     )
     runjs("$('#flow3').clone().appendTo('#flow3DUPE')")
 })
+
+# observe({
+#     input$DEBUG
+#     print(rlang::last_error())
+#     print(traceback())
+# })

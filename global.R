@@ -134,7 +134,7 @@ conc_flux_names = c('Concentration'='Concentration','x'='Flux', 'y'='VWC')
 names(conc_flux_names)[2] = paste('Flux (interpolated)', enc2native('\U2753'))
 names(conc_flux_names)[3] = paste('Flux (VWC)', enc2native('\U2753'))
 
-raincolors = c('#8ab5de', '#36486b', '#618685')
+raincolors = c('#8ab5de', '#36486b', '#618685') #blues
 linecolors = c('#323232', '#008040', '#800080') #black, green, purple
 pchemcolors = c('#585858', '#1bff8c', '#ff1bff') #lighter shades of the above
 
