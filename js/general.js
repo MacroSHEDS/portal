@@ -33,51 +33,56 @@ shinyjs.init = function() {
 
     //highlight plots when sites are selected via map
     Shiny.addCustomMessageHandler('flash_plot', function(message) {
-       // $('#GRAPH_MAIN4a').delay(200).fadeOut(400).fadeIn(400)
-       // $('#GRAPH_FLOW4').delay(200).fadeOut(400).fadeIn(400)
         $('#GRAPH_MAIN3a').delay(200).fadeOut(400).fadeIn(400)
-        $('#GRAPH_FLOW3').delay(200).fadeOut(400).fadeIn(400)
+        $('#GRAPH_Q3').delay(200).fadeOut(400).fadeIn(400)
     });
 
     //tooltips and some styling
     $('input[name^="CONC_FLUX"][value="Flux"]').parent()
         .attr('title', 'Interpolated flux: mean concentration times mean discharge over the aggregation period (below), linearly interpolated. NOTE: only available when "Show precip chemistry" is off.')
     $('input[name^="CONC_FLUX"][value="VWC"]').parent()
-        .attr('title', 'Volume-weighted concentration: summation of instantaneous concentration and flow (or precipitation) volume divided by total volume over the aggregation period (below). NOTE: only available when aggregation > daily.')
+        .attr('title', 'Volume-weighted concentration: summation of instantaneous concentration and Q (or precipitation) volume divided by total volume over the aggregation period (below). NOTE: only available when aggregation > daily.')
     //    .css('color', 'blue')
-    $('#INCONC3').parent().parent().attr('title', 'Enabled only when unit is concentration or VWC and aggregation > daily.');
+    $('#SHOW_PCHEM3').parent().parent().attr('title', 'Enabled only when unit is concentration or VWC and aggregation > daily.');
 
     //disable input conc checkbox unless monthly or annual conc or VWC selected; manage aggregation options too
-    function govern_inconc3(){
+    function govern_showpchem3(){
 
         var datatype = $('input[name=CONC_FLUX3]:checked').val()
 
         if( ['Concentration', 'VWC'].includes(datatype) &&
                 ['Monthly', 'Yearly'].includes($('input[name=AGG3]:checked').val()) ){
-            $('#INCONC3').removeAttr('disabled').siblings().css('color', '#333');
+            $('#SHOW_PCHEM3').removeAttr('disabled').siblings().css('color', '#333');
 
             if(datatype == 'VWC'){
                 $('input[name=AGG3][value=Daily]').attr('disabled','disabled').siblings().css('color', 'gray');
-                $('input[name=AGG3][value=Instantaneous').attr('disabled','disabled').siblings().css('color', 'gray');
+                $('input[name=AGG3][value=Instantaneous]').attr('disabled','disabled').siblings().css('color', 'gray');
             }
 
         } else {
 
-            $('#INCONC3').attr('disabled','disabled').siblings().css('color', 'gray');
+            $('#SHOW_PCHEM3').attr('disabled','disabled').siblings().css('color', 'gray');
 
             if(datatype == 'VWC'){
                 $('input[name=AGG3][value=Daily]').removeAttr('disabled').siblings().css('color', '#333');
                 $('input[name=AGG3][value=Instantaneous]').removeAttr('disabled').siblings().css('color', '#333');
             }
         }
+
+
+        if( datatype !== 'VWC' && ! $('#SHOW_PCHEM3').is(':checked') ){ 
+            $('input[name=AGG3][value=Daily]').removeAttr('disabled').siblings().css('color', '#333');
+            $('input[name=AGG3][value=Instantaneous]').removeAttr('disabled').siblings().css('color', '#333');
+        }
+
     };
 
     $('body').ready(function(){
-        $('#CONC_FLUX3').change(govern_inconc3);
+        $('#CONC_FLUX3').change(govern_showpchem3);
     });
 
     $('body').ready(function(){
-        $('#AGG3').change(govern_inconc3);
+        $('#AGG3').change(govern_showpchem3);
     });
 
     //disable VWC unless monthly or annual aggregation selected
@@ -93,21 +98,24 @@ shinyjs.init = function() {
         $('input[name=AGG3]').change(govern_VWC3);
     });
 
-    //disable interp flux if rain viz selected
+    //disable interp flux if precip viz selected
     function govern_flux3(){
-        if( $('#INCONC3').is(':checked') ){
+        if( $('#SHOW_PCHEM3').is(':checked') ){
             $('input[name=CONC_FLUX3][value=Flux]').attr('disabled', 'disabled').siblings().css('color', 'gray');
             $('input[name=AGG3][value=Instantaneous]').attr('disabled', 'disabled').siblings().css('color', 'gray');
             $('input[name=AGG3][value=Daily]').attr('disabled', 'disabled').siblings().css('color', 'gray');
         } else {
             $('input[name=CONC_FLUX3][value=Flux]').removeAttr('disabled').siblings().css('color', '#333');
-            $('input[name=AGG3][value=Instantaneous]').removeAttr('disabled').siblings().css('color', '#333');
-            $('input[name=AGG3][value=Daily]').removeAttr('disabled').siblings().css('color', '#333');
+
+            if( $('input[name=CONC_FLUX3]:checked').val() !== 'VWC' ){
+                $('input[name=AGG3][value=Instantaneous]').removeAttr('disabled').siblings().css('color', '#333');
+                $('input[name=AGG3][value=Daily]').removeAttr('disabled').siblings().css('color', '#333');
+            }
         }
     };
 
     $('body').ready(function(){
-        $('#INCONC3').click(govern_flux3);
+        $('#SHOW_PCHEM3').click(govern_flux3);
     });
 
 }

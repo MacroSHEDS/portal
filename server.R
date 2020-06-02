@@ -32,7 +32,7 @@ server = function(input, output, session){
     rain_gauge_buttons = read_file('ui/rain_gauge_buttons.html')
     source('ui/landing_page_ui.R', local=TRUE)
     source('server/site_comparison_server.R', local=TRUE)
-    source('server/oneSiteNVar_server.R', local=TRUE)
+    # source('server/oneSiteNVar_server.R', local=TRUE)
     source('server/nSiteNVar_server.R', local=TRUE)
     source('server/summary_biplot_server.R', local=TRUE)
     source('server/map_server.R', local=TRUE)
@@ -62,7 +62,7 @@ server = function(input, output, session){
     })
 
     observeEvent(once=TRUE, ignoreNULL=FALSE, ignoreInit=TRUE,
-            eventExpr=input$SOLUTES4, {
+            eventExpr=input$VARS3, {
         init_vals$enable_facets = TRUE
     })
 

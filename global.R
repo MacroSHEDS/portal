@@ -18,14 +18,10 @@ library(tidyverse)
 library(glue)
 library(shinyjs)
 
-# options(error=recover)
-
 #todo:
 #most of the variables created in this script can be automatically generated.
     #those that can't should be read from a config file or spreadsheet eventually.
-#get rid of legacy junk from hbwater portal, like tab numbers
 #attend to trailing comments within this script
-#change "grab" to "chem" everywhere
 
 #uncomment and run to deploy demo app
 # rsconnect::deployApp('/home/mike/git/macrosheds/portal',
@@ -80,34 +76,33 @@ default_site = default_sites_by_domain[[default_domain]]
 #load base data for when user lands in app (could use convenience functions here)
 basedata = list(
     P = read_feather(glue('data/{d}/precip.feather',
-        d=default_domain)), #update once rain gages are aggregated more finely
+        d=default_domain)), #update once rain gage interpolation is done
     Q = read_feather(glue('data/{d}/discharge/{s}.feather',
         d=default_domain, s=default_site)),
     pchem = read_feather(glue('data/{d}/pchem.feather',
-        d=default_domain)), #update once rain gages are aggregated more finely
-    grab = read_feather(glue('data/{d}/chemistry/{s}.feather',
+        d=default_domain)), #update once rain gage interpolation is done
+    chem = read_feather(glue('data/{d}/chemistry/{s}.feather',
         d=default_domain, s=default_site)),
-        #filter(site_name %in% sites_with_Q) #still desirable?
     flux = read_feather(glue('data/{d}/flux/{s}.feather',
         d=default_domain, s=default_site))
 )
 
 #make vector of domain IDs and their pretty names
 domains_df = unique(site_data[, c('domain', 'pretty_domain')])
-domains = domains_df$domain
-names(domains) = domains_df$pretty_domain
+domains_pretty = domains_df$domain
+names(domains_pretty) = domains_df$pretty_domain
 
 #create collections of variable types, some of them as menu-ready lists
 fluxvars = variables %>%
     filter(as.logical(flux_convertible)) %>%
     pull(variable_code)
 
-grabvars = variables %>%
+chemvars = variables %>%
     filter(
         variable_type == 'grab',
         ! variable_code %in% c('flowGageHt', 'P'))
     # filter(variable_code %in% fluxvars) #might need this back temporarily
-grabvars_display = generate_dropdown_varlist(grabvars)
+chemvars_display = generate_dropdown_varlist(chemvars)
 
 pchemvars = list( #temporary: update this list as part of a daily scheduled task
     hbef=c('pH', 'spCond', 'Ca', 'Mg', 'K', 'Na', 'TMAl', 'OMAl', 'Al_ICP',
@@ -116,7 +111,7 @@ pchemvars = list( #temporary: update this list as part of a daily scheduled task
     hjandrews=c('alk', 'Ca', 'Cl', 'spCond', 'DOC', 'K', 'Mg', 'Na', 'NH3_N',
         'NO3_N', 'pH', 'PO4_P', 'SiO2', 'SO4_S', 'suspSed', 'TDN', 'TDP', 'TKN',
         'UTKN', 'UTN', 'UTP'))
-pchemvars_display = generate_dropdown_varlist(grabvars,
+pchemvars_display = generate_dropdown_varlist(chemvars,
         filter_set=Reduce(union, pchemvars))
 
 conc_vars = variables %>%
@@ -143,7 +138,7 @@ sites_with_Q = sites_by_var('discharge')
 sites_with_pchem = sites_by_var('precipchem')
 
 #might need modification now that files are read site-by-site
-grabvars_display_subset = filter_dropdown_varlist(basedata$grab)
+chemvars_display_subset = filter_dropdown_varlist(basedata$chem)
 pchemvars_display_subset = filter_dropdown_varlist(basedata$pchem)
 
-dtrng = as.Date(range(basedata$grab$datetime, na.rm=TRUE))
+dtrng = as.Date(range(basedata$chem$datetime, na.rm=TRUE))

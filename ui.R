@@ -1,6 +1,6 @@
 
 source("helpers.R")
-source('ui/oneSiteNVar_ui.R')
+#source('ui/oneSiteNVar_ui.R')
 source('ui/nSiteNVar_ui.R')
 # source('ui/site_comparison_ui.R')
 source('ui/about_ui.R')

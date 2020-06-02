@@ -3,10 +3,11 @@ nSiteNVar_tab = tabPanel("Multisite", value='multisite_exploration',
         sidebarPanel(
             div('Domains', class='widget-title text-center'),
             selectizeInput('DOMAINS3', label=NULL, selected=default_domain,
-                choices=domains, multiple=TRUE, options=list(maxItems=3)),
+                choices=domains_pretty, multiple=TRUE,
+                options=list(maxItems=3, allowEmptyOption=FALSE)),
             div('(Up to 3; populates sites)',
                 class='widget-caption text-center'),
-                # choices=domains, multiple=TRUE, options=list(maxItems=2)),
+                # choices=domains_pretty, multiple=TRUE, options=list(maxItems=2)),
             # div('(Choose 1 or 2; populates sites)',
             #     class='widget-caption text-center'),
             br(),
@@ -17,16 +18,16 @@ nSiteNVar_tab = tabPanel("Multisite", value='multisite_exploration',
                 class='widget-caption text-center'),
             br(),
             div('Variables', class='widget-title text-center'),
-            selectizeInput('SOLUTES3', label=NULL,
-                selected=grabvars_display_subset[[1]][[1]],
-                multiple=TRUE, choices=grabvars_display_subset,
+            selectizeInput('VARS3', label=NULL,
+                selected=chemvars_display_subset[[1]][[1]],
+                multiple=TRUE, choices=chemvars_display_subset,
                 options=list(maxItems=3)),
             div('(Up to 3)', class='widget-caption text-center'),
             br(),
-            checkboxInput('INCONC3', value=FALSE,
+            checkboxInput('SHOW_PCHEM3', value=FALSE,
                 label=paste('Show precip chemistry', enc2native('\U2753'))),
             br(),
-            # conditionalPanel('input.INCONC3 == true',
+            # conditionalPanel('input.SHOW_PCHEM3 == true',
             #     fluidRow(
             #         column(8, offset=2,
             #             div(style=paste0('border: 1px solid; border-color:',
@@ -84,16 +85,27 @@ nSiteNVar_tab = tabPanel("Multisite", value='multisite_exploration',
         mainPanel(
             fluidRow(class='text-center',
                 wellPanel(
-                    sliderInput("DATE3", label=NULL, min=dtrng[1], max=dtrng[2],
+                    sliderInput("DATES3", label=NULL, min=dtrng[1], max=dtrng[2],
                         value=most_recent_year(dtrng),
                         width='100%', timeFormat='%b %Y', step=30,
                         dragRange=TRUE),
                     # fluidRow(class='text-right',
                     #     actionButton('EXPAND_PRECIP3', icon('external-link-alt'))
                     # ),
-                    dygraphOutput("GRAPH_PRECIP3", height='75px'),
+                    div(id='main3aP'),
+                    dygraphOutput("GRAPH_PRECIP3a", height='75px'),
                     br(),
-                    conditionalPanel(paste('input.SOLUTES3 !== null &&',
+                    conditionalPanel('input.DOMAINS3.length > 1',
+                        div(id='main3bP'),
+                        dygraphOutput("GRAPH_PRECIP3b", height='75px'),
+                        br()
+                    ),
+                    conditionalPanel('input.DOMAINS3.length > 2',
+                        div(id='main3cP'),
+                        dygraphOutput("GRAPH_PRECIP3c", height='75px'),
+                        br()
+                    ),
+                    conditionalPanel(paste('input.VARS3 !== null &&',
                             'input.SITES3 !== null'),
                         # fluidRow(
                         #     column(10, offset=1,
@@ -106,33 +118,25 @@ nSiteNVar_tab = tabPanel("Multisite", value='multisite_exploration',
                         dygraphOutput("GRAPH_MAIN3a", height='125px'),
                         br()
                     ),
-                    conditionalPanel('input.SOLUTES3.length > 1',
-                    # conditionalPanel('false',
+                    conditionalPanel('input.VARS3.length > 1',
                         div(id='main3b'),
                         dygraphOutput("GRAPH_MAIN3b", height='125px'),
                         br()
                     ),
-                    conditionalPanel('input.SOLUTES3.length > 2',
-                        # fluidRow(
-                        #     column(10, offset=1,
-                                div(id='main3c'),
-                        #     ),
-                        #     column(1,
-                        #         actionButton('EXPAND_MAIN3c', icon('external-link-alt'))
-                        #     )
-                        # ),
+                    conditionalPanel('input.VARS3.length > 2',
+                        div(id='main3c'),
                         dygraphOutput("GRAPH_MAIN3c", height='125px'),
                         br()
                     ),
                     # fluidRow(
                     #     column(10, offset=1,
-                            div(id='flow3'),
+                            div(id='Q3'),
                     #     ),
                     #     column(1,
-                    #         actionButton('EXPAND_FLOW3', icon('external-link-alt'))
+                    #         actionButton('EXPAND_Q3', icon('external-link-alt'))
                     #     )
                     # ),
-                    dygraphOutput("GRAPH_FLOW3", height='75px')
+                    dygraphOutput("GRAPH_Q3", height='75px')
                 )
             )
         )
