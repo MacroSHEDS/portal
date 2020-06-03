@@ -13,7 +13,7 @@ get_ylab = function(v, conc_or_flux, yunit){
         unit = yunit
     } else {
         unit = ifelse(v %in% conc_vars, yunit,
-            grabvars$unit[grabvars$variable_code == v])
+            chemvars$unit[chemvars$variable_code == v])
     }
 
     ylab = glue('{var} ({u})', var=v, u=unit)
@@ -51,8 +51,8 @@ plot_empty_dygraph = function(datelims, mainlab='', maindiv=NULL, plotgroup,
 
 get_timeslider_extent = function(basedata, selected_daterange){
 
-    if(nrow(basedata$grab)){
-        dset = basedata$grab
+    if(nrow(basedata$chem)){
+        dset = basedata$chem
     } else if(nrow(basedata$Q)){
         dset = basedata$Q
     } else if(nrow(basedata$P)){
@@ -62,7 +62,6 @@ get_timeslider_extent = function(basedata, selected_daterange){
     }
 
     dtrng = dset %>%
-        # select(datetime, one_of(solutes3)) %>%
         mutate(datetime = as.Date(datetime)) %>%
         pull(datetime) %>%
         range(., na.rm=TRUE)
@@ -249,11 +248,11 @@ sites_from_feathers = function(directory){
 sites_by_var = function(var){
 
     sitelist = list()
-    for(i in 1:length(domains)){
+    for(i in 1:length(domains_pretty)){
         psitevec = sites_from_feathers(glue('data/{d}/{v}',
-            d=domains[i], v=var))
+            d=domains_pretty[i], v=var))
         sitelist = append(sitelist, list(psitevec))
-        names(sitelist)[i] = domains[i]
+        names(sitelist)[i] = domains_pretty[i]
     }
 
     return(sitelist)
@@ -292,7 +291,7 @@ try_read_feather = function(path){
     return(out)
 }
 
-# var='chemistry'; dmns=c('hbef', 'neon'); sites=c('CUPE', 'W1', 'BIGC')
+# var='precip'; dmns=c('hbef', 'neon'); sites=c('CUPE', 'W1', 'BIGC')
 read_combine_feathers = function(var, dmns, sites=NULL){
 
     #in order to allow duplicate sitenames across domains, must invoke js here
@@ -328,13 +327,13 @@ read_combine_feathers = function(var, dmns, sites=NULL){
     return(combined_data)
 }
 
-generate_dropdown_varlist = function(grabvars, filter_set=NULL){
+generate_dropdown_varlist = function(chemvars, filter_set=NULL){
 
     if(! is.null(filter_set)){
-        grabvars = filter(grabvars, variable_code %in% filter_set)
+        chemvars = filter(chemvars, variable_code %in% filter_set)
     }
 
-    grabvars = grabvars %>%
+    chemvars = chemvars %>%
         mutate(displayname=paste0(variable_name, ' (', unit, ')')) %>%
         select(displayname, variable_code, variable_subtype) %>%
         plyr::dlply(plyr::.(variable_subtype), function(x){
@@ -343,7 +342,7 @@ generate_dropdown_varlist = function(grabvars, filter_set=NULL){
             })
         })
 
-    return(grabvars)
+    return(chemvars)
 }
 
 filter_dropdown_varlist = function(filter_set, vartype='stream'){
@@ -358,7 +357,7 @@ filter_dropdown_varlist = function(filter_set, vartype='stream'){
     populated_vars = names(populated_vars_bool[populated_vars_bool])
 
     if(vartype == 'stream'){
-        vars_display_subset = grabvars_display
+        vars_display_subset = chemvars_display
     } else if(vartype == 'precip'){
         vars_display_subset = pchemvars_display
     }
@@ -372,31 +371,31 @@ filter_dropdown_varlist = function(filter_set, vartype='stream'){
     return(vars_display_subset)
 }
 
-# df=data3; agg_selection=agg3; which_dataset='pchem'; conc_flux_selection=conc_flux3
-# df=pchem3; agg_selection=agg3; which_dataset='pchem'; conc_flux_selection=conc_flux3
+# df=data3; agg_selection=agg; which_dataset='pchem'; conc_flux_selection=conc_flux
+# df=pchem3; agg_selection=agg; which_dataset='pchem'; conc_flux_selection=conc_flux
 ms_aggregate = function(df, agg_selection, which_dataset,
     conc_flux_selection=NULL){
 
     #agg_selection is a user input object, e.g. input$AGG3
-    #which_dataset is one of 'grab', 'q', 'p', 'pchem'
+    #which_dataset is one of 'chem', 'q', 'p', 'pchem'
     #conc_flux_selection must be supplied as e.g. input$CONC_FLUX3 if
-    #which_dataset is 'grab' or 'pchem'
+    #which_dataset is 'chem' or 'pchem'
 
-    if(! which_dataset %in% c('grab', 'q', 'p', 'pchem')){
-        stop("which_dataset must be one of 'grab', 'q', 'p', 'pchem'")
+    if(! which_dataset %in% c('chem', 'q', 'p', 'pchem')){
+        stop("which_dataset must be one of 'chem', 'q', 'p', 'pchem'")
     }
 
-    if(which_dataset %in% c('grab', 'pchem') && is.null(conc_flux_selection)){
+    if(which_dataset %in% c('chem', 'pchem') && is.null(conc_flux_selection)){
         stop(paste0("conc_flux_selection must be supplied when which_dataset",
-            "is 'grab' or'pchem'"))
+            "is 'chem' or'pchem'"))
     }
 
     if(nrow(df) == 0) return(df)
     if(agg_selection == 'Instantaneous') return(df)
     if(agg_selection == 'Daily' && which_dataset == 'pchem') return(df)
 
-    agg_period = switch(agg_selection, 'Daily'='day', 'Monthly'='month',
-        'Yearly'='year')
+    agg_period = switch(agg_selection,
+        'Daily'='day', 'Monthly'='month', 'Yearly'='year')
 
     df = mutate(df, datetime = lubridate::floor_date(datetime, agg_period))
 
@@ -408,7 +407,7 @@ ms_aggregate = function(df, agg_selection, which_dataset,
         df = group_by(df, datetime)
     }
 
-    if(which_dataset %in% c('grab', 'pchem')){
+    if(which_dataset %in% c('chem', 'pchem')){
 
         if(conc_flux_selection == 'VWC'){
             df = summarize_all(df, list(~sum(., na.rm=TRUE)))
@@ -460,7 +459,7 @@ inject_timeseries_NAs = function(df, fill_by){
     return(df)
 }
 
-# v=varA; conc_flux_selection=conc_flux3; show_input_concentration=inconc3
+# v=varA; conc_flux_selection=conc_flux; show_input_concentration=show_pchem
 prep_mainfacets3 = function(v, dmns, sites, streamdata, raindata,
     conc_flux_selection, show_input_concentration){
 
@@ -580,7 +579,7 @@ generate_dropdown_sitelist = function(domain_vec){
         domain_sites = sitelist_from_domain(domain_vec[i], 'stream_gauge')
         sitelist[[i]] = domain_sites
     }
-    names(sitelist) = names(domains[match(domain_vec, domains)])
+    names(sitelist) = names(domains_pretty[match(domain_vec, domains_pretty)])
 
     return(sitelist)
 }
