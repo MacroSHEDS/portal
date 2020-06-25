@@ -379,7 +379,7 @@ ms_aggregate = function(df, agg_selection, which_dataset,
     #agg_selection is a user input object, e.g. input$AGG3
     #which_dataset is one of 'chem', 'q', 'p', 'pchem'
     #conc_flux_selection must be supplied as e.g. input$CONC_FLUX3 if
-    #which_dataset is 'chem' or 'pchem'
+        #which_dataset is 'chem' or 'pchem'
 
     if(! which_dataset %in% c('chem', 'q', 'p', 'pchem')){
         stop("which_dataset must be one of 'chem', 'q', 'p', 'pchem'")
