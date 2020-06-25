@@ -75,7 +75,7 @@ fluxvars = variables %>%
 
 chemvars = variables %>%
     filter(
-        variable_type == 'grab',
+        #variable_type == 'grab',
         ! variable_code %in% c('flowGageHt', 'P'))
     # filter(variable_code %in% fluxvars) #might need this back temporarily
 chemvars_display = generate_dropdown_varlist(chemvars)
