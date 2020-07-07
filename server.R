@@ -50,8 +50,9 @@ server = function(input, output, session){
         sum(site_data$site_type == 'stream_gauge')
     })
     output$NOBS = renderText({
-        #temporary; crude estimate based on nobs from hbef and hjandrews
-        x = sum(site_data$site_type == 'stream_gauge') * 143295
+        #updated
+        sites <- sm(read_csv("data/site_data.csv"))
+        x = sum(sites$observations, na.rm = TRUE) 
         format(round(x, -4), scientific=FALSE, big.mark=',')
     })
 
