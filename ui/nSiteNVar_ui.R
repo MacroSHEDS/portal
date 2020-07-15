@@ -162,14 +162,16 @@ nSiteNVar_tab = tabPanel("Multisite", value='multisite_exploration',
                         br()
                     ),
                     # fluidRow(
-                    #     column(10, offset=1,
-                            div(id='Q3'),
-                    #     ),
-                    #     column(1,
-                    #         actionButton('EXPAND_Q3', icon('external-link-alt'))
-                    #     )
-                    # ),
-                    dygraphOutput("GRAPH_Q3", height='75px')
+                     #    column(10, offset=1,
+                      #      div(id='graph_q3'),
+                       #  ),
+                        # column(1,
+                         #    actionButton('EXPAND_Q3', icon('external-link-alt'))
+                        # )
+                     #),
+                    div(id='GRAPH_Q3'),
+                    dygraphOutput("GRAPH_Q3", height='75px'),
+                    br()
                 )
             )
         )

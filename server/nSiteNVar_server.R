@@ -143,8 +143,7 @@ load_basedata = eventReactive({
     init_vals$recent_domain = dmns[1] #needed?
 
     basedata = list(chem=chem, P=P, Q=Q, pchem=pchem, flux=flux)
-    return(basedata)
-})
+    return(basedata) })
 
 #when basedata changes, variable list and time slider change, but not selections
 observe({
@@ -894,11 +893,18 @@ output$GRAPH_MAIN3c = renderDygraph({
 output$GRAPH_Q3 = renderDygraph({
 
     dataq = dataQ()
+    #zz <<- dataQ()
+    #dataq <- zz
     tryCatch({
         dataq = spread(dataq, site_name, discharge)
     }, error=function(e) NULL)
     dates = isolate(input$DATES3)
     sites = na.omit(isolate(input$SITES3[1:3]))
+    
+    #ii <<- dates
+    #dates <- ii
+    #ww <<- sites
+    #sites <- ww
 
     if(nrow(dataq)){
 
@@ -974,3 +980,5 @@ output$GRAPH_Q3 = renderDygraph({
 #     print(rlang::last_error())
 #     print(traceback())
 # })
+
+
