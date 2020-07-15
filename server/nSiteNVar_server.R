@@ -296,17 +296,17 @@ dataQ = reactive({
 
     dataq = dataq %>%
         filter(datetime > dates[1], datetime < dates[2]) %>%
-        select(datetime, site_name, Q)
+        select(datetime, site_name, discharge)
 
     if(nrow(dataq) == 0) return(dataq)
 
-    dataq = pad_ts(dataq, vars='Q', datebounds=dates)
+    dataq = pad_ts(dataq, vars='discharge', datebounds=dates)
     dataq = ms_aggregate(dataq, agg, which_dataset='q')
 
     if(agg == 'Instantaneous'){ #revisit this. needed?
         dataq = dataq %>%
             group_by(datetime, site_name) %>%
-            summarise(Q=max(Q, na.rm=TRUE)) %>%
+            summarise(discharge=max(discharge, na.rm=TRUE)) %>%
             ungroup()
     }
 
@@ -327,7 +327,7 @@ volWeightedChem3 = reactive({
 
     samplevel = datachem %>%
         left_join(dataq, by=c('datetime', 'site_name')) %>%
-        mutate_at(vars(-datetime, -site_name, -Q), ~(. * Q))
+        mutate_at(vars(-datetime, -site_name, -discharge), ~(. * discharge))
 
     if(agg_input == 'Monthly'){
 
@@ -335,13 +335,13 @@ volWeightedChem3 = reactive({
             mutate(year=lubridate::year(datetime))
 
         agglevel = samplevel %>%
-            select(site_name, year, Q) %>%
+            select(site_name, year, discharge) %>%
             group_by(year, site_name) %>%
-            summarize(Qsum=sum(Q, na.rm=TRUE)) %>%
+            summarize(Qsum=sum(discharge, na.rm=TRUE)) %>%
             ungroup()
 
         volWeightedConc = samplevel %>%
-            select(-Q) %>%
+            select(-discharge) %>%
             left_join(agglevel, by=c('year', 'site_name')) %>%
             mutate_at(vars(-datetime, -site_name, -year, -Qsum),
                 ~(. / Qsum)) %>%
@@ -351,10 +351,10 @@ volWeightedChem3 = reactive({
 
         agglevel = samplevel %>%
             group_by(site_name) %>%
-            summarize(Qsum=sum(Q, na.rm=TRUE))
+            summarize(Qsum=sum(discharge, na.rm=TRUE))
 
         volWeightedConc = samplevel %>%
-            select(-Q) %>%
+            select(-discharge) %>%
             left_join(agglevel, by='site_name') %>%
             mutate_at(vars(-datetime, -site_name, -Qsum), ~(. / Qsum)) %>%
             select(-Qsum)
@@ -554,7 +554,7 @@ output$GRAPH_PRECIP3c = renderDygraph({
     return(dg)
 })
 
-output$GRAPH_MAIN3a = renderDygraph({
+output$GRAPH_MAIN3a <- output$GRAPH_MAIN3aFULL <- renderDygraph({
 
     # sites <<- na.omit(isolate(input$SITES3[1:3]))
     # varA <<- isolate(input$VARS3[1])
@@ -657,6 +657,51 @@ output$GRAPH_MAIN3a = renderDygraph({
     }
 
     return(dg)
+})
+
+output$GRAPH_QC3a <- renderPlot({
+
+    # show_qc = isolate(input$SHOW_QC3)
+    sites = na.omit(isolate(input$SITES3[1:3]))
+    varA = isolate(input$VARS3[1])
+    dmns = isolate(get_domains3())
+    conc_unit = isolate(input$CONC_UNIT3)
+    show_pchem = isolate(input$SHOW_PCHEM3)
+    agg = isolate(input$AGG3)
+    dates = isolate(input$DATES3)
+    # sites <<- na.omit(isolate(input$SITES3[1:3]))
+    # varA <<- isolate(input$VARS3[1])
+    # dmns <<- isolate(get_domains3())
+    # conc_unit <<- isolate(input$CONC_UNIT3)
+    # show_pchem <<- isolate(input$SHOW_PCHEM3)
+    # agg <<- isolate(input$AGG3)
+    # dates <<- isolate(input$DATES3)
+
+    # reactive_vals$facet3aQC
+    reactive_vals$facet3a
+
+    # streamdata <<- dataChem()
+    streamdata = dataChem()
+
+    # dischargedata <<- dataQ()
+    dischargedata = dataQ()
+
+    alldata <- inner_join(streamdata,
+                          dischargedata,
+                          by = c("datetime", "site_name")) %>%
+        rename(value=3) %>%
+        select(datetime, site_name, value, discharge)
+
+    qc <- ggplot(alldata,
+                 aes(x = discharge, y = value, colour = site_name),
+                 environment=environment()) +
+        geom_point() +
+        scale_colour_manual(values = c('#323232', "#008040", "#800080"),
+                            breaks = c(sites)) +
+        labs(y = paste(varA, conc_unit, sep = " ")) +
+        ggthemes::theme_few()
+
+    return(qc)
 })
 
 output$GRAPH_MAIN3b = renderDygraph({
@@ -851,7 +896,7 @@ output$GRAPH_Q3 = renderDygraph({
     #zz <<- dataQ()
     #dataq <- zz
     tryCatch({
-        dataq = spread(dataq, site_name, Q)
+        dataq = spread(dataq, site_name, discharge)
     }, error=function(e) NULL)
     dates = isolate(input$DATES3)
     sites = na.omit(isolate(input$SITES3[1:3]))

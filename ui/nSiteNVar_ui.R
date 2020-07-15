@@ -26,6 +26,8 @@ nSiteNVar_tab = tabPanel("Multisite", value='multisite_exploration',
             br(),
             checkboxInput('SHOW_PCHEM3', value=FALSE,
                 label=paste('Show precip chemistry', enc2native('\U2753'))),
+            checkboxInput('SHOW_QC3', value=FALSE,
+                label=paste('Show Q-C plots')),
             br(),
             # conditionalPanel('input.SHOW_PCHEM3 == true',
             #     fluidRow(
@@ -107,20 +109,51 @@ nSiteNVar_tab = tabPanel("Multisite", value='multisite_exploration',
                     ),
                     conditionalPanel(paste('input.VARS3 !== null &&',
                             'input.SITES3 !== null'),
-                        # fluidRow(
-                        #     column(10, offset=1,
-                                div(id='main3a'),
+                        #ONE WAY TO GET PLOTS SIDE-BY-SIDE
+                        conditionalPanel('input.SHOW_QC3 == true',
+                            div(id='main3a'),
+                            fluidRow(
+                                column(9,
+                                    dygraphOutput("GRAPH_MAIN3a", height='125px')
+                                ),
+                                column(3,
+                                    plotOutput('GRAPH_QC3a', height='125px')
+                                )
+                            )
+                        ),
+                        conditionalPanel('input.SHOW_QC3 == false',
+                                    dygraphOutput("GRAPH_MAIN3aFULL", height='125px')
+                        ),
+
+                        # #ANOTHER WAY (troublesome)
+                        # div(id='main3a'), #plot key: communicates with dygraphs
+                        # div(id = 'inlineContainerA',# class = 'container', #style='width: 500px',
+                        #     div(id = 'inlineQC3a', style = 'width: 0px',
+                        #     # div(id = 'inlineQC3a', #style = 'display: none',
+                        #             # style = 'display: inline-block; vertical-align: top',
+                        #             # style = 'width: 200px; float: right',#; display: none',
+                        #         plotOutput('GRAPH_QC3a', height='125px')
                         #     ),
-                        #     column(1,
-                        #         actionButton('EXPAND_MAIN3a', icon('external-link-alt'))
+                        #     div(id = 'inlineMAIN3a',
+                        #             # style = 'display: inline-block; vertical-align: top',
+                        #             # style = 'overflow: hidden',
+                        #         dygraphOutput("GRAPH_MAIN3a", height='125px')
                         #     )
                         # ),
-                        dygraphOutput("GRAPH_MAIN3a", height='125px'),
+
+                        # #A THIRD WAY (nope)
+                        # div(id='main3a'), #plot key: communicates with dygraphs
+                        # fluidRow(
+                        #     dygraphOutput("GRAPH_MAIN3a", height='125px', width='auto'),
+                        #     plotOutput('GRAPH_QC3a', height='125px', width='25%')
+                        # ),
+
+                        # actionButton('EXPAND_MAIN3a', icon('external-link-alt')),
                         br()
                     ),
                     conditionalPanel('input.VARS3.length > 1',
                         div(id='main3b'),
-                        dygraphOutput("GRAPH_MAIN3b", height='125px'),
+                        dygraphOutput('GRAPH_MAIN3b', height='125px'),
                         br()
                     ),
                     conditionalPanel('input.VARS3.length > 2',

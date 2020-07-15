@@ -1,31 +1,35 @@
-library(V8)
-library(feather)
-library(plyr)
-library(data.table)
-# library(dtplyr)
-library(shiny)
-library(shinydashboard)
-library(dygraphs)
-# library(DBI)
-# library(ggthemes)
-# library(ggplot2)
-# library(colorspace)
-library(jsonlite)
-library(lubridate)
-library(xts)
-library(leaflet)
-library(tidyverse)
-library(glue)
-library(shinyjs)
+suppressPackageStartupMessages({
+    library(V8)
+    library(feather)
+    library(plyr)
+    library(data.table)
+    # library(dtplyr)
+    library(shiny)
+    library(shinydashboard)
+    library(dygraphs)
+    # library(DBI)
+    # library(ggthemes)
+    # library(ggplot2)
+    # library(colorspace)
+    library(jsonlite)
+    library(lubridate)
+    library(xts)
+    library(leaflet)
+    library(tidyverse)
+    library(glue)
+    library(shinyjs)
+})
 
 #todo:
 #most of the variables created in this script can be automatically generated.
     #those that can't should be read from a config file or spreadsheet eventually.
 #attend to trailing comments within this script
 
-#uncomment and run to deploy demo app
+#uncomment and execute (without saving script) to deploy demo app
 # rsconnect::deployApp('/home/mike/git/macrosheds/portal',
 #     appName='MacroSheds_demo')
+# rsconnect::deployApp('/home/mike/git/macrosheds/portal',
+#     appName='portal', account='macrosheds')
 
 #for local testing
 # setwd('~/git/macrosheds/portal')
@@ -43,7 +47,7 @@ variables = sm(readr::read_csv('data/variables.csv'))
 #set defaults, which determine what data are shown when user lands
 default_domain = 'hbef'
 default_sites_by_domain = list(
-    'hbef'='W1',
+    'hbef'='w1',
     'hjandrews'='GSLOOK',
     'neon'='ARIK') #this can be generated automatically and overridden here
 default_sitelist = sitelist_from_domain(default_domain, type='stream_gauge')
