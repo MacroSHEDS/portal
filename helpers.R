@@ -21,7 +21,7 @@ get_ylab = function(v, conc_or_flux, yunit){
     return(ylab)
 }
 
-# datelims=date3; mainlab=colnames(alldata)[-1]; plotgroup='nSiteNVar'; ylab=ylab; px_per_lab=20
+# datelims=dates; mainlab=colnames(alldata)[-1]; plotgroup='nSiteNVar'; ylab=ylab; px_per_lab=20
 plot_empty_dygraph = function(datelims, mainlab='', maindiv=NULL, plotgroup,
     ylab, px_per_lab){
 

@@ -37,3 +37,4 @@ logerror = logging::logerror
 with_tz = lubridate::with_tz
 force_tz = lubridate::force_tz
 as_datetime = lubridate::as_datetime
+ymd_hms = lubridate::ymd_hms

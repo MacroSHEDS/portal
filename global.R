@@ -23,9 +23,11 @@ library(shinyjs)
     #those that can't should be read from a config file or spreadsheet eventually.
 #attend to trailing comments within this script
 
-#uncomment and run to deploy demo app
+#uncomment and execute (without saving script) to deploy demo app
 # rsconnect::deployApp('/home/mike/git/macrosheds/portal',
 #     appName='MacroSheds_demo')
+# rsconnect::deployApp('/home/mike/git/macrosheds/portal',
+#     appName='portal', account='macrosheds')
 
 #for local testing
 # setwd('~/git/macrosheds/portal')
@@ -43,7 +45,7 @@ variables = sm(readr::read_csv('data/variables.csv'))
 #set defaults, which determine what data are shown when user lands
 default_domain = 'hbef'
 default_sites_by_domain = list(
-    'hbef'='W1',
+    'hbef'='w1',
     'hjandrews'='GSLOOK',
     'neon'='ARIK') #this can be generated automatically and overridden here
 default_sitelist = sitelist_from_domain(default_domain, type='stream_gauge')
