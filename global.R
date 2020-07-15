@@ -29,7 +29,7 @@ library(shinyjs)
 
 #for local testing
 # setwd('~/git/macrosheds/portal')
-# setwd('/spencer/path/macrosheds/portal')
+# setwd('~/desktop/macrosheds/portal')
 
 source('helpers.R') #maybe package these or put them in a namespace called "ms"
 source('function_aliases.R')
@@ -118,3 +118,4 @@ chemvars_display_subset = filter_dropdown_varlist(basedata$chem)
 pchemvars_display_subset = filter_dropdown_varlist(basedata$pchem)
 
 dtrng = as.Date(range(basedata$chem$datetime, na.rm=TRUE))
+

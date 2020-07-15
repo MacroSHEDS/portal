@@ -593,3 +593,65 @@ selection_color_match = function(sites_selected, sites_all, colorvec){
 
     return(matched_colors)
 }
+
+update_site_obvs <- function() {
+    
+    files <- list.files("data/")
+    
+    domain <- files[- grep("[.]", files)]
+    
+    observations <- tibble(site_name = as.character(), number = as.numeric())
+    
+    for(i in 1:length(domain)) {
+        
+        site_files <- list.files(paste0("data/", domain[i]), full.names = TRUE, recursive = TRUE)
+        
+        if(!purrr::is_empty(grep("flux", site_files))) {
+            site_files <- site_files[- grep("flux", site_files)] 
+        }
+        
+        for(e in 1:length(site_files)) {
+            
+            file <- sm(read_feather(site_files[e])) %>%
+                select(-datetime) 
+            
+            name <- unique(file$site_name)
+            
+            if(length(name) > 1) {
+                name <- file[[1]] 
+                
+                file <- file[-1]
+                file[!is.na(file)] <- 1
+                
+                new <- tibble("site_name" = name,
+                    "observations" = file)
+                
+                new <- new %>%
+                    group_by(site_name) %>%
+                    summarise_all(sum, na.rm = TRUE)
+            } else {
+                
+                file <- select(file, -site_name) 
+                
+                file[!is.na(file)] <- 1
+                
+                num <- sum(colSums(file, na.rm = TRUE), na.rm = TRUE)
+                
+                new <- tibble("site_name" = name,
+                    "observations" = num)
+            }
+            
+            observations <- rbind(new, observations)
+        }
+        }
+    sites <- sm(read_csv("data/site_data.csv"))
+    
+    full <- left_join(sites, observations, by = "site_name")
+    
+    write_csv(full, "data/site_data.csv")
+    }
+
+
+
+        
+       
