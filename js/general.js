@@ -118,6 +118,23 @@ shinyjs.init = function() {
         $('#SHOW_PCHEM3').click(govern_flux3);
     });
 
+    ////only show QC plots when their box is checked
+    //function govern_qc3(){
+    //    if( $('#SHOW_QC3').is(':checked') ){
+    //        //$('#inlineQC3a').css('display', '');
+    //        $('#inlineQC3a').css('width', '25%');
+    //        $('#inlineMAIN3a').css('width', 'auto');
+    //    } else {
+    //        //$('#inlineQC3a').css('display', 'none');
+    //        $('#inlineQC3a').css('width', '0px');
+    //        $('#inlineMAIN3a').css('width', '100%');
+    //    }
+    //};
+
+    //$('body').ready(function(){
+    //    $('#SHOW_QC3').click(govern_qc3);
+    //});
+   
 }
 
 //shinyjs.calcHeight = function(propHeight) {
