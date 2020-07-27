@@ -26,8 +26,8 @@ nSiteNVar_tab = tabPanel("Multisite", value='multisite_exploration',
             br(),
             checkboxInput('SHOW_PCHEM3', value=FALSE,
                 label=paste('Show precip chemistry', enc2native('\U2753'))),
-            checkboxInput('SHOW_QC3', value=FALSE,
-                label=paste('Show Q-C plots')),
+            # checkboxInput('SHOW_QC3', value=FALSE,
+            #     label=paste('Show Q-C plots')),
             br(),
             # conditionalPanel('input.SHOW_PCHEM3 == true',
             #     fluidRow(
@@ -97,12 +97,12 @@ nSiteNVar_tab = tabPanel("Multisite", value='multisite_exploration',
                     div(id='main3aP'),
                     dygraphOutput("GRAPH_PRECIP3a", height='75px'),
                     br(),
-                    conditionalPanel('input.DOMAINS3.length > 1',
+                    conditionalPanel('input.SITES3.length > 1',
                         div(id='main3bP'),
                         dygraphOutput("GRAPH_PRECIP3b", height='75px'),
                         br()
                     ),
-                    conditionalPanel('input.DOMAINS3.length > 2',
+                    conditionalPanel('input.SITES3.length > 2',
                         div(id='main3cP'),
                         dygraphOutput("GRAPH_PRECIP3c", height='75px'),
                         br()
@@ -110,20 +110,20 @@ nSiteNVar_tab = tabPanel("Multisite", value='multisite_exploration',
                     conditionalPanel(paste('input.VARS3 !== null &&',
                             'input.SITES3 !== null'),
                         #ONE WAY TO GET PLOTS SIDE-BY-SIDE
-                        conditionalPanel('input.SHOW_QC3 == true',
+                        # conditionalPanel('input.SHOW_QC3 == true',
                             div(id='main3a'),
-                            fluidRow(
-                                column(9,
-                                    dygraphOutput("GRAPH_MAIN3a", height='125px')
-                                ),
-                                column(3,
-                                    plotOutput('GRAPH_QC3a', height='125px')
-                                )
-                            )
-                        ),
-                        conditionalPanel('input.SHOW_QC3 == false',
-                                    dygraphOutput("GRAPH_MAIN3aFULL", height='125px')
-                        ),
+                            # fluidRow(
+                            #     column(9,
+                                    dygraphOutput("GRAPH_MAIN3a", height='125px'),
+                        #         ),
+                        #         column(3,
+                        #             plotOutput('GRAPH_QC3a', height='125px')
+                        #         )
+                        #     )
+                        # ),
+                        # conditionalPanel('input.SHOW_QC3 == false',
+                        #             dygraphOutput("GRAPH_MAIN3aFULL", height='125px')
+                        # ),
 
                         # #ANOTHER WAY (troublesome)
                         # div(id='main3a'), #plot key: communicates with dygraphs

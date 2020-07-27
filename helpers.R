@@ -459,7 +459,7 @@ prep_mainfacets3 = function(v, dmns, sites, streamdata, raindata,
 
     if(is.null(sites) || length(sites) == 0) sites = ' '
     if(length(v) == 0){
-        return(manufacture_empty_plotdata(set='streamdata', sites=sites))
+        return(manufacture_empty_plotdata(sites=sites))
     }
 
     streamdata_exist = nrow(streamdata)
@@ -477,7 +477,7 @@ prep_mainfacets3 = function(v, dmns, sites, streamdata, raindata,
             spread(site_name, !!v)
 
     } else {
-        streamdata = manufacture_empty_plotdata(set='streamdata', sites=sites)
+        streamdata = manufacture_empty_plotdata(sites=sites)
         # streamdata = tibble(datetime=as.POSIXct(NA))
     }
 
@@ -492,8 +492,7 @@ prep_mainfacets3 = function(v, dmns, sites, streamdata, raindata,
                     ~paste0('P_', .))
 
         } else {
-            raindata = manufacture_empty_plotdata(set='raindata', dmns=dmns,
-                sites=sites, conc_flux_selection=conc_flux_selection)
+            raindata = manufacture_empty_plotdata(sites=paste0('P_', sites))
         }
 
         # rainsites = colnames(raindata)[-1]
@@ -513,30 +512,13 @@ prep_mainfacets3 = function(v, dmns, sites, streamdata, raindata,
 }
 
 # set=streamdata; sites=' '
-manufacture_empty_plotdata = function(set, dmns=NULL, sites=NULL,
-    conc_flux_selection=NULL){
+manufacture_empty_plotdata = function(sites){
 
-    #if set=='raindata', conc_flux_selection must be supplied,
-    #and if conc_flux_selection != 'VWC', dmns must additionally be supplied.
-    #write error catchers for these conditions
-
-    if(set == 'raindata'){
-
-        if(conc_flux_selection == 'VWC'){
-            sites_or_domains = paste0('P_', sites)
-        } else {
-            sites_or_domains = paste(dmns, 'pchem')
-        }
-
-    } else if(set == 'streamdata'){
-        sites_or_domains = sites
-    }
-
-        outdata = matrix(NA, ncol=length(sites_or_domains) + 1, nrow=0,
-            dimnames=list(NULL, c('datetime', sites_or_domains)))
-        outdata = as_tibble(outdata) %>%
-            mutate_all(as.numeric) %>%
-            mutate(datetime = as.POSIXct(datetime, origin='1970-01-01'))
+    outdata = matrix(NA, ncol=length(sites) + 1, nrow=0,
+        dimnames=list(NULL, c('datetime', sites)))
+    outdata = as_tibble(outdata) %>%
+        mutate_all(as.numeric) %>%
+        mutate(datetime = as.POSIXct(datetime, origin='1970-01-01'))
 
     return(outdata)
 }

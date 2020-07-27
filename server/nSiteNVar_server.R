@@ -223,7 +223,7 @@ dataPchem = reactive({
 
     datapchem = datapchem %>%
         filter(datetime >= dates[1], datetime <= dates[2]) %>%
-        select(datetime, domain, one_of(vars_))
+        select(datetime, site_name, one_of(vars_))
 
     if(nrow(datapchem) == 0) return(datapchem)
 
@@ -234,11 +234,6 @@ dataPchem = reactive({
         datapchem = convert_conc_units(datapchem, desired_unit=conc_unit)
     }#temporary? modify the above if rain flux and rain units become modifiable
 
-    #format domain name for display as a "site name"
-    datapchem = datapchem %>%
-        mutate(domain = paste(domain, 'pchem')) %>%
-        rename(site_name=domain)
-
     return(datapchem)
 })
 
@@ -246,8 +241,9 @@ dataPrecip = reactive({
 
     dates = input$DATES3
     agg = input$AGG3
+    sites = input$SITES3
     basedata = load_basedata()
-    dmns = isolate(get_domains3())
+    # dmns = isolate(get_domains3())
 
     dataprecip = basedata$P
 
@@ -255,7 +251,7 @@ dataPrecip = reactive({
 
     dataprecip = dataprecip %>%
         filter(datetime >= dates[1], datetime <= dates[2]) %>%
-        select(one_of('datetime', 'domain', 'precip'))
+        select(one_of('datetime', 'site_name', 'precip'))
 
     if(nrow(dataprecip) == 0) return(dataprecip)
 
@@ -263,18 +259,18 @@ dataPrecip = reactive({
     dataprecip = ms_aggregate(dataprecip, agg, which_dataset='p')
 
     dataprecip = dataprecip %>%
-        group_by(datetime, domain) %>%
+        group_by(datetime, site_name) %>%
         summarize(sumPrecip=sum(precip, na.rm=TRUE),
             medianPrecip=median(precip, na.rm=TRUE)) %>%
         ungroup()
 
-    #append rows for selected domains with no data
-    missing_domains = dmns[! dmns %in% unique(dataprecip$domain)]
-    if(length(missing_domains)){
-        for(m in missing_domains){
+    #append rows for selected sites with no data
+    missing_sites = sites[! sites %in% unique(dataprecip$site_name)]
+    if(length(missing_sites)){
+        for(m in missing_sites){
             fake_date = lubridate::force_tz(as.POSIXct(dates[2]), tzone='UTC')
             dataprecip = bind_rows(dataprecip,
-                    tibble(datetime=fake_date, domain=m, precip=as.numeric(NA)))
+                tibble(datetime=fake_date, site_name=m, precip=as.numeric(NA)))
         }
     }
 
@@ -462,10 +458,12 @@ output$GRAPH_PRECIP3a = renderDygraph({
     # dmn <<- isolate(get_domains3()[1])
     # dataprecip <<- dataPrecip() %>%
     #     filter(domain == dmn)
+    site = input$SITES3[1]
     dates = isolate(input$DATES3)
-    dmn = isolate(get_domains3()[1])
-    dataprecip = dataPrecip() %>%
-        filter(domain == dmn)
+
+    # dmn = isolate(get_domains3()[1])
+    dataprecip = dataPrecip()
+        # filter(domain == dmn)
 
     reactive_vals$facet3aP
 
@@ -473,7 +471,7 @@ output$GRAPH_PRECIP3a = renderDygraph({
 
         dydat = xts(dataprecip$medianPrecip, order.by=dataprecip$datetime,
             tzone='UTC')
-        dimnames(dydat) = list(NULL, dmn)
+        dimnames(dydat) = list(NULL, site)
         ymax = max(dydat, na.rm=TRUE)
 
         dg = dygraph(dydat, group='nSiteNVar') %>%
@@ -495,9 +493,8 @@ output$GRAPH_PRECIP3a = renderDygraph({
 output$GRAPH_PRECIP3b = renderDygraph({
 
     dates = isolate(input$DATES3)
-    dmn = isolate(get_domains3()[2])
-    dataprecip = dataPrecip() %>%
-        filter(domain == dmn)
+    site = input$SITES3[2]
+    dataprecip = dataPrecip()
 
     if(reactive_vals$facet3bP == 0) return(NULL)
 
@@ -505,7 +502,7 @@ output$GRAPH_PRECIP3b = renderDygraph({
 
         dydat = xts(dataprecip$medianPrecip, order.by=dataprecip$datetime,
             tzone='UTC')
-        dimnames(dydat) = list(NULL, dmn)
+        dimnames(dydat) = list(NULL, site)
         ymax = max(dydat, na.rm=TRUE)
 
         dg = dygraph(dydat, group='nSiteNVar') %>%
@@ -527,9 +524,8 @@ output$GRAPH_PRECIP3b = renderDygraph({
 output$GRAPH_PRECIP3c = renderDygraph({
 
     dates = isolate(input$DATES3)
-    dmn = isolate(get_domains3()[3])
-    dataprecip = dataPrecip() %>%
-        filter(domain == dmn)
+    site = input$SITES3[3]
+    dataprecip = dataPrecip()
 
     if(reactive_vals$facet3cP == 0) return(NULL)
 
@@ -537,7 +533,7 @@ output$GRAPH_PRECIP3c = renderDygraph({
 
         dydat = xts(dataprecip$medianPrecip, order.by=dataprecip$datetime,
             tzone='UTC')
-        dimnames(dydat) = list(NULL, dmn)
+        dimnames(dydat) = list(NULL, site)
         ymax = max(dydat, na.rm=TRUE)
 
         dg = dygraph(dydat, group='nSiteNVar') %>%
@@ -556,7 +552,7 @@ output$GRAPH_PRECIP3c = renderDygraph({
     return(dg)
 })
 
-output$GRAPH_MAIN3a <- output$GRAPH_MAIN3aFULL <- renderDygraph({
+output$GRAPH_MAIN3a <- renderDygraph({
 
     # sites <<- na.omit(isolate(input$SITES3[1:3]))
     # varA <<- isolate(input$VARS3[1])
@@ -599,12 +595,6 @@ output$GRAPH_MAIN3a <- output$GRAPH_MAIN3aFULL <- renderDygraph({
 
     } else {
         raindata = tibble()
-    }
-
-    #TEMPORARY SHORT-CIRCUIT UNTIL WE WORK OUT PRECIP INTERPOLATION
-    if(nrow(raindata) == 1 && 'site_name' %in% colnames(raindata) &&
-        raindata$site_name == 'vwc bollocks'){
-        stop('This feature will be available once we work out precip interpolation.')
     }
 
     alldata = prep_mainfacets3(varA, dmns, sites, streamdata, raindata,
@@ -661,50 +651,50 @@ output$GRAPH_MAIN3a <- output$GRAPH_MAIN3aFULL <- renderDygraph({
     return(dg)
 })
 
-output$GRAPH_QC3a <- renderPlot({
-
-    # show_qc = isolate(input$SHOW_QC3)
-    sites = na.omit(isolate(input$SITES3[1:3]))
-    varA = isolate(input$VARS3[1])
-    dmns = isolate(get_domains3())
-    conc_unit = isolate(input$CONC_UNIT3)
-    show_pchem = isolate(input$SHOW_PCHEM3)
-    agg = isolate(input$AGG3)
-    dates = isolate(input$DATES3)
-    # sites <<- na.omit(isolate(input$SITES3[1:3]))
-    # varA <<- isolate(input$VARS3[1])
-    # dmns <<- isolate(get_domains3())
-    # conc_unit <<- isolate(input$CONC_UNIT3)
-    # show_pchem <<- isolate(input$SHOW_PCHEM3)
-    # agg <<- isolate(input$AGG3)
-    # dates <<- isolate(input$DATES3)
-
-    # reactive_vals$facet3aQC
-    reactive_vals$facet3a
-
-    # streamdata <<- dataChem()
-    streamdata = dataChem()
-
-    # dischargedata <<- dataQ()
-    dischargedata = dataQ()
-
-    alldata <- inner_join(streamdata,
-                          dischargedata,
-                          by = c("datetime", "site_name")) %>%
-        rename(value=3) %>%
-        select(datetime, site_name, value, discharge)
-
-    qc <- ggplot(alldata,
-                 aes(x = discharge, y = value, colour = site_name),
-                 environment=environment()) +
-        geom_point() +
-        scale_colour_manual(values = c('#323232', "#008040", "#800080"),
-                            breaks = c(sites)) +
-        labs(y = paste(varA, conc_unit, sep = " ")) +
-        ggthemes::theme_few()
-
-    return(qc)
-})
+# output$GRAPH_QC3a <- renderPlot({
+#
+#     # show_qc = isolate(input$SHOW_QC3)
+#     sites = na.omit(isolate(input$SITES3[1:3]))
+#     varA = isolate(input$VARS3[1])
+#     dmns = isolate(get_domains3())
+#     conc_unit = isolate(input$CONC_UNIT3)
+#     show_pchem = isolate(input$SHOW_PCHEM3)
+#     agg = isolate(input$AGG3)
+#     dates = isolate(input$DATES3)
+#     # sites <<- na.omit(isolate(input$SITES3[1:3]))
+#     # varA <<- isolate(input$VARS3[1])
+#     # dmns <<- isolate(get_domains3())
+#     # conc_unit <<- isolate(input$CONC_UNIT3)
+#     # show_pchem <<- isolate(input$SHOW_PCHEM3)
+#     # agg <<- isolate(input$AGG3)
+#     # dates <<- isolate(input$DATES3)
+#
+#     # reactive_vals$facet3aQC
+#     reactive_vals$facet3a
+#
+#     # streamdata <<- dataChem()
+#     streamdata = dataChem()
+#
+#     # dischargedata <<- dataQ()
+#     dischargedata = dataQ()
+#
+#     alldata <- inner_join(streamdata,
+#                           dischargedata,
+#                           by = c("datetime", "site_name")) %>%
+#         rename(value=3) %>%
+#         select(datetime, site_name, value, discharge)
+#
+#     qc <- ggplot(alldata,
+#                  aes(x = discharge, y = value, colour = site_name),
+#                  environment=environment()) +
+#         geom_point() +
+#         scale_colour_manual(values = c('#323232', "#008040", "#800080"),
+#                             breaks = c(sites)) +
+#         labs(y = paste(varA, conc_unit, sep = " ")) +
+#         ggthemes::theme_few()
+#
+#     return(qc)
+# })
 
 output$GRAPH_MAIN3b = renderDygraph({
 
