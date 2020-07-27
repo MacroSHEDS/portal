@@ -134,16 +134,18 @@ load_basedata = eventReactive({
 
     #NOTE: read_combine_feathers will have to be modified once rain data are
     #no longer aggregated for each domain
-    pchem = read_combine_feathers('pchem', dmns=dmns)
-    P = read_combine_feathers('precip', dmns=dmns)
-    chem = read_combine_feathers('chemistry', dmns=dmns, sites=sites)
-    flux = read_combine_feathers('flux', dmns=dmns, sites=sites)
     Q = read_combine_feathers('discharge', dmns=dmns, sites=sites)
+    chem = read_combine_feathers('stream_chemistry', dmns=dmns, sites=sites)
+    flux = read_combine_feathers('stream_flux_inst', dmns=dmns, sites=sites)
+    P = read_combine_feathers('precipitation', dmns=dmns, sites=sites)
+    pchem = read_combine_feathers('precip_chemistry', dmns=dmns, sites=sites)
+    pflux = read_combine_feathers('precip_flux_inst', dmns=dmns, sites=sites)
 
     init_vals$recent_domain = dmns[1] #needed?
 
-    basedata = list(chem=chem, P=P, Q=Q, pchem=pchem, flux=flux)
-    return(basedata) })
+    basedata = list(Q=Q, chem=chem, flux=flux, P=P, pchem=pchem, pflux=pflux)
+    return(basedata)
+})
 
 #when basedata changes, variable list and time slider change, but not selections
 observe({
@@ -900,7 +902,7 @@ output$GRAPH_Q3 = renderDygraph({
     }, error=function(e) NULL)
     dates = isolate(input$DATES3)
     sites = na.omit(isolate(input$SITES3[1:3]))
-    
+
     #ii <<- dates
     #dates <- ii
     #ww <<- sites

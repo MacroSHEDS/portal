@@ -300,27 +300,19 @@ read_combine_feathers = function(var, dmns, sites=NULL){
     #in case duplicate sitenames do appear, this will make it a bit less
     #likely that there's a collision. this can be simplified if js solution
     #is implemented
-    if(var %in% c('precip', 'pchem')){
-        dmn_sites = tibble(domain=dmns, site_name=NA)
-    } else {
-        dmn_sites = site_data %>%
-            filter(domain %in% dmns, site_type == 'stream_gauge') %>%
-            filter(site_name %in% sites) %>%
-            select(domain, site_name)
-    }
+    dmn_sites = site_data %>%
+        filter(domain %in% dmns, site_type == 'stream_gauge') %>%
+        filter(site_name %in% sites) %>%
+        select(domain, site_name)
 
     combined_data = tibble()
     for(i in 1:nrow(dmn_sites)){
 
-        if(var %in% c('precip', 'pchem')){
-            filestr = glue('data/{d}/{v}.feather', d=dmn_sites$domain[i], v=var)
-        } else {
-            filestr = glue('data/{d}/{v}/{s}.feather',
-                d=dmn_sites$domain[i], v=var, s=dmn_sites$site_name[i])
-        }
+        filestr = glue('data/{d}/{v}/{s}.feather',
+            d=dmn_sites$domain[i], v=var, s=dmn_sites$site_name[i])
 
         data_part = try_read_feather(filestr)
-        if(var %in% c('precip', 'pchem')) data_part$domain = dmn_sites$domain[i]
+        # if(var %in% c('precip', 'pchem')) data_part$domain = dmn_sites$domain[i]
         combined_data = bind_rows(combined_data, data_part)
     }
 
@@ -595,63 +587,62 @@ selection_color_match = function(sites_selected, sites_all, colorvec){
 }
 
 update_site_obvs <- function() {
-    
+
     files <- list.files("data/")
-    
+
     domain <- files[- grep("[.]", files)]
-    
+
     observations <- tibble(site_name = as.character(), number = as.numeric())
-    
+
     for(i in 1:length(domain)) {
-        
+
         site_files <- list.files(paste0("data/", domain[i]), full.names = TRUE, recursive = TRUE)
-        
+
         if(!purrr::is_empty(grep("flux", site_files))) {
-            site_files <- site_files[- grep("flux", site_files)] 
+            site_files <- site_files[- grep("flux", site_files)]
         }
-        
+
         for(e in 1:length(site_files)) {
-            
+
             file <- sm(read_feather(site_files[e])) %>%
-                select(-datetime) 
-            
+                select(-datetime)
+
             name <- unique(file$site_name)
-            
+
             if(length(name) > 1) {
-                name <- file[[1]] 
-                
+                name <- file[[1]]
+
                 file <- file[-1]
                 file[!is.na(file)] <- 1
-                
+
                 new <- tibble("site_name" = name,
                     "observations" = file)
-                
+
                 new <- new %>%
                     group_by(site_name) %>%
                     summarise_all(sum, na.rm = TRUE)
             } else {
-                
-                file <- select(file, -site_name) 
-                
+
+                file <- select(file, -site_name)
+
                 file[!is.na(file)] <- 1
-                
+
                 num <- sum(colSums(file, na.rm = TRUE), na.rm = TRUE)
-                
+
                 new <- tibble("site_name" = name,
                     "observations" = num)
             }
-            
+
             observations <- rbind(new, observations)
         }
         }
     sites <- sm(read_csv("data/site_data.csv"))
-    
+
     full <- left_join(sites, observations, by = "site_name")
-    
+
     write_csv(full, "data/site_data.csv")
     }
 
 
 
-        
-       
+

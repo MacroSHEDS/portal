@@ -55,15 +55,19 @@ default_site = default_sites_by_domain[[default_domain]]
 
 #load base data for when user lands in app (could use convenience functions here)
 basedata = list(
-    P = read_feather(glue('data/{d}/precip.feather',
-        d=default_domain)), #update once rain gage interpolation is done
     Q = read_feather(glue('data/{d}/discharge/{s}.feather',
         d=default_domain, s=default_site)),
-    pchem = read_feather(glue('data/{d}/pchem.feather',
-        d=default_domain)), #update once rain gage interpolation is done
-    chem = read_feather(glue('data/{d}/chemistry/{s}.feather',
+    chem = read_feather(glue('data/{d}/stream_chemistry/{s}.feather',
         d=default_domain, s=default_site)),
-    flux = read_feather(glue('data/{d}/flux/{s}.feather',
+    flux = read_feather(glue('data/{d}/stream_flux_inst/{s}.feather',
+        d=default_domain, s=default_site)),
+    # P = read_feather(glue('data/{d}/precip.feather',
+    #     d=default_domain)), #update once rain gage interpolation is done
+    P = read_feather(glue('data/{d}/precipitation/{s}.feather',
+        d=default_domain, s=default_site)),
+    pchem = read_feather(glue('data/{d}/precip_chemistry/{s}.feather',
+        d=default_domain, s=default_site)),
+    pflux = read_feather(glue('data/{d}/precip_flux_inst/{s}.feather',
         d=default_domain, s=default_site))
 )
 
