@@ -524,20 +524,20 @@ manufacture_empty_plotdata = function(sites){
 }
 
 get_rainsites = function(raindata, alldata, streamsites,
-    conc_flux_selection, show_input_concentration){
+                         show_input_concentration){
 
     #streamsites needed to correctly order rainsites
 
     if(show_input_concentration && nrow(alldata)){
 
-        if(conc_flux_selection == 'VWC'){
-            cnms = colnames(alldata)
-            rainsites = cnms[grep('^P_', cnms)]
-            siteorder = order(streamsites)
-            rainsites = sort(rainsites)[siteorder]
-        } else {
-            rainsites = unique(raindata$site_name) #e.g. "hbef pchem"
-        }
+        # if(conc_flux_selection == 'VWC'){
+        cnms = colnames(alldata)
+        rainsites = cnms[grep('^P_', cnms)]
+        siteorder = order(streamsites)
+        rainsites = sort(rainsites)[siteorder]
+        # } else {
+        #     rainsites = unique(raindata$site_name) #e.g. "hbef pchem"
+        # }
 
     } else {
         rainsites = vector(length=0, mode='character')

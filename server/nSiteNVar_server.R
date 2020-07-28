@@ -70,20 +70,20 @@ observeEvent({
 
 #precip facets
 observeEvent({
-    if(length(input$DOMAINS3) >= 1){ TRUE } else return()
+    if(length(input$SITES3) >= 1){ TRUE } else return()
 }, {
     reactive_vals$facet3aP = reactive_vals$facet3aP + 1
 })
 
 observeEvent({
-    if(length(input$DOMAINS3) >= 2){ TRUE } else return()
+    if(length(input$SITES3) >= 2){ TRUE } else return()
 }, {
     reactive_vals$facet3aP = reactive_vals$facet3aP + 1
     reactive_vals$facet3bP = reactive_vals$facet3bP + 1
 })
 
 observeEvent({
-    if(length(input$DOMAINS3) == 3){ TRUE } else return()
+    if(length(input$SITES3) == 3){ TRUE } else return()
 }, {
     reactive_vals$facet3aP = reactive_vals$facet3aP + 1
     reactive_vals$facet3bP = reactive_vals$facet3bP + 1
@@ -454,16 +454,12 @@ output$GRAPH_PRECIP3a = renderDygraph({
     #add a line like this to all renderers to attempt popout windows again
     # output$GRAPH_PRECIP3a = output$GRAPH_PRECIP3aEXP = renderDygraph({
 
-    # dates <<- isolate(input$DATES3)
-    # dmn <<- isolate(get_domains3()[1])
-    # dataprecip <<- dataPrecip() %>%
-    #     filter(domain == dmn)
     site = input$SITES3[1]
     dates = isolate(input$DATES3)
-
-    # dmn = isolate(get_domains3()[1])
     dataprecip = dataPrecip()
-        # filter(domain == dmn)
+    # site <<- input$SITES3[1]
+    # dates <<- isolate(input$DATES3)
+    # dataprecip <<- dataPrecip()
 
     reactive_vals$facet3aP
 
@@ -601,7 +597,7 @@ output$GRAPH_MAIN3a <- renderDygraph({
         conc_flux_selection=conc_flux, show_input_concentration=show_pchem)
 
     rainsites = get_rainsites(raindata, alldata, streamsites=sites,
-        conc_flux_selection=conc_flux, show_input_concentration=show_pchem)
+        show_input_concentration=show_pchem)
 
     yunit = ifelse(conc_flux == 'Flux', flux_unit, conc_unit)
     ylab = get_ylab(varA, conc_flux, yunit)
@@ -626,14 +622,9 @@ output$GRAPH_MAIN3a <- renderDygraph({
 
         if(show_pchem){
 
-            if(conc_flux == 'Concentration'){
-                rain_or_pchem_cols = selection_color_match(paste(dmns, 'pchem'),
-                    rainsites, raincolors)
-            } else {
-                rain_or_pchem_cols = selection_color_match(paste0('P_', sites),
-                    paste0('P_', displabs[displabs %in% sites]),
-                    pchemcolors) #untested. might need to work with rainsites instead
-            }
+            rain_or_pchem_cols = selection_color_match(paste0('P_', sites),
+                paste0('P_', displabs[displabs %in% sites]),
+                pchemcolors) #untested. might need to work with rainsites instead
 
             for(i in 1:length(rainsites)){
                 dg = dySeries(dg, name=rainsites[i], color=rain_or_pchem_cols[i],
@@ -740,7 +731,7 @@ output$GRAPH_MAIN3b = renderDygraph({
         conc_flux_selection=conc_flux, show_input_concentration=show_pchem)
 
     rainsites = get_rainsites(raindata, alldata, streamsites=sites,
-        conc_flux_selection=conc_flux, show_input_concentration=show_pchem)
+        show_input_concentration=show_pchem)
 
     yunit = ifelse(conc_flux == 'Flux', flux_unit, conc_unit)
     ylab = get_ylab(varB, conc_flux, yunit)
@@ -765,14 +756,13 @@ output$GRAPH_MAIN3b = renderDygraph({
 
         if(show_pchem){
 
-            if(conc_flux == 'Concentration'){
-                rain_or_pchem_cols = selection_color_match(paste(dmns, 'pchem'),
-                    rainsites, raincolors)
-            } else {
-                rain_or_pchem_cols = selection_color_match(paste0('P_', sites),
-                    paste0('P_', displabs[displabs %in% sites]),
-                    pchemcolors)
-            }
+            # if(conc_flux == 'Concentration'){
+            #     rain_or_pchem_cols = selection_color_match(paste(dmns, 'pchem'),
+            #         rainsites, raincolors)
+            # } else {
+            rain_or_pchem_cols = selection_color_match(paste0('P_', sites),
+                paste0('P_', displabs[displabs %in% sites]),
+                pchemcolors)
 
             for(i in 1:length(rainsites)){
                 dg = dySeries(dg, name=rainsites[i], color=rain_or_pchem_cols[i],
@@ -833,7 +823,7 @@ output$GRAPH_MAIN3c = renderDygraph({
         conc_flux_selection=conc_flux, show_input_concentration=show_pchem)
 
     rainsites = get_rainsites(raindata, alldata, streamsites=sites,
-        conc_flux_selection=conc_flux, show_input_concentration=show_pchem)
+        show_input_concentration=show_pchem)
 
     yunit = ifelse(conc_flux == 'Flux', flux_unit, conc_unit)
     ylab = get_ylab(varC, conc_flux, yunit)
@@ -858,14 +848,9 @@ output$GRAPH_MAIN3c = renderDygraph({
 
         if(show_pchem){
 
-            if(conc_flux == 'Concentration'){
-                rain_or_pchem_cols = selection_color_match(paste(dmns, 'pchem'),
-                    rainsites, raincolors)
-            } else {
-                rain_or_pchem_cols = selection_color_match(paste0('P_', sites),
-                    paste0('P_', displabs[displabs %in% sites]),
-                    pchemcolors)
-            }
+            rain_or_pchem_cols = selection_color_match(paste0('P_', sites),
+                paste0('P_', displabs[displabs %in% sites]),
+                pchemcolors)
 
             for(i in 1:length(rainsites)){
                 dg = dySeries(dg, name=rainsites[i], color=rain_or_pchem_cols[i],
