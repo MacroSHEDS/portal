@@ -281,18 +281,18 @@ dataPrecip = reactive({
 
 dataQ = reactive({
 
-    dates <<- input$DATES3
-    sites <<- input$SITES3
-    agg <<- input$AGG3
-    basedata <<- load_basedata()
-    # dates = input$DATES3
-    # sites = input$SITES3
-    # agg = input$AGG3
-    # basedata = load_basedata()
+    # dates <<- input$DATES3
+    # sites <<- input$SITES3
+    # agg <<- input$AGG3
+    # basedata <<- load_basedata()
+    dates = input$DATES3
+    sites = input$SITES3
+    agg = input$AGG3
+    basedata = load_basedata()
 
-    # dataq = basedata$Q
-    dataq <<- basedata$Q %>%
-        rename(discharge = Q)
+    dataq = basedata$Q
+    # dataq <<- basedata$Q %>%
+    #     rename(discharge = Q)
 
     if(nrow(dataq) == 0) return(dataq)
 
@@ -1075,5 +1075,6 @@ output$GRAPH_Q3 = renderDygraph({
 #     print(rlang::last_error())
 #     print(traceback())
 # })
+
 
 
