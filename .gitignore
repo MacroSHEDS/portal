@@ -8,3 +8,5 @@ site_data.csv
 logs
 .Rproj.user
 portal.Rproj
+.RData
+.RDataTmp
