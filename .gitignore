@@ -10,3 +10,5 @@ logs
 portal.Rproj
 .RData
 .RDataTmp
+.DS_Store
+*.DS_Store

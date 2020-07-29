@@ -802,30 +802,30 @@ output$GRAPH_MAIN3b <- output$GRAPH_MAIN3bFULL <- renderDygraph({
 
 output$GRAPH_QC3b <- renderPlot({
     
-    # show_qc = isolate(input$SHOW_QC3)
-    # sites = na.omit(isolate(input$SITES3[1:3]))
-    # varA = isolate(input$VARS3[1])
-    # dmns = isolate(get_domains3())
-    # conc_unit = isolate(input$CONC_UNIT3)
-    # show_pchem = isolate(input$SHOW_PCHEM3)
-    # agg = isolate(input$AGG3)
-    # dates = isolate(input$DATES3)
-    sites <<- na.omit(isolate(input$SITES3[1:3]))
-    varA <<- isolate(input$VARS3[1])
-    dmns <<- isolate(get_domains3())
-    conc_unit <<- isolate(input$CONC_UNIT3)
-    show_pchem <<- isolate(input$SHOW_PCHEM3)
-    agg <<- isolate(input$AGG3)
-    dates <<- isolate(input$DATES3)
+    sites <- na.omit(isolate(input$SITES3[1:3]))
+    varA <- isolate(input$VARS3[1])
+    dmns <- isolate(get_domains3())
+    conc_unit <- isolate(input$CONC_UNIT3)
+    show_pchem <- isolate(input$SHOW_PCHEM3)
+    agg <- isolate(input$AGG3)
+    dates <- isolate(input$DATES3)
+    
+    # sites <<- na.omit(isolate(input$SITES3[1:3]))
+    # varA <<- isolate(input$VARS3[1])
+    # dmns <<- isolate(get_domains3())
+    # conc_unit <<- isolate(input$CONC_UNIT3)
+    # show_pchem <<- isolate(input$SHOW_PCHEM3)
+    # agg <<- isolate(input$AGG3)
+    # dates <<- isolate(input$DATES3)
     
     # reactive_vals$facet3aQC
     reactive_vals$facet3a
     
-    streamdata <<- dataChem()
-    # streamdata = dataChem()
+    # streamdata <<- dataChem()
+    streamdata = dataChem()
     
-    dischargedata <<- dataQ()
-    # dischargedata = dataQ()
+    # dischargedata <<- dataQ()
+    dischargedata = dataQ()
     
     alldata <- inner_join(streamdata,
                           dischargedata,
@@ -941,30 +941,30 @@ output$GRAPH_MAIN3c <- output$GRAPH_MAIN3cFULL <- renderDygraph({
 
 output$GRAPH_QC3c <- renderPlot({
     
-    # show_qc = isolate(input$SHOW_QC3)
-    # sites = na.omit(isolate(input$SITES3[1:3]))
-    # varA = isolate(input$VARS3[1])
-    # dmns = isolate(get_domains3())
-    # conc_unit = isolate(input$CONC_UNIT3)
-    # show_pchem = isolate(input$SHOW_PCHEM3)
-    # agg = isolate(input$AGG3)
-    # dates = isolate(input$DATES3)
-    sites <<- na.omit(isolate(input$SITES3[1:3]))
-    varA <<- isolate(input$VARS3[1])
-    dmns <<- isolate(get_domains3())
-    conc_unit <<- isolate(input$CONC_UNIT3)
-    show_pchem <<- isolate(input$SHOW_PCHEM3)
-    agg <<- isolate(input$AGG3)
-    dates <<- isolate(input$DATES3)
+    sites <- na.omit(isolate(input$SITES3[1:3]))
+    varA <- isolate(input$VARS3[1])
+    dmns <- isolate(get_domains3())
+    conc_unit <- isolate(input$CONC_UNIT3)
+    show_pchem <- isolate(input$SHOW_PCHEM3)
+    agg <- isolate(input$AGG3)
+    dates <- isolate(input$DATES3)
+    
+    # sites <<- na.omit(isolate(input$SITES3[1:3]))
+    # varA <<- isolate(input$VARS3[1])
+    # dmns <<- isolate(get_domains3())
+    # conc_unit <<- isolate(input$CONC_UNIT3)
+    # show_pchem <<- isolate(input$SHOW_PCHEM3)
+    # agg <<- isolate(input$AGG3)
+    # dates <<- isolate(input$DATES3)
     
     # reactive_vals$facet3aQC
     reactive_vals$facet3a
     
-    streamdata <<- dataChem()
-    # streamdata = dataChem()
+    # streamdata <<- dataChem()
+    streamdata = dataChem()
     
-    dischargedata <<- dataQ()
-    # dischargedata = dataQ()
+    # dischargedata <<- dataQ()
+    dischargedata = dataQ()
     
     alldata <- inner_join(streamdata,
                           dischargedata,
