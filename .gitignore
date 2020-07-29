@@ -12,3 +12,6 @@ portal.Rproj
 .RDataTmp
 .DS_Store
 *.DS_Store
+ui/.DS_Store
+server/.DS_Store
+*.Rapp.history 
