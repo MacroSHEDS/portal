@@ -319,6 +319,9 @@ dataQ = reactive({
 #only possible at monthly and yearly agg. conditionals controlled by ui
 volWeightedChem3 = reactive({
 
+    # datachem <<- dataChem()
+    # dataq <<- dataQ()
+    # agg_input <<- isolate(input$AGG3)
     datachem = dataChem()
     dataq = dataQ()
     agg_input = isolate(input$AGG3)
@@ -376,39 +379,14 @@ volWeightedPchem3 = reactive({
     sites = isolate(input$SITES3)
     vars_ = isolate(input$VARS3)
 
-    #TEMPORARY SHORT-CIRCUIT UNTIL WE WORK OUT PRECIP INTERPOLATION
-    #THE CODE BELOW ALSO HASN'T CHANGED SINCE IT WAS DOMAIN-AGNOSTIC
-    if(isolate(input$SHOW_PCHEM3) && isolate(input$CONC_FLUX3 == 'VWC') &&
-            length(isolate(get_domains3())) > 1){
-        fake_tibble = tibble(datetime=as.POSIXct('2000-01-01'),
-            site_name='vwc bollocks', Cl=as.numeric(NA))
-        return(fake_tibble)
-    }
-
-    # artificially extend pchem dataset to represent each individual watershed
-    nsites = length(sites)
-    if(nsites > 1){
-
-        samplevel$site_name = sites[1]
-        dcopy = samplevel
-
-        for(i in 2:nsites){
-            dcopy$site_name = sites[i]
-            samplevel = bind_rows(samplevel, dcopy)
-        }
-
-    } else {
-        samplevel$site_name = sites
-    }
-
     samplevel = samplevel %>%
-        left_join(select(dataprecip, -medianPrecip), by='datetime') %>%
-        left_join(site_data, by='site_name') %>%
+        left_join(select(dataprecip, -medianPrecip),
+                  by=c('datetime', 'site_name')) %>%
+        left_join(select(site_data, site_name, ws_area_ha),
+                  by='site_name') %>%
         mutate(precipVol=sumPrecip * ws_area_ha) %>%
         mutate_at(vars(one_of(vars_)), ~(. * precipVol)) %>%
-        select(datetime, site_name, one_of(vars_),
-            sumPrecip, ws_area_ha) %>%
-        select(-ws_area_ha) %>%
+        select(datetime, site_name, one_of(vars_), sumPrecip) %>%
         rename(P=sumPrecip)
 
     if(agg_input == 'Monthly'){

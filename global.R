@@ -25,6 +25,8 @@ suppressPackageStartupMessages({
     #those that can't should be read from a config file or spreadsheet eventually.
 #attend to trailing comments within this script
 
+#options(dplyr.summarise.inform = FALSE)
+
 #uncomment and execute (without saving script) to deploy demo app
 # rsconnect::deployApp('/home/mike/git/macrosheds/portal',
 #     appName='MacroSheds_demo')
