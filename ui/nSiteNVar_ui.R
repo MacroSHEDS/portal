@@ -152,15 +152,51 @@ nSiteNVar_tab = tabPanel("Multisite", value='multisite_exploration',
                         br()
                     ),
                     conditionalPanel('input.VARS3.length > 1',
-                        div(id='main3b'),
-                        dygraphOutput('GRAPH_MAIN3b', height='125px'),
-                        br()
-                    ),
-                    conditionalPanel('input.VARS3.length > 2',
-                        div(id='main3c'),
-                        dygraphOutput("GRAPH_MAIN3c", height='125px'),
-                        br()
-                    ),
+                                     #ONE WAY TO GET PLOTS SIDE-BY-SIDE
+                                     conditionalPanel('input.SHOW_QC3 == true',
+                                                      div(id='main3b'),
+                                                      fluidRow(
+                                                          column(9,
+                                                                 dygraphOutput("GRAPH_MAIN3b", height='125px')
+                                                          ),
+                                                          column(3,
+                                                                 plotOutput('GRAPH_QC3b', height='125px')
+                                                          )
+                                                      )
+                                     ),
+                                     conditionalPanel('input.SHOW_QC3 == false',
+                                                      dygraphOutput("GRAPH_MAIN3bFULL", height='125px')
+                                     ),
+                                     br()
+                        ),
+                conditionalPanel('input.VARS3.length > 2',
+                #ONE WAY TO GET PLOTS SIDE-BY-SIDE
+                conditionalPanel('input.SHOW_QC3 == true',
+                                 div(id='main3b'),
+                                 fluidRow(
+                                     column(9,
+                                            dygraphOutput("GRAPH_MAIN3c", height='125px')
+                                     ),
+                                     column(3,
+                                            plotOutput('GRAPH_QC3c', height='125px')
+                                     )
+                                 )
+                ),
+                conditionalPanel('input.SHOW_QC3 == false',
+                                 dygraphOutput("GRAPH_MAIN3cFULL", height='125px')
+                ),
+                br()
+            ),
+                    # conditionalPanel('input.VARS3.length > 1',
+                    #     div(id='main3b'),
+                    #     dygraphOutput('GRAPH_MAIN3b', height='125px'),
+                    #     br()
+                    # ),
+                    # conditionalPanel('input.VARS3.length > 2',
+                    #     div(id='main3c'),
+                    #     dygraphOutput("GRAPH_MAIN3c", height='125px'),
+                    #     br()
+                    # ),
                     # fluidRow(
                      #    column(10, offset=1,
                       #      div(id='graph_q3'),

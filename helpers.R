@@ -617,7 +617,8 @@ update_site_obvs <- function() {
 
             observations <- rbind(new, observations)
         }
-        }
+    }
+
     sites <- sm(read_csv("data/site_data.csv"))
 
     full <- left_join(sites, observations, by = "site_name")
@@ -625,6 +626,73 @@ update_site_obvs <- function() {
     write_csv(full, "data/site_data.csv")
     }
 
+# Biplot stuff
 
+convert_conc_units_bi = function(df, col, input_unit='mg/L', desired_unit){
+    
+    #df is a data frame or tibble of numeric concentration data
+    #input_unit is the unit of concs (must be 'mg/L')
+    #desired unit is one of the keys in the call to `switch` below
+    
+    require(PeriodicTable)
+    
 
+    conc_df = df[col]
+    
+    conc_cols=col
+    
+    if(grepl('g', desired_unit)){
+        
+        converted = switch(desired_unit,
+                           'ng/L' = conc_df * 1000000,
+                           'ug/L' = conc_df * 1000,
+                           'mg/L' = conc_df,
+                           'g/L' = conc_df / 1000)
+        
+    } else {
+        
+        solutes = colnames(conc_df)
+        constituents = parse_molecular_formulae(solutes)
+        molar_mass = sapply(constituents, combine_atomic_masses)
+        
+        mm_scaled = switch(substr(desired_unit, 0, 1),
+                           'n' = molar_mass * 1000000, #desired unit could be nM or neq/L
+                           'u' = molar_mass * 1000, #and so on...
+                           'm' = molar_mass,
+                           'M' = molar_mass / 1000, #desired unit must be 'M'
+                           'e' = molar_mass / 1000) #desired unit must be 'eq/L'
+        
+        if(grepl('q', desired_unit)){
+            valence = variables$valence[variables$variable_code %in% solutes]
+            mm_scaled = mm_scaled * valence
+        }
+        
+        converted = data.frame(mapply(`*`, conc_df, mm_scaled, SIMPLIFY=FALSE))
+    }
+    
+    df[conc_cols] = converted
+    
+    return(df)
+}
+
+convert_flux_units_bi = function(df, col, input_unit='kg/ha', desired_unit){
+    
+    #df is a data frame or tibble of numeric flux data
+    #input_unit is the unit of flux (must be 'kg/ha/d')
+    #desired unit is one of the keys in the call to `switch` below
+    
+    col_name <- col
+    flux_cols = col_name
+    flux_df = df[col_name]
+    
+    converted = switch(desired_unit,
+                       'Mg/ha' = flux_df / 1000,
+                       'kg/ha' = flux_df,
+                       'g/ha' = flux_df * 1000,
+                       'mg/ha' = flux_df * 1000000)
+    
+    df[flux_cols] = converted
+    
+    return(df)
+}
 

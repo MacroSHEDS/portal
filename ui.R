@@ -5,7 +5,7 @@ source('ui/nSiteNVar_ui.R')
 # source('ui/site_comparison_ui.R')
 source('ui/about_ui.R')
 source('ui/participants_ui.R')
-# source('ui/summary_biplot_ui.R')
+source('ui/summary_biplot_ui.R')
 source('ui/map_ui.R')
 source('ui/now_hiring_ui.R')
 
@@ -43,7 +43,7 @@ ui = fluidPage(
                 tags$link(rel='stylesheet', type='text/css', href='style.css')
             ),
             tabsetPanel(id='right_tabs',
-                # summary_biplot_tab,
+                summary_biplot_tab,
                 # oneSiteNVar_tab,
                 nSiteNVar_tab
                 # site_comparison_tab
