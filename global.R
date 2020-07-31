@@ -6,9 +6,10 @@ suppressPackageStartupMessages({
     # library(dtplyr)
     library(shiny)
     library(shinydashboard)
+    library(plotly)
     library(dygraphs)
     # library(DBI)
-    # library(ggthemes)
+    library(ggthemes)
     # library(ggplot2)
     # library(colorspace)
     library(jsonlite)
@@ -68,7 +69,7 @@ basedata = list(
 )
 
 #make vector of domain IDs and their pretty names
-domains_df = unique(site_data[, c('domain', 'pretty_domain')])
+domains_df = unique(site_data[, c('domain', 'pretty_domain', 'network')])
 domains_pretty = domains_df$domain
 names(domains_pretty) = domains_df$pretty_domain
 
@@ -122,4 +123,9 @@ chemvars_display_subset = filter_dropdown_varlist(basedata$chem)
 pchemvars_display_subset = filter_dropdown_varlist(basedata$pchem)
 
 dtrng = as.Date(range(basedata$chem$datetime, na.rm=TRUE))
+
+#biplot 
+biplot_options <- chemvars_display_subset
+biplot_data_types <- c('Concentration', 'Flux', 'Discharge')
+flux_units_bi = c('Mg/ha', 'kg/ha', 'g/ha', 'mg/ha')
 
