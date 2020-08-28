@@ -43,7 +43,7 @@ ui = fluidPage(
                 tags$link(rel='stylesheet', type='text/css', href='style.css')
             ),
             tabsetPanel(id='right_tabs',
-                summary_biplot_tab,
+                # summary_biplot_tab,
                 # oneSiteNVar_tab,
                 nSiteNVar_tab
                 # site_comparison_tab

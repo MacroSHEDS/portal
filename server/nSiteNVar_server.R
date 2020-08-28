@@ -632,6 +632,7 @@ output$GRAPH_QC3a <- renderPlot({
     show_pchem = isolate(input$SHOW_PCHEM3)
     agg = isolate(input$AGG3)
     dates = isolate(input$DATES3)
+
     # sites <<- na.omit(isolate(input$SITES3[1:3]))
     # varA <<- isolate(input$VARS3[1])
     # dmns <<- isolate(get_domains3())
@@ -663,7 +664,7 @@ output$GRAPH_QC3a <- renderPlot({
                             breaks = c(sites)) +
         labs(y = "") +
         ggthemes::theme_few() +
-        theme(legend.position = 'none') 
+        theme(legend.position = 'none')
 
     return(qc)
 })
@@ -761,38 +762,39 @@ output$GRAPH_MAIN3b <- output$GRAPH_MAIN3bFULL <- renderDygraph({
 })
 
 output$GRAPH_QC3b <- renderPlot({
-    
-    sites <- na.omit(isolate(input$SITES3[1:3]))
-    varA <- isolate(input$VARS3[1])
-    dmns <- isolate(get_domains3())
-    conc_unit <- isolate(input$CONC_UNIT3)
-    show_pchem <- isolate(input$SHOW_PCHEM3)
-    agg <- isolate(input$AGG3)
-    dates <- isolate(input$DATES3)
-    
-    # sites <<- na.omit(isolate(input$SITES3[1:3]))
-    # varA <<- isolate(input$VARS3[1])
-    # dmns <<- isolate(get_domains3())
-    # conc_unit <<- isolate(input$CONC_UNIT3)
-    # show_pchem <<- isolate(input$SHOW_PCHEM3)
-    # agg <<- isolate(input$AGG3)
-    # dates <<- isolate(input$DATES3)
-    
+
+    # sites <- na.omit(isolate(input$SITES3[1:3]))
+    # varB <- isolate(input$VARS3[1])
+    # dmns <- isolate(get_domains3())
+    # conc_unit <- isolate(input$CONC_UNIT3)
+    # show_pchem <- isolate(input$SHOW_PCHEM3)
+    # agg <- isolate(input$AGG3)
+    # dates <- isolate(input$DATES3)
+
+    sites <<- na.omit(isolate(input$SITES3[1:3]))
+    varB <<- isolate(input$VARS3[2])
+    dmns <<- isolate(get_domains3())
+    conc_unit <<- isolate(input$CONC_UNIT3)
+    show_pchem <<- isolate(input$SHOW_PCHEM3)
+    agg <<- isolate(input$AGG3)
+    dates <<- isolate(input$DATES3)
+
     # reactive_vals$facet3aQC
     reactive_vals$facet3a
-    
-    # streamdata <<- dataChem()
-    streamdata = dataChem()
-    
-    # dischargedata <<- dataQ()
-    dischargedata = dataQ()
-    
+
+    streamdata <<- dataChem() %>%
+    # streamdata = dataChem() %>%
+        select(datetime, site_name, !!varB)
+
+    dischargedata <<- dataQ()
+    # dischargedata = dataQ()
+
     alldata <- inner_join(streamdata,
                           dischargedata,
                           by = c("datetime", "site_name")) %>%
-        rename(value=4) %>%
-        select(datetime, site_name, value, discharge)
-    
+        rename(value = 3)
+        # select(datetime, site_name, value, discharge)
+
     qc <- ggplot(alldata,
                  aes(x = discharge, y = value, colour = site_name),
                  environment=environment()) +
@@ -801,8 +803,8 @@ output$GRAPH_QC3b <- renderPlot({
                             breaks = c(sites)) +
         labs(y = "") +
         ggthemes::theme_few() +
-        theme(legend.position = 'none') 
-    
+        theme(legend.position = 'none')
+
     return(qc)
 })
 
@@ -895,7 +897,7 @@ output$GRAPH_MAIN3c <- output$GRAPH_MAIN3cFULL <- renderDygraph({
 })
 
 output$GRAPH_QC3c <- renderPlot({
-    
+
     sites <- na.omit(isolate(input$SITES3[1:3]))
     varA <- isolate(input$VARS3[1])
     dmns <- isolate(get_domains3())
@@ -903,7 +905,7 @@ output$GRAPH_QC3c <- renderPlot({
     show_pchem <- isolate(input$SHOW_PCHEM3)
     agg <- isolate(input$AGG3)
     dates <- isolate(input$DATES3)
-    
+
     # sites <<- na.omit(isolate(input$SITES3[1:3]))
     # varA <<- isolate(input$VARS3[1])
     # dmns <<- isolate(get_domains3())
@@ -911,22 +913,22 @@ output$GRAPH_QC3c <- renderPlot({
     # show_pchem <<- isolate(input$SHOW_PCHEM3)
     # agg <<- isolate(input$AGG3)
     # dates <<- isolate(input$DATES3)
-    
+
     # reactive_vals$facet3aQC
     reactive_vals$facet3a
-    
+
     # streamdata <<- dataChem()
     streamdata = dataChem()
-    
+
     # dischargedata <<- dataQ()
     dischargedata = dataQ()
-    
+
     alldata <- inner_join(streamdata,
                           dischargedata,
                           by = c("datetime", "site_name")) %>%
         rename(value=5) %>%
         select(datetime, site_name, value, discharge)
-    
+
     qc <- ggplot(alldata,
                  aes(x = discharge, y = value, colour = site_name),
                  environment=environment()) +
@@ -936,11 +938,11 @@ output$GRAPH_QC3c <- renderPlot({
         labs(y = "") +
         ggthemes::theme_few() +
         theme(legend.position = 'none')
-    
+
     return(qc)
 })
 
-output$GRAPH_Q3 = renderDygraph({
+output$GRAPH_Q3 <- renderDygraph({
 
     dataq = dataQ()
     #zz <<- dataQ()
@@ -950,7 +952,7 @@ output$GRAPH_Q3 = renderDygraph({
     }, error=function(e) NULL)
     dates = isolate(input$DATES3)
     sites = na.omit(isolate(input$SITES3[1:3]))
-    
+
     #ii <<- dates
     #dates <- ii
     #ww <<- sites

@@ -31,10 +31,9 @@ server = function(input, output, session){
     stream_gauge_buttons = read_file('ui/stream_gauge_buttons.html')
     rain_gauge_buttons = read_file('ui/rain_gauge_buttons.html')
     source('ui/landing_page_ui.R', local=TRUE)
-    source('server/site_comparison_server.R', local=TRUE)
+    # source('server/summary_biplot_server.R', local=TRUE)
     # source('server/oneSiteNVar_server.R', local=TRUE)
     source('server/nSiteNVar_server.R', local=TRUE)
-    source('server/summary_biplot_server.R', local=TRUE)
     source('server/map_server.R', local=TRUE)
 
     #register clicking of map popup links
@@ -52,14 +51,10 @@ server = function(input, output, session){
     output$NOBS = renderText({
         #temporary; crude estimate based on nobs from hbef and hjandrews
         x = sum(site_data$site_type == 'stream_gauge') * 143295
-        #updated (use this once we can schedule tasks on a server; also need to store site_data.csv remotely first
-        #sites <- sm(read_csv("data/site_data.csv"))
-        #x = sum(sites$observations, na.rm = TRUE)
-
-        #updated
-        sites <- sm(read_csv("data/site_data.csv"))
-        x = sum(sites$observations, na.rm = TRUE) 
-        format(round(x, -4), scientific=FALSE, big.mark=',')
+        # #updated (use this once we can schedule tasks on a server; also need to store site_data.csv remotely first
+        # sites <- sm(read_csv("data/site_data.csv"))
+        # x = sum(sites$observations, na.rm = TRUE)
+        # format(round(x, -4), scientific=FALSE, big.mark=',')
     })
 
     observeEvent(once=TRUE, ignoreNULL=FALSE, ignoreInit=FALSE,

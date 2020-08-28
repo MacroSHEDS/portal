@@ -2,7 +2,7 @@ suppressPackageStartupMessages({
     library(V8)
     library(feather)
     library(plyr)
-    library(data.table)
+    # library(data.table)
     # library(dtplyr)
     library(shiny)
     library(shinydashboard)
@@ -34,9 +34,14 @@ suppressPackageStartupMessages({
 # rsconnect::deployApp('/home/mike/git/macrosheds/portal',
 #     appName='portal', account='macrosheds')
 
-#for local testing
+#for local testing (comment all before pushing live)
 # setwd('~/git/macrosheds/portal')
 # setwd('~/desktop/macrosheds/portal')
+# options(shiny.trace = TRUE) #see every communication between ui and server
+# options(shiny.reactlog = TRUE) #see map of reactivity by running reactlogShow()
+# options(shiny.error=recover) #enter debugger when error occurs
+# options(shiny.fullstacktrace=TRUE) #see stack traces for all errors (incl. dplyr)
+# options(shiny.sanitize.errors = TRUE) #hide errors in the app
 
 source('helpers.R') #maybe package these or put them in a namespace called "ms"
 source('function_aliases.R')
@@ -130,7 +135,7 @@ pchemvars_display_subset = filter_dropdown_varlist(basedata$pchem)
 
 dtrng = as.Date(range(basedata$chem$datetime, na.rm=TRUE))
 
-#biplot 
+#biplot
 biplot_options <- chemvars_display_subset
 biplot_data_types <- c('Concentration', 'Flux', 'Discharge')
 flux_units_bi = c('Mg/ha', 'kg/ha', 'g/ha', 'mg/ha')
