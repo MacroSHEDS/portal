@@ -1,4 +1,7 @@
 
+#TODO: add a line like this to all renderers to attempt popout windows again
+# output$GRAPH_PRECIP3a = output$GRAPH_PRECIP3aEXP = renderDygraph({
+
 #govern showing/hiding of facets ####
 
 reactive_vals = reactiveValues()
@@ -448,9 +451,6 @@ volWeightedPchem3 = reactive({
 
 output$GRAPH_PRECIP3a = renderDygraph({
 
-    #add a line like this to all renderers to attempt popout windows again
-    # output$GRAPH_PRECIP3a = output$GRAPH_PRECIP3aEXP = renderDygraph({
-
     site = input$SITES3[1]
     dates = isolate(input$DATES3)
     dataprecip = dataPrecip()
@@ -644,7 +644,7 @@ output$GRAPH_MAIN3a <- renderDygraph({
 
 output$GRAPH_QC3a <- renderPlot({
 
-    show_qc <<- isolate(input$SHOW_QC3)
+    show_qc = isolate(input$SHOW_QC3)
     sites = na.omit(isolate(input$SITES3[1:3]))
     varA = isolate(input$VARS3[1])
     dmns = isolate(get_domains3())
@@ -690,7 +690,7 @@ output$GRAPH_QC3a <- renderPlot({
     return(qc)
 })
 
-output$GRAPH_MAIN3b <- output$GRAPH_MAIN3bFULL <- renderDygraph({
+output$GRAPH_MAIN3b <- renderDygraph({
 
     sites = na.omit(isolate(input$SITES3[1:3]))
     varB = isolate(input$VARS3[2])
@@ -723,12 +723,6 @@ output$GRAPH_MAIN3b <- output$GRAPH_MAIN3bFULL <- renderDygraph({
 
     } else {
         raindata = NULL
-    }
-
-    #TEMPORARY SHORT-CIRCUIT UNTIL WE WORK OUT PRECIP INTERPOLATION
-    if(nrow(raindata) == 1 && 'site_name' %in% colnames(raindata) &&
-            raindata$site_name == 'vwc bollocks'){
-        stop('This feature will be available once we work out precip interpolation.')
     }
 
     alldata = prep_mainfacets3(varB, dmns, sites, streamdata, raindata,
@@ -785,6 +779,7 @@ output$GRAPH_MAIN3b <- output$GRAPH_MAIN3bFULL <- renderDygraph({
 
 output$GRAPH_QC3b <- renderPlot({
 
+    show_qc <- isolate(input$SHOW_QC3)
     sites <- na.omit(isolate(input$SITES3[1:3]))
     varB <- isolate(input$VARS3[2])
     dmns <- isolate(get_domains3())
@@ -801,7 +796,7 @@ output$GRAPH_QC3b <- renderPlot({
     # agg <<- isolate(input$AGG3)
     # dates <<- isolate(input$DATES3)
 
-    if(reactive_vals$facet3b == 0) return()
+    if(reactive_vals$facet3b == 0 || ! show_qc) return()
 
     # streamdata <<- dataChem() %>%
     streamdata = dataChem() %>%
@@ -829,7 +824,7 @@ output$GRAPH_QC3b <- renderPlot({
     return(qc)
 })
 
-output$GRAPH_MAIN3c <- output$GRAPH_MAIN3cFULL <- renderDygraph({
+output$GRAPH_MAIN3c <- renderDygraph({
 
     sites = na.omit(isolate(input$SITES3[1:3]))
     varC = isolate(input$VARS3[3])
@@ -862,12 +857,6 @@ output$GRAPH_MAIN3c <- output$GRAPH_MAIN3cFULL <- renderDygraph({
 
     } else {
         raindata = NULL
-    }
-
-    #TEMPORARY SHORT-CIRCUIT UNTIL WE WORK OUT PRECIP INTERPOLATION
-    if(nrow(raindata) == 1 && 'site_name' %in% colnames(raindata) &&
-            raindata$site_name == 'vwc bollocks'){
-        stop('This feature will be available once we work out precip interpolation.')
     }
 
     alldata = prep_mainfacets3(varC, dmns, sites, streamdata, raindata,
@@ -920,6 +909,7 @@ output$GRAPH_MAIN3c <- output$GRAPH_MAIN3cFULL <- renderDygraph({
 
 output$GRAPH_QC3c <- renderPlot({
 
+    show_qc <- isolate(input$SHOW_QC3)
     sites <- na.omit(isolate(input$SITES3[1:3]))
     varC <- isolate(input$VARS3[3])
     dmns <- isolate(get_domains3())
@@ -936,7 +926,7 @@ output$GRAPH_QC3c <- renderPlot({
     # agg <<- isolate(input$AGG3)
     # dates <<- isolate(input$DATES3)
 
-    if(reactive_vals$facet3c == 0) return()
+    if(reactive_vals$facet3c == 0 || ! show_qc) return()
 
     # streamdata <<- dataChem()
     streamdata = dataChem() %>%

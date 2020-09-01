@@ -122,12 +122,12 @@ shinyjs.init = function() {
     function govern_qc3(){
         if( $('#SHOW_QC3').is(':checked') ){
             //$('#inlineQC3a').css('display', 'inline-block');
-            $('#inlineQC3a').css('width', '25%');
-            $('#inlineMAIN3a').css('width', '75%');
+            $('[id^="inlineQC3"').css('width', '25%');
+            $('[id^="inlineMAIN3"').css('width', '75%');
         } else {
             //$('#inlineQC3a').css('display', 'none');
-            $('#inlineQC3a').css('width', '0%');
-            $('#inlineMAIN3a').css('width', '100%');
+            $('[id^="inlineQC3"]').css('width', '0%');
+            $('[id^="inlineMAIN3"]').css('width', '100%');
             //$('#inlineMAIN3a').css('width', 'auto');
         }
 

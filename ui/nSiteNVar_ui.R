@@ -13,7 +13,6 @@ nSiteNVar_tab = tabPanel("Multisite", value='multisite_exploration',
             br(),
             div('Sites', class='widget-title text-center'),
             selectizeInput('SITES3', label=NULL, selected=default_site,
-                # choices=list('a'=c('x','y'), 'b'=c('g','f')), multiple=TRUE, options=list(maxItems=3)),
                 choices=default_sitelist, multiple=TRUE, options=list(maxItems=3)),
             div('(Up to 3; populates variables)',
                 class='widget-caption text-center'),
@@ -95,6 +94,11 @@ nSiteNVar_tab = tabPanel("Multisite", value='multisite_exploration',
                     # fluidRow(class='text-right',
                     #     actionButton('EXPAND_PRECIP3', icon('external-link-alt'))
                     # ),
+
+                    #REFRESH can be clicked by js to trigger R events
+                    actionButton('REFRESH', '', style='display: none'),
+
+                    #precip facets
                     div(id='main3aP'),
                     dygraphOutput("GRAPH_PRECIP3a", height='75px'),
                     br(),
@@ -108,9 +112,6 @@ nSiteNVar_tab = tabPanel("Multisite", value='multisite_exploration',
                         dygraphOutput("GRAPH_PRECIP3c", height='75px'),
                         br()
                     ),
-
-                    #REFRESH can be clicked by js to trigger R events
-                    actionButton('REFRESH', '', style='display: none'),
 
                     #facet A
                     conditionalPanel(paste('input.VARS3 !== null &&',
@@ -160,6 +161,7 @@ nSiteNVar_tab = tabPanel("Multisite", value='multisite_exploration',
                         br()
                     ),
 
+                    ##old attempt to build facets B and C to be dynamic
                     # conditionalPanel('input.VARS3.length > 1',
                     #     conditionalPanel('input.SHOW_QC3 == true',
                     #         div(id='main3b'),
@@ -213,7 +215,45 @@ nSiteNVar_tab = tabPanel("Multisite", value='multisite_exploration',
                          #    actionButton('EXPAND_Q3', icon('external-link-alt'))
                         # )
                      #),
-                    div(id='GRAPH_Q3'),
+
+                    #facet B
+                    conditionalPanel('input.VARS3.length > 1',
+                        div(id='main3b'),
+                        div(id = 'inlineContainerB',
+                            style = 'font-size: 0px',
+                            div(id = 'inlineMAIN3b',
+                                style = 'width: 100%; display: inline-block; vertical-align: top',
+                                dygraphOutput("GRAPH_MAIN3b", height='125px')
+                            ),
+                            div(id = 'inlineQC3b',
+                                style = 'width: 0%; display: inline-block; vertical-align: top',
+                                conditionalPanel('input.SHOW_QC3 == true',
+                                    plotOutput('GRAPH_QC3b', height='125px')
+                                )
+                            )
+                        )
+                    ),
+
+                    #facet C
+                    conditionalPanel('input.VARS3.length > 2',
+                        div(id='main3c'),
+                        div(id = 'inlineContainerC',
+                            style = 'font-size: 0px',
+                            div(id = 'inlineMAIN3c',
+                                style = 'width: 100%; display: inline-block; vertical-align: top',
+                                dygraphOutput("GRAPH_MAIN3c", height='125px')
+                            ),
+                            div(id = 'inlineQC3c',
+                                style = 'width: 0%; display: inline-block; vertical-align: top',
+                                conditionalPanel('input.SHOW_QC3 == true',
+                                    plotOutput('GRAPH_QC3c', height='125px')
+                                )
+                            )
+                        )
+                    ),
+
+                    #discharge plot
+                    div(id='Q3'),
                     dygraphOutput("GRAPH_Q3", height='75px'),
                     br()
                 )
