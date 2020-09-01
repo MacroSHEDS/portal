@@ -108,14 +108,21 @@ nSiteNVar_tab = tabPanel("Multisite", value='multisite_exploration',
                         dygraphOutput("GRAPH_PRECIP3c", height='75px'),
                         br()
                     ),
+
+                    #REFRESH can be clicked by js to trigger R events
+                    actionButton('REFRESH', '', style='display: none'),
+
+                    #facet A
                     conditionalPanel(paste('input.VARS3 !== null &&',
                             'input.SITES3 !== null'),
-                        #ONE WAY TO GET PLOTS SIDE-BY-SIDE
+
+                        # #ONE WAY TO GET PLOTS SIDE-BY-SIDE (requires
+                        # #two output objects with two legend divs)
+                        # div(id='main3a'),
                         # conditionalPanel('input.SHOW_QC3 == true',
-                            div(id='main3a'),
-                            # fluidRow(
-                            #     column(9,
-                                    dygraphOutput("GRAPH_MAIN3a", height='125px'),
+                        #     fluidRow(
+                        #         column(9,
+                        #             dygraphOutput("GRAPH_MAIN3a", height='125px')
                         #         ),
                         #         column(3,
                         #             plotOutput('GRAPH_QC3a', height='125px')
@@ -123,24 +130,24 @@ nSiteNVar_tab = tabPanel("Multisite", value='multisite_exploration',
                         #     )
                         # ),
                         # conditionalPanel('input.SHOW_QC3 == false',
-                        #             dygraphOutput("GRAPH_MAIN3aFULL", height='125px')
+                        #     dygraphOutput("GRAPH_MAIN3aFULL", height='125px'),
                         # ),
 
-                        # #ANOTHER WAY (troublesome)
-                        # div(id='main3a'), #plot key: communicates with dygraphs
-                        # div(id = 'inlineContainerA',# class = 'container', #style='width: 500px',
-                        #     div(id = 'inlineQC3a', style = 'width: 0px',
-                        #     # div(id = 'inlineQC3a', #style = 'display: none',
-                        #             # style = 'display: inline-block; vertical-align: top',
-                        #             # style = 'width: 200px; float: right',#; display: none',
-                        #         plotOutput('GRAPH_QC3a', height='125px')
-                        #     ),
-                        #     div(id = 'inlineMAIN3a',
-                        #             # style = 'display: inline-block; vertical-align: top',
-                        #             # style = 'overflow: hidden',
-                        #         dygraphOutput("GRAPH_MAIN3a", height='125px')
-                        #     )
-                        # ),
+                        #ANOTHER WAY (requires somewhat hacky css and js)
+                        div(id='main3a'), #plot key: communicates with dygraphs
+                        div(id = 'inlineContainerA',
+                            style = 'font-size: 0px',
+                            div(id = 'inlineMAIN3a',
+                                style = 'width: 100%; display: inline-block; vertical-align: top',
+                                dygraphOutput("GRAPH_MAIN3a", height='125px')
+                            ),
+                            div(id = 'inlineQC3a',
+                                style = 'width: 0%; display: inline-block; vertical-align: top',
+                                conditionalPanel('input.SHOW_QC3 == true',
+                                    plotOutput('GRAPH_QC3a', height='125px')
+                                )
+                            )
+                        ),
 
                         # #A THIRD WAY (nope)
                         # div(id='main3a'), #plot key: communicates with dygraphs
@@ -152,41 +159,42 @@ nSiteNVar_tab = tabPanel("Multisite", value='multisite_exploration',
                         # actionButton('EXPAND_MAIN3a', icon('external-link-alt')),
                         br()
                     ),
-                    conditionalPanel('input.VARS3.length > 1',
-                        conditionalPanel('input.SHOW_QC3 == true',
-                            div(id='main3b'),
-                            fluidRow(
-                                column(9,
-                                    dygraphOutput("GRAPH_MAIN3b", height='125px')
-                                ),
-                                column(3,
-                                    plotOutput('GRAPH_QC3b', height='125px')
-                                )
-                            )
-                        ),
-                        conditionalPanel('input.SHOW_QC3 == false',
-                            dygraphOutput("GRAPH_MAIN3bFULL", height='125px')
-                        ),
-                        br()
-                    ),
-                conditionalPanel('input.VARS3.length > 2',
-                #ONE WAY TO GET PLOTS SIDE-BY-SIDE
-                conditionalPanel('input.SHOW_QC3 == true',
-                    div(id='main3b'),
-                    fluidRow(
-                        column(9,
-                            dygraphOutput("GRAPH_MAIN3c", height='125px')
-                        ),
-                        column(3,
-                            plotOutput('GRAPH_QC3c', height='125px')
-                        )
-                    )
-                ),
-                conditionalPanel('input.SHOW_QC3 == false',
-                    dygraphOutput("GRAPH_MAIN3cFULL", height='125px')
-                ),
-                br()
-            ),
+
+                    # conditionalPanel('input.VARS3.length > 1',
+                    #     conditionalPanel('input.SHOW_QC3 == true',
+                    #         div(id='main3b'),
+                    #         fluidRow(
+                    #             column(9,
+                    #                 dygraphOutput("GRAPH_MAIN3b", height='125px')
+                    #             ),
+                    #             column(3,
+                    #                 plotOutput('GRAPH_QC3b', height='125px')
+                    #             )
+                    #         )
+                    #     ),
+                    #     conditionalPanel('input.SHOW_QC3 == false',
+                    #         dygraphOutput("GRAPH_MAIN3bFULL", height='125px')
+                    #     ),
+                    #     br()
+                    # ),
+                    # conditionalPanel('input.VARS3.length > 2',
+                    #     conditionalPanel('input.SHOW_QC3 == true',
+                    #         div(id='main3b'),
+                    #         fluidRow(
+                    #             column(9,
+                    #                 dygraphOutput("GRAPH_MAIN3c", height='125px')
+                    #             ),
+                    #             column(3,
+                    #                 plotOutput('GRAPH_QC3c', height='125px')
+                    #             )
+                    #         )
+                    #     ),
+                    #     conditionalPanel('input.SHOW_QC3 == false',
+                    #         dygraphOutput("GRAPH_MAIN3cFULL", height='125px')
+                    #     ),
+                    #     br()
+                    # ),
+
                     # conditionalPanel('input.VARS3.length > 1',
                     #     div(id='main3b'),
                     #     dygraphOutput('GRAPH_MAIN3b', height='125px'),

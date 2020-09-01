@@ -11,6 +11,13 @@ reactive_vals$facet3cP = 0
 reactive_vals$update_basedata = 0
 
 #main facets
+observeEvent(input$REFRESH, {
+    print('REFRESH')
+    reactive_vals$facet3a = reactive_vals$facet3a + 1
+    reactive_vals$facet3b = reactive_vals$facet3b + 1
+    reactive_vals$facet3c = reactive_vals$facet3c + 1
+})
+
 observeEvent({
     if(
         ! is.null(input$SITES3) &&
@@ -21,9 +28,11 @@ observeEvent({
         ! is.null(input$SHOW_PCHEM3) &&
         ! is.null(input$AGG3) &&
         ! is.null(input$DATES3) &&
+        # ! is.null(input$SHOW_QC3) &&
         length(input$VARS3) == 1
     ){ TRUE } else return()
 }, {
+    print('rvalA')
     reactive_vals$facet3a = reactive_vals$facet3a + 1
 })
 
@@ -37,12 +46,14 @@ observeEvent({
         ! is.null(input$SHOW_PCHEM3) &&
         ! is.null(input$AGG3) &&
         ! is.null(input$DATES3) &&
+        # ! is.null(input$SHOW_QC3) &&
         length(input$VARS3) == 2
     ){ TRUE } else return()
     # if(length(input$VARS3) == 2){
     #     TRUE
     # } else return()
 }, {
+    print('rvalB')
     reactive_vals$facet3a = reactive_vals$facet3a + 1
     reactive_vals$facet3b = reactive_vals$facet3b + 1
 })
@@ -57,12 +68,14 @@ observeEvent({
         ! is.null(input$SHOW_PCHEM3) &&
         ! is.null(input$AGG3) &&
         ! is.null(input$DATES3) &&
+        # ! is.null(input$SHOW_QC3) &&
         length(input$VARS3) == 3
     ){ TRUE } else return()
     # if(length(input$VARS3) == 3){
     #     TRUE
     # } else return()
 }, {
+    print('rvalC')
     reactive_vals$facet3a = reactive_vals$facet3a + 1
     reactive_vals$facet3b = reactive_vals$facet3b + 1
     reactive_vals$facet3c = reactive_vals$facet3c + 1
@@ -123,6 +136,7 @@ load_basedata = eventReactive({
     reactive_vals$update_basedata
 }, {
 
+    print('load_basedata')
     dmns = get_domains3()
 
     if(is.null(dmns)){ #for empty domain dropdown
@@ -150,6 +164,7 @@ load_basedata = eventReactive({
 #when basedata changes, variable list and time slider change, but not selections
 observe({
 
+    print('basedata change')
     basedata = load_basedata()
     vars_ = isolate(input$VARS3)
     dates = isolate(input$DATES3)
@@ -167,6 +182,7 @@ observe({
 #if variables(s), aggregation, units, site, or time window change, re-filter datasets
 dataChem = reactive({
 
+    print('dataChem')
     dates = input$DATES3
     vars_ = input$VARS3
     conc_flux = input$CONC_FLUX3
@@ -279,6 +295,7 @@ dataPrecip = reactive({
 
 dataQ = reactive({
 
+    print('dataQ')
     # dates <<- input$DATES3
     # sites <<- input$SITES3
     # agg <<- input$AGG3
@@ -528,6 +545,7 @@ output$GRAPH_PRECIP3c = renderDygraph({
     return(dg)
 })
 
+# output$GRAPH_MAIN3a <- output$GRAPH_MAIN3aFULL <- renderDygraph({
 output$GRAPH_MAIN3a <- renderDygraph({
 
     # sites <<- na.omit(isolate(input$SITES3[1:3]))
@@ -539,6 +557,7 @@ output$GRAPH_MAIN3a <- renderDygraph({
     # show_pchem <<- isolate(input$SHOW_PCHEM3)
     # agg <<- isolate(input$AGG3)
     # dates <<- isolate(input$DATES3)
+
     sites = na.omit(isolate(input$SITES3[1:3]))
     varA = isolate(input$VARS3[1])
     dmns = isolate(get_domains3())
@@ -549,7 +568,8 @@ output$GRAPH_MAIN3a <- renderDygraph({
     agg = isolate(input$AGG3)
     dates = isolate(input$DATES3)
 
-    reactive_vals$facet3a
+    if(reactive_vals$facet3a == 0) return()
+    print('mainA')
 
     if(conc_flux == 'VWC'){
         # streamdata <<- volWeightedChem3()
@@ -624,7 +644,7 @@ output$GRAPH_MAIN3a <- renderDygraph({
 
 output$GRAPH_QC3a <- renderPlot({
 
-    show_qc = isolate(input$SHOW_QC3)
+    show_qc <<- isolate(input$SHOW_QC3)
     sites = na.omit(isolate(input$SITES3[1:3]))
     varA = isolate(input$VARS3[1])
     dmns = isolate(get_domains3())
@@ -641,11 +661,13 @@ output$GRAPH_QC3a <- renderPlot({
     # agg <<- isolate(input$AGG3)
     # dates <<- isolate(input$DATES3)
 
-    # reactive_vals$facet3aQC
-    reactive_vals$facet3a
+    print(paste('QC:', show_qc))
+    if(reactive_vals$facet3a == 0 || ! show_qc) return()
+    # reactive_vals$TEST
 
     # streamdata <<- dataChem()
-    streamdata = dataChem()
+    streamdata = dataChem() %>%
+        select(datetime, site_name, !!varA)
 
     # dischargedata <<- dataQ()
     dischargedata = dataQ()
@@ -653,8 +675,7 @@ output$GRAPH_QC3a <- renderPlot({
     alldata <- inner_join(streamdata,
                           dischargedata,
                           by = c("datetime", "site_name")) %>%
-        rename(value=3) %>%
-        select(datetime, site_name, value, discharge)
+        rename(value = !!varA)
 
     qc <- ggplot(alldata,
                  aes(x = discharge, y = value, colour = site_name),
@@ -681,7 +702,8 @@ output$GRAPH_MAIN3b <- output$GRAPH_MAIN3bFULL <- renderDygraph({
     agg = isolate(input$AGG3)
     dates = isolate(input$DATES3)
 
-    if(reactive_vals$facet3b == 0) return(NULL)
+    if(reactive_vals$facet3b == 0) return()
+    print('mainB')
 
     if(conc_flux == 'VWC'){
         streamdata = volWeightedChem3()
@@ -763,36 +785,35 @@ output$GRAPH_MAIN3b <- output$GRAPH_MAIN3bFULL <- renderDygraph({
 
 output$GRAPH_QC3b <- renderPlot({
 
-    # sites <- na.omit(isolate(input$SITES3[1:3]))
-    # varB <- isolate(input$VARS3[1])
-    # dmns <- isolate(get_domains3())
-    # conc_unit <- isolate(input$CONC_UNIT3)
-    # show_pchem <- isolate(input$SHOW_PCHEM3)
-    # agg <- isolate(input$AGG3)
-    # dates <- isolate(input$DATES3)
+    sites <- na.omit(isolate(input$SITES3[1:3]))
+    varB <- isolate(input$VARS3[2])
+    dmns <- isolate(get_domains3())
+    conc_unit <- isolate(input$CONC_UNIT3)
+    show_pchem <- isolate(input$SHOW_PCHEM3)
+    agg <- isolate(input$AGG3)
+    dates <- isolate(input$DATES3)
 
-    sites <<- na.omit(isolate(input$SITES3[1:3]))
-    varB <<- isolate(input$VARS3[2])
-    dmns <<- isolate(get_domains3())
-    conc_unit <<- isolate(input$CONC_UNIT3)
-    show_pchem <<- isolate(input$SHOW_PCHEM3)
-    agg <<- isolate(input$AGG3)
-    dates <<- isolate(input$DATES3)
+    # sites <<- na.omit(isolate(input$SITES3[1:3]))
+    # varB <<- isolate(input$VARS3[2])
+    # dmns <<- isolate(get_domains3())
+    # conc_unit <<- isolate(input$CONC_UNIT3)
+    # show_pchem <<- isolate(input$SHOW_PCHEM3)
+    # agg <<- isolate(input$AGG3)
+    # dates <<- isolate(input$DATES3)
 
-    # reactive_vals$facet3aQC
-    reactive_vals$facet3a
+    if(reactive_vals$facet3b == 0) return()
 
-    streamdata <<- dataChem() %>%
-    # streamdata = dataChem() %>%
+    # streamdata <<- dataChem() %>%
+    streamdata = dataChem() %>%
         select(datetime, site_name, !!varB)
 
-    dischargedata <<- dataQ()
-    # dischargedata = dataQ()
+    # dischargedata <<- dataQ()
+    dischargedata = dataQ()
 
     alldata <- inner_join(streamdata,
                           dischargedata,
                           by = c("datetime", "site_name")) %>%
-        rename(value = 3)
+        rename(value = !!varB)
         # select(datetime, site_name, value, discharge)
 
     qc <- ggplot(alldata,
@@ -820,7 +841,8 @@ output$GRAPH_MAIN3c <- output$GRAPH_MAIN3cFULL <- renderDygraph({
     agg = isolate(input$AGG3)
     dates = isolate(input$DATES3)
 
-    if(reactive_vals$facet3c == 0) return(NULL)
+    if(reactive_vals$facet3c == 0) return()
+    print('mainC')
 
     if(conc_flux == 'VWC'){
         streamdata = volWeightedChem3()
@@ -899,7 +921,7 @@ output$GRAPH_MAIN3c <- output$GRAPH_MAIN3cFULL <- renderDygraph({
 output$GRAPH_QC3c <- renderPlot({
 
     sites <- na.omit(isolate(input$SITES3[1:3]))
-    varA <- isolate(input$VARS3[1])
+    varC <- isolate(input$VARS3[3])
     dmns <- isolate(get_domains3())
     conc_unit <- isolate(input$CONC_UNIT3)
     show_pchem <- isolate(input$SHOW_PCHEM3)
@@ -907,18 +929,18 @@ output$GRAPH_QC3c <- renderPlot({
     dates <- isolate(input$DATES3)
 
     # sites <<- na.omit(isolate(input$SITES3[1:3]))
-    # varA <<- isolate(input$VARS3[1])
+    # varC <<- isolate(input$VARS3[3])
     # dmns <<- isolate(get_domains3())
     # conc_unit <<- isolate(input$CONC_UNIT3)
     # show_pchem <<- isolate(input$SHOW_PCHEM3)
     # agg <<- isolate(input$AGG3)
     # dates <<- isolate(input$DATES3)
 
-    # reactive_vals$facet3aQC
-    reactive_vals$facet3a
+    if(reactive_vals$facet3c == 0) return()
 
     # streamdata <<- dataChem()
-    streamdata = dataChem()
+    streamdata = dataChem() %>%
+        select(datetime, site_name, !!varC)
 
     # dischargedata <<- dataQ()
     dischargedata = dataQ()
@@ -926,8 +948,7 @@ output$GRAPH_QC3c <- renderPlot({
     alldata <- inner_join(streamdata,
                           dischargedata,
                           by = c("datetime", "site_name")) %>%
-        rename(value=5) %>%
-        select(datetime, site_name, value, discharge)
+        rename(value = !!varC)
 
     qc <- ggplot(alldata,
                  aes(x = discharge, y = value, colour = site_name),

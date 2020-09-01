@@ -118,22 +118,31 @@ shinyjs.init = function() {
         $('#SHOW_PCHEM3').click(govern_flux3);
     });
 
-    ////only show QC plots when their box is checked
-    //function govern_qc3(){
-    //    if( $('#SHOW_QC3').is(':checked') ){
-    //        //$('#inlineQC3a').css('display', '');
-    //        $('#inlineQC3a').css('width', '25%');
-    //        $('#inlineMAIN3a').css('width', 'auto');
-    //    } else {
-    //        //$('#inlineQC3a').css('display', 'none');
-    //        $('#inlineQC3a').css('width', '0px');
-    //        $('#inlineMAIN3a').css('width', '100%');
-    //    }
-    //};
+    //only show QC plots when their box is checked
+    function govern_qc3(){
+        if( $('#SHOW_QC3').is(':checked') ){
+            //$('#inlineQC3a').css('display', 'inline-block');
+            $('#inlineQC3a').css('width', '25%');
+            $('#inlineMAIN3a').css('width', '75%');
+        } else {
+            //$('#inlineQC3a').css('display', 'none');
+            $('#inlineQC3a').css('width', '0%');
+            $('#inlineMAIN3a').css('width', '100%');
+            //$('#inlineMAIN3a').css('width', 'auto');
+        }
 
-    //$('body').ready(function(){
-    //    $('#SHOW_QC3').click(govern_qc3);
-    //});
+
+        $('#REFRESH').trigger('click');
+        //$('#inlineQC3a').offsetHeight
+        //$('#inlineMAIN3a').offsetHeight
+        //$('#inlineContainerA').offsetHeight
+        //$('#inlineQC3a').hide().show(0);
+        //$('#inlineQC3a').css('transform', 'translateZ(0)');
+    };
+
+    $('body').ready(function(){
+        $('#SHOW_QC3').click(govern_qc3);
+    });
    
 }
 

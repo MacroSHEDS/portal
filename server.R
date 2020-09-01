@@ -17,7 +17,7 @@ server = function(input, output, session){
     # js$getHeight50()
 
     init_vals = reactiveValues()
-    init_vals$enable_facets = FALSE
+    # init_vals$enable_facets = FALSE
     init_vals$enable_unitconvert = FALSE
     init_vals$recent_domain = 'hbef'
 
@@ -58,15 +58,15 @@ server = function(input, output, session){
     })
 
     observeEvent(once=TRUE, ignoreNULL=FALSE, ignoreInit=FALSE,
-            eventExpr=TRUE, {
+            eventExpr=TRUE, handlerExpr = {
         landing_page
         init_vals$enable_unitconvert = TRUE
     })
 
-    observeEvent(once=TRUE, ignoreNULL=FALSE, ignoreInit=TRUE,
-            eventExpr=input$VARS3, {
-        init_vals$enable_facets = TRUE
-    })
+    # observeEvent(once=TRUE, ignoreNULL=FALSE, ignoreInit=TRUE,
+    #         eventExpr=input$VARS3, handlerExpr = {
+    #     init_vals$enable_facets = TRUE
+    # })
 
     observeEvent(input$MAPDATA, {
 

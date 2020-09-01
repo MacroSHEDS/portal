@@ -2,7 +2,7 @@ suppressPackageStartupMessages({
     library(V8)
     library(feather)
     library(plyr)
-    # library(data.table)
+    library(data.table)
     # library(dtplyr)
     library(shiny)
     library(shinydashboard)
