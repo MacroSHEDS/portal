@@ -168,6 +168,9 @@ load_basedata = eventReactive({
 observe({
 
     print('basedata change')
+    # basedata <<- load_basedata()
+    # vars_ <<- isolate(input$VARS3)
+    # dates <<- isolate(input$DATES3)
     basedata = load_basedata()
     vars_ = isolate(input$VARS3)
     dates = isolate(input$DATES3)
@@ -178,8 +181,12 @@ observe({
 
     dtrng = get_timeslider_extent(basedata, dates)
 
-    updateSliderInput(session, 'DATE3', min=dtrng[1], max=dtrng[2],
-        value=dates, timeFormat='%b %Y')
+    updateSliderInput(session,
+        inputId = 'DATES3',
+        min = dtrng[1],
+        max = dtrng[2],
+        value = dates,
+        timeFormat = '%b %Y')
 })
 
 #if variables(s), aggregation, units, site, or time window change, re-filter datasets
