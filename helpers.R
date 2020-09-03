@@ -300,27 +300,19 @@ read_combine_feathers = function(var, dmns, sites=NULL){
     #in case duplicate sitenames do appear, this will make it a bit less
     #likely that there's a collision. this can be simplified if js solution
     #is implemented
-    if(var %in% c('precip', 'pchem')){
-        dmn_sites = tibble(domain=dmns, site_name=NA)
-    } else {
-        dmn_sites = site_data %>%
-            filter(domain %in% dmns, site_type == 'stream_gauge') %>%
-            filter(site_name %in% sites) %>%
-            select(domain, site_name)
-    }
+    dmn_sites = site_data %>%
+        filter(domain %in% dmns, site_type == 'stream_gauge') %>%
+        filter(site_name %in% sites) %>%
+        select(domain, site_name)
 
     combined_data = tibble()
     for(i in 1:nrow(dmn_sites)){
 
-        if(var %in% c('precip', 'pchem')){
-            filestr = glue('data/{d}/{v}.feather', d=dmn_sites$domain[i], v=var)
-        } else {
-            filestr = glue('data/{d}/{v}/{s}.feather',
-                d=dmn_sites$domain[i], v=var, s=dmn_sites$site_name[i])
-        }
+        filestr = glue('data/{d}/{v}/{s}.feather',
+            d=dmn_sites$domain[i], v=var, s=dmn_sites$site_name[i])
 
         data_part = try_read_feather(filestr)
-        if(var %in% c('precip', 'pchem')) data_part$domain = dmn_sites$domain[i]
+        # if(var %in% c('precip', 'pchem')) data_part$domain = dmn_sites$domain[i]
         combined_data = bind_rows(combined_data, data_part)
     }
 
@@ -467,7 +459,7 @@ prep_mainfacets3 = function(v, dmns, sites, streamdata, raindata,
 
     if(is.null(sites) || length(sites) == 0) sites = ' '
     if(length(v) == 0){
-        return(manufacture_empty_plotdata(set='streamdata', sites=sites))
+        return(manufacture_empty_plotdata(sites=sites))
     }
 
     streamdata_exist = nrow(streamdata)
@@ -485,7 +477,7 @@ prep_mainfacets3 = function(v, dmns, sites, streamdata, raindata,
             spread(site_name, !!v)
 
     } else {
-        streamdata = manufacture_empty_plotdata(set='streamdata', sites=sites)
+        streamdata = manufacture_empty_plotdata(sites=sites)
         # streamdata = tibble(datetime=as.POSIXct(NA))
     }
 
@@ -500,8 +492,7 @@ prep_mainfacets3 = function(v, dmns, sites, streamdata, raindata,
                     ~paste0('P_', .))
 
         } else {
-            raindata = manufacture_empty_plotdata(set='raindata', dmns=dmns,
-                sites=sites, conc_flux_selection=conc_flux_selection)
+            raindata = manufacture_empty_plotdata(sites=paste0('P_', sites))
         }
 
         # rainsites = colnames(raindata)[-1]
@@ -521,49 +512,32 @@ prep_mainfacets3 = function(v, dmns, sites, streamdata, raindata,
 }
 
 # set=streamdata; sites=' '
-manufacture_empty_plotdata = function(set, dmns=NULL, sites=NULL,
-    conc_flux_selection=NULL){
+manufacture_empty_plotdata = function(sites){
 
-    #if set=='raindata', conc_flux_selection must be supplied,
-    #and if conc_flux_selection != 'VWC', dmns must additionally be supplied.
-    #write error catchers for these conditions
-
-    if(set == 'raindata'){
-
-        if(conc_flux_selection == 'VWC'){
-            sites_or_domains = paste0('P_', sites)
-        } else {
-            sites_or_domains = paste(dmns, 'pchem')
-        }
-
-    } else if(set == 'streamdata'){
-        sites_or_domains = sites
-    }
-
-        outdata = matrix(NA, ncol=length(sites_or_domains) + 1, nrow=0,
-            dimnames=list(NULL, c('datetime', sites_or_domains)))
-        outdata = as_tibble(outdata) %>%
-            mutate_all(as.numeric) %>%
-            mutate(datetime = as.POSIXct(datetime, origin='1970-01-01'))
+    outdata = matrix(NA, ncol=length(sites) + 1, nrow=0,
+        dimnames=list(NULL, c('datetime', sites)))
+    outdata = as_tibble(outdata) %>%
+        mutate_all(as.numeric) %>%
+        mutate(datetime = as.POSIXct(datetime, origin='1970-01-01'))
 
     return(outdata)
 }
 
 get_rainsites = function(raindata, alldata, streamsites,
-    conc_flux_selection, show_input_concentration){
+                         show_input_concentration){
 
     #streamsites needed to correctly order rainsites
 
     if(show_input_concentration && nrow(alldata)){
 
-        if(conc_flux_selection == 'VWC'){
-            cnms = colnames(alldata)
-            rainsites = cnms[grep('^P_', cnms)]
-            siteorder = order(streamsites)
-            rainsites = sort(rainsites)[siteorder]
-        } else {
-            rainsites = unique(raindata$site_name) #e.g. "hbef pchem"
-        }
+        # if(conc_flux_selection == 'VWC'){
+        cnms = colnames(alldata)
+        rainsites = cnms[grep('^P_', cnms)]
+        siteorder = order(streamsites)
+        rainsites = sort(rainsites)[siteorder]
+        # } else {
+        #     rainsites = unique(raindata$site_name) #e.g. "hbef pchem"
+        # }
 
     } else {
         rainsites = vector(length=0, mode='character')
@@ -595,133 +569,130 @@ selection_color_match = function(sites_selected, sites_all, colorvec){
 }
 
 update_site_obvs <- function() {
-    
+
     files <- list.files("data/")
-    
+
     domain <- files[- grep("[.]", files)]
-    
+
     observations <- tibble(site_name = as.character(), number = as.numeric())
-    
+
     for(i in 1:length(domain)) {
-        
+
         site_files <- list.files(paste0("data/", domain[i]), full.names = TRUE, recursive = TRUE)
-        
+
         if(!purrr::is_empty(grep("flux", site_files))) {
-            site_files <- site_files[- grep("flux", site_files)] 
+            site_files <- site_files[- grep("flux", site_files)]
         }
-        
+
         for(e in 1:length(site_files)) {
-            
+
             file <- sm(read_feather(site_files[e])) %>%
-                select(-datetime) 
-            
+                select(-datetime)
+
             name <- unique(file$site_name)
-            
+
             if(length(name) > 1) {
-                name <- file[[1]] 
-                
+                name <- file[[1]]
+
                 file <- file[-1]
                 file[!is.na(file)] <- 1
-                
+
                 new <- tibble("site_name" = name,
                     "observations" = file)
-                
+
                 new <- new %>%
                     group_by(site_name) %>%
                     summarise_all(sum, na.rm = TRUE)
             } else {
-                
-                file <- select(file, -site_name) 
-                
+
+                file <- select(file, -site_name)
+
                 file[!is.na(file)] <- 1
-                
+
                 num <- sum(colSums(file, na.rm = TRUE), na.rm = TRUE)
-                
+
                 new <- tibble("site_name" = name,
                     "observations" = num)
             }
-            
+
             observations <- rbind(new, observations)
         }
-        }
-    sites <- sm(read_csv("data/site_data.csv"))
-    
-    full <- left_join(sites, observations, by = "site_name")
-    
-    write_csv(full, "data/site_data.csv")
     }
 
+    sites <- sm(read_csv("data/site_data.csv"))
 
+    full <- left_join(sites, observations, by = "site_name")
+
+    write_csv(full, "data/site_data.csv")
+    }
 
 # Biplot stuff
 
 convert_conc_units_bi = function(df, col, input_unit='mg/L', desired_unit){
-    
+
     #df is a data frame or tibble of numeric concentration data
     #input_unit is the unit of concs (must be 'mg/L')
     #desired unit is one of the keys in the call to `switch` below
-    
+
     require(PeriodicTable)
-    
+
 
     conc_df = df[col]
-    
+
     conc_cols=col
-    
+
     if(grepl('g', desired_unit)){
-        
+
         converted = switch(desired_unit,
                            'ng/L' = conc_df * 1000000,
                            'ug/L' = conc_df * 1000,
                            'mg/L' = conc_df,
                            'g/L' = conc_df / 1000)
-        
+
     } else {
-        
+
         solutes = colnames(conc_df)
         constituents = parse_molecular_formulae(solutes)
         molar_mass = sapply(constituents, combine_atomic_masses)
-        
+
         mm_scaled = switch(substr(desired_unit, 0, 1),
                            'n' = molar_mass * 1000000, #desired unit could be nM or neq/L
                            'u' = molar_mass * 1000, #and so on...
                            'm' = molar_mass,
                            'M' = molar_mass / 1000, #desired unit must be 'M'
                            'e' = molar_mass / 1000) #desired unit must be 'eq/L'
-        
+
         if(grepl('q', desired_unit)){
             valence = variables$valence[variables$variable_code %in% solutes]
             mm_scaled = mm_scaled * valence
         }
-        
+
         converted = data.frame(mapply(`*`, conc_df, mm_scaled, SIMPLIFY=FALSE))
     }
-    
+
     df[conc_cols] = converted
-    
+
     return(df)
 }
 
 convert_flux_units_bi = function(df, col, input_unit='kg/ha', desired_unit){
-    
+
     #df is a data frame or tibble of numeric flux data
     #input_unit is the unit of flux (must be 'kg/ha/d')
     #desired unit is one of the keys in the call to `switch` below
-    
+
     col_name <- col
     flux_cols = col_name
     flux_df = df[col_name]
-    
+
     converted = switch(desired_unit,
                        'Mg/ha' = flux_df / 1000,
                        'kg/ha' = flux_df,
                        'g/ha' = flux_df * 1000,
                        'mg/ha' = flux_df * 1000000)
-    
+
     df[flux_cols] = converted
-    
+
     return(df)
 }
 
-        
-       

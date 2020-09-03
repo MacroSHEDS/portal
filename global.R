@@ -26,15 +26,22 @@ suppressPackageStartupMessages({
     #those that can't should be read from a config file or spreadsheet eventually.
 #attend to trailing comments within this script
 
+#options(dplyr.summarise.inform = FALSE)
+
 #uncomment and execute (without saving script) to deploy demo app
 # rsconnect::deployApp('/home/mike/git/macrosheds/portal',
 #     appName='MacroSheds_demo')
 # rsconnect::deployApp('/home/mike/git/macrosheds/portal',
 #     appName='portal', account='macrosheds')
 
-#for local testing
+#for local testing (comment all before pushing live)
 # setwd('~/git/macrosheds/portal')
 # setwd('~/desktop/macrosheds/portal')
+# options(shiny.trace = TRUE) #see every communication between ui and server
+# options(shiny.reactlog = TRUE) #see map of reactivity by running reactlogShow()
+# options(shiny.error=recover) #enter debugger when error occurs
+# options(shiny.fullstacktrace=TRUE) #see stack traces for all errors (incl. dplyr)
+# options(shiny.sanitize.errors = TRUE) #hide errors in the app
 
 source('helpers.R') #maybe package these or put them in a namespace called "ms"
 source('function_aliases.R')
@@ -56,15 +63,19 @@ default_site = default_sites_by_domain[[default_domain]]
 
 #load base data for when user lands in app (could use convenience functions here)
 basedata = list(
-    P = read_feather(glue('data/{d}/precip.feather',
-        d=default_domain)), #update once rain gage interpolation is done
     Q = read_feather(glue('data/{d}/discharge/{s}.feather',
         d=default_domain, s=default_site)),
-    pchem = read_feather(glue('data/{d}/pchem.feather',
-        d=default_domain)), #update once rain gage interpolation is done
-    chem = read_feather(glue('data/{d}/chemistry/{s}.feather',
+    chem = read_feather(glue('data/{d}/stream_chemistry/{s}.feather',
         d=default_domain, s=default_site)),
-    flux = read_feather(glue('data/{d}/flux/{s}.feather',
+    flux = read_feather(glue('data/{d}/stream_flux_inst/{s}.feather',
+        d=default_domain, s=default_site)),
+    # P = read_feather(glue('data/{d}/precip.feather',
+    #     d=default_domain)), #update once rain gage interpolation is done
+    P = read_feather(glue('data/{d}/precipitation/{s}.feather',
+        d=default_domain, s=default_site)),
+    pchem = read_feather(glue('data/{d}/precip_chemistry/{s}.feather',
+        d=default_domain, s=default_site)),
+    pflux = read_feather(glue('data/{d}/precip_flux_inst/{s}.feather',
         d=default_domain, s=default_site))
 )
 
@@ -124,8 +135,7 @@ pchemvars_display_subset = filter_dropdown_varlist(basedata$pchem)
 
 dtrng = as.Date(range(basedata$chem$datetime, na.rm=TRUE))
 
-#biplot 
+#biplot
 biplot_options <- chemvars_display_subset
 biplot_data_types <- c('Concentration', 'Flux', 'Discharge')
 flux_units_bi = c('Mg/ha', 'kg/ha', 'g/ha', 'mg/ha')
-
