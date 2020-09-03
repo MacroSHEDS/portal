@@ -82,7 +82,10 @@ nSiteNVar_tab = tabPanel("Multisite", value='multisite_exploration',
             radioButtons('AGG3', label=NULL, selected='Monthly',
                 choices=c('Instantaneous', 'Daily', 'Monthly', 'Yearly')),
             # actionButton('DEBUG', 'debug'),
-        width=3),
+        width=3,
+        div('Time System', class='widget-title text-center'),
+        radioButtons('TIME', label = NULL, selected = 'UTM',
+                     choices = c('UTM', 'Local', 'Solar'))),
 
         mainPanel(
             fluidRow(class='text-center',

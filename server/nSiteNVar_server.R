@@ -121,8 +121,10 @@ get_domains3 = eventReactive(input$DOMAINS3, {
 load_basedata = eventReactive({
     input$SITES3
     reactive_vals$update_basedata
+    input$TIME
 }, {
-
+    
+    time <- input$TIME
     dmns = get_domains3()
 
     if(is.null(dmns)){ #for empty domain dropdown
@@ -143,6 +145,10 @@ load_basedata = eventReactive({
     init_vals$recent_domain = dmns[1] #needed?
 
     basedata = list(chem=chem, P=P, Q=Q, pchem=pchem, flux=flux)
+    
+    if(time != 'UTM' & isolate(input$AGG3) == 'Instantaneous') {
+        basedata <- purrr::modify2(basedata, get_local_solar_time, .y = time)
+    }
     return(basedata) })
 
 #when basedata changes, variable list and time slider change, but not selections
@@ -173,6 +179,7 @@ dataChem = reactive({
     agg = input$AGG3
     sites = input$SITES3
     basedata = load_basedata()
+    input$TIME
 
     datachem = if(conc_flux == 'Flux') basedata$flux else basedata$chem
 
@@ -214,6 +221,7 @@ dataPchem = reactive({
     agg = input$AGG3
     dmns = get_domains3()
     basedata = load_basedata()
+    input$TIME
 
     datapchem = basedata$pchem
 
@@ -246,8 +254,10 @@ dataPrecip = reactive({
     agg = input$AGG3
     basedata = load_basedata()
     dmns = isolate(get_domains3())
+    input$TIME
 
     dataprecip = basedata$P
+    # dataprecip <<- basedata$P
 
     if(nrow(dataprecip) == 0) return(dataprecip)
 
@@ -289,6 +299,7 @@ dataQ = reactive({
     sites = input$SITES3
     agg = input$AGG3
     basedata = load_basedata()
+    input$TIME
 
     dataq = basedata$Q
     # dataq <<- basedata$Q %>%
@@ -379,6 +390,7 @@ volWeightedPchem3 = reactive({
     agg_input = isolate(input$AGG3)
     sites = isolate(input$SITES3)
     vars_ = isolate(input$VARS3)
+    input$TIME
 
     #TEMPORARY SHORT-CIRCUIT UNTIL WE WORK OUT PRECIP INTERPOLATION
     #THE CODE BELOW ALSO HASN'T CHANGED SINCE IT WAS DOMAIN-AGNOSTIC
@@ -477,7 +489,7 @@ output$GRAPH_PRECIP3a = renderDygraph({
         ymax = max(dydat, na.rm=TRUE)
 
         dg = dygraph(dydat, group='nSiteNVar') %>%
-            dyOptions(useDataTimezone=TRUE, drawPoints=FALSE, fillGraph=TRUE,
+            dyOptions(useDataTimezone=FALSE, drawPoints=FALSE, fillGraph=TRUE,
                 fillAlpha=1, colors=raincolors[1], strokeWidth=3,
                 plotter=hyetograph_js, retainDateWindow=TRUE) %>%
             dyLegend(show='onmouseover', labelsSeparateLines=FALSE,
@@ -509,7 +521,7 @@ output$GRAPH_PRECIP3b = renderDygraph({
         ymax = max(dydat, na.rm=TRUE)
 
         dg = dygraph(dydat, group='nSiteNVar') %>%
-            dyOptions(useDataTimezone=TRUE, drawPoints=FALSE, fillGraph=TRUE,
+            dyOptions(useDataTimezone=FALSE, drawPoints=FALSE, fillGraph=TRUE,
                 fillAlpha=1, colors=raincolors[1], strokeWidth=3,
                 plotter=hyetograph_js, retainDateWindow=TRUE) %>%
             dyLegend(show='onmouseover', labelsSeparateLines=FALSE,
@@ -541,7 +553,7 @@ output$GRAPH_PRECIP3c = renderDygraph({
         ymax = max(dydat, na.rm=TRUE)
 
         dg = dygraph(dydat, group='nSiteNVar') %>%
-            dyOptions(useDataTimezone=TRUE, drawPoints=FALSE, fillGraph=TRUE,
+            dyOptions(useDataTimezone=FALSE, drawPoints=FALSE, fillGraph=TRUE,
                 fillAlpha=1, colors=raincolors[1], strokeWidth=3,
                 plotter=hyetograph_js, retainDateWindow=TRUE) %>%
             dyLegend(show='onmouseover', labelsSeparateLines=FALSE,
@@ -624,7 +636,7 @@ output$GRAPH_MAIN3a <- output$GRAPH_MAIN3aFULL <- renderDygraph({
 
         is_inst = ifelse(agg == 'Instantaneous', TRUE, FALSE)
         dg = dygraph(dydat, group='nSiteNVar') %>%
-            dyOptions(useDataTimezone=TRUE, drawPoints=FALSE,
+            dyOptions(useDataTimezone=FALSE, drawPoints=FALSE,
                 colors=selection_color_match(sites, displabs, linecolors),#, pad_length=length(displabs)),
                 strokeWidth=2, pointSize=2,
                 retainDateWindow=TRUE, drawGapEdgePoints=TRUE,
@@ -656,7 +668,7 @@ output$GRAPH_MAIN3a <- output$GRAPH_MAIN3aFULL <- renderDygraph({
 
         dg = plot_empty_dygraph(dates, mainlab=colnames(alldata)[-1],
             maindiv='main3a', plotgroup='nSiteNVar', ylab=ylab, px_per_lab=20)
-    }
+    } 
 
     return(dg)
 })
@@ -679,7 +691,7 @@ output$GRAPH_QC3a <- renderPlot({
     # agg <<- isolate(input$AGG3)
     # dates <<- isolate(input$DATES3)
 
-    # reactive_vals$facet3aQC
+    reactive_vals$facet3aQC
     reactive_vals$facet3a
 
     # streamdata <<- dataChem()
@@ -697,12 +709,12 @@ output$GRAPH_QC3a <- renderPlot({
     qc <- ggplot(alldata,
                  aes(x = discharge, y = value, colour = site_name),
                  environment=environment()) +
-        geom_point() +
+        geom_point(na.rm = TRUE) +
         scale_colour_manual(values = linecolors,
                             breaks = c(sites)) +
         labs(y = "") +
         ggthemes::theme_few() +
-        theme(legend.position = 'none') 
+        theme(legend.position = 'none')
 
     return(qc)
 })
@@ -719,7 +731,8 @@ output$GRAPH_MAIN3b <- output$GRAPH_MAIN3bFULL <- renderDygraph({
     agg = isolate(input$AGG3)
     dates = isolate(input$DATES3)
 
-    if(reactive_vals$facet3b == 0) return(NULL)
+    #if(reactive_vals$facet3b == 0) return(NULL)
+    reactive_vals$facet3b
 
     if(conc_flux == 'VWC'){
         streamdata = volWeightedChem3()
@@ -764,7 +777,7 @@ output$GRAPH_MAIN3b <- output$GRAPH_MAIN3bFULL <- renderDygraph({
 
         is_inst = ifelse(agg == 'Instantaneous', TRUE, FALSE)
         dg = dygraph(dydat, group='nSiteNVar') %>%
-            dyOptions(useDataTimezone=TRUE, drawPoints=FALSE,
+            dyOptions(useDataTimezone=FALSE, drawPoints=FALSE,
                 colors=selection_color_match(sites, displabs, linecolors),
                 strokeWidth=2, pointSize=2,
                 retainDateWindow=TRUE, drawGapEdgePoints=TRUE,
@@ -836,12 +849,12 @@ output$GRAPH_QC3b <- renderPlot({
     qc <- ggplot(alldata,
                  aes(x = discharge, y = value, colour = site_name),
                  environment=environment()) +
-        geom_point() +
+        geom_point(na.rm = TRUE) +
         scale_colour_manual(values = linecolors,
                             breaks = c(sites)) +
         labs(y = "") +
         ggthemes::theme_few() +
-        theme(legend.position = 'none') 
+        theme(legend.position = 'none')
     
     return(qc)
 })
@@ -903,7 +916,7 @@ output$GRAPH_MAIN3c <- output$GRAPH_MAIN3cFULL <- renderDygraph({
 
         is_inst = ifelse(agg == 'Instantaneous', TRUE, FALSE)
         dg = dygraph(dydat, group='nSiteNVar') %>%
-            dyOptions(useDataTimezone=TRUE, drawPoints=FALSE,
+            dyOptions(useDataTimezone=FALSE, drawPoints=FALSE,
                 colors=selection_color_match(sites, displabs, linecolors),
                 strokeWidth=2, pointSize=2,
                 retainDateWindow=TRUE, drawGapEdgePoints=TRUE,
@@ -975,7 +988,7 @@ output$GRAPH_QC3c <- renderPlot({
     qc <- ggplot(alldata,
                  aes(x = discharge, y = value, colour = site_name),
                  environment=environment()) +
-        geom_point() +
+        geom_point(na.rm = TRUE) +
         scale_colour_manual(values = linecolors,
                             breaks = c(sites)) +
         labs(y = "") +
@@ -1009,7 +1022,7 @@ output$GRAPH_Q3 = renderDygraph({
         dimnames(dydat) = list(NULL, displabs)
 
         dg = dygraph(dydat, group='nSiteNVar') %>%
-            dyOptions(useDataTimezone=TRUE, drawPoints=FALSE, fillGraph=TRUE,
+            dyOptions(useDataTimezone=FALSE, drawPoints=FALSE, fillGraph=TRUE,
                 strokeWidth=1, fillAlpha=0.4, retainDateWindow=TRUE,
                 colors=selection_color_match(sites,
                     displabs[displabs %in% sites],
