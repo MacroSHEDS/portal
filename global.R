@@ -126,6 +126,16 @@ dtrng = as.Date(range(basedata$chem$datetime, na.rm=TRUE))
 
 #biplot 
 biplot_options <- chemvars_display_subset
-biplot_data_types <- c('Concentration', 'Flux', 'Discharge')
+biplot_data_types <- c('Concentration', 'Flux', 'Discharge', 'Watershed Characteristics')
 flux_units_bi = c('Mg/ha', 'kg/ha', 'g/ha', 'mg/ha')
+ws_traits <- list('Bare Ground Cover' = list('Watershed Median (%)' = 'bare_cover_median', 'Watershed Standard Deviation' = 'bare_cover_sd'),
+                  'Tree Cover' = list('Watershed Median (%)' = 'tree_cover_median', 'Watershed Standard Deviation' = 'tree_cover_sd'),
+                  'Non-Tree Cover' = list('Watershed Median (%)' = 'veg_cover_median', 'Watershed Standard Deviation' = 'veg_cover_sd'),
+                  'Start of Growing Season' = list('Watershed Median (DOY)' = 'sos_mean', 'Watershed Standard Deviation' = 'sos_sd'),
+                  'End of Growing Season' = list('Watershed Median (DOY)' = 'eos_mean', 'Watershed Standard Deviation' = 'eos_sd'),
+                  'Leaf Area Index' = list('Annual Maximum' = 'lai_max', 'Annual Mean' = 'lai_mean', 'Annual Minimum' = 'lai_min', 'Annual Standard Deviation' = 'lai_sd_year', 'Watershed Standard Deviation' = 'lai_sd_space'),
+                  'Fraction of Absorbed Photosynthetically Active Radiation' = list('Annual Maximum' = 'fpar_max', 'Annual Mean' = 'fpar_mean', 'Annual Minimum' = 'fpar_min', 'Annual Standard Deviation' = 'fpar_sd_year', 'Watershed Standard Deviation' = 'fpar_sd_space'),
+                  'Gross Primary Production (kg*C/m^2)' = list('Annual Sum' = 'gpp_sum', 'Annual Standard Deviation' = 'gpp_sd_year', 'Watershed Standard Deviation' = 'gpp_sd_space'),
+                  'Net Primary Production  (kg*C/m^2)' = list('Annual Sum' = 'npp_median', 'Watershed Standard Deviation' = 'npp_sd'))
+ws_traits_sub <- lapply(ws_traits, `[[`, 1)
 

@@ -1,9 +1,9 @@
-#  df <- domains_df
-#  agg <- 'month'
-#  i <- 2
-#  p <-1
+ df <- domains_df
+ agg <- 'month'
+ i <- 2
+ p <-2
 
-compute_monthly_summary <- function(df) {
+ compute_monthly_summary <- function(df) {
     for(i in 1:nrow(df)) {
         
         dom <- df$domain[i]
@@ -42,17 +42,15 @@ compute_monthly_summary <- function(df) {
                               s = stream_sites[p])
             
             site_chem <- sm(read_feather(path_chem) %>%
-                                mutate(year = year(datetime),
-                                       month = month(datetime)) %>%
+                                mutate(Year = year(datetime),
+                                       Month = month(datetime)) %>%
                                 select(-datetime))
             
             site_chem <- site_chem %>%
-                group_by(site_name, year, month) %>%
+                group_by(site_name, Year, Month) %>%
                 summarise(across(where(is.numeric), ~ mean(.x, na.rm = TRUE))) %>%
                 ungroup() %>%
-                mutate(date = paste(year, month, 1, sep = '-')) %>%
-                mutate(month_an = as.numeric(ifelse(month %in% c(1,2,3,4,5,6,7,8,9), paste0(year, '.', 0, month), paste0(year, '.', month)))) %>%
-                mutate(date = ymd(date)) %>%
+                mutate(Date = ymd(paste(Year, Month, 1, sep = '-'))) %>%
                 mutate(domain = dom)
             
             if(dom == 'neon') {
@@ -60,37 +58,42 @@ compute_monthly_summary <- function(df) {
             } else {
             
             site_flux <- sm(read_feather(path_flux) %>%
-                                mutate(year = year(datetime),
-                                       month = month(datetime)) %>%
-                                mutate(m_factor = case_when(month %in% c(1,3,5,7,8,10,12) ~ 31,
-                                                            month %in% c(4,6,9,11) ~ 30,
-                                                            month == 2 ~ 28)) %>%
+                                mutate(Year = year(datetime),
+                                       Month = month(datetime)) %>%
                                 select(-datetime)) %>%
-                group_by(site_name, year, month) %>%
-                summarise(across(where(is.numeric), ~ (mean(.x, na.rm = TRUE))*m_factor, .names = '{col}_flux')) %>%
-                mutate(date = paste(year, month, 1, sep = '-')) %>%
-                mutate(date = ymd(date)) %>%
-                mutate(month_an = as.numeric(ifelse(month %in% c(1,2,3,4,5,6,7,8,9), paste0(year, '.', 0, month), paste0(year, '.', month))))%>%
+                group_by(site_name, Year, Month) %>%
+                summarise(across(where(is.numeric), ~ (mean(.x, na.rm = TRUE)), .names = '{col}_flux')) %>%
+                mutate(m_factor = case_when(Month %in% c(1,3,5,7,8,10,12) ~ 31,
+                                            Month %in% c(4,6,9,11) ~ 30,
+                                            Month == 2 ~ 28)) %>%
+                mutate(across(contains('flux'), ~.x * m_factor)) %>%
+                mutate(Date = ymd(paste(Year, Month, 1, sep = '-'))) %>%
                 ungroup() %>%
-                select(-m_factor_flux)
+                select(-m_factor)
             site_flux[is.numeric(site_flux) & site_flux <= 0.00000001] <- NA 
             
             joined <- full_join(site_chem, site_flux)
             
-            site_q <- sm(read_feather(path_q) %>%
-                             mutate(year = year(datetime),
-                                    month = month(datetime),
+            site_q <- sm(read_feather(path_q))
+                         
+            if(dom == 'hbef') {
+                site_q <- site_q %>%
+                    rename(Q = discharge) 
+            }
+            
+            site_q <- sm(site_q %>%
+                             mutate(Year = year(datetime),
+                                    Month = month(datetime),
                                     day = day(datetime)) %>%
-                             group_by(site_name, year, month, day) %>%
+                             group_by(site_name, Year, Month, day) %>%
                              summarise(Q = mean(Q, na.rm = TRUE)) %>%
                              mutate(NAs = ifelse(is.na(Q), 1, 0))) %>%
                 ungroup() %>%
-                group_by(site_name, year, month) %>%
+                group_by(site_name, Year, Month) %>%
                 summarise(Q = sum(Q*86400/1000, na.rm = TRUE),
                           NAs = sum(NAs, na.rm = TRUE)) %>%
-                mutate(date = paste(year, month, 1, sep = '-')) %>%
-                mutate(date = ymd(date)) %>%
-                mutate(month_an = as.numeric(ifelse(month %in% c(1,2,3,4,5,6,7,8,9), paste0(year, '.', 0, month), paste0(year, '.', month)))) %>%
+                mutate(Date = paste(Year, Month, 1, sep = '-')) %>%
+                mutate(Date = ymd(Date)) %>%
                 ungroup()
             
             joined <- full_join(joined, site_q) %>%
@@ -116,7 +119,7 @@ compute_monthly_summary <- function(df) {
     write_feather(all_domain, 'data/biplot/month.feather')
 }
 
-# compute_monthly_summary(domains_df)
+#compute_monthly_summary(domains_df)
 
 compute_yearly_summary <- function(df) {
     for(i in 1:nrow(df)) {
@@ -136,6 +139,23 @@ compute_yearly_summary <- function(df) {
                    site_type == 'stream_gauge') %>%
             filter(site_name %in% sites) %>%
             pull(site_name)
+        
+        traits_path <- glue('data/{d}/ws_traits',
+                            d = dom)
+        trait_files <- list.files(traits_path, full.names = TRUE)
+        
+        if(length(trait_files) != 0) {
+        
+        traits_final <- read_feather(trait_files[1]) %>%
+            rename(Year = year)
+        
+        for(t in 2:length(trait_files)) {
+            trat <- read_feather(trait_files[t]) %>%
+                rename(Year = year)
+            
+            traits_final <- full_join(traits_final, trat, by = c('Year', 'site_name')) 
+        }
+        }
         
         for(p in 1:length(stream_sites)) {
             
@@ -157,16 +177,17 @@ compute_yearly_summary <- function(df) {
                               s = stream_sites[p])
             
             site_chem <- sm(read_feather(path_chem) %>%
-                                mutate(year = year(datetime),
-                                       month = month(datetime)) %>%
+                                mutate(Year = year(datetime),
+                                       Month = month(datetime)) %>%
                                 select(-datetime))
             
             site_chem <- site_chem %>%
-                group_by(site_name, year, month) %>%
+                group_by(site_name, Year, Month) %>%
                 summarise(across(where(is.numeric), ~ mean(.x, na.rm = TRUE))) %>%
                 ungroup() %>%
-                mutate(date = ymd(paste(year, 1, 1, sep = '-'))) %>%
-                group_by(site_name, date) %>%
+                mutate(Date = ymd(paste(Year, 1, 1, sep = '-'))) %>%
+                select(-Month) %>%
+                group_by(site_name, Date) %>%
                 summarise(across(where(is.numeric), ~ mean(.x, na.rm = TRUE))) %>%
                 ungroup() %>%
                 mutate(domain = dom)
@@ -174,36 +195,40 @@ compute_yearly_summary <- function(df) {
             if(dom == 'neon') {
                 joined <- site_chem
             } else {
-                
-                site_flux <- sm(read_feather(path_flux) %>%
-                                    mutate(year = year(datetime),
-                                           month = month(datetime)) %>%
-                                    mutate(m_factor = case_when(month %in% c(1,3,5,7,8,10,12) ~ 31,
-                                                                month %in% c(4,6,9,11) ~ 30,
-                                                                month == 2 ~ 28)) %>%
-                                    select(-datetime)) %>%
-                    group_by(site_name, year, month) %>%
-                    summarise(across(where(is.numeric), ~ (mean(.x, na.rm = TRUE))*m_factor, .names = '{col}_flux')) %>%
-                    mutate(date = ymd(paste(year, 1, 1, sep = '-'))) %>%
-                    select(-year, -month) %>%
-                    group_by(site_name, date) %>%
-                    summarise(across(where(is.numeric), ~ (mean(.x, na.rm = TRUE))*365)) %>%
+            
+                site_flux <- read_feather(path_flux) %>%
+                                    mutate(Year = year(datetime),
+                                           Month = month(datetime)) %>%
+                                    select(-datetime) %>%
+                    group_by(site_name, Year, Month) %>%
+                    summarise(across(where(is.numeric), ~ (mean(.x, na.rm = TRUE)), .names = '{col}_flux')) %>%
+                    mutate(Date = ymd(paste(Year, 1, 1, sep = '-'))) %>%
+                    ungroup() %>%
+                    select(-Month) %>%
+                    group_by(site_name, Date, Year) %>%
+                    summarise(across(contains('flux'), ~ (mean(.x, na.rm = TRUE))*365)) %>%
                     ungroup()
                 site_flux[is.numeric(site_flux) & site_flux <= 0.00000001] <- NA 
                 
                 joined <- full_join(site_chem, site_flux)
                 
-                site_q <- sm(read_feather(path_q) %>%
-                                 mutate(year = year(datetime),
-                                        month = month(datetime),
+                site_q <- sm(read_feather(path_q))
+                
+                if(dom == 'hbef') {
+                    site_q <- site_q %>%
+                        rename(Q = discharge) 
+                }
+                site_q <- sm(site_q %>%
+                                 mutate(Year = year(datetime),
+                                        Month = month(datetime),
                                         day = day(datetime)) %>%
-                                 group_by(site_name, year, month, day) %>%
+                                 group_by(site_name, Year, Month, day) %>%
                                  summarise(Q = mean(Q, na.rm = TRUE)) %>%
                                  mutate(NAs = ifelse(is.na(Q), 1, 0))) %>%
                     ungroup() %>%
-                    mutate(date = ymd(paste(year, 1, 1, sep = '-'))) %>%
-                    select(-year, -month) %>%
-                    group_by(site_name, date) %>%
+                    mutate(Date = ymd(paste(Year, 1, 1, sep = '-'))) %>%
+                    select(-Year, -Month) %>%
+                    group_by(site_name, Date) %>%
                     summarise(Q = sum(Q*86400/1000, na.rm = TRUE),
                               NAs = sum(NAs, na.rm = TRUE)) %>%
                     ungroup()
@@ -219,17 +244,21 @@ compute_yearly_summary <- function(df) {
             all_sites <- rbind(all_sites, joined)
         }
         
+        all_sites <- all_sites %>%
+            full_join(traits_final, by = c('Year', 'site_name'))
+        
         if(i == 1) {
             all_domain <- all_sites %>%
                 filter(site_name == 'fake')
         }
         
-        all_domain <-  rbind.fill(all_domain, all_sites)
+        all_domain <-  rbind.fill(all_domain, all_sites) 
+        
     }
     
     write_feather(all_domain, 'data/biplot/year.feather')
 }
 
-# compute_yearly_summary(domains_df)
+compute_yearly_summary(domains_df)
 
-
+look <- read_feather('data/biplot/year.feather')

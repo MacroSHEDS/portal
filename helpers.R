@@ -681,6 +681,20 @@ get_local_solar_time <- function(df, time) {
 
 # Biplot stuff
 
+convertible <- function(var) {
+    if(var == 'Q') {return(FALSE)}
+    test <- pull(variables %>%
+                          filter(variable_code == var) %>%
+                          select(unit))
+    
+    log <- !test %in% c('unitless', 'degrees C') 
+    if(length(log) == 0) {
+        return(FALSE)
+    }
+    
+    return(log)
+}
+
 convert_conc_units_bi = function(df, col, input_unit='mg/L', desired_unit){
     
     #df is a data frame or tibble of numeric concentration data
@@ -688,6 +702,10 @@ convert_conc_units_bi = function(df, col, input_unit='mg/L', desired_unit){
     #desired unit is one of the keys in the call to `switch` below
     
     require(PeriodicTable)
+    
+    if(input_unit %in% c('unitless', 'degrees C') | length(input_unit) == 0) {
+        return(df)
+    }
     
 
     conc_df = df[col]
