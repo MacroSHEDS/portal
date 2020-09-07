@@ -1,15 +1,5 @@
 
-
-files <- site_data %>%
-    filter(site_type == "stream_gauge") %>%
-    select(domain, site_name) %>%
-    mutate(path_m = glue('data/biplot/month/{d}/{s}.feather',
-                         d = domain,
-                         s = site_name),
-           path_y = glue('data/biplot/year/{d}/{s}.feather',
-                         d = domain,
-                         s = site_name))
-
+# Update inputs ####
 observe({
     doms <- input$DOMAINS2_S
     
@@ -21,23 +11,32 @@ observe({
     updateSelectInput(session, 'SITES2', choices = dom_sites)
 })
 
+
 observe({
     data_type <- input$X_TYPE2
     
     if(data_type == 'Concentration') {
         select <- chemvars_display_subset 
-        units <- conc_units}
+        units <- conc_units 
+        choose <- 'mg/L'}
     
     if(data_type == 'Flux') {
-        select <- fluxvars
-        units <- flux_units_bi }
+        select <- chemvars_display_subset
+        units <- flux_units_bi 
+        choose <- 'kg/ha'}
     
     if(data_type == 'Discharge') {
         select <- 'Q' 
-        units <- 'm^3' }
+        units <- 'm^3' 
+        choose <- 'm^3'}
+    
+    if(data_type == 'Watershed Characteristics') {
+        select <- ws_traits
+        units <- ''
+        choose <- ''}
     
     updateSelectInput(session, 'X_VAR2', choices = select)
-    updateSelectInput(session, 'X_UNIT2', choices = units)
+    updateSelectInput(session, 'X_UNIT2', choices = units, selected = choose)
     
     })
 
@@ -46,18 +45,26 @@ observe({
     
     if(data_type == 'Concentration') {
         select <- chemvars_display_subset 
-        units <- conc_units}
+        units <- conc_units 
+        choose <- 'mg/L'}
     
     if(data_type == 'Flux') {
-        select <- fluxvars
-        units <- flux_units_bi }
+        select <- chemvars_display_subset
+        units <- flux_units_bi 
+        choose <- 'kg/ha'}
     
     if(data_type == 'Discharge') {
         select <- 'Q' 
-        units <- 'm^3' }
+        units <- 'm^3' 
+        choose <- 'm^3'}
+    
+    if(data_type == 'Watershed Characteristics') {
+        select <- ws_traits
+        units <- ''
+        choose <- ''}
     
     updateSelectInput(session, 'Y_VAR2', choices = select)
-    updateSelectInput(session, 'Y_UNIT2', choices = units)
+    updateSelectInput(session, 'Y_UNIT2', choices = units, selected = choose)
     
 })
 
@@ -66,26 +73,35 @@ observe({
     
     if(data_type == 'Concentration') {
         select <- chemvars_display_subset 
-        units <- conc_units}
+        units <- conc_units 
+        choose <- 'mg/L'}
     
     if(data_type == 'Flux') {
-        select <- fluxvars
-        units <- flux_units_bi }
+        select <- chemvars_display_subset
+        units <- flux_units_bi 
+        choose <- 'kg/ha'}
     
     if(data_type == 'Discharge') {
         select <- 'Q' 
-        units <- 'm^3' }
+        units <- 'm^3' 
+        choose <- 'm^3'}
+    
+    if(data_type == 'Watershed Characteristics') {
+        select <- ws_traits
+        units <- ''
+        choose <- ''}
     
     updateSelectInput(session, 'SIZE_VAR2', choices = select)
-    updateSelectInput(session, 'SIZE_UNIT2', choices = units)
+    updateSelectInput(session, 'SIZE_UNIT2', choices = units, selected = choose)
     
 })
 
+# Load in and filter summary files ####
 summary <- reactive({
     
     agg <- input$AGG2
     
-    if(agg == 'YEARLY2') {
+    if(agg %in% c('YEARLY2', 'WHOLE2')) {
         sum <- read_feather('data/biplot/year.feather')
     }
     
@@ -114,6 +130,7 @@ filtered_bi <- reactive({
                     ALL_SITES2 = 'all',
                     DOMINE_NETWORK2 = 'dom',
                     BY_SITE2 = 'site')
+    agg <- input$AGG2
     raw <- summary()
     
     # x_var <<- input$X_VAR2
@@ -133,7 +150,8 @@ filtered_bi <- reactive({
     #                ALL_SITES2 = 'all',
     #                DOMINE_NETWORK2 = 'dom',
     #                BY_SITE2 = 'site')
-    # raw <<- summary()
+    # agg <<- input$AGG2
+    # raw <- summary()
     
     if(chem_x == 'Flux') {
         x_var <- paste(x_var, 'flux', sep = '_')
@@ -163,36 +181,58 @@ filtered_bi <- reactive({
     }
     
     final <- fill %>%
-        select(site_name, domain, date, year, month, contains('month_an'), !!x_var, !!y_var, !!size_var) %>%
-        filter(date >= !!date1,
-               date <= !!date2) %>%
+        select(site_name, domain, Date, Year, !!x_var, !!y_var, !!size_var) %>%
+        filter(Date >= !!date1,
+               Date <= !!date2) %>%
         filter(complete.cases(.)) 
+    
+    x_unit_start <- variables %>%
+        filter(variable_code == x_var) 
 
     
     if(chem_x == 'Concentration') {
-        final <- convert_conc_units_bi(final, x_var, 'mg/L', x_unit) 
+        x_unit_start <- pull(variables %>%
+            filter(variable_code == x_var) %>%
+                select(unit))
+        
+        final <- convert_conc_units_bi(final, x_var, x_unit_start, x_unit) 
     } 
     if(chem_x == 'Flux') {
         final <- convert_flux_units_bi(final, x_var, 'kg/ha', x_unit)
     }
     
     if(chem_y == 'Concentration') {
-        final <- convert_conc_units_bi(final, y_var, 'mg/L', y_unit) 
+        y_unit_start <- pull(variables %>%
+                                 filter(variable_code == y_var) %>%
+                                 select(unit))
+        
+        final <- convert_conc_units_bi(final, y_var, y_unit_start, y_unit) 
     } 
     if(chem_y == 'Flux') {
         final <- convert_flux_units_bi(final, y_var, 'kg/ha', y_unit)
     }
     
     if(chem_size == 'Concentration') {
-        final <- convert_conc_units_bi(final, size_var, 'mg/L', size_unit) 
+        size_unit_start <- pull(variables %>%
+                                 filter(variable_code == size_var) %>%
+                                 select(unit))
+        
+        final <- convert_conc_units_bi(final, size_var, size_unit_start, size_unit) 
     } 
     if(chem_size == 'Flux') {
         final <- convert_flux_units_bi(final, size_var, 'kg/ha', size_unit)
     }
     
+    if(agg == 'WHOLE2') {
+    final <- final %>%
+        select(-Year) %>%
+        group_by(site_name, domain) %>%
+        summarise(across(where(is.numeric), ~mean(.x, na.rm = TRUE))) }
+    
     return(final)
 })
 
+# Plot data ####
 n_sites <- reactive({
     sites <- filtered_bi()
     
@@ -205,10 +245,10 @@ n_sites <- reactive({
     return(num)
 })
 
-
 output$SUMMARY_BIPLOT = renderPlotly({
+    
     table <- filtered_bi()
-    domains <- isolate(input$DOMAINS2) 
+    domains <- isolate(input$DOMAINS2)
     sites <- isolate(input$SITES2)
     x_var <- isolate(input$X_VAR2)
     y_var <- isolate(input$Y_VAR2)
@@ -217,14 +257,15 @@ output$SUMMARY_BIPLOT = renderPlotly({
     y_unit <- isolate(input$Y_UNIT2)
     size_unit <- isolate(input$SIZE_UNIT2)
     agg <- switch(isolate(input$AGG2),
-                   MONTHLY2 = 'm',
-                   YEARLY2 = 'year')
+                  'YEARLY2' = 'year',
+                  'MONTHLY2' = 'm',
+                  'WHOLE2' = 'year ')
     chem_x <- isolate(input$X_TYPE2)
     chem_y <- isolate(input$Y_TYPE2)
     chem_size <- isolate(input$SIZE_TYPE2)
     
-    # table <<- filtered_bi()
-    # domains <<- isolate(input$DOMAINS2) 
+    # table <- filtered_bi()
+    # domains <<- isolate(input$DOMAINS2)
     # sites <<- isolate(input$SITES2)
     # x_var <<- isolate(input$X_VAR2)
     # y_var <<- isolate(input$Y_VAR2)
@@ -232,12 +273,23 @@ output$SUMMARY_BIPLOT = renderPlotly({
     # x_unit <<- isolate(input$X_UNIT2)
     # y_unit <<- isolate(input$Y_UNIT2)
     # size_unit <<- isolate(input$SIZE_UNIT2)
-    # agg <<- switch(isolate(input$AGG2),
-    #               MONTHLY2 = 'm',
-    #               YEARLY2 = 'year')
+    # agg <<- isolate(input$AGG2)
     # chem_x <<- isolate(input$X_TYPE2)
     # chem_y <<- isolate(input$Y_TYPE2)
     # chem_size <<- isolate(input$SIZE_TYPE2)
+    
+    safe_cols <- c("#88CCEE", "#CC6677", "#DDCC77", "#117733", "#332288", "#AA4499",
+                   "#44AA99", "#999933", "#882255", "#661100", "#6699CC", "#888888")
+    
+    x_test <- convertible(x_var)
+    
+    y_test <- convertible(y_var)
+    
+    size_test <- convertible(size_var)
+    
+    if(!x_test) { x_unit <- '' }
+    if(!y_test) { y_unit <- '' }
+    if(!size_test) { size_unit <- '' }
     
     if(chem_x == 'Flux') {
         x_tvar <- paste(x_var, 'flux', sep = '_')
@@ -254,41 +306,81 @@ output$SUMMARY_BIPLOT = renderPlotly({
         size_unit <- paste0(size_unit, '/', agg)
     } else {size_tvar <- size_var}
     
+    if(chem_x == 'Watershed Characteristics') {
+        x_tvar <- x_var
+        x_var <- str_split_fixed(x_var, pattern = '_', n = Inf)[1]
+        x_unit <- ''
+    } else {x_tvar <- x_var}
+    
+    if(chem_y == 'Watershed Characteristics') {
+        y_tvar <- y_var
+        y_var <- str_split_fixed(y_var, pattern = '_', n = Inf)[1]
+        y_unit <- ''
+    } else {y_tvar <- y_var}
+    
+    if(chem_size == 'Watershed Characteristics') {
+        size_tvar <- size_var
+        size_var <- str_split_fixed(size_var, pattern = '_', n = Inf)[1]
+        size_unit <- ''
+    } else {size_tvar <- size_var}
+    
     num_sites <- n_sites()
     
-    if(num_sites > 8) {
+    if(num_sites > 12) {
         col_by <- 'domain'
         
     } else {col_by <- 'site_name'}
     
-    if(agg == 'm') {
-    
-        plot <- table %>%
-            plotly::plot_ly(x = ~get(x_tvar),
-                y = ~get(y_tvar),
-                size = ~get(size_tvar),
-                color = ~get(col_by),
-                frame = ~month_an,
-                type = 'scatter',
-                mode = 'markers',
-                text = ~paste0(size_var, ' ', size_unit, ':', get(size_var))) %>%
-        plotly::layout(xaxis = list(title = paste0(x_var, ' ', x_unit)),
-                       yaxis = list(title = paste0(y_var, ' ', y_unit))) 
-            #animation_opts(frame = 1000, easing = 'linear', transition = 1000, redraw = TRUE) 
-    } 
-    if(agg == 'year') {
+    # if(agg == 'm') {
+    # 
+    #     plot <- table %>%
+    #         plotly::plot_ly(x = ~get(x_tvar),
+    #             y = ~get(y_tvar),
+    #             size = ~get(size_tvar),
+    #             color = ~get(col_by),
+    #             colors = safe_cols,
+    #             frame = ~Date,
+    #             type = 'scatter',
+    #             mode = 'markers',
+    #             text = ~paste0(size_var, ' ', size_unit, ':', get(size_var))) %>%
+    #     plotly::layout(xaxis = list(title = paste0(x_var, ' ', x_unit)),
+    #                    yaxis = list(title = paste0(y_var, ' ', y_unit)),
+    #                    paper_bgcolor='rgba(0,0,0,0)',
+    #                    plot_bgcolor='rgba(0,0,0,0)') 
+    #         #animation_opts(frame = 1000, easing = 'linear', transition = 1000, redraw = TRUE) 
+    # } 
+    if(agg %in% c('year', 'm')) {
         plot <- table %>%
             plotly::plot_ly(x = ~get(x_tvar),
                         y = ~get(y_tvar),
                         size = ~get(size_tvar),
                         color = ~get(col_by),
-                        frame = ~year,
+                        colors = safe_cols,
+                        frame = ~Date,
                         type = 'scatter',
                         mode = 'markers',
                         text = ~paste0(size_var, ' ', size_unit, ':', get(size_var))) %>%
             plotly::layout(xaxis = list(title = paste0(x_var, ' ', x_unit)),
-                           yaxis = list(title = paste0(y_var, ' ', y_unit))) 
+                           yaxis = list(title = paste0(y_var, ' ', y_unit)),
+                           paper_bgcolor='rgba(0,0,0,0)',
+                           plot_bgcolor='rgba(0,0,0,0)') 
             #animation_opts(frame = 1000, easing = 'linear', transition = 1000, redraw = TRUE)
+    }
+    if(agg == 'year ') {
+        plot <- table %>%
+            plotly::plot_ly(x = ~get(x_tvar),
+                            y = ~get(y_tvar),
+                            size = ~get(size_tvar),
+                            color = ~get(col_by),
+                            colors = safe_cols,
+                            type = 'scatter',
+                            mode = 'markers',
+                            text = ~paste0(size_var, ' ', size_unit, ':', get(size_var))) %>%
+            plotly::layout(xaxis = list(title = paste0('Mean', ' ', x_var, ' ', x_unit)),
+                           yaxis = list(title = paste0('Mean', ' ', y_var, ' ', y_unit)),
+                           paper_bgcolor='rgba(0,0,0,0)',
+                           plot_bgcolor='rgba(0,0,0,0)') 
+        #animation_opts(frame = 1000, easing = 'linear', transition = 1000, redraw = TRUE)
     }
     
     return(plot)

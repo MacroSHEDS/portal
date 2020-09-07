@@ -624,9 +624,51 @@ update_site_obvs <- function() {
     full <- left_join(sites, observations, by = "site_name")
 
     write_csv(full, "data/site_data.csv")
+} 
+
+get_local_solar_time <- function(df, time) {
+
+    site_info <- site_data %>%
+        select(longitude, local_time_zone, site_name)
+    
+    df <- df %>%
+        left_join(site_info, by = 'site_name') 
+    
+    sites <- unique(df$site_name)
+    
+    final <- tibble()
+    
+    for(i in 1:length(sites)) {
+        times <- df %>%
+            filter(site_name == !!sites[i]) %>%
+            mutate(Local = force_tz(with_tz(datetime, local_time_zone), 'UTC')) %>%
+            mutate(local_dif = Local-datetime,
+                   doy = yday(datetime)) %>%
+            mutate(solar_dif = solartime::computeSolarToLocalTimeDifference(longitude, local_dif, doy)) %>%
+            mutate(Solar = Local + seconds(solar_dif*60*60)) %>%
+            mutate(datetime = .data[[time]]) %>%
+            select(-solar_dif, -doy, -local_dif, -Local, -Solar, -longitude, -local_time_zone)
+        
+        final <- rbind(final, times)
     }
+    return(final)
+}
 
 # Biplot stuff
+
+convertible <- function(var) {
+    if(var == 'Q') {return(FALSE)}
+    test <- pull(variables %>%
+                          filter(variable_code == var) %>%
+                          select(unit))
+    
+    log <- !test %in% c('unitless', 'degrees C') 
+    if(length(log) == 0) {
+        return(FALSE)
+    }
+    
+    return(log)
+}
 
 convert_conc_units_bi = function(df, col, input_unit='mg/L', desired_unit){
 
@@ -635,7 +677,10 @@ convert_conc_units_bi = function(df, col, input_unit='mg/L', desired_unit){
     #desired unit is one of the keys in the call to `switch` below
 
     require(PeriodicTable)
-
+    
+    if(input_unit %in% c('unitless', 'degrees C') | length(input_unit) == 0) {
+        return(df)
+    }
 
     conc_df = df[col]
 
@@ -695,4 +740,3 @@ convert_flux_units_bi = function(df, col, input_unit='kg/ha', desired_unit){
 
     return(df)
 }
-
