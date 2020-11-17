@@ -625,6 +625,3 @@ update_site_obvs <- function() {
     write_csv(full, "data/site_data.csv")
     }
 
-
-
-

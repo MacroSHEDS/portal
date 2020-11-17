@@ -855,6 +855,11 @@ output$GRAPH_Q3 = renderDygraph({
     }, error=function(e) NULL)
     dates = isolate(input$DATES3)
     sites = na.omit(isolate(input$SITES3[1:3]))
+    
+    #ii <<- dates
+    #dates <- ii
+    #ww <<- sites
+    #sites <- ww
 
     #ii <<- dates
     #dates <- ii
