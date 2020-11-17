@@ -651,7 +651,6 @@ get_local_solar_time <- function(df, time) {
             mutate(Solar = Local + seconds(solar_dif*60*60)) %>%
             mutate(datetime = .data[[time]]) %>%
             select(-solar_dif, -doy, -local_dif, -Local, -Solar, -longitude, -local_time_zone)
-
         final <- rbind(final, times)
     }
     return(final)
@@ -680,7 +679,6 @@ convert_conc_units_bi = function(df, col, input_unit='mg/L', desired_unit){
     #desired unit is one of the keys in the call to `switch` below
 
     require(PeriodicTable)
-
     if(input_unit %in% c('unitless', 'degrees C') | length(input_unit) == 0) {
         return(df)
     }

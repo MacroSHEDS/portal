@@ -139,7 +139,6 @@ load_basedata = eventReactive({
     reactive_vals$update_basedata
     input$TIME
 }, {
-
     time <- input$TIME
     dmns = get_domains3()
 
@@ -324,7 +323,7 @@ dataQ = reactive({
     sites = input$SITES3
     agg = input$AGG3
     basedata = load_basedata()
-    # input$TIME
+    input$TIME
 
     dataq = basedata$Q
     # dataq <<- basedata$Q %>%
