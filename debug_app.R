@@ -1,0 +1,6 @@
+setwd('~/git/macrosheds/portal/')
+# source('app.R')
+source('global.R')
+source('ui.R')
+source('server.R')
+runApp(shinyApp(ui, server, options=list(launch.browser=TRUE)))

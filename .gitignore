@@ -1,0 +1,17 @@
+/data
+config.txt
+.Rhistory
+rsconnect
+temp_shinyappsio
+site_data.csv
+*.svg
+logs
+.Rproj.user
+portal.Rproj
+.RData
+.RDataTmp
+.DS_Store
+*.DS_Store
+ui/.DS_Store
+server/.DS_Store
+*.Rapp.history 

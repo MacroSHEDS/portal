@@ -1,0 +1,158 @@
+suppressPackageStartupMessages({
+    library(V8)
+    library(feather)
+    library(plyr)
+    library(data.table)
+    # library(dtplyr)
+    library(shiny)
+    library(shinydashboard)
+    library(plotly)
+    library(dygraphs)
+    # library(DBI)
+    library(ggthemes)
+    # library(ggplot2)
+    # library(colorspace)
+    library(jsonlite)
+    library(lubridate)
+    library(xts)
+    library(leaflet)
+    library(tidyverse)
+    library(glue)
+    library(shinyjs)
+    library(googlesheets4)
+})
+
+#todo:
+#most of the variables created in this script can be automatically generated.
+    #those that can't should be read from a config file or spreadsheet eventually.
+#attend to trailing comments within this script
+
+#options(dplyr.summarise.inform = FALSE)
+
+#uncomment and execute (without saving script) to deploy demo app
+# rsconnect::deployApp('/home/mike/git/macrosheds/portal',
+#     appName='MacroSheds_demo')
+# rsconnect::deployApp('/home/mike/git/macrosheds/portal',
+#     appName='portal', account='macrosheds')
+
+#for local testing (comment all before pushing live)
+# setwd('~/git/macrosheds/portal')
+# setwd('~/desktop/macrosheds/portal')
+# options(shiny.trace = TRUE) #see every communication between ui and server
+# options(shiny.reactlog = TRUE) #see map of reactivity by running reactlogShow()
+# options(shiny.error='recover') #enter debugger when error occurs
+options(shiny.fullstacktrace=TRUE) #see stack traces for all errors (incl. dplyr)
+# options(shiny.sanitize.errors = TRUE) #hide errors in the app
+
+source('helpers.R') #maybe package these or put them in a namespace called "ms"
+source('function_aliases.R')
+
+#load global datasets
+googlesheets4::gs4_auth(path = '../data_acquisition/googlesheet_service_accnt.json')
+conf <- jsonlite::fromJSON('../data_acquisition/config.json')
+load_portal_config(from_where = 'remote')
+
+# site_data = sm(readr::read_csv('data/site_data.csv')) %>%
+    # filter(as.logical(in_workflow))
+site_data <- filter(site_data, as.logical(in_workflow))
+# if(any(duplicated(site_data$site_name))) stop('site_names must be unique, even across domains')
+# variables = sm(readr::read_csv('data/variables.csv'))
+
+#set defaults, which determine what data are shown when user lands
+default_domain = 'hbef'
+default_sites_by_domain = list(
+    'hbef'='w1',
+    'hjandrews'='GSLOOK',
+    'neon'='ARIK') #this can be generated automatically and overridden here
+default_sitelist = sitelist_from_domain(default_domain, type='stream_gauge')
+default_site = default_sites_by_domain[[default_domain]]
+
+#load base data for when user lands in app (could use convenience functions here)
+basedata = list(
+    Q = read_feather(glue('data/{d}/discharge/{s}.feather',
+        d=default_domain, s=default_site)),
+    chem = read_feather(glue('data/{d}/stream_chemistry/{s}.feather',
+        d=default_domain, s=default_site)),
+    flux = read_feather(glue('data/{d}/stream_flux_inst/{s}.feather',
+        d=default_domain, s=default_site)),
+    # P = read_feather(glue('data/{d}/precip.feather',
+    #     d=default_domain)), #update once rain gage interpolation is done
+    P = read_feather(glue('data/{d}/precipitation/{s}.feather',
+        d=default_domain, s=default_site)),
+    pchem = read_feather(glue('data/{d}/precip_chemistry/{s}.feather',
+        d=default_domain, s=default_site)),
+    pflux = read_feather(glue('data/{d}/precip_flux_inst/{s}.feather',
+        d=default_domain, s=default_site))
+)
+
+#make vector of domain IDs and their pretty names
+domains_df = unique(site_data[, c('domain', 'pretty_domain', 'network')])
+domains_pretty = domains_df$domain
+names(domains_pretty) = domains_df$pretty_domain
+
+#create collections of variable types, some of them as menu-ready lists
+fluxvars = variables %>%
+    filter(as.logical(flux_convertible)) %>%
+    pull(variable_code)
+
+chemvars = variables %>%
+    filter(
+        #variable_type == 'grab',
+        ! variable_code %in% c('flowGageHt', 'P'))
+    # filter(variable_code %in% fluxvars) #might need this back temporarily
+chemvars_display = generate_dropdown_varlist(chemvars)
+
+pchemvars = list( #temporary: update this list as part of a daily scheduled task
+    hbef=c('pH', 'spCond', 'Ca', 'Mg', 'K', 'Na', 'TMAl', 'OMAl', 'Al_ICP',
+        'NH4', 'SO4', 'NO3', 'Cl', 'PO4', 'DOC', 'TDN', 'DON', 'SiO2', 'Mn', 'Fe',
+        'F', 'cationCharge', 'anionCharge', 'theoryCond', 'ionError', 'ionBalance'),
+    hjandrews=c('alk', 'Ca', 'Cl', 'spCond', 'DOC', 'K', 'Mg', 'Na', 'NH3_N',
+        'NO3_N', 'pH', 'PO4_P', 'SiO2', 'SO4_S', 'suspSed', 'TDN', 'TDP', 'TKN',
+        'UTKN', 'UTN', 'UTP'))
+pchemvars_display = generate_dropdown_varlist(chemvars,
+        filter_set=Reduce(union, pchemvars))
+
+conc_vars = variables %>%
+    filter(
+        unit == 'mg/L', #all conc vars should be in this unit to begin with?
+        ! variable_code %in% c('alk', 'suspSed')) %>%
+    pull(variable_code)
+
+conc_units = c('ng/L', 'ug/L', 'mg/L', 'g/L', 'nM', 'uM', 'mM', 'M',
+    'neq/L', 'ueq/L', 'meq/L', 'eq/L')
+flux_units = c('Mg/ha/d', 'kg/ha/d', 'g/ha/d', 'mg/ha/d')
+
+#map pretty names (including mouseover ?s) to internal IDs for conc/flux metrics
+conc_flux_names = c('Concentration'='Concentration','x'='Flux', 'y'='VWC')
+names(conc_flux_names)[2] = paste('Flux (interpolated)', enc2native('\U2753'))
+names(conc_flux_names)[3] = paste('Flux (VWC)', enc2native('\U2753'))
+
+raincolors = c('#8ab5de', '#36486b', '#618685') #blues
+linecolors = c('#323232', '#008040', '#800080') #black, green, purple
+pchemcolors = c('#585858', '#1bff8c', '#ff1bff') #lighter shades of the above
+
+sites_with_P = sites_by_var('precipitation')
+sites_with_Q = sites_by_var('discharge')
+sites_with_pchem = sites_by_var('precip_chemistry')
+
+#might need modification now that files are read site-by-site
+chemvars_display_subset = filter_dropdown_varlist(basedata$chem)
+pchemvars_display_subset = filter_dropdown_varlist(basedata$pchem)
+
+dtrng = as.Date(range(basedata$chem$datetime, na.rm=TRUE))
+
+#biplot
+biplot_options <- chemvars_display_subset
+biplot_data_types <- c('Concentration', 'Flux', 'Discharge', 'Watershed Characteristics')
+flux_units_bi = c('Mg/ha', 'kg/ha', 'g/ha', 'mg/ha')
+
+ws_traits <- list('Bare Ground Cover' = list('Watershed Median (%)' = 'bare_cover_median', 'Watershed Standard Deviation' = 'bare_cover_sd'),
+                  'Tree Cover' = list('Watershed Median (%)' = 'tree_cover_median', 'Watershed Standard Deviation' = 'tree_cover_sd'),
+                  'Non-Tree Cover' = list('Watershed Median (%)' = 'veg_cover_median', 'Watershed Standard Deviation' = 'veg_cover_sd'),
+                  'Start of Growing Season' = list('Watershed Median (DOY)' = 'sos_mean', 'Watershed Standard Deviation' = 'sos_sd'),
+                  'End of Growing Season' = list('Watershed Median (DOY)' = 'eos_mean', 'Watershed Standard Deviation' = 'eos_sd'),
+                  'Leaf Area Index' = list('Annual Maximum' = 'lai_max', 'Annual Mean' = 'lai_mean', 'Annual Minimum' = 'lai_min', 'Annual Standard Deviation' = 'lai_sd_year', 'Watershed Standard Deviation' = 'lai_sd_space'),
+                  'Fraction of Absorbed Photosynthetically Active Radiation' = list('Annual Maximum' = 'fpar_max', 'Annual Mean' = 'fpar_mean', 'Annual Minimum' = 'fpar_min', 'Annual Standard Deviation' = 'fpar_sd_year', 'Watershed Standard Deviation' = 'fpar_sd_space'),
+                  'Gross Primary Production (kg*C/m^2)' = list('Annual Sum' = 'gpp_sum', 'Annual Standard Deviation' = 'gpp_sd_year', 'Watershed Standard Deviation' = 'gpp_sd_space'),
+                  'Net Primary Production  (kg*C/m^2)' = list('Annual Sum' = 'npp_median', 'Watershed Standard Deviation' = 'npp_sd'))
+ws_traits_sub <- lapply(ws_traits, `[[`, 1)
