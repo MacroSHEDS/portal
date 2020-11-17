@@ -29,6 +29,13 @@ landing_page =
                 )
             ),
             fluidRow(class='text-center',
+                column(8, offset=2,
+                    br(),
+                    br(),
+                    p("This portal is still under heavy development, so features and data may change. In particular, our NEON datasets will continue to expand as NEON's stream discharge product comes online."),
+                )
+            ),
+            fluidRow(class='text-center',
                 column(12,
                     br(),
                     br(),

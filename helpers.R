@@ -617,11 +617,126 @@ update_site_obvs <- function() {
 
             observations <- rbind(new, observations)
         }
-        }
+    }
+
     sites <- sm(read_csv("data/site_data.csv"))
 
     full <- left_join(sites, observations, by = "site_name")
 
     write_csv(full, "data/site_data.csv")
+} 
+
+get_local_solar_time <- function(df, time) {
+
+    site_info <- site_data %>%
+        select(longitude, local_time_zone, site_name)
+    
+    df <- df %>%
+        left_join(site_info, by = 'site_name') 
+    
+    sites <- unique(df$site_name)
+    
+    final <- tibble()
+    
+    for(i in 1:length(sites)) {
+        times <- df %>%
+            filter(site_name == !!sites[i]) %>%
+            mutate(Local = force_tz(with_tz(datetime, local_time_zone), 'UTC')) %>%
+            mutate(local_dif = Local-datetime,
+                   doy = yday(datetime)) %>%
+            mutate(solar_dif = solartime::computeSolarToLocalTimeDifference(longitude, local_dif, doy)) %>%
+            mutate(Solar = Local + seconds(solar_dif*60*60)) %>%
+            mutate(datetime = .data[[time]]) %>%
+            select(-solar_dif, -doy, -local_dif, -Local, -Solar, -longitude, -local_time_zone)
+        
+        final <- rbind(final, times)
+    }
+    return(final)
+}
+
+# Biplot stuff
+
+convertible <- function(var) {
+    if(var == 'Q') {return(FALSE)}
+    test <- pull(variables %>%
+                          filter(variable_code == var) %>%
+                          select(unit))
+    
+    log <- !test %in% c('unitless', 'degrees C') 
+    if(length(log) == 0) {
+        return(FALSE)
+    }
+    
+    return(log)
+}
+
+convert_conc_units_bi = function(df, col, input_unit='mg/L', desired_unit){
+
+    #df is a data frame or tibble of numeric concentration data
+    #input_unit is the unit of concs (must be 'mg/L')
+    #desired unit is one of the keys in the call to `switch` below
+
+    require(PeriodicTable)
+    
+    if(input_unit %in% c('unitless', 'degrees C') | length(input_unit) == 0) {
+        return(df)
     }
 
+    conc_df = df[col]
+
+    conc_cols=col
+
+    if(grepl('g', desired_unit)){
+
+        converted = switch(desired_unit,
+                           'ng/L' = conc_df * 1000000,
+                           'ug/L' = conc_df * 1000,
+                           'mg/L' = conc_df,
+                           'g/L' = conc_df / 1000)
+
+    } else {
+
+        solutes = colnames(conc_df)
+        constituents = parse_molecular_formulae(solutes)
+        molar_mass = sapply(constituents, combine_atomic_masses)
+
+        mm_scaled = switch(substr(desired_unit, 0, 1),
+                           'n' = molar_mass * 1000000, #desired unit could be nM or neq/L
+                           'u' = molar_mass * 1000, #and so on...
+                           'm' = molar_mass,
+                           'M' = molar_mass / 1000, #desired unit must be 'M'
+                           'e' = molar_mass / 1000) #desired unit must be 'eq/L'
+
+        if(grepl('q', desired_unit)){
+            valence = variables$valence[variables$variable_code %in% solutes]
+            mm_scaled = mm_scaled * valence
+        }
+
+        converted = data.frame(mapply(`*`, conc_df, mm_scaled, SIMPLIFY=FALSE))
+    }
+
+    df[conc_cols] = converted
+
+    return(df)
+}
+
+convert_flux_units_bi = function(df, col, input_unit='kg/ha', desired_unit){
+
+    #df is a data frame or tibble of numeric flux data
+    #input_unit is the unit of flux (must be 'kg/ha/d')
+    #desired unit is one of the keys in the call to `switch` below
+
+    col_name <- col
+    flux_cols = col_name
+    flux_df = df[col_name]
+
+    converted = switch(desired_unit,
+                       'Mg/ha' = flux_df / 1000,
+                       'kg/ha' = flux_df,
+                       'g/ha' = flux_df * 1000,
+                       'mg/ha' = flux_df * 1000000)
+
+    df[flux_cols] = converted
+
+    return(df)
+}
