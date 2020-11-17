@@ -1,32 +1,64 @@
-summary_biplot_tab = tabPanel('Pretty Much Gapminder', value='gap',
-    fluidRow(
-        column(12, align='left',
-            div(align='center', style=paste0(
-                'display: inline-block;',
-                'vertical-align:middle;'),
-                p('Info and stuff; maybe some options')
-            )
-        )
-    ),
-    fluidRow(
-        column(1,
-            selectizeInput('Y_VAR', '', choices=grabcols,
-                selected=grabcols[2])
-            # div(id='Y_VAR', grabcols[2],
-            #     style=paste0('-webkit-transform: rotate(270deg);',
-            #     'transform: rotate(270deg);',
-            #     'color: DodgerBlue'))
+summary_biplot_tab = tabPanel('Biplot', value='biplot',
+    sidebarLayout(
+        sidebarPanel(
+        div('Site Selection', class='widget-title text-center'),
+        radioButtons('SITE_SELECTION2', label=NULL,
+                     choices=c('All Sites'='ALL_SITES2',
+                               'By Domain/Network'='DOMINE_NETWORK2',
+                               'By Site'='BY_SITE2'),
+                     selected='ALL_SITES2'),
+        br(),
+        conditionalPanel('input.SITE_SELECTION2 == "DOMINE_NETWORK2"',
+                         div('Domains', class='widget-title text-center'),
+                         selectizeInput('DOMAINS2', label=NULL, selected=default_domain,
+                                        choices=domains_pretty, multiple=TRUE)
         ),
-        column(11,
-            plotOutput('SUMMARY_BIPLOT', brush='biplot_brush')
-            # height='auto', width='auto')
-        )
-    ),
-    fluidRow(
-        column(12, align='left',
-            selectizeInput('X_VAR', '', choices=grabcols,
-                selected=grabcols[1])
-        )
-    )
+        conditionalPanel('input.SITE_SELECTION2 == "BY_SITE2"',
+                         div('Domains', class='widget-title text-center'),
+                         selectizeInput('DOMAINS2_S', label=NULL, selected=default_domain,
+                                        choices=domains_pretty, multiple=TRUE),
+                         div('Sites', class='widget-title text-center'),
+                         selectizeInput('SITES2', label=NULL, selected=default_site,
+                                        choices=default_sitelist, multiple=TRUE)),
+        br(),
+        div('Aggregation', class = 'widget-title text-center'),
+        radioButtons('AGG2', label=NULL,
+                     choices=c('Whole Record'='WHOLE2',
+                               'Yearly'='YEARLY2',
+                               'Monthly'='MONTHLY2'),
+                     selected='YEARLY2'),
+        br(),
+        div('Plot Options', class = 'widget-title text-center'),
+        div('X Variable'),
+        selectizeInput('X_TYPE2', label=NULL,
+                       multiple=FALSE, choices=biplot_data_types, selected = 'Discharge'),
+        selectizeInput('X_VAR2', label=NULL,
+                       selected=biplot_options[[1]][[1]],
+                       multiple=FALSE, choices=biplot_options),
+        selectizeInput('X_UNIT2', label=NULL,
+                       multiple=FALSE, choices=conc_units),
+        br(),
+        div('Y Variable'),        
+        selectizeInput('Y_TYPE2', label=NULL,
+                       multiple=FALSE, choices=biplot_data_types, selected = 'Concentration'),
+        selectizeInput('Y_VAR2', label=NULL,
+                       selected=biplot_options[[1]][[2]],
+                       multiple=FALSE, choices=biplot_options),
+        selectizeInput('Y_UNIT2', label=NULL,
+                       selected = conc_units[3], multiple=FALSE, choices =conc_units),
+        br(),
+        div('Size Variable'),
+        selectizeInput('SIZE_TYPE2', label=NULL,
+                       multiple=FALSE, choices=biplot_data_types, selected = 'Concentration'),    
+        selectizeInput('SIZE_VAR2', label=NULL,
+                       selected=biplot_options[[1]][[3]],
+                       multiple=FALSE, choices=biplot_options),
+        selectizeInput('SIZE_UNIT2', label=NULL,
+                       selected = conc_units[3], multiple=FALSE, choices =conc_units),
+        width =3),
+        mainPanel(plotlyOutput('SUMMARY_BIPLOT'),
+                  sliderInput("DATES2_INTER", label=NULL, min=dtrng[1], max=dtrng[2],
+                              value=most_recent_year(dtrng),
+                              width='100%', timeFormat='%b %Y', step=30,
+                              dragRange=TRUE)))
 )
-
