@@ -18,7 +18,8 @@ ui = fluidPage(
         "@import url('https://fonts.googleapis.com/css?family=Montserrat');"))),
     tags$head(tags$link(rel="stylesheet", type="text/css", href="app.css")),
     useShinyjs(),
-    extendShinyjs(script='js/general.js'),
+    extendShinyjs(script = 'js/general.js',
+                  functions = 'init'),
 
     dashboardPage(
         dashboardHeader(disable=TRUE),

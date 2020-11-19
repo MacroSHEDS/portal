@@ -2,7 +2,7 @@
 #TODO: add a line like this to all renderers to attempt popout windows again
 # output$GRAPH_PRECIP3a = output$GRAPH_PRECIP3aEXP = renderDygraph({
 
-#govern showing/hiding of facets ####
+## govern showing/hiding of facets ####
 
 reactive_vals = reactiveValues()
 reactive_vals$facet3a = 0
@@ -106,19 +106,20 @@ observeEvent({
     reactive_vals$facet3cP = reactive_vals$facet3cP + 1
 })
 
-#reactivity flow control ####
+## reactivity flow control ####
 
 #when domain(s) change, site options and basedata change, but not site selections
-get_domains3 = eventReactive(input$DOMAINS3, {
+get_domains3 <- eventReactive(input$DOMAINS3, {
 
-    domains = input$DOMAINS3
+    domains <- input$DOMAINS3
 
-    reactive_vals$update_basedata = reactive_vals$update_basedata + 1
+    reactive_vals$update_basedata <- reactive_vals$update_basedata + 1
 
-    updateSelectizeInput(session, 'SITES3',
-        choices=generate_dropdown_sitelist(domains),
-        selected=input$SITES3,
-        options=list(maxItems=3))
+    updateSelectizeInput(session,
+                         'SITES3',
+                         choices = generate_dropdown_sitelist(domains),
+                         selected = input$SITES3,
+                         options = list(maxItems = 3))
 
     return(domains)
 })
@@ -134,36 +135,58 @@ get_domains3 = eventReactive(input$DOMAINS3, {
 # })
 
 #when site(s) change or basedata reactive value updates, basedata changes
-load_basedata = eventReactive({
+load_basedata <- eventReactive({
+
     input$SITES3
     reactive_vals$update_basedata
     input$TIME
+
 }, {
+
     time <- input$TIME
-    dmns = get_domains3()
+    dmns <- get_domains3()
 
     if(is.null(dmns)){ #for empty domain dropdown
-        dmns = init_vals$recent_domain
-        sites = default_sites_by_domain[[dmns[1]]] #overkill?
+        dmns <- init_vals$recent_domain
+        sites <- get_default_site(domain = dmns[1])
     } else {
-        sites = input$SITES3
+        sites <- input$SITES3
     }
 
     #NOTE: read_combine_feathers will have to be modified once rain data are
     #no longer aggregated for each domain
-    Q = read_combine_feathers('discharge', dmns=dmns, sites=sites)
-    chem = read_combine_feathers('stream_chemistry', dmns=dmns, sites=sites)
-    flux = read_combine_feathers('stream_flux_inst', dmns=dmns, sites=sites)
-    P = read_combine_feathers('precipitation', dmns=dmns, sites=sites)
-    pchem = read_combine_feathers('precip_chemistry', dmns=dmns, sites=sites)
-    pflux = read_combine_feathers('precip_flux_inst', dmns=dmns, sites=sites)
+    Q <- read_combine_feathers('discharge',
+                               dmns = dmns,
+                               sites = sites)
+    chem <- read_combine_feathers('stream_chemistry',
+                                  dmns = dmns,
+                                  sites = sites)
+    flux <- read_combine_feathers('stream_flux_inst',
+                                  dmns = dmns,
+                                  sites = sites)
+    P <- read_combine_feathers('precipitation',
+                               dmns = dmns,
+                               sites = sites)
+    pchem <- read_combine_feathers('precip_chemistry',
+                                   dmns = dmns,
+                                   sites = sites)
+    pflux <- read_combine_feathers('precip_flux_inst',
+                                   dmns = dmns,
+                                   sites = sites)
 
-    init_vals$recent_domain = dmns[1] #needed?
+    init_vals$recent_domain <- dmns[1] #needed?
 
-    basedata = list(Q=Q, chem=chem, flux=flux, P=P, pchem=pchem, pflux=pflux)
+    basedata <- list(Q = Q,
+                     chem = chem,
+                     flux = flux,
+                     P = P,
+                     pchem = pchem,
+                     pflux = pflux)
 
     if(time != 'UTM' & isolate(input$AGG3) == 'Instantaneous') {
-        basedata <- purrr::modify2(basedata, get_local_solar_time, .y = time)
+        basedata <- purrr::modify2(basedata,
+                                   get_local_solar_time,
+                                   .y = time)
     }
 
     return(basedata)
@@ -332,8 +355,8 @@ dataQ = reactive({
     if(nrow(dataq) == 0) return(dataq)
 
     dataq = dataq %>%
-        filter(datetime > dates[1], datetime < dates[2]) %>%
-        select(datetime, site_name, discharge)
+        filter(datetime > dates[1], datetime < dates[2])
+        # select(datetime, site_name, discharge)
 
     if(nrow(dataq) == 0) return(dataq)
 
@@ -350,7 +373,8 @@ dataQ = reactive({
     return(dataq)
 })
 
-#post-filtering data modifications ####
+## post-filtering data modifications ####
+
 #these should only update when prerequisite reactive data (above) updates, so
 #all user inputs should be isolated
 
@@ -463,7 +487,7 @@ volWeightedPchem3 = reactive({
     return(volWeightedConc)
 })
 
-#plot generators ####
+## plot generators ####
 #these should only update when prerequisite reactive data or facets change
 #def could use better abstraction, efficiency measures
 
@@ -591,7 +615,7 @@ output$GRAPH_MAIN3a <- renderDygraph({
 
     if(conc_flux == 'VWC'){
         # streamdata <<- volWeightedChem3()
-          streamdata = volWeightedChem3()
+        streamdata = volWeightedChem3()
     } else {
         # streamdata <<- dataChem()
         streamdata = dataChem()

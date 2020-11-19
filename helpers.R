@@ -272,27 +272,38 @@ most_recent_year = function(date_range){
     return(mry)
 }
 
-sitelist_from_domain = function(dmn, type){
+get_sitelist <- function(domain, type){
 
-    #type is one of the types listed in site_data.csv, e.g. 'stream_gauge'
+    #type is one or more of the types listed in site_data.csv, e.g. 'stream_gauge'
 
-    sitelist = site_data %>%
-        filter(domain == dmn, site_type == type) %>%
+    sitelist <- site_data %>%
+        filter(domain == !!domain,
+               # network == !!network, #we should eventually observe hierarchy all the way up to the network
+               site_type %in% !!type) %>%
         pull(site_name)
 
     return(sitelist)
 }
 
-try_read_feather = function(path){
+try_read_feather <- function(path){
 
-    out = try(feather::read_feather(path), silent=TRUE)
-    if('try-error' %in% class(out)) out = tibble()
+    out <- try(feather::read_feather(path),
+               silent = TRUE)
+
+    if('try-error' %in% class(out)){
+        out <- tibble()
+    } else {
+        out <- out %>%
+            mutate(val = errors::set_errors(val,
+                                            val_err)) %>%
+            select(-val_err)
+    }
 
     return(out)
 }
 
 # var='precip'; dmns=c('hbef', 'neon'); sites=c('CUPE', 'W1', 'BIGC')
-read_combine_feathers = function(var, dmns, sites=NULL){
+read_combine_feathers <- function(var, dmns, sites = NULL){
 
     #in order to allow duplicate sitenames across domains, must invoke js here
     #see ms_todo
@@ -300,20 +311,25 @@ read_combine_feathers = function(var, dmns, sites=NULL){
     #in case duplicate sitenames do appear, this will make it a bit less
     #likely that there's a collision. this can be simplified if js solution
     #is implemented
-    dmn_sites = site_data %>%
-        filter(domain %in% dmns, site_type == 'stream_gauge') %>%
+    dmn_sites <- site_data %>%
+        filter(domain %in% dmns, site_type %in% c('stream_gauge', 'stream_sampling_point')) %>%
         filter(site_name %in% sites) %>%
         select(domain, site_name)
 
-    combined_data = tibble()
+    combined_data <- tibble()
     for(i in 1:nrow(dmn_sites)){
 
-        filestr = glue('data/{d}/{v}/{s}.feather',
-            d=dmn_sites$domain[i], v=var, s=dmn_sites$site_name[i])
+        filestr <- glue('data/{d}/{v}/{s}.feather',
+                        d = dmn_sites$domain[i],
+                        v = var,
+                        s = dmn_sites$site_name[i])
 
-        data_part = try_read_feather(filestr)
+        data_part <- try_read_feather(filestr)
+
         # if(var %in% c('precip', 'pchem')) data_part$domain = dmn_sites$domain[i]
-        combined_data = bind_rows(combined_data, data_part)
+
+        combined_data <- bind_rows(combined_data,
+                                   data_part)
     }
 
     return(combined_data)
@@ -553,7 +569,8 @@ generate_dropdown_sitelist = function(domain_vec){
 
     sitelist = list()
     for(i in 1:length(domain_vec)){
-        domain_sites = sitelist_from_domain(domain_vec[i], 'stream_gauge')
+        domain_sites <- get_sitelist(domain = domain_vec[i],
+                                     type = c('stream_gauge', 'stream_sampling_point'))
         sitelist[[i]] = domain_sites
     }
     names(sitelist) = names(domains_pretty[match(domain_vec, domains_pretty)])
@@ -789,4 +806,37 @@ extract_var_prefix <- function(x){
     prefix <- substr(x, 1, 2)
 
     return(prefix)
+}
+
+get_default_site <- function(domain){
+
+    site <- network_domain_default_sites %>%
+        filter(domain == !!domain) %>%
+               # network == !!network) %>% #TODO: observe network level in portal
+        pull(default_site)
+
+    return(site)
+}
+
+ms_read_portalsite <- function(domain,
+                               site_name,
+                               prodname){
+
+    #read data from network/domain/site, arrange by variable then datetime.
+    #insert val_err column
+    #into the val column as errors attribute and then remove val_err column
+    #(error/uncertainty is handled by the errors package as an attribute,
+    #so it must be written/read as a separate column).
+
+    d <- read_feather(glue('data/{dmn}/{p}/{s}.feather',
+                           dmn = domain,
+                           p = prodname,
+                           s = site_name))
+
+    d <- d %>%
+        mutate(val = errors::set_errors(val, val_err)) %>%
+        select(-val_err) %>%
+        arrange(var, datetime)
+
+    return(d)
 }
