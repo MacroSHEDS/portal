@@ -52,7 +52,8 @@ source('function_aliases.R')
 #load global datasets
 googlesheets4::gs4_auth(path = '../data_acquisition/googlesheet_service_accnt.json')
 conf <- jsonlite::fromJSON('../data_acquisition/config.json')
-load_portal_config(from_where = 'remote')
+load_portal_config(from_where = 'remote') #TODO: load this from file! (too slow)
+#                                         #      or put up a loading screen
 site_data <- filter(site_data, as.logical(in_workflow))
 
 #TODO: allow duplicate site_names

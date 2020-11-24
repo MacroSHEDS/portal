@@ -1,34 +1,66 @@
-nSiteNVar_tab = tabPanel("Multisite", value='multisite_exploration',
+nSiteNVar_tab <- tabPanel("Multisite",
+                          value = 'multisite_exploration',
+
     sidebarLayout(
-        sidebarPanel(
-            div('Domains', class='widget-title text-center'),
-            selectizeInput('DOMAINS3', label=NULL, selected=default_domain,
-                choices=domains_pretty, multiple=TRUE,
-                options=list(maxItems=3, allowEmptyOption=FALSE)),
+        sidebarPanel(width = 3,
+
+            #domain selector
+            div('Domains',
+                class = 'widget-title text-center'),
+
+            selectizeInput('DOMAINS3',
+                           label = NULL,
+                           selected = default_domain,
+                           choices = domains_pretty,
+                           multiple = TRUE,
+                           options = list(maxItems = 3,
+                                          allowEmptyOption = FALSE)),
+
             div('(Up to 3; populates sites)',
-                class='widget-caption text-center'),
-                # choices=domains_pretty, multiple=TRUE, options=list(maxItems=2)),
-            # div('(Choose 1 or 2; populates sites)',
-            #     class='widget-caption text-center'),
+                class = 'widget-caption text-center'),
             br(),
-            div('Sites', class='widget-title text-center'),
-            selectizeInput('SITES3', label=NULL, selected=default_site,
-                choices=default_sitelist, multiple=TRUE, options=list(maxItems=3)),
+
+            #site selector
+            div('Sites',
+                class = 'widget-title text-center'),
+
+            selectizeInput('SITES3',
+                           label = NULL,
+                           selected = default_site,
+                           choices = default_sitelist,
+                           multiple = TRUE,
+                           options = list(maxItems = 3)),
+
             div('(Up to 3; populates variables)',
-                class='widget-caption text-center'),
+                class = 'widget-caption text-center'),
             br(),
-            div('Variables', class='widget-title text-center'),
-            selectizeInput('VARS3', label=NULL,
-                selected=chemvars_display_subset[[1]][[1]],
-                multiple=TRUE, choices=chemvars_display_subset,
-                options=list(maxItems=3)),
-            div('(Up to 3)', class='widget-caption text-center'),
+
+            #variable selector
+            div('Variables',
+                class = 'widget-title text-center'),
+
+            selectizeInput('VARS3',
+                           label = NULL,
+                           selected = chemvars_display_subset[[1]][[1]],
+                           multiple = TRUE,
+                           choices = chemvars_display_subset,
+                           options = list(maxItems = 3)),
+
+            div('(Up to 3)',
+                class = 'widget-caption text-center'),
             br(),
-            checkboxInput('SHOW_PCHEM3', value=FALSE,
-                label=paste('Show precip chemistry', enc2native('\U2753'))),
-            checkboxInput('SHOW_QC3', value=FALSE,
-                label=paste('Show Q-C plots')),
+
+            #display options (set 1)
+            checkboxInput('SHOW_PCHEM3',
+                          value = FALSE,
+                          label = paste('Show precip chemistry',
+                                        enc2native('\U2753'))),
+
+            checkboxInput('SHOW_QC3',
+                          value = FALSE,
+                          label = paste('Show Q-C plots')),
             br(),
+
             # conditionalPanel('input.SHOW_PCHEM3 == true',
             #     fluidRow(
             #         column(8, offset=2,
@@ -54,6 +86,7 @@ nSiteNVar_tab = tabPanel("Multisite", value='multisite_exploration',
             #         )
             #     )
             # ),
+
             div('Unit', class='widget-title text-center'),
             div('(Applies to solutes only)',
                 class='widget-caption text-center'),
@@ -82,10 +115,86 @@ nSiteNVar_tab = tabPanel("Multisite", value='multisite_exploration',
             radioButtons('AGG3', label=NULL, selected='Monthly',
                 choices=c('Instantaneous', 'Daily', 'Monthly', 'Yearly')),
             # actionButton('DEBUG', 'debug'),
-        width=3,
-        div('Time System', class='widget-title text-center'),
-        radioButtons('TIME', label = NULL, selected = 'UTM',
-                     choices = c('UTM', 'Local', 'Solar'))),
+            hr(),
+
+            div(class = 'text-center',
+                actionButton('ADDTL_OPTIONS',
+                             label = 'Additional options',
+                             class = 'text-center')
+            ),
+
+            conditionalPanel('input.ADDTL_OPTIONS % 2 == 1',
+
+                br(),
+                div('Time System',
+                    class = 'widget-title text-center'),
+
+                selectizeInput('TIME_SCHEME3',
+                               label = NULL,
+                               choices = c('UTC', 'Local', 'Solar'),
+                               selected = 'UTC'),
+                br(),
+
+                div('Include data collected by:',
+                    class = 'widget-title text-center'),
+                div('(must check at least one)',
+                    class = 'widget-caption text-center'),
+
+                checkboxGroupInput('INSTALLED_V_GRAB3',
+                                    label = NULL,
+                                    inline = FALSE,
+                                    choiceNames = c('Grab sample', 'Installed unit'),
+                                    choiceValues = c('G', 'I'),
+                                    selected = c('G', 'I')),
+
+                # checkboxInput('SHOW_GRAB3',
+                #               label = 'Grab sample',
+                #               value = TRUE),
+
+                # checkboxInput('SHOW_INSTALLED3',
+                #               label = 'Installed unit',
+                #               value = TRUE),
+                br(),
+
+                div('Include data measured with:',
+                    class = 'widget-title text-center'),
+                div('(must check at least one)',
+                    class = 'widget-caption text-center'),
+
+                checkboxGroupInput('SENSOR_V_NONSENSOR3',
+                                   label = NULL,
+                                   inline = FALSE,
+                                   choiceNames = c('Sensor', 'Lab-analysis/Other'),
+                                   choiceValues = c('S', 'N'),
+                                   selected = c('S', 'N')),
+                br(),
+
+                div('Uncertainty',
+                    class = 'widget-title text-center'),
+                div('(propagated detection limit as absolute error)',
+                    class = 'widget-caption text-center'),
+
+                div(class = 'text-center',
+                    checkboxInput('SHOW_UNCERT3',
+                                  label = 'Show bounds',
+                                  value = FALSE)
+                ),
+                br(),
+
+                div(paste('Hide/show points'),
+                    class = 'widget-title text-center'),
+
+                checkboxGroupInput('FLAGS_INTERP3',
+                                   label = NULL,
+                                   inline = FALSE,
+                                   choiceNames = c(paste('With minor QA/QC issue',
+                                                         enc2native('\U2753')),
+                                                   paste('Imputed by MacroSheds',
+                                                         enc2native('\U2753'))),
+                                   choiceValues = c('flagged', 'imputed'),
+                                   selected = c('flagged', 'imputed'))
+            )
+        ),
 
         mainPanel(
             fluidRow(class='text-center',
