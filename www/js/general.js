@@ -1,6 +1,6 @@
 shinyjs.init = function() {
     //$(window).resize(shinyjs.getHeight50);
-
+    
     //gotta style landing page this way because css can't uniquely reach it
     var checkExist = setInterval(function() {
         if ($('#landing').length) {
@@ -122,12 +122,23 @@ shinyjs.init = function() {
     function govern_qc3(){
         if( $('#SHOW_QC3').is(':checked') ){
             //$('#inlineQC3a').css('display', 'inline-block');
+            
+            //$('[id^="inlineQC3"').attr('style', 'width: 25% !important; display: inline-block; vertical-align: top');
+            //$('[id^="inlineMAIN3"').attr('style', 'width: 75% !important; display: inline-block; vertical-align: top');
             $('[id^="inlineQC3"').css('width', '25%');
             $('[id^="inlineMAIN3"').css('width', '75%');
+            //$("inlineQC3a").css('width', '25%');
+            //$("inlineMAIN3a").css('width', '75%');
         } else {
             //$('#inlineQC3a').css('display', 'none');
+            
+            //$('[id^="inlineQC3"').attr('style', 'width: 0% !important; display: inline-block; vertical-align: top');
+            //$('[id^="inlineMAIN3"').attr('style', 'width: 100% !important; display: inline-block; vertical-align: top');
             $('[id^="inlineQC3"]').css('width', '0%');
             $('[id^="inlineMAIN3"]').css('width', '100%');
+            //$('inlineQC3a').css('width', '0%');
+            //$('inlineMAIN3a').css('width', '100%');
+
             //$('#inlineMAIN3a').css('width', 'auto');
         }
 

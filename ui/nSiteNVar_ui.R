@@ -210,20 +210,20 @@ nSiteNVar_tab <- tabPanel("Multisite",
                     #REFRESH can be clicked by js to trigger R events
                     actionButton('REFRESH', '', style='display: none'),
 
-                    #precip facets
-                    div(id='main3aP'),
-                    dygraphOutput("GRAPH_PRECIP3a", height='75px'),
+                    #precip facets (just one now)
+                    div(id='P3'),
+                    dygraphOutput("GRAPH_PRECIP3", height='75px'),
                     br(),
-                    conditionalPanel('input.SITES3.length > 1',
-                        div(id='main3bP'),
-                        dygraphOutput("GRAPH_PRECIP3b", height='75px'),
-                        br()
-                    ),
-                    conditionalPanel('input.SITES3.length > 2',
-                        div(id='main3cP'),
-                        dygraphOutput("GRAPH_PRECIP3c", height='75px'),
-                        br()
-                    ),
+                    # conditionalPanel('input.SITES3.length > 1',
+                    #     div(id='main3bP'),
+                    #     dygraphOutput("GRAPH_PRECIP3b", height='75px'),
+                    #     br()
+                    # ),
+                    # conditionalPanel('input.SITES3.length > 2',
+                    #     div(id='main3cP'),
+                    #     dygraphOutput("GRAPH_PRECIP3c", height='75px'),
+                    #     br()
+                    # ),
 
                     #facet A
                     conditionalPanel(paste('input.VARS3 !== null &&',
@@ -256,11 +256,25 @@ nSiteNVar_tab <- tabPanel("Multisite",
                             ),
                             div(id = 'inlineQC3a',
                                 style = 'width: 0%; display: inline-block; vertical-align: top',
-                                conditionalPanel('input.SHOW_QC3 == true',
+                                # conditionalPanel('input.SHOW_QC3 == true',
                                     plotOutput('GRAPH_QC3a', height='125px')
-                                )
+                                # )
                             )
                         ),
+
+                        # #FOR TESTING
+                        # div(id='main3a'), #plot key: communicates with dygraphs
+                        # div(id = 'inlineContainerA',
+                        #     style = 'font-size: 0px',
+                        #     div(id = 'inlineMAIN3a',
+                        #         style = 'width: 75%; display: inline-block; vertical-align: top',
+                        #         dygraphOutput("GRAPH_MAIN3a", height='125px')
+                        #     ),
+                        #     div(id = 'inlineQC3a',
+                        #         style = 'width: 25%; display: inline-block; vertical-align: top',
+                        #             plotOutput('GRAPH_QC3a', height='125px')
+                        #     )
+                        # ),
 
                         # #A THIRD WAY (nope)
                         # div(id='main3a'), #plot key: communicates with dygraphs
@@ -308,7 +322,7 @@ nSiteNVar_tab <- tabPanel("Multisite",
                     #     ),
                     #     br()
                     # ),
-
+                    #
                     # conditionalPanel('input.VARS3.length > 1',
                     #     div(id='main3b'),
                     #     dygraphOutput('GRAPH_MAIN3b', height='125px'),

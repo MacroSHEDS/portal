@@ -4,7 +4,7 @@
 
 options(shiny.usecairo=TRUE)
 
-hyetograph_file = 'js/hyetograph.js'
+hyetograph_file = 'www/js/hyetograph.js'
 hyetograph_js = readChar(hyetograph_file, file.info(hyetograph_file)$size)
 
 server = function(input, output, session){
