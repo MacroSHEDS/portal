@@ -28,10 +28,11 @@ suppressPackageStartupMessages({
 #attend to trailing comments within this script
 
 #uncomment and execute (without saving script) to deploy demo app
-# rsconnect::deployApp('/home/mike/git/macrosheds/portal',
-#     appName='MacroSheds_demo')
+rsconnect::deployApp('/home/mike/git/macrosheds/portal',
+    appName='MacroSheds_demo')
 # rsconnect::deployApp('/home/mike/git/macrosheds/portal',
 #     appName='portal', account='macrosheds')
+# rsconnect::setAccountInfo(name='vlahm', token='0C7F4E613117A7ACA6B3939B9003966B', secret='ypxIatQS6paxC4Vpfx1QF44ap5rTYoaTcBJDtePS')
 
 ## 0. setup ####
 
@@ -62,8 +63,10 @@ site_data <- filter(site_data, as.logical(in_workflow))
 
 #establish color scheme for nSiteNVar plots
 raincolors <- c('#8ab5de', '#36486b', '#618685') #blues
-linecolors <- c('#323232', '#008040', '#800080') #black, green, purple
-pchemcolors <- c('#585858', '#1bff8c', '#ff1bff') #lighter shades of linecolors
+linecolors <- c('#36486b', '#008040', '#800080') #blue, green, purple
+pchemcolors <- c('#4a6292', '#1bff8c', '#ff1bff') #lighter shades of linecolors (Blu, G, P)
+# linecolors <- c('#323232', '#008040', '#800080') #black, green, purple
+# pchemcolors <- c('#585858', '#1bff8c', '#ff1bff') #lighter shades of linecolors (Blk, G, P)
 
 ## 2. populate nSiteNVar defaults, which determine data shown when user lands ####
 

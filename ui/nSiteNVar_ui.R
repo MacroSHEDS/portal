@@ -184,15 +184,23 @@ nSiteNVar_tab <- tabPanel("Multisite",
                 div(paste('Hide/show points'),
                     class = 'widget-title text-center'),
 
-                checkboxGroupInput('FLAGS_INTERP3',
-                                   label = NULL,
-                                   inline = FALSE,
-                                   choiceNames = c(paste('With minor QA/QC issue',
-                                                         enc2native('\U2753')),
-                                                   paste('Imputed by MacroSheds',
-                                                         enc2native('\U2753'))),
-                                   choiceValues = c('flagged', 'imputed'),
-                                   selected = c('flagged', 'imputed'))
+                checkboxInput('FLAGS3',
+                              label = paste('With minor QA/QC issue',
+                                            enc2native('\U2753')),
+                              value = TRUE),
+                checkboxInput('INTERP3',
+                              label = paste('Imputed by MacroSheds',
+                                            enc2native('\U2753')),
+                              value = TRUE),
+                # checkboxGroupInput('FLAGS_INTERP3', #no checks == NULL, which doesn't trigger reactivity
+                #                    label = NULL,
+                #                    inline = FALSE,
+                #                    choiceNames = c(paste('With minor QA/QC issue',
+                #                                          enc2native('\U2753')),
+                #                                    paste('Imputed by MacroSheds',
+                #                                          enc2native('\U2753'))),
+                #                    choiceValues = c('flagged', 'imputed'),
+                #                    selected = c('flagged', 'imputed'))
             )
         ),
 
