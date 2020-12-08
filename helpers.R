@@ -7,16 +7,26 @@ extract_from_config = function(key){
     return(val)
 }
 
-get_ylab = function(v, conc_or_flux, yunit){
+get_ylab <- function(v,
+                    conc_flux,
+                    conc_unit,
+                    flux_unit){
 
-    if(conc_or_flux == 'Flux'){
-        unit = yunit
+    yunit <- ifelse(conc_flux == 'Flux',
+                    flux_unit,
+                    conc_unit)
+
+    if(conc_flux == 'Flux'){
+        unit <- yunit
     } else {
-        unit = ifelse(v %in% conc_vars, yunit,
-            chemvars$unit[chemvars$variable_code == v])
+        unit <- ifelse(v %in% conc_vars,
+                       yunit,
+                       chemvars$unit[chemvars$variable_code == v])
     }
 
-    ylab = glue('{var} ({u})', var=v, u=unit)
+    ylab <- glue('{var} ({u})',
+                 var = v,
+                 u = unit)
 
     return(ylab)
 }
@@ -106,110 +116,154 @@ combine_atomic_masses = function(molecular_constituents){
     return(molecular_mass) #a scalar
 }
 
-convert_conc_units = function(df, input_unit='mg/L', desired_unit){
+convert_conc_units <- function(d,
+                               input_unit = 'mg/L',
+                               desired_unit){
 
-    #df is a data frame or tibble of numeric concentration data
     #input_unit is the unit of concs (must be 'mg/L')
     #desired unit is one of the keys in the call to `switch` below
 
-    require(PeriodicTable)
+    cnms <- colnames(d)
 
-    conc_cols = colnames(df) %in% conc_vars
-    conc_df = df[conc_cols]
+    varnames <- str_match(string = cnms[grepl('val_', cnms)],
+                          pattern = 'val_(.+)')[, 2]
+
+    varnames <- varnames[varnames %in% conc_vars]
+
+    if(! length(varnames)) return(d)
+
+    require(PeriodicTable)
 
     if(grepl('g', desired_unit)){
 
-        converted = switch(desired_unit,
-            'ng/L' = conc_df * 1000000,
-            'ug/L' = conc_df * 1000,
-            'mg/L' = conc_df,
-            'g/L' = conc_df / 1000)
+        conv_factor <- switch(desired_unit,
+                              'ng/L' = 1000000,
+                              'ug/L' = 1000,
+                              'mg/L' = 1,
+                              'g/L' = 0.001)
 
     } else {
 
-        solutes = colnames(conc_df)
-        constituents = parse_molecular_formulae(solutes)
-        molar_mass = sapply(constituents, combine_atomic_masses)
+        constituents <- parse_molecular_formulae(varnames)
+        molar_masses <- sapply(constituents, combine_atomic_masses)
 
-        mm_scaled = switch(substr(desired_unit, 0, 1),
-            'n' = molar_mass * 1000000, #desired unit could be nM or neq/L
-            'u' = molar_mass * 1000, #and so on...
-            'm' = molar_mass,
-            'M' = molar_mass / 1000, #desired unit must be 'M'
-            'e' = molar_mass / 1000) #desired unit must be 'eq/L'
+        conv_factors <- switch(substr(desired_unit, 0, 1),
+            'n' = molar_masses * 1000000, #desired unit could be nM or neq/L
+            'u' = molar_masses * 1000, #and so on...
+            'm' = molar_masses,
+            'M' = molar_masses / 1000, #desired unit must be 'M'
+            'e' = molar_masses / 1000) #desired unit must be 'eq/L'
 
         if(grepl('q', desired_unit)){
-            valence = variables$valence[variables$variable_code %in% solutes]
-            mm_scaled = mm_scaled * valence
+            valences <- variables$valence[variables$variable_code %in% varnames]
+            conv_factors <- conv_factors * valences
         }
 
-        converted = data.frame(mapply(`*`, conc_df, mm_scaled, SIMPLIFY=FALSE))
+        # converted = data.frame(mapply(`*`, conc_df, mm_scaled, SIMPLIFY=FALSE))
     }
 
-    df[conc_cols] = converted
+    for(vn in varnames){
 
-    return(df)
+        vn <- paste0('val_', vn)
+        d <- mutate(d,
+                    !!vn := !!sym(vn) * conv_factor)
+                    # across(! starts_with('ms_') & ! matches('datetime'),
+                    #       ~(. * conv_factor)))
+    }
+
+    return(d)
 }
 
-convert_flux_units = function(df, input_unit='kg/ha/d', desired_unit){
+convert_flux_units = function(d,
+                              input_unit = 'kg/ha/d',
+                              desired_unit){
 
-    #df is a data frame or tibble of numeric flux data
+    #d is a data frame or tibble of numeric flux data
     #input_unit is the unit of flux (must be 'kg/ha/d')
     #desired unit is one of the keys in the call to `switch` below
 
-    flux_cols = colnames(df) %in% conc_vars
-    flux_df = df[flux_cols]
+    cnms <- colnames(d)
 
-    converted = switch(desired_unit,
-        'Mg/ha/d' = flux_df / 1000,
-        'kg/ha/d' = flux_df,
-        'g/ha/d' = flux_df * 1000,
-        'mg/ha/d' = flux_df * 1000000)
+    varname <- str_match(string = cnms[grepl('ms_status_', cnms)],
+                         pattern = 'ms_status_(.+)')[, 2]
 
-    df[flux_cols] = converted
+    if(! varname %in% conc_vars) return(d)
 
-    return(df)
+    conv_factor <- switch(desired_unit,
+        'Mg/ha/d' = 0.001,
+        'kg/ha/d' = 1,
+        'g/ha/d' = 1000,
+        'mg/ha/d' = 1000000)
+
+    d <- mutate(d,
+                across(! starts_with('ms_') & ! matches('datetime'),
+                       ~(. * conv_factor)))
+
+    return(d)
 }
 
 # log10_ceiling = function(x) {
 #     10^(ceiling(log10(x)))
 # }
 
-pad_ts = function(tsdf, vars, datebounds){
+pad_ts <- function(d,
+                   vars,
+                   datebounds){
 
-    #if tsdf is precip or pchem, data are aggregated by domain, so a domain
-    #column is passed. otherwise a site_name column is passed
+    dtcol <- as.POSIXct(datebounds,
+                        tz = 'UTC') %>%
+        lubridate::with_tz(lubridate::tz(d$datetime[1]))
 
-    if('site_name' %in% colnames(tsdf)){
-        spatial_unit = 'site_name'
-        sites_or_dmns = unique(tsdf$site_name)
-    } else if('domain' %in% colnames(tsdf)){
-        spatial_unit = 'domain'
-        sites_or_dmns = unique(tsdf$domain)
-    } else{ #probably never run, but here for unforseen back-compatibility needs
-        spatial_unit = 'site_name'
-        sites_or_dmns = 'placeholder'
-    }
+    pad_rows <- d[c(1, nrow(d)), ]
 
-    n_sites_or_dmns = length(sites_or_dmns)
-    nvars = length(vars)
+    ms_cols <- grepl(pattern = '(?:P_)?ms_(status|interp)_',
+                     x = colnames(pad_rows))
 
-    dt_ext_rows = tibble(rep(as.POSIXct(datebounds), n_sites_or_dmns),
-        rep(sites_or_dmns, each=2))
-    dt_ext_rows = bind_cols(dt_ext_rows, as.data.frame(matrix(NA_real_,
-        ncol=nvars, nrow=n_sites_or_dmns * 2)))
-    colnames(dt_ext_rows) = c('datetime', spatial_unit, vars)
-    dt_ext_rows$datetime = lubridate::force_tz(dt_ext_rows$datetime, 'UTC')
+    pad_rows[, ms_cols] <- 0
+    pad_rows[, ! ms_cols] <- NA
+    pad_rows$datetime <- dtcol
 
+    d_padded <- bind_rows(d, pad_rows)
 
-    df_padded = tsdf %>%
-        bind_rows(dt_ext_rows)
+    # if('site_name' %in% colnames(d)){
+    #     spatial_unit = 'site_name'
+    #     sites_or_dmns = unique(d$site_name)
+    # } else if('domain' %in% colnames(d)){
+    #     spatial_unit = 'domain'
+    #     sites_or_dmns = unique(d$domain)
+    # } else{ #probably never run, but here for unforseen back-compatibility needs
+    #     spatial_unit = 'site_name'
+    #     sites_or_dmns = 'placeholder'
+    # }
 
-    if(sites_or_dmns[1] == 'placeholder'){
-        df_padded = select(df_padded, -site_name)
-    }
+    # cnms <- colnames(d)
+    # sites <- cnms[! grepl(pattern = '(?:ms_|datetime)',
+    #                       x = cnms,
+    #                       perl = TRUE)]
+    # nsites <- length(sites)
+    # nvars <- length(vars)
+    #
+    # dt_pad_rows <- tibble(a = rep(x = as.POSIXct(datebounds),
+    #                               times = nsites),
+    #                       b = rep(sites, each=2))
+    #
+    # dt_pad_rows <- dplyr::bind_cols(dt_pad_rows,
+    #                                 as.data.frame(matrix(NA_real_,
+    #                                                      ncol = nvars,
+    #                                                      nrow = nsites * 2)))
+    #
+    # colnames(dt_pad_rows) = c('datetime', spatial_unit, vars)
+    # dt_pad_rows$datetime = lubridate::force_tz(dt_pad_rows$datetime, 'UTC')
+    #
+    #
+    # df_padded = d %>%
+    #     bind_rows(dt_pad_rows)
 
-    return(df_padded)
+    # if(sites_or_dmns[1] == 'placeholder'){
+    #     df_padded = select(df_padded, -site_name)
+    # }
+
+    return(d_padded)
 }
 
 # r=raindata; l=streamdata#
@@ -272,27 +326,38 @@ most_recent_year = function(date_range){
     return(mry)
 }
 
-sitelist_from_domain = function(dmn, type){
+get_sitelist <- function(domain, type){
 
-    #type is one of the types listed in site_data.csv, e.g. 'stream_gauge'
+    #type is one or more of the types listed in site_data.csv, e.g. 'stream_gauge'
 
-    sitelist = site_data %>%
-        filter(domain == dmn, site_type == type) %>%
+    sitelist <- site_data %>%
+        filter(domain == !!domain,
+               # network == !!network, #we should eventually observe hierarchy all the way up to the network
+               site_type %in% !!type) %>%
         pull(site_name)
 
     return(sitelist)
 }
 
-try_read_feather = function(path){
+try_read_feather <- function(path){
 
-    out = try(feather::read_feather(path), silent=TRUE)
-    if('try-error' %in% class(out)) out = tibble()
+    out <- try(feather::read_feather(path),
+               silent = TRUE)
+
+    if('try-error' %in% class(out)){
+        out <- tibble()
+    } else {
+        out <- out %>%
+            mutate(val = errors::set_errors(val,
+                                            val_err)) %>%
+            select(-val_err)
+    }
 
     return(out)
 }
 
 # var='precip'; dmns=c('hbef', 'neon'); sites=c('CUPE', 'W1', 'BIGC')
-read_combine_feathers = function(var, dmns, sites=NULL){
+read_combine_feathers <- function(var, dmns, sites = NULL){
 
     #in order to allow duplicate sitenames across domains, must invoke js here
     #see ms_todo
@@ -300,20 +365,25 @@ read_combine_feathers = function(var, dmns, sites=NULL){
     #in case duplicate sitenames do appear, this will make it a bit less
     #likely that there's a collision. this can be simplified if js solution
     #is implemented
-    dmn_sites = site_data %>%
-        filter(domain %in% dmns, site_type == 'stream_gauge') %>%
+    dmn_sites <- site_data %>%
+        filter(domain %in% dmns, site_type %in% c('stream_gauge', 'stream_sampling_point')) %>%
         filter(site_name %in% sites) %>%
         select(domain, site_name)
 
-    combined_data = tibble()
+    combined_data <- tibble()
     for(i in 1:nrow(dmn_sites)){
 
-        filestr = glue('data/{d}/{v}/{s}.feather',
-            d=dmn_sites$domain[i], v=var, s=dmn_sites$site_name[i])
+        filestr <- glue('data/{d}/{v}/{s}.feather',
+                        d = dmn_sites$domain[i],
+                        v = var,
+                        s = dmn_sites$site_name[i])
 
-        data_part = try_read_feather(filestr)
+        data_part <- try_read_feather(filestr)
+
         # if(var %in% c('precip', 'pchem')) data_part$domain = dmn_sites$domain[i]
-        combined_data = bind_rows(combined_data, data_part)
+
+        combined_data <- bind_rows(combined_data,
+                                   data_part)
     }
 
     return(combined_data)
@@ -337,85 +407,123 @@ generate_dropdown_varlist = function(chemvars, filter_set=NULL){
     return(chemvars)
 }
 
-filter_dropdown_varlist = function(filter_set, vartype='stream'){
+filter_dropdown_varlist = function(filter_set, vartype = 'stream'){
 
-    filter_set = sw(select(filter_set, -one_of('site_name', 'datetime')))
+    # filter_set = sw(select(filter_set, -one_of('site_name', 'datetime')))
 
     if(nrow(filter_set) == 0){
-        return(list(Anions=c(), Cations=c(), Other=c()))
+        return(list(Anions = c(),
+                    Cations = c(),
+                    Other = c()))
     }
 
-    populated_vars_bool = sapply(filter_set, function(x) ! all(is.na(x)))
-    populated_vars = names(populated_vars_bool[populated_vars_bool])
+    # populated_vars_bool = sapply(filter_set, function(x) ! all(is.na(x)))
+    # populated_vars = names(populated_vars_bool[populated_vars_bool])
+    avail_vars <- drop_var_prefix(unique(filter_set$var))
 
     if(vartype == 'stream'){
-        vars_display_subset = chemvars_display
+        vars_display_subset <- chemvars_display
     } else if(vartype == 'precip'){
-        vars_display_subset = pchemvars_display
+        vars_display_subset <- pchemvars_display
     }
 
     for(i in 1:length(vars_display_subset)){
-        l = vars_display_subset[[i]]
-        l[! l %in% populated_vars] = NULL
-        vars_display_subset[[i]] = l
+        l <- vars_display_subset[[i]]
+        l[! l %in% avail_vars] <- NULL
+        vars_display_subset[[i]] <- l
     }
 
     return(vars_display_subset)
 }
 
+numeric_any <- function(num_vec){
+    return(as.numeric(any(as.logical(num_vec))))
+}
+
 # df=data3; agg_selection=agg; which_dataset='pchem'; conc_flux_selection=conc_flux
 # df=pchem3; agg_selection=agg; which_dataset='pchem'; conc_flux_selection=conc_flux
-ms_aggregate = function(df, agg_selection, which_dataset,
-    conc_flux_selection=NULL){
+ms_aggregate <- function(d, agg_selection, conc_flux_selection = NULL){
 
     #agg_selection is a user input object, e.g. input$AGG3
     #which_dataset is one of 'chem', 'q', 'p', 'pchem'
     #conc_flux_selection must be supplied as e.g. input$CONC_FLUX3 if
         #which_dataset is 'chem' or 'pchem'
 
-    if(! which_dataset %in% c('chem', 'q', 'p', 'pchem')){
-        stop("which_dataset must be one of 'chem', 'q', 'p', 'pchem'")
-    }
+    # if(! which_dataset %in% c('chem', 'q', 'p', 'pchem')){
+    #     stop("which_dataset must be one of 'chem', 'q', 'p', 'pchem'")
+    # }
+    #
+    # if(which_dataset %in% c('chem', 'pchem') && is.null(conc_flux_selection)){
+    #     stop(paste0("conc_flux_selection must be supplied when which_dataset",
+    #         "is 'chem' or'pchem'"))
+    # }
 
-    if(which_dataset %in% c('chem', 'pchem') && is.null(conc_flux_selection)){
-        stop(paste0("conc_flux_selection must be supplied when which_dataset",
-            "is 'chem' or'pchem'"))
-    }
+    if(nrow(d) == 0) return(d)
+    if(agg_selection == 'Instantaneous') return(d)
+    # if(agg_selection == 'Daily' && which_dataset == 'pchem') return(d)
 
-    if(nrow(df) == 0) return(df)
-    if(agg_selection == 'Instantaneous') return(df)
-    if(agg_selection == 'Daily' && which_dataset == 'pchem') return(df)
+    agg_period <- switch(agg_selection,
+                         'Daily' = 'day',
+                         'Monthly' = 'month',
+                         'Yearly' = 'year')
 
-    agg_period = switch(agg_selection,
-        'Daily'='day', 'Monthly'='month', 'Yearly'='year')
+    # var_is_volumetric <- d$var[1] %in% c('precipitation', 'discharge')
+    var_is_p <- d$var[1] == 'precipitation'
+    var_is_q <- d$var[1] == 'discharge'
 
-    df = mutate(df, datetime = lubridate::floor_date(datetime, agg_period))
+    #round to desired_interval and summarize
+    d <- sw(d %>%
+        mutate(datetime = lubridate::round_date(datetime,
+                                                agg_period)) %>%
+        group_by(site_name, var, datetime) %>%
+        summarize(
+            val = if(n() > 1){
+                if(var_is_q){
+                    max_ind <- which.max(val)
+                    if(max_ind) val[max_ind] else NA #max removes error
+                    # max(val, na.rm = TRUE)
+                } else if(conc_flux_selection == 'VWC' || var_is_p){
+                    sum(val, na.rm = TRUE)
+                } else {
+                    mean(val, na.rm = TRUE)
+                }
+            } else {
+                first(val) #needed for uncertainty propagation to work
+            },
+            across(any_of(c('ms_status', 'ms_interp')), numeric_any)) %>%
+            # ms_status = numeric_any(ms_status)) %>%
+        ungroup() %>%
+        select(datetime, site_name, var, val, one_of('ms_status', 'ms_interp')))
 
-    if('site_name' %in% colnames(df)){
-        df = group_by(df, datetime, site_name)
-    } else if('domain' %in% colnames(df)){
-        df = group_by(df, datetime, domain)
-    } else {
-        df = group_by(df, datetime)
-    }
+    # d <- mutate(d,
+    #              datetime = lubridate::floor_date(datetime,
+    #                                               agg_period))
+    #
+    # # if('site_name' %in% colnames(d)){
+    # d <- group_by(d,
+    #                datetime, site_name, var)
+    # # } else if('domain' %in% colnames(d)){
+    # #     d = group_by(d, datetime, domain)
+    # # } else {
+    # #     d = group_by(d, datetime)
+    # # }
+    #
+    # # if(which_dataset %in% c('chem', 'pchem')){
+    # if(drop_var_prefix(d$var[1]) %in% c('precipitation', 'discharge')){
+    #     d <- summarize_all(d,
+    #                         list(~max(., na.rm=TRUE)))
+    # } else if(conc_flux_selection == 'VWC'){
+    #     d <- summarize_all(d,
+    #                         list(~sum(., na.rm=TRUE)))
+    # } else {
+    #     d <- summarize_all(d,
+    #                         list(~mean(., na.rm=TRUE)))
+    # }
 
-    if(which_dataset %in% c('chem', 'pchem')){
+    # d <- inject_timeseries_NAs(d = ungroup(d),
+    #                             fill_by = agg_period)
 
-        if(conc_flux_selection == 'VWC'){
-            df = summarize_all(df, list(~sum(., na.rm=TRUE)))
-        } else {
-            df = summarize_all(df, list(~mean(., na.rm=TRUE)))
-        }
-
-    } else if(which_dataset == 'p'){
-        df = summarize_all(df, list(~mean(., na.rm=TRUE)))
-    } else if(which_dataset == 'q'){
-        df = summarize_all(df, list(~max(., na.rm=TRUE)))
-    }
-
-    df = inject_timeseries_NAs(ungroup(df), fill_by=agg_period)
-
-    return(df)
+    return(d)
 }
 
 # df=ungroup(df); fill_by=agg_period
@@ -424,91 +532,132 @@ inject_timeseries_NAs = function(df, fill_by){
     dt_fill = seq.POSIXt(df$datetime[1], df$datetime[nrow(df)], by=fill_by)
     ndates = length(dt_fill)
 
-    if('site_name' %in% colnames(df)){
+    # if('site_name' %in% colnames(df)){
 
-        sites = unique(df$site_name)
-        nsites = length(sites)
+    sites = unique(df$site_name)
+    nsites = length(sites)
 
-        dt_fill_tb = tibble(datetime=rep(dt_fill, times=nsites),
-            site_name=rep(sites, each=ndates))
-        df = right_join(df, dt_fill_tb, by=c('site_name', 'datetime'))
+    dt_fill_tb = tibble(datetime=rep(dt_fill, times=nsites),
+        site_name=rep(sites, each=ndates))
+    df = right_join(df, dt_fill_tb, by=c('site_name', 'datetime'))
 
-    } else if('domain' %in% colnames(df)){
-
-        domains = unique(df$domain)
-        ndomains = length(domains)
-
-        dt_fill_tb = tibble(datetime=rep(dt_fill, times=ndomains),
-            domain=rep(domains, each=ndates))
-        df = right_join(df, dt_fill_tb, by=c('domain', 'datetime'))
-
-    } else {
-
-        dt_fill_tb = tibble(datetime=dt_fill)
-        df = right_join(df, dt_fill_tb, by='datetime')
-    }
+    # } else if('domain' %in% colnames(df)){
+    #
+    #     domains = unique(df$domain)
+    #     ndomains = length(domains)
+    #
+    #     dt_fill_tb = tibble(datetime=rep(dt_fill, times=ndomains),
+    #         domain=rep(domains, each=ndates))
+    #     df = right_join(df, dt_fill_tb, by=c('domain', 'datetime'))
+    #
+    # } else {
+    #
+    #     dt_fill_tb = tibble(datetime=dt_fill)
+    #     df = right_join(df, dt_fill_tb, by='datetime')
+    # }
 
     return(df)
 }
 
 # v=varA; conc_flux_selection=conc_flux; show_input_concentration=show_pchem
-prep_mainfacets3 = function(v, dmns, sites, streamdata, raindata,
-    conc_flux_selection, show_input_concentration){
+pad_widen_join <- function(v,
+                           sites,
+                           dates,
+                           streamdata,
+                           raindata,
+                           show_input_concentration = FALSE){
 
-    # raindata=rr; streamdata=ll
+    #subset dataset by variable, create columns for each site, generate empty
+    #tibbles for missing data, prefix precip data with "P_"
+
+    #raindata is optional.
 
     if(is.null(sites) || length(sites) == 0) sites = ' '
+
     if(length(v) == 0){
-        return(manufacture_empty_plotdata(sites=sites))
+        return(manufacture_empty_plotdata(sites = sites))
     }
 
-    streamdata_exist = nrow(streamdata)
-    raindata_exist = nrow(raindata)
-    # streamdata_exist = ! is.null(streamdata) && nrow(streamdata)
-    # raindata_exist = ! is.null(raindata) && nrow(raindata)
+    streamdata_exist <- as.logical(nrow(streamdata))
+    raindata_exist <- ! missing(raindata) && as.logical(nrow(raindata))
 
     if(streamdata_exist){
 
-        streamdata = streamdata %>%
-            filter(site_name %in% sites) %>%
-            select(datetime, site_name, one_of(v)) %>%
-            group_by(datetime, site_name) %>%
-            summarize_all(mean, na.rm=TRUE) %>%
-            spread(site_name, !!v)
+        streamdata <- streamdata %>%
+            select(- ! ends_with(paste0('_', v)),
+                   datetime,
+                   site_name) %>%
+            tidyr::pivot_wider(names_from = site_name,
+                               values_from = paste0('val_', v))
 
     } else {
-        streamdata = manufacture_empty_plotdata(sites=sites)
-        # streamdata = tibble(datetime=as.POSIXct(NA))
+        streamdata <- manufacture_empty_plotdata(sites = sites)
     }
 
     if(show_input_concentration){
 
         if(raindata_exist){
 
-            raindata = raindata %>%
-                select(datetime, site_name, one_of(v)) %>%
-                spread(site_name, !!v) %>%
-                rename_at(vars(-one_of('datetime'), -ends_with(' pchem')),
-                    ~paste0('P_', .))
+            raindata <- raindata %>%
+                select(- ! ends_with(paste0('_', v)),
+                       datetime,
+                       site_name) %>%
+                tidyr::pivot_wider(names_from = site_name,
+                                   values_from = paste0('val_', v)) %>%
+                rename_with(~paste0('P_', .),
+                            .cols = -datetime)
+                            # .cols = any_of(!!sites))
 
         } else {
-            raindata = manufacture_empty_plotdata(sites=paste0('P_', sites))
+            raindata <- manufacture_empty_plotdata(sites = paste0('P_', sites))
         }
-
-        # rainsites = colnames(raindata)[-1]
     }
 
     if(streamdata_exist && show_input_concentration){
-        alldata = left_forward_rolljoin(streamdata, raindata)
-    } else if(streamdata_exist){
-        alldata = as_tibble(streamdata)
-    } else if(raindata_exist){
-        alldata = as_tibble(raindata)
+
+        alldata <- dplyr::full_join(streamdata,
+                                    raindata,
+                                    by = 'datetime')
+        # alldata <- left_forward_rolljoin(streamdata, raindata)
+
+    } else if(raindata_exist && show_input_concentration){
+        alldata <- raindata
+    # } else if(streamdata_exist){
+    #     alldata <- streamdata
     } else {
-        alldata = as_tibble(streamdata)
+        alldata <- streamdata
     }
 
+    alldata <- pad_ts(d = alldata,
+                      vars = v,
+                      datebounds = dates)
+
     return(alldata)
+}
+
+convert_portal_units <- function(d,
+                                 conversion_enabled,
+                                 conc_flux_selection,
+                                 conc_unit,
+                                 flux_unit){
+
+    if(nrow(d) == 0) return(d)
+
+    if(conversion_enabled){
+
+        if(conc_flux_selection %in% c('Concentration', 'VWC')){
+
+            d <- convert_conc_units(d = d,
+                                    desired_unit = conc_unit)
+
+        } else if(conc_flux_selection == 'Flux'){
+
+            d <- convert_flux_units(d = d,
+                                    desired_unit = flux_unit)
+        }
+    }
+
+    return(d)
 }
 
 # set=streamdata; sites=' '
@@ -523,24 +672,25 @@ manufacture_empty_plotdata = function(sites){
     return(outdata)
 }
 
-get_rainsites = function(raindata, alldata, streamsites,
-                         show_input_concentration){
+get_rainsites <- function(alldata,
+                          streamsites,
+                          show_input_concentration){
 
-    #streamsites needed to correctly order rainsites
+    #streamsites needed in order to correctly order rainsites
 
     if(show_input_concentration && nrow(alldata)){
 
         # if(conc_flux_selection == 'VWC'){
-        cnms = colnames(alldata)
-        rainsites = cnms[grep('^P_', cnms)]
-        siteorder = order(streamsites)
-        rainsites = sort(rainsites)[siteorder]
-        # } else {
-        #     rainsites = unique(raindata$site_name) #e.g. "hbef pchem"
-        # }
+        cnms <- colnames(alldata)
+        rainsites <- cnms[grep('^P_(?!ms_)',
+                               cnms,
+                               perl = TRUE)]
+        siteorder <- order(streamsites)
+        rainsites <- sort(rainsites)[siteorder]
 
     } else {
-        rainsites = vector(length=0, mode='character')
+        rainsites <- vector(length = 0,
+                            mode = 'character')
     }
 
     return(rainsites)
@@ -550,7 +700,8 @@ generate_dropdown_sitelist = function(domain_vec){
 
     sitelist = list()
     for(i in 1:length(domain_vec)){
-        domain_sites = sitelist_from_domain(domain_vec[i], 'stream_gauge')
+        domain_sites <- get_sitelist(domain = domain_vec[i],
+                                     type = c('stream_gauge', 'stream_sampling_point'))
         sitelist[[i]] = domain_sites
     }
     names(sitelist) = names(domains_pretty[match(domain_vec, domains_pretty)])
@@ -624,33 +775,44 @@ update_site_obvs <- function() {
     full <- left_join(sites, observations, by = "site_name")
 
     write_csv(full, "data/site_data.csv")
-} 
+}
 
-get_local_solar_time <- function(df, time) {
+get_local_solar_time <- function(df, time_scheme) {
 
-    site_info <- site_data %>%
-        select(longitude, local_time_zone, site_name)
-    
-    df <- df %>%
-        left_join(site_info, by = 'site_name') 
-    
+    df <- site_data %>%
+        select(longitude, local_time_zone, site_name) %>%
+        right_join(df,
+                   by = 'site_name')
+
+    # df <- left_join(df,
+    #                 site_info,
+    #                 by = 'site_name')
+
     sites <- unique(df$site_name)
-    
+
     final <- tibble()
-    
-    for(i in 1:length(sites)) {
+
+    for(i in 1:length(sites)){
+
         times <- df %>%
             filter(site_name == !!sites[i]) %>%
-            mutate(Local = force_tz(with_tz(datetime, local_time_zone), 'UTC')) %>%
-            mutate(local_dif = Local-datetime,
+            mutate(Local = force_tz(with_tz(datetime,
+                                            tzone = local_time_zone),
+                                    tzone = 'UTC')) %>%
+            mutate(local_dif = Local - datetime,
                    doy = yday(datetime)) %>%
-            mutate(solar_dif = solartime::computeSolarToLocalTimeDifference(longitude, local_dif, doy)) %>%
-            mutate(Solar = Local + seconds(solar_dif*60*60)) %>%
-            mutate(datetime = .data[[time]]) %>%
-            select(-solar_dif, -doy, -local_dif, -Local, -Solar, -longitude, -local_time_zone)
-        
-        final <- rbind(final, times)
+            mutate(solar_dif = solartime::computeSolarToLocalTimeDifference(
+                longitude,
+                local_dif,
+                doy)) %>%
+            mutate(Solar = Local + seconds(solar_dif * 60 * 60)) %>%
+            mutate(datetime = .data[[time_scheme]]) %>%
+            select(-solar_dif, -doy, -local_dif, -Local, -Solar, -longitude,
+                   -local_time_zone)
+
+        final <- bind_rows(final, times)
     }
+
     return(final)
 }
 
@@ -661,12 +823,12 @@ convertible <- function(var) {
     test <- pull(variables %>%
                           filter(variable_code == var) %>%
                           select(unit))
-    
-    log <- !test %in% c('unitless', 'degrees C') 
+
+    log <- !test %in% c('unitless', 'degrees C')
     if(length(log) == 0) {
         return(FALSE)
     }
-    
+
     return(log)
 }
 
@@ -677,7 +839,6 @@ convert_conc_units_bi = function(df, col, input_unit='mg/L', desired_unit){
     #desired unit is one of the keys in the call to `switch` below
 
     require(PeriodicTable)
-    
     if(input_unit %in% c('unitless', 'degrees C') | length(input_unit) == 0) {
         return(df)
     }
@@ -739,4 +900,151 @@ convert_flux_units_bi = function(df, col, input_unit='kg/ha', desired_unit){
     df[flux_cols] = converted
 
     return(df)
+}
+
+load_portal_config <- function(from_where){
+
+    #this loads our "configuration" datasets into the global environment.
+    #as of 11/17/20 those datasets include only site_data and variables.
+    #depending on the type of instance (remote/local),
+    #those datasets are either read as local CSVs or as google sheets. for ms
+    #developers, this will always be "remote". for future users, it may be a
+    #configurable option.
+
+    if(from_where == 'remote'){
+
+        variables <- sm(googlesheets4::read_sheet(conf$variables_gsheet,
+                                                na = c('', 'NA')))
+
+        site_data <- sm(googlesheets4::read_sheet(conf$site_data_gsheet,
+                                                  na = c('', 'NA')))
+
+    } else if(from_where == 'local'){
+
+        variables <- sm(read_csv('data/general/variables.csv'))
+        site_data <- sm(read_csv('data/general/site_data.csv'))
+
+    } else {
+        stop('from_where must be either "local" or "remote"')
+    }
+
+    assign('variables',
+           variables,
+           pos = .GlobalEnv)
+
+    assign('site_data',
+           site_data,
+           pos = .GlobalEnv)
+}
+
+drop_var_prefix <- function(x){
+
+    unprefixed <- substr(x, 4, nchar(x))
+
+    return(unprefixed)
+}
+
+extract_var_prefix <- function(x){
+
+    prefix <- substr(x, 1, 2)
+
+    return(prefix)
+}
+
+get_default_site <- function(domain){
+
+    site <- network_domain_default_sites %>%
+        filter(domain == !!domain) %>%
+               # network == !!network) %>% #TODO: observe network level in portal
+        pull(default_site)
+
+    return(site)
+}
+
+ms_read_portalsite <- function(domain,
+                               site_name,
+                               prodname){
+
+    #read data from network/domain/site, arrange by variable then datetime.
+    #insert val_err column
+    #into the val column as errors attribute and then remove val_err column
+    #(error/uncertainty is handled by the errors package as an attribute,
+    #so it must be written/read as a separate column).
+
+    d <- read_feather(glue('data/{dmn}/{p}/{s}.feather',
+                           dmn = domain,
+                           p = prodname,
+                           s = site_name))
+
+    d <- d %>%
+        mutate(val = errors::set_errors(val, val_err)) %>%
+        select(-val_err) %>%
+        arrange(var, datetime)
+
+    return(d)
+}
+
+filter_agg_widen_unprefix <- function(d,
+                                      selected_vars,
+                                      selected_datebounds,
+                                      selected_agg,
+                                      selected_prefixes,
+                                      show_uncert,
+                                      show_flagged,
+                                      show_imputed,
+                                      conc_or_flux){
+
+    if(nrow(d) == 0) return(d)
+
+    prefix_in_selected <- stringr::str_split(string = extract_var_prefix(d$var),
+                                             pattern = '') %>%
+                              purrr::map(~all(.x %in% selected_prefixes)) %>%
+                              unlist()
+
+    d <- filter(d,
+                prefix_in_selected,
+                drop_var_prefix(var) %in% selected_vars,
+                datetime >= selected_datebounds[1], datetime <= selected_datebounds[2]) %>%
+        mutate(var = drop_var_prefix(var))
+
+    if(! show_uncert){
+        d <- mutate(d,
+                    val = errors::drop_errors(val))
+    }
+
+    if(! show_flagged){
+        d <- filter(d,
+                    ms_status == 0)
+    }
+
+    if(! show_imputed){
+        d <- filter(d,
+                    ms_interp == 0)
+    }
+
+    if(nrow(d) == 0) return(d)
+
+    # d = pad_ts(d, vars=selected_vars, datebounds=selected_datebounds)
+    d <- ms_aggregate(d = d,
+                      agg_selection = selected_agg,
+                      conc_flux_selection = conc_or_flux)
+
+    d <-  pivot_wider(d,
+                      names_from = var,
+                      values_from = c('val', 'ms_status', 'ms_interp'))
+
+    # if(init_vals$enable_unitconvert){
+    #
+    #     if(conc_flux %in% c('Concentration', 'VWC')){
+    #
+    #         datachem <- convert_conc_units(datachem,
+    #                                        desired_unit = conc_unit)
+    #     } else if(conc_flux == 'Flux'){
+    #
+    #         datachem <- convert_flux_units(datachem,
+    #                                        desired_unit = flux_unit)
+    #     }
+    # }
+
+    return(d)
 }
