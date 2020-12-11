@@ -14,18 +14,25 @@ landing_page =
                 column(4,
                     img(src='water-solid-193d85.svg',
                         style='height: 56px; width: 56px'),
-                    h1(textOutput('NSTREAMS'), style='color: gray'),
+                    h1(textOutput('NSTREAMS')),
                     p('STREAMS')
                 ),
                 column(4,
                     icon('map-marker', class='fa-4x'),
-                    h1(textOutput('NSITES'), style='color: gray'),
+                    h1(textOutput('NSITES')),
                     p('SITES')
                 ),
                 column(4,
                     icon('chart-bar', class='fa-4x'),
-                    h1(textOutput('NOBS'), style='color: gray'),
+                    h1(textOutput('NOBS')),
                     p('OBSERVATIONS')
+                )
+            ),
+            fluidRow(class='text-center',
+                column(8, offset=2,
+                    br(),
+                    br(),
+                    p("This portal is still under heavy development, so features and data may change. In particular, our NEON datasets will continue to expand as NEON's stream discharge product comes online."),
                 )
             ),
             fluidRow(class='text-center',
