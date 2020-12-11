@@ -28,11 +28,14 @@ suppressPackageStartupMessages({
 #attend to trailing comments within this script
 
 #uncomment and execute (without saving script) to deploy demo app
-rsconnect::deployApp('/home/mike/git/macrosheds/portal',
-    appName='MacroSheds_demo')
+# rsconnect::deployApp('/home/mike/git/macrosheds/portal',
+#     appName='MacroSheds_demo')
 # rsconnect::deployApp('/home/mike/git/macrosheds/portal',
 #     appName='portal', account='macrosheds')
 # rsconnect::setAccountInfo(name='vlahm', token='0C7F4E613117A7ACA6B3939B9003966B', secret='ypxIatQS6paxC4Vpfx1QF44ap5rTYoaTcBJDtePS')
+
+# rsconnect::deployApp('C:/Users/sr446/Desktop/macrosheds/portal',
+#                      appName='MacroSheds_demo')
 
 ## 0. setup ####
 
@@ -51,11 +54,20 @@ source('helpers.R') #maybe package these or put them in a namespace called "ms"
 source('function_aliases.R')
 
 #load global datasets
-googlesheets4::gs4_auth(path = '../data_acquisition/googlesheet_service_accnt.json')
-conf <- jsonlite::fromJSON('../data_acquisition/config.json')
+#googlesheets4::gs4_auth(path = '../data_acquisition/googlesheet_service_accnt.json')
+# conf <- jsonlite::fromJSON('../data_acquisition/config.json')
+# load_portal_config(from_where = 'remote') #TODO: load this from file! (too slow)
+# #                                         #      or put up a loading screen
+# site_data <- filter(site_data, as.logical(in_workflow))
+
+#Windows
+googlesheets4::gs4_auth(path = 'googlesheet_service_accnt.json')
+conf <- jsonlite::fromJSON('config.json')
 load_portal_config(from_where = 'remote') #TODO: load this from file! (too slow)
 #                                         #      or put up a loading screen
 site_data <- filter(site_data, as.logical(in_workflow))
+
+
 
 #TODO: allow duplicate site_names
 # if(any(duplicated(site_data$site_name))) stop('site_names must be unique, even across domains')
@@ -97,16 +109,16 @@ basedata <- list(
                               prodname = 'stream_chemistry'),
     flux = ms_read_portalsite(domain = default_domain,
                               site_name = default_site,
-                              prodname = 'stream_flux_inst'),
-    P = ms_read_portalsite(domain = default_domain,
-                           site_name = default_site,
-                           prodname = 'precipitation'),
-    pchem = ms_read_portalsite(domain = default_domain,
-                               site_name = default_site,
-                               prodname = 'precip_chemistry'),
-    pflux = ms_read_portalsite(domain = default_domain,
-                               site_name = default_site,
-                               prodname = 'precip_flux_inst')
+                              prodname = 'stream_flux_inst')#,
+    # P = ms_read_portalsite(domain = default_domain,
+    #                        site_name = default_site,
+    #                        prodname = 'precipitation'),
+    # pchem = ms_read_portalsite(domain = default_domain,
+    #                            site_name = default_site,
+    #                            prodname = 'precip_chemistry'),
+    # pflux = ms_read_portalsite(domain = default_domain,
+    #                            site_name = default_site,
+    #                            prodname = 'precip_flux_inst')
 )
 
 #date range for date selector
@@ -166,7 +178,7 @@ sites_with_Q <- sites_by_var('discharge')
 sites_with_pchem <- sites_by_var('precip_chemistry')
 
 chemvars_display_subset <- filter_dropdown_varlist(basedata$chem)
-pchemvars_display_subset <- filter_dropdown_varlist(basedata$pchem)
+#pchemvars_display_subset <- filter_dropdown_varlist(basedata$pchem)
 
 ## 4. biplot page setup ####
 
@@ -201,6 +213,8 @@ ws_traits <- list('Bare Ground Cover' = list('Watershed Median (%)' = 'bare_cove
                                                                'Annual Standard Deviation' = 'gpp_sd_year',
                                                                'Watershed Standard Deviation' = 'gpp_sd_space'),
                   'Net Primary Production  (kg*C/m^2)' = list('Annual Sum' = 'npp_median',
-                                                              'Watershed Standard Deviation' = 'npp_sd'))
+                                                              'Watershed Standard Deviation' = 'npp_sd'),
+                  'Terrain' = list('Mean Slope' = 'slope_mean',
+                                   'Area (ha)' = 'area'))
 
 ws_traits_sub <- lapply(ws_traits, `[[`, 1)

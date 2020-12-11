@@ -15,3 +15,5 @@ portal.Rproj
 ui/.DS_Store
 server/.DS_Store
 *.Rapp.history 
+config.json
+googlesheet_service_accnt.json
