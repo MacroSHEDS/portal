@@ -1,14 +1,39 @@
 
 # Update inputs ####
+
+## Create reactive value for sites that allows site selection from map  
+sites <- reactiveValues(sites=c())
+observeEvent({input$MAP_marker_click},{
+   # if(input$)
+    sites$sites <- input$SITES2
+    site <- input$MAP_marker_click$id
+    
+    site_name <- str_split_fixed(site, '-', n=Inf)[1]
+    sites$sites <- append(sites$sites, site_name)
+})
+
+# Update selected sites for map selections 
 observe({
     doms <- input$DOMAINS2_S
-    
+        
     dom_sites <- site_data %>%
         filter(site_type == 'stream_gauge') %>%
         filter(domain %in%doms) %>%
         pull(site_name)
     
-    updateSelectInput(session, 'SITES2', choices = dom_sites)
+    updateSelectInput(session, 'SITES2', choices = dom_sites, selected = sites$sites)
+})
+
+# 
+observe({
+    selected <- sites$sites
+
+    map_dom <- site_data %>%
+        filter(site_name %in% selected) %>%
+        pull(domain)
+    
+    updateSelectInput(session, 'DOMAINS2_S', selected=map_dom)
+    updateSelectInput(session, 'SITES2', selected=selected)
 })
 
 
@@ -152,7 +177,7 @@ filtered_bi <- reactive({
     #                BY_SITE2 = 'site')
     # agg <<- input$AGG2
     # raw <- summary()
-    
+
     if(chem_x == 'Flux') {
         x_var <- paste(x_var, 'flux', sep = '_')
     }
@@ -310,19 +335,19 @@ output$SUMMARY_BIPLOT = renderPlotly({
         x_tvar <- x_var
         x_var <- str_split_fixed(x_var, pattern = '_', n = Inf)[1]
         x_unit <- ''
-    } else {x_tvar <- x_var}
+    } 
     
     if(chem_y == 'Watershed Characteristics') {
         y_tvar <- y_var
         y_var <- str_split_fixed(y_var, pattern = '_', n = Inf)[1]
         y_unit <- ''
-    } else {y_tvar <- y_var}
+    } 
     
     if(chem_size == 'Watershed Characteristics') {
         size_tvar <- size_var
         size_var <- str_split_fixed(size_var, pattern = '_', n = Inf)[1]
         size_unit <- ''
-    } else {size_tvar <- size_var}
+    } 
     
     num_sites <- n_sites()
     
@@ -375,6 +400,7 @@ output$SUMMARY_BIPLOT = renderPlotly({
                             colors = safe_cols,
                             type = 'scatter',
                             mode = 'markers',
+                            alpha = ~date,
                             text = ~paste0(size_var, ' ', size_unit, ':', get(size_var))) %>%
             plotly::layout(xaxis = list(title = paste0('Mean', ' ', x_var, ' ', x_unit)),
                            yaxis = list(title = paste0('Mean', ' ', y_var, ' ', y_unit)),

@@ -42,12 +42,16 @@ ui = fluidPage(
             tags$head(
                 tags$link(rel='stylesheet', type='text/css', href='style.css')
             ),
-            tabsetPanel(id='right_tabs',
-                summary_biplot_tab,
-                # oneSiteNVar_tab,
-                nSiteNVar_tab
-                # site_comparison_tab
-            )
+            navbarPage(title='Macrosheds',
+                       summary_biplot_tab,
+                       nSiteNVar_tab)
+            # navbarPage(id='right_tabs',
+            #     navbarMenu(title = img(src="www/new_logo_full.png")),
+            #     summary_biplot_tab,
+            #     # oneSiteNVar_tab,
+            #     nSiteNVar_tab
+            #     # site_comparison_tab
+            # )
         )
     )
 )
