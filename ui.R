@@ -17,8 +17,9 @@ ui = fluidPage(
     tags$head(tags$style(HTML(
         "@import url('https://fonts.googleapis.com/css?family=Montserrat');"))),
     tags$head(tags$link(rel="stylesheet", type="text/css", href="app.css")),
-    useShinyjs(),
-    extendShinyjs(script='js/general.js'),
+    # useShinyjs(),
+    # extendShinyjs(script = 'js/general.js',
+    #               functions = c()),
 
     dashboardPage(
         dashboardHeader(disable=TRUE),
@@ -39,19 +40,18 @@ ui = fluidPage(
             )
         ),
         dashboardBody(
-            tags$head(
-                tags$link(rel='stylesheet', type='text/css', href='style.css')
-            ),
-            navbarPage(title='Macrosheds',
-                       summary_biplot_tab,
-                       nSiteNVar_tab)
-            # navbarPage(id='right_tabs',
-            #     navbarMenu(title = img(src="www/new_logo_full.png")),
-            #     summary_biplot_tab,
-            #     # oneSiteNVar_tab,
-            #     nSiteNVar_tab
-            #     # site_comparison_tab
-            # )
+            useShinyjs(),
+            extendShinyjs(script = 'js/general.js',
+                          functions = c()),
+            # tags$head(
+            #     tags$link(rel='stylesheet', type='text/css', href='style.css')
+            # ),
+            tabsetPanel(id='right_tabs',
+                summary_biplot_tab,
+                # oneSiteNVar_tab,
+                nSiteNVar_tab
+                # site_comparison_tab
+            )
         )
     )
 )

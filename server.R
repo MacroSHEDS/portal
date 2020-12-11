@@ -4,7 +4,7 @@
 
 options(shiny.usecairo=TRUE)
 
-hyetograph_file = 'js/hyetograph.js'
+hyetograph_file = 'www/js/hyetograph.js'
 hyetograph_js = readChar(hyetograph_file, file.info(hyetograph_file)$size)
 
 server = function(input, output, session){
@@ -17,7 +17,7 @@ server = function(input, output, session){
     # js$getHeight50()
 
     init_vals = reactiveValues()
-    init_vals$enable_facets = FALSE
+    # init_vals$enable_facets = FALSE
     init_vals$enable_unitconvert = FALSE
     init_vals$recent_domain = 'hbef'
 
@@ -31,10 +31,9 @@ server = function(input, output, session){
     stream_gauge_buttons = read_file('ui/stream_gauge_buttons.html')
     rain_gauge_buttons = read_file('ui/rain_gauge_buttons.html')
     source('ui/landing_page_ui.R', local=TRUE)
-    source('server/site_comparison_server.R', local=TRUE)
+    source('server/summary_biplot_server.R', local=TRUE)
     # source('server/oneSiteNVar_server.R', local=TRUE)
     source('server/nSiteNVar_server.R', local=TRUE)
-    source('server/summary_biplot_server.R', local=TRUE)
     source('server/map_server.R', local=TRUE)
 
     #register clicking of map popup links
@@ -52,26 +51,22 @@ server = function(input, output, session){
     output$NOBS = renderText({
         #temporary; crude estimate based on nobs from hbef and hjandrews
         x = sum(site_data$site_type == 'stream_gauge') * 143295
-        #updated (use this once we can schedule tasks on a server; also need to store site_data.csv remotely first
-        #sites <- sm(read_csv("data/site_data.csv"))
-        #x = sum(sites$observations, na.rm = TRUE)
-
-        #updated
-        sites <- sm(read_csv("data/site_data.csv"))
-        x = sum(sites$observations, na.rm = TRUE) 
-        format(round(x, -4), scientific=FALSE, big.mark=',')
+        # #updated (use this once we can schedule tasks on a server; also need to store site_data.csv remotely first
+        # sites <- sm(read_csv("data/site_data.csv"))
+        # x = sum(sites$observations, na.rm = TRUE)
+        # format(round(x, -4), scientific=FALSE, big.mark=',')
     })
 
     observeEvent(once=TRUE, ignoreNULL=FALSE, ignoreInit=FALSE,
-            eventExpr=TRUE, {
+            eventExpr=TRUE, handlerExpr = {
         landing_page
         init_vals$enable_unitconvert = TRUE
     })
 
-    observeEvent(once=TRUE, ignoreNULL=FALSE, ignoreInit=TRUE,
-            eventExpr=input$VARS3, {
-        init_vals$enable_facets = TRUE
-    })
+    # observeEvent(once=TRUE, ignoreNULL=FALSE, ignoreInit=TRUE,
+    #         eventExpr=input$VARS3, handlerExpr = {
+    #     init_vals$enable_facets = TRUE
+    # })
 
     observeEvent(input$MAPDATA, {
 

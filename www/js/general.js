@@ -1,6 +1,6 @@
 shinyjs.init = function() {
     //$(window).resize(shinyjs.getHeight50);
-
+    
     //gotta style landing page this way because css can't uniquely reach it
     var checkExist = setInterval(function() {
         if ($('#landing').length) {
@@ -118,22 +118,85 @@ shinyjs.init = function() {
         $('#SHOW_PCHEM3').click(govern_flux3);
     });
 
-    ////only show QC plots when their box is checked
-    //function govern_qc3(){
-    //    if( $('#SHOW_QC3').is(':checked') ){
-    //        //$('#inlineQC3a').css('display', '');
-    //        $('#inlineQC3a').css('width', '25%');
-    //        $('#inlineMAIN3a').css('width', 'auto');
-    //    } else {
-    //        //$('#inlineQC3a').css('display', 'none');
-    //        $('#inlineQC3a').css('width', '0px');
-    //        $('#inlineMAIN3a').css('width', '100%');
-    //    }
-    //};
+    //only show QC plots when their box is checked
+    function govern_qc3(){
+        if( $('#SHOW_QC3').is(':checked') ){
+            //$('#inlineQC3a').css('display', 'inline-block');
+            
+            //$('[id^="inlineQC3"').attr('style', 'width: 25% !important; display: inline-block; vertical-align: top');
+            //$('[id^="inlineMAIN3"').attr('style', 'width: 75% !important; display: inline-block; vertical-align: top');
+            $('[id^="inlineQC3"').css('width', '25%');
+            $('[id^="inlineMAIN3"').css('width', '75%');
+            //$("inlineQC3a").css('width', '25%');
+            //$("inlineMAIN3a").css('width', '75%');
+        } else {
+            //$('#inlineQC3a').css('display', 'none');
+            
+            //$('[id^="inlineQC3"').attr('style', 'width: 0% !important; display: inline-block; vertical-align: top');
+            //$('[id^="inlineMAIN3"').attr('style', 'width: 100% !important; display: inline-block; vertical-align: top');
+            $('[id^="inlineQC3"]').css('width', '0%');
+            $('[id^="inlineMAIN3"]').css('width', '100%');
+            //$('inlineQC3a').css('width', '0%');
+            //$('inlineMAIN3a').css('width', '100%');
 
-    //$('body').ready(function(){
-    //    $('#SHOW_QC3').click(govern_qc3);
-    //});
+            //$('#inlineMAIN3a').css('width', 'auto');
+        }
+
+        $('#REFRESH').trigger('click');
+        //$('#inlineQC3a').offsetHeight
+        //$('#inlineMAIN3a').offsetHeight
+        //$('#inlineContainerA').offsetHeight
+        //$('#inlineQC3a').hide().show(0);
+        //$('#inlineQC3a').css('transform', 'translateZ(0)');
+    };
+
+    $('body').ready(function(){
+        $('#SHOW_QC3').click(govern_qc3);
+    });
+
+    //for grab/installed, ensure that at least one box is checked
+    function govern_gi3(){
+
+        if( ! $('input[name="INSTALLED_V_GRAB3"][value="G"]').is(':checked') ){
+            $('input[name="INSTALLED_V_GRAB3"][value="I"]').attr('disabled', 'disabled').siblings().css('color', 'gray');
+        } else {
+            $('input[name="INSTALLED_V_GRAB3"][value="I"]').removeAttr('disabled').siblings().css('color', '#333');
+        }
+
+        if( ! $('input[name="INSTALLED_V_GRAB3"][value="I"]').is(':checked') ){
+            $('input[name="INSTALLED_V_GRAB3"][value="G"]').attr('disabled', 'disabled').siblings().css('color', 'gray');
+        } else {
+            $('input[name="INSTALLED_V_GRAB3"][value="G"]').removeAttr('disabled').siblings().css('color', '#333');
+        }
+
+        $('#REFRESH').trigger('click');
+    };
+
+    $('body').ready(function(){
+        $('#INSTALLED_V_GRAB3').click(govern_gi3);
+    });
+   
+    //for sensor/nonsensor, ensure that at least one box is checked
+    function govern_sn3(){
+
+        if( ! $('input[name="SENSOR_V_NONSENSOR3"][value="S"]').is(':checked') ){
+            $('input[name="SENSOR_V_NONSENSOR3"][value="N"]').attr('disabled', 'disabled').siblings().css('color', 'gray');
+        } else {
+            $('input[name="SENSOR_V_NONSENSOR3"][value="N"]').removeAttr('disabled').siblings().css('color', '#333');
+        }
+
+        if( ! $('input[name="SENSOR_V_NONSENSOR3"][value="N"]').is(':checked') ){
+            $('input[name="SENSOR_V_NONSENSOR3"][value="S"]').attr('disabled', 'disabled').siblings().css('color', 'gray');
+        } else {
+            $('input[name="SENSOR_V_NONSENSOR3"][value="S"]').removeAttr('disabled').siblings().css('color', '#333');
+        }
+
+        $('#REFRESH').trigger('click');
+    };
+
+    $('body').ready(function(){
+        $('#SENSOR_V_NONSENSOR3').click(govern_sn3);
+    });
    
 }
 
