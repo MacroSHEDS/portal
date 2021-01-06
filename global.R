@@ -33,6 +33,8 @@ suppressPackageStartupMessages({
 # rsconnect::deployApp('/home/mike/git/macrosheds/portal',
 #     appName='portal', account='macrosheds')
 # rsconnect::setAccountInfo(name='vlahm', token='0C7F4E613117A7ACA6B3939B9003966B', secret='ypxIatQS6paxC4Vpfx1QF44ap5rTYoaTcBJDtePS')
+# rsconnect::deployApp('/home/mike/git/macrosheds/portal',
+#     appName='portal', account='vlahm')
 
 # rsconnect::deployApp('C:/Users/sr446/Desktop/macrosheds/portal',
 #                      appName='MacroSheds_demo')
@@ -54,19 +56,11 @@ source('helpers.R') #maybe package these or put them in a namespace called "ms"
 source('function_aliases.R')
 
 #load global datasets
-#googlesheets4::gs4_auth(path = '../data_acquisition/googlesheet_service_accnt.json')
-# conf <- jsonlite::fromJSON('../data_acquisition/config.json')
-# load_portal_config(from_where = 'remote') #TODO: load this from file! (too slow)
-# #                                         #      or put up a loading screen
-# site_data <- filter(site_data, as.logical(in_workflow))
-
-#Windows
-googlesheets4::gs4_auth(path = 'googlesheet_service_accnt.json')
-conf <- jsonlite::fromJSON('config.json')
-load_portal_config(from_where = 'remote') #TODO: load this from file! (too slow)
-#                                         #      or put up a loading screen
+# googlesheets4::gs4_auth(path = '../data_acquisition/googlesheet_service_accnt.json')
+#                         use_oob = TRUE)
+conf <- jsonlite::fromJSON('../data_acquisition/config.json')
+load_portal_config(from_where = 'local')
 site_data <- filter(site_data, as.logical(in_workflow))
-
 
 
 #TODO: allow duplicate site_names
@@ -109,16 +103,16 @@ basedata <- list(
                               prodname = 'stream_chemistry'),
     flux = ms_read_portalsite(domain = default_domain,
                               site_name = default_site,
-                              prodname = 'stream_flux_inst')#,
-    # P = ms_read_portalsite(domain = default_domain,
-    #                        site_name = default_site,
-    #                        prodname = 'precipitation'),
-    # pchem = ms_read_portalsite(domain = default_domain,
-    #                            site_name = default_site,
-    #                            prodname = 'precip_chemistry'),
-    # pflux = ms_read_portalsite(domain = default_domain,
-    #                            site_name = default_site,
-    #                            prodname = 'precip_flux_inst')
+                              prodname = 'stream_flux_inst_scaled'),
+    P = ms_read_portalsite(domain = default_domain,
+                           site_name = default_site,
+                           prodname = 'precipitation'),
+    pchem = ms_read_portalsite(domain = default_domain,
+                               site_name = default_site,
+                               prodname = 'precip_chemistry'),
+    pflux = ms_read_portalsite(domain = default_domain,
+                               site_name = default_site,
+                               prodname = 'precip_flux_inst_scaled')
 )
 
 #date range for date selector
