@@ -59,6 +59,28 @@ plot_empty_dygraph = function(datelims, mainlab='', maindiv=NULL, plotgroup,
     return(dg)
 }
 
+plot_empty_qc <- function(ylab){
+
+    cq <- ggplot(data.frame(x=1:2, y=1:2),
+                 aes(x = x, y = y)) +
+        ggthemes::theme_few() +
+        scale_y_continuous(position = "right") +
+        ylab(paste('Q', 'vs.', ylab)) +
+        theme(legend.position = 'none',
+              axis.title.x = element_blank(),
+              axis.title.y = element_text(size=10),
+              axis.text.y = element_blank(),
+              axis.text.x = element_text(color = '#f5f5f5'),
+              axis.ticks.x = element_blank(),
+              axis.ticks.y = element_blank(),
+              panel.background = element_rect(fill = '#f5f5f5',
+                                              color = '#f5f5f5'),
+              plot.background = element_rect(fill = '#f5f5f5',
+                                              color = '#f5f5f5'))
+
+    return(cq)
+}
+
 get_timeslider_extent = function(basedata, selected_daterange){
 
     if(nrow(basedata$chem)){
@@ -178,16 +200,18 @@ convert_flux_units = function(d,
                               input_unit = 'kg/ha/d',
                               desired_unit){
 
-    #d is a data frame or tibble of numeric flux data
+    #d is a macrosheds tibble with at least one data column (beginning with "val_")
     #input_unit is the unit of flux (must be 'kg/ha/d')
     #desired unit is one of the keys in the call to `switch` below
+
+    #only variables that are in conc_vars will be converted
 
     cnms <- colnames(d)
 
     varname <- str_match(string = cnms[grepl('ms_status_', cnms)],
                          pattern = 'ms_status_(.+)')[, 2]
 
-    if(! varname %in% conc_vars) return(d)
+    # if(! varname %in% conc_vars) return(d) ##
 
     conv_factor <- switch(desired_unit,
         'Mg/ha/d' = 0.001,
@@ -195,11 +219,35 @@ convert_flux_units = function(d,
         'g/ha/d' = 1000,
         'mg/ha/d' = 1000000)
 
+    print(colnames(d))
+    varnames <- strip_colname_clutter(colnames(d))
+    varnames = varnames[varnames %in% conc_vars]
+
     d <- mutate(d,
-                across(! starts_with('ms_') & ! matches('datetime'),
+                across(starts_with('val_') & ends_with(varnames),
                        ~(. * conv_factor)))
 
     return(d)
+}
+
+strip_colname_clutter <- function(column_names){
+
+    #column_names: a character vector of column names from which variable
+    #   names and/or site namesare to be isolated.
+
+    #details:
+    #ignores preceding "ms_interp_", "ms_status_", and "val_".
+    #drops "datetime" and "site_name". Returns unique elements of what's left
+
+    names_to_drop <- c('datetime', 'site_name')
+    column_names <- column_names[! column_names %in% names_to_drop]
+
+    uncluttered <- gsub(pattern = '^(ms_interp_|ms_status_|val_)',
+                        replacement = '',
+                        column_names) %>%
+        unique()
+
+    return(uncluttered)
 }
 
 # log10_ceiling = function(x) {
@@ -580,8 +628,11 @@ pad_widen_join <- function(v,
 
     streamdata_exist <- as.logical(nrow(streamdata))
     raindata_exist <- ! missing(raindata) && as.logical(nrow(raindata))
+    v_present <- any(grepl(glue('_{vv}$',
+                                vv = v),
+                           colnames(streamdata)))
 
-    if(streamdata_exist){
+    if(streamdata_exist && v_present){
 
         streamdata <- streamdata %>%
             select(- ! ends_with(paste0('_', v)),
@@ -628,9 +679,11 @@ pad_widen_join <- function(v,
         alldata <- streamdata
     }
 
-    alldata <- pad_ts(d = alldata,
-                      vars = v,
-                      datebounds = dates)
+    if(nrow(alldata) > 0){
+        alldata <- pad_ts(d = alldata,
+                          vars = v,
+                          datebounds = dates)
+    }
 
     return(alldata)
 }

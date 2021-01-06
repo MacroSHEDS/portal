@@ -30,7 +30,8 @@ observeEvent({
         ! is.null(input$CONC_UNIT3) &&
         ! is.null(input$SHOW_PCHEM3) &&
         ! is.null(input$AGG3) &&
-        ! is.null(input$DATES3) &&
+        is.null(timeSliderUpdate()) &&
+        # ! is.null(input$DATES3) &&
         ! is.null(input$SHOW_QC3) &&
         ! is.null(input$INSTALLED_V_GRAB3) &&
         ! is.null(input$SENSOR_V_NONSENSOR3) &&
@@ -53,7 +54,8 @@ observeEvent({
         ! is.null(input$CONC_UNIT3) &&
         ! is.null(input$SHOW_PCHEM3) &&
         ! is.null(input$AGG3) &&
-        ! is.null(input$DATES3) &&
+        # ! is.null(input$DATES3) &&
+        is.null(timeSliderUpdate()) &&
         ! is.null(input$SHOW_QC3) &&
         ! is.null(input$INSTALLED_V_GRAB3) &&
         ! is.null(input$SENSOR_V_NONSENSOR3) &&
@@ -80,7 +82,8 @@ observeEvent({
         ! is.null(input$CONC_UNIT3) &&
         ! is.null(input$SHOW_PCHEM3) &&
         ! is.null(input$AGG3) &&
-        ! is.null(input$DATES3) &&
+        # ! is.null(input$DATES3) &&
+        is.null(timeSliderUpdate()) &&
         ! is.null(input$SHOW_QC3) &&
         ! is.null(input$INSTALLED_V_GRAB3) &&
         ! is.null(input$SENSOR_V_NONSENSOR3) &&
@@ -163,6 +166,7 @@ load_basedata <- eventReactive({
 
 }, {
 
+    # #NOTICE: may not behave as expected (might have to globally define the datasets below)
     # time_scheme <<- input$TIME_SCHEME3
     # agg <<- isolate(input$AGG3)
     # dmns <<- get_domains3()
@@ -185,8 +189,6 @@ load_basedata <- eventReactive({
         sites <- input$SITES3
     }
 
-    #NOTE: read_combine_feathers will have to be modified once rain data are
-    #no longer aggregated for each domain
     Q <- read_combine_feathers('discharge',
                                dmns = dmns,
                                sites = sites)
@@ -215,7 +217,7 @@ load_basedata <- eventReactive({
                      pchem = pchem,
                      pflux = pflux)
 
-    if(time_scheme != 'UTC' & agg == 'Instantaneous') {
+    if(time_scheme != 'UTC' && agg == 'Instantaneous') {
         basedata <- purrr::modify2(basedata,
                                    get_local_solar_time,
                                    .y = time_scheme)
@@ -249,40 +251,51 @@ observe({
         timeFormat = '%b %Y')
 })
 
+#reduce the reactivity sensitivity of the slider, so that intermediate inputs
+#don't trigger plot updates
+timeSliderUpdate <- reactive({
+    input$DATES3
+    return()
+}) %>%
+    debounce(1000)
+
+
 #if variables(s), aggregation, units, site, or time window change, re-filter datasets
 dataChem <- reactive({
 
     print('dataChem')
 
-    basedata <<- load_basedata()
-    dates <<- input$DATES3
-    vars_ <<- input$VARS3
-    conc_flux <<- input$CONC_FLUX3
-    conc_unit <<- input$CONC_UNIT3 #
-    flux_unit <<- input$FLUX_UNIT3 #
-    agg <<- input$AGG3
-    # sites <<- input$SITES3
-    #time_scheme <<- input$TIME_SCHEME3
-    igsn <<- c(input$INSTALLED_V_GRAB3, input$SENSOR_V_NONSENSOR3)
-    show_uncert <<- input$SHOW_UNCERT3
-    show_flagged <<- input$FLAGS3
-    show_imputed <<- input$INTERP3
-    enable_unitconvert <<- init_vals$enable_unitconvert
+    # basedata <<- load_basedata()
+    # dates <<- isolate(input$DATES3)
+    # timeSliderUpdate()
+    # vars_ <<- input$VARS3
+    # conc_flux <<- input$CONC_FLUX3
+    # conc_unit <<- input$CONC_UNIT3 #
+    # flux_unit <<- input$FLUX_UNIT3 #
+    # agg <<- input$AGG3
+    # # sites <<- input$SITES3
+    # #time_scheme <<- input$TIME_SCHEME3
+    # igsn <<- c(input$INSTALLED_V_GRAB3, input$SENSOR_V_NONSENSOR3)
+    # show_uncert <<- input$SHOW_UNCERT3
+    # show_flagged <<- input$FLAGS3
+    # show_imputed <<- input$INTERP3
+    # enable_unitconvert <<- init_vals$enable_unitconvert
 
-    # basedata <- load_basedata()
-    # dates <- input$DATES3
-    # vars_ <- input$VARS3
-    # conc_flux <- input$CONC_FLUX3
-    # conc_unit <- input$CONC_UNIT3
-    # flux_unit <- input$FLUX_UNIT3
-    # agg <- input$AGG3
-    # # sites <- input$SITES3
-    # #time_scheme <- input$TIME_SCHEME3
-    # igsn <- c(input$INSTALLED_V_GRAB3, input$SENSOR_V_NONSENSOR3)
-    # show_uncert <- input$SHOW_UNCERT3
-    # show_flagged <- input$FLAGS3
-    # show_imputed <- input$INTERP3
-    # enable_unitconvert <- init_vals$enable_unitconvert
+    basedata <- load_basedata()
+    dates <- isolate(input$DATES3)
+    timeSliderUpdate()
+    vars_ <- input$VARS3
+    conc_flux <- input$CONC_FLUX3
+    conc_unit <- input$CONC_UNIT3
+    flux_unit <- input$FLUX_UNIT3
+    agg <- input$AGG3
+    # sites <- input$SITES3
+    #time_scheme <- input$TIME_SCHEME3
+    igsn <- c(input$INSTALLED_V_GRAB3, input$SENSOR_V_NONSENSOR3)
+    show_uncert <- input$SHOW_UNCERT3
+    show_flagged <- input$FLAGS3
+    show_imputed <- input$INTERP3
+    enable_unitconvert <- init_vals$enable_unitconvert
 
     datachem <- if(conc_flux == 'Flux') basedata$flux else basedata$chem
 
@@ -310,7 +323,8 @@ dataPchem <- reactive({
     print('dataPchem')
 
     # basedata <<- load_basedata()
-    # dates <<- input$DATES3
+    # dates <<- isolate(input$DATES3)
+    # timeSliderUpdate()
     # vars_ <<- input$VARS3
     # conc_flux <<- input$CONC_FLUX3
     # conc_unit <<- input$CONC_UNIT3 #
@@ -325,7 +339,8 @@ dataPchem <- reactive({
     # enable_unitconvert <<- init_vals$enable_unitconvert
 
     basedata <- load_basedata()
-    dates <- input$DATES3
+    dates <- isolate(input$DATES3)
+    timeSliderUpdate()
     vars_ <- input$VARS3
     conc_flux <- input$CONC_FLUX3
     conc_unit <- input$CONC_UNIT3
@@ -367,7 +382,8 @@ dataPrecip <- reactive({
     print('Precip')
 
     # basedata <<- load_basedata()
-    # dates <<- input$DATES3
+    # dates <<- isolate(input$DATES3)
+    # timeSliderUpdate()
     # agg <<- input$AGG3
     # conc_flux <<- input$CONC_FLUX3
     # igsn <<- c(input$INSTALLED_V_GRAB3, input$SENSOR_V_NONSENSOR3)
@@ -376,7 +392,8 @@ dataPrecip <- reactive({
     # show_imputed <<- input$INTERP3
 
     basedata <- load_basedata()
-    dates <- input$DATES3
+    dates <- isolate(input$DATES3)
+    timeSliderUpdate()
     agg <- input$AGG3
     conc_flux <- input$CONC_FLUX3
     igsn <- c(input$INSTALLED_V_GRAB3, input$SENSOR_V_NONSENSOR3)
@@ -398,7 +415,8 @@ dataPrecip <- reactive({
 
     warning('does precip need to be aggregated by median and sum?')
 
-    # dates = input$DATES3
+    # dates <- isolate(input$DATES3)
+    # timeSliderUpdate()
     # agg = input$AGG3
     # sites = input$SITES3
     # basedata = load_basedata()
@@ -443,7 +461,8 @@ dataQ <- reactive({
     print('dataQ')
 
     # basedata <<- load_basedata()
-    # dates <<- input$DATES3
+    # dates <<- isolate(input$DATES3)
+    # timeSliderUpdate()
     # agg <<- input$AGG3
     # igsn <<- c(input$INSTALLED_V_GRAB3, input$SENSOR_V_NONSENSOR3)
     # show_uncert <<- input$SHOW_UNCERT3
@@ -451,7 +470,8 @@ dataQ <- reactive({
     # show_imputed <<- input$INTERP3
 
     basedata <- load_basedata()
-    dates <- input$DATES3
+    dates <- isolate(input$DATES3)
+    timeSliderUpdate()
     agg <- input$AGG3
     igsn <- c(input$INSTALLED_V_GRAB3, input$SENSOR_V_NONSENSOR3)
     show_uncert <- input$SHOW_UNCERT3
@@ -641,23 +661,26 @@ volWeightedPchem3 <- reactive({
 #def could use better abstraction, efficiency measures
 
 output$GRAPH_PRECIP3 <- renderDygraph({
-# output$GRAPH_PRECIP3a
-
-    # site <- input$SITES3[1]
 
     sites <- input$SITES3
     dates <- isolate(input$DATES3)
     dataP <- dataPrecip()
 
-    # site <<- input$SITES3[1]
+    # sites <<- input$SITES3[1]
     # dates <<- isolate(input$DATES3)
     # dataP <<- dataPrecip()
 
-    tryCatch({
-        dataP <- spread(dataP,
-                        site_name,
-                        val_precipitation)
-    },error = function(e) NULL)
+    tryCatch(
+        {
+            dataP <- dataP %>%
+                dplyr::rename_with(~ gsub('_precipitation', '', .x)) %>%
+                tidyr::pivot_wider(names_from = site_name,
+                                   values_from = c('val', 'ms_status',
+                                                   'ms_interp')) %>%
+                dplyr::rename_with(~ gsub('val_', '', .x))
+        },
+        error = function(e) NULL
+    )
 
     # reactive_vals$facet3aP
 
@@ -760,7 +783,7 @@ output$GRAPH_MAIN3a <- renderDygraph({
     # dates <<- isolate(input$DATES3)
 
     sites <- na.omit(isolate(input$SITES3))
-    varA <- isolate(input$VARS3[1])
+    varA <- isolate(input$VARS3[1])#
     conc_flux <- isolate(input$CONC_FLUX3)
     flux_unit <- isolate(input$FLUX_UNIT3)
     conc_unit <- isolate(input$CONC_UNIT3)
@@ -769,7 +792,7 @@ output$GRAPH_MAIN3a <- renderDygraph({
     dates <- isolate(input$DATES3)
     show_uncert <- isolate(input$SHOW_UNCERT3)
 
-    if(reactive_vals$facet3a == 0) return()
+    if(reactive_vals$facet3a == 0) return()#
     print('mainA')
 
     if(conc_flux == 'VWC'){
@@ -793,8 +816,9 @@ output$GRAPH_MAIN3a <- renderDygraph({
     # streamdata <<- streamdata
     # raindata <<- raindata
     # print(head(streamdata))
+    # print(head(raindata))
 
-    alldata <- pad_widen_join(v = varA,
+    alldata <- pad_widen_join(v = varA,#
                               sites = sites,
                               dates = dates,
                               streamdata = streamdata,
@@ -805,7 +829,7 @@ output$GRAPH_MAIN3a <- renderDygraph({
                                streamsites = sites,
                                show_input_concentration = show_pchem)
 
-    ylabel <- get_ylab(v = varA,
+    ylabel <- get_ylab(v = varA,#
                        conc_flux = conc_flux,
                        conc_unit = conc_unit,
                        flux_unit = flux_unit)
@@ -868,7 +892,7 @@ output$GRAPH_MAIN3a <- renderDygraph({
                       connectSeparatedPoints = is_inst) %>%
             dyLegend(show = 'always',
                      labelsSeparateLines = FALSE,
-                     labelsDiv = 'main3a') %>%
+                     labelsDiv = 'main3a') %>%#
             dyAxis('y',
                    label = ylabel,
                    labelWidth = 16,
@@ -935,7 +959,7 @@ output$GRAPH_MAIN3a <- renderDygraph({
 
         dg <- plot_empty_dygraph(dates,
                                  mainlab = colnames(alldata)[-1],
-                                 maindiv = 'main3a',
+                                 maindiv = 'main3a',#
                                  plotgroup = 'nSiteNVar',
                                  ylab = ylabel,
                                  px_per_lab = 20)
@@ -965,7 +989,6 @@ output$GRAPH_QC3a <- renderPlot({
     show_qc <- input$SHOW_QC3
     sites <- na.omit(isolate(input$SITES3[1:3]))
     varA <- isolate(input$VARS3[1])
-    # dmns <- isolate(get_domains3())
     conc_flux <- isolate(input$CONC_FLUX3)
     conc_unit <- isolate(input$CONC_UNIT3)
     flux_unit <- isolate(input$FLUX_UNIT3)
@@ -993,6 +1016,11 @@ output$GRAPH_QC3a <- renderPlot({
 #                        conc_flux = conc_flux,
 #                        conc_unit = conc_unit,
 #                        flux_unit = flux_unit)
+
+    n_val_cols <- sum(grepl('^val_', colnames(alldata)))
+    if(n_val_cols < 2){
+        return(plot_empty_qc(ylab = varA))
+    }
 
     if(show_uncert){
 
@@ -1043,139 +1071,592 @@ output$GRAPH_QC3a <- renderPlot({
               axis.title.y = element_text(size=10),
               # axis.title.y.right = element_text('C v. Q'),
               axis.text.y = element_blank(),
-              axis.ticks.y = element_blank())
+              axis.ticks.y = element_blank(),
+              panel.background = element_rect(fill = '#f5f5f5',
+                                              color = '#f5f5f5'),
+              plot.background = element_rect(fill = '#f5f5f5',
+                                             color = '#f5f5f5'))
 
     return(cq)
 })
 
-# output$GRAPH_MAIN3c <- renderDygraph({
-#
-#     sites = na.omit(isolate(input$SITES3[1:3]))
-#     varC = isolate(input$VARS3[3])
-#     dmns = isolate(get_domains3())
-#     conc_flux = isolate(input$CONC_FLUX3)
-#     flux_unit = isolate(input$FLUX_UNIT3)
-#     conc_unit = isolate(input$CONC_UNIT3)
-#     show_pchem = isolate(input$SHOW_PCHEM3)
-#     agg = isolate(input$AGG3)
-#     dates = isolate(input$DATES3)
-#
-#     if(reactive_vals$facet3c == 0) return()
-#     print('mainC')
-#
-#     if(conc_flux == 'VWC'){
-#         streamdata = volWeightedChem3()
-#     } else {
-#         streamdata = dataChem()
-#     }
-#
-#     if(show_pchem){
-#
-#         if(conc_flux == 'VWC'){
-#             raindata = volWeightedPchem3()
-#         } else {
-#             raindata = dataPchem()
-#         }
-#
-#         rainsites = raindata$site_name
-#
-#     } else {
-#         raindata = NULL
-#     }
-#
-#     alldata = prep_mainfacets3(varC, dmns, sites, streamdata, raindata,
-#         conc_flux_selection=conc_flux, show_input_concentration=show_pchem)
-#
-#     rainsites = get_rainsites(raindata, alldata, streamsites=sites,
-#         show_input_concentration=show_pchem)
-#
-#     yunit = ifelse(conc_flux == 'Flux', flux_unit, conc_unit)
-#     ylab = get_ylab(varC, conc_flux, yunit)
-#
-#     if(nrow(alldata)){
-#
-#         displabs = colnames(alldata)[-1]
-#         dydat = xts(alldata[, displabs], order.by=alldata$datetime, tzone='UTC')
-#         dimnames(dydat) = list(NULL, displabs)
-#
-#         is_inst = ifelse(agg == 'Instantaneous', TRUE, FALSE)
-#         dg = dygraph(dydat, group='nSiteNVar') %>%
-#             dyOptions(useDataTimezone=FALSE, drawPoints=FALSE,
-#                 colors=selection_color_match(sites, displabs, linecolors),
-#                 strokeWidth=2, pointSize=2,
-#                 retainDateWindow=TRUE, drawGapEdgePoints=TRUE,
-#                 connectSeparatedPoints=is_inst) %>%
-#             dyLegend(show='always', labelsSeparateLines=FALSE,
-#                 labelsDiv='main3c') %>%
-#             dyAxis('y', label=ylab, labelWidth=16, labelHeight=10,
-#                 pixelsPerLabel=20, rangePad=10)
-#
-#         if(show_pchem){
-#
-#             rain_or_pchem_cols = selection_color_match(paste0('P_', sites),
-#                 paste0('P_', displabs[displabs %in% sites]),
-#                 pchemcolors)
-#
-#             for(i in 1:length(rainsites)){
-#                 dg = dySeries(dg, name=rainsites[i], color=rain_or_pchem_cols[i],
-#                     axis='y', drawPoints=FALSE, strokeWidth=2,
-#                     pointSize=2, strokePattern='dashed')
-#             }
-#         }
-#
-#     } else {
-#         dg = plot_empty_dygraph(dates, mainlab=colnames(alldata)[-1],
-#             maindiv='main3a', plotgroup='nSiteNVar', ylab=ylab, px_per_lab=20)
-#     }
-#
-#     return(dg)
-# })
+output$GRAPH_MAIN3b <- renderDygraph({
 
-# output$GRAPH_QC3c <- renderPlot({
-#
-#     show_qc <- isolate(input$SHOW_QC3)
-#     sites <- na.omit(isolate(input$SITES3[1:3]))
-#     varC <- isolate(input$VARS3[3])
-#     dmns <- isolate(get_domains3())
-#     conc_unit <- isolate(input$CONC_UNIT3)
-#     show_pchem <- isolate(input$SHOW_PCHEM3)
-#     agg <- isolate(input$AGG3)
-#     dates <- isolate(input$DATES3)
-#
-#     # sites <<- na.omit(isolate(input$SITES3[1:3]))
-#     # varC <<- isolate(input$VARS3[3])
-#     # dmns <<- isolate(get_domains3())
-#     # conc_unit <<- isolate(input$CONC_UNIT3)
-#     # show_pchem <<- isolate(input$SHOW_PCHEM3)
-#     # agg <<- isolate(input$AGG3)
-#     # dates <<- isolate(input$DATES3)
-#
-#     if(reactive_vals$facet3c == 0 || ! show_qc) return()
-#
-#     # streamdata <<- dataChem()
-#     streamdata = dataChem() %>%
-#         select(datetime, site_name, !!varC)
-#
-#     # dischargedata <<- dataQ()
-#     dischargedata = dataQ()
-#
-#     alldata <- inner_join(streamdata,
-#                           dischargedata,
-#                           by = c("datetime", "site_name")) %>%
-#         rename(value = !!varC)
-#
-#     qc <- ggplot(alldata,
-#                  aes(x = discharge, y = value, colour = site_name),
-#                  environment=environment()) +
-#         geom_point(na.rm = TRUE) +
-#         scale_colour_manual(values = linecolors,
-#                             breaks = c(sites)) +
-#         labs(y = "") +
-#         ggthemes::theme_few() +
-#         theme(legend.position = 'none')
-#
-#     return(qc)
-# })
+    # sites <<- na.omit(isolate(input$SITES3))
+    # varB <<- isolate(input$VARS3[1])
+    # conc_flux <<- isolate(input$CONC_FLUX3)
+    # flux_unit <<- isolate(input$FLUX_UNIT3)
+    # conc_unit <<- isolate(input$CONC_UNIT3)
+    # show_pchem <<- isolate(input$SHOW_PCHEM3)
+    # agg <<- isolate(input$AGG3)
+    # dates <<- isolate(input$DATES3)
+
+    sites <- na.omit(isolate(input$SITES3))
+    varB <- isolate(input$VARS3[2])#
+    conc_flux <- isolate(input$CONC_FLUX3)
+    flux_unit <- isolate(input$FLUX_UNIT3)
+    conc_unit <- isolate(input$CONC_UNIT3)
+    show_pchem <- isolate(input$SHOW_PCHEM3)
+    agg <- isolate(input$AGG3)
+    dates <- isolate(input$DATES3)
+    show_uncert <- isolate(input$SHOW_UNCERT3)
+
+    if(reactive_vals$facet3b == 0) return()#
+    print('mainA')
+
+    if(conc_flux == 'VWC'){
+        streamdata <- volWeightedChem3()
+    } else {
+        streamdata <- dataChem()
+    }
+
+    if(show_pchem){
+
+        if(conc_flux == 'VWC'){
+            raindata <- volWeightedPchem3()
+        } else {
+            raindata <- dataPchem()
+        }
+
+    } else {
+        raindata <- tibble()
+    }
+
+    # streamdata <<- streamdata
+    # raindata <<- raindata
+    # print(head(streamdata))
+
+    alldata <- pad_widen_join(v = varB,#
+                              sites = sites,
+                              dates = dates,
+                              streamdata = streamdata,
+                              raindata = raindata,
+                              show_input_concentration = show_pchem)
+
+    rainsites <- get_rainsites(alldata = alldata,
+                               streamsites = sites,
+                               show_input_concentration = show_pchem)
+
+    ylabel <- get_ylab(v = varB,#
+                       conc_flux = conc_flux,
+                       conc_unit = conc_unit,
+                       flux_unit = flux_unit)
+
+    if(nrow(alldata)){
+
+        colnms <- colnames(alldata)
+        included_cols <- colnms[colnms %in% c(sites,
+                                              paste0('P_', sites))]
+
+        if(show_uncert){
+
+            alldata <- alldata %>%
+                mutate(across(any_of(included_cols),
+                       .fns = list(errhi = ~(errors::drop_errors(.) +
+                                                 errors::errors(.))))) %>%
+                mutate(across(any_of(included_cols),
+                       .fns = list(errlo = ~(errors::drop_errors(.) -
+                                                 errors::errors(.)))))
+
+            included_cols <- c(included_cols,
+                               paste0(included_cols, '_errhi'),
+                               paste0(included_cols, '_errlo'))
+        }
+
+        dydat <- xts(alldata[, included_cols],
+                     order.by = alldata$datetime,
+                     tzone = lubridate::tz(alldata$datetime[1]))
+
+        # dimnames(dydat) <- list(NULL, included_cols)
+
+        is_inst <- ifelse(agg == 'Instantaneous',
+                          TRUE,
+                          FALSE)
+
+        dg <- dygraph(dydat,#[,1:2],
+                      group = 'nSiteNVar') %>%
+            dyOptions(useDataTimezone = FALSE,
+                      retainDateWindow = TRUE,
+
+                      #if not showing all points, use these specifications.
+                      drawPoints = FALSE,
+                      colors = selection_color_match(sites,
+                                                     included_cols,
+                                                     linecolors),
+                      strokeWidth = 2,
+                      pointSize = 2,
+                      drawGapEdgePoints = TRUE,
+
+                      # #if showing points, use these
+                      # drawPoints = TRUE,
+                      # strokeWidth = 0.01,
+                      # pointSize = 1,
+                      # strokeBorderWidth = 1,
+                      # colors = 'white',
+                      # strokeBorderColor = selection_color_match(sites,
+                      #                                           included_cols,
+                      #                                           linecolors),
+
+                      connectSeparatedPoints = is_inst) %>%
+            dyLegend(show = 'always',
+                     labelsSeparateLines = FALSE,
+                     labelsDiv = 'main3b') %>%#
+            dyAxis('y',
+                   label = ylabel,
+                   labelWidth = 16,
+                   labelHeight = 10,
+                   pixelsPerLabel = 20,
+                   rangePad = 10)
+
+        if(show_pchem){
+
+            rain_or_pchem_colors <- selection_color_match(
+                sites_selected = paste0('P_', sites),
+                sites_all = paste0('P_', included_cols[included_cols %in% sites]),
+                colorvec = pchemcolors
+            ) #minimally tested. might need to work with rainsites instead
+
+            if(show_uncert){
+
+                rain_names <- lapply(rainsites,
+                                     function(x){
+                                         c(paste0(x, '_errlo'),
+                                           x,
+                                           paste0(x, '_errhi'))
+                                     })
+            } else {
+                rain_names <- as.list(rainsites)
+            }
+
+            for(i in 1:length(rainsites)){
+
+                dg <- dySeries(dg,
+                               name = rain_names[[i]],
+                               color = rain_or_pchem_colors[i],
+                               axis = 'y',
+                               drawPoints = FALSE,
+                               strokeWidth = 2,
+                               pointSize = 2,
+                               strokePattern = 'dashed')
+            }
+        }
+
+        if(show_uncert){
+
+            stream_names <- lapply(sites,
+                                   function(x){
+                                       c(paste0(x, '_errlo'),
+                                         x,
+                                         paste0(x, '_errhi'))
+                                   })
+
+            for(i in 1:length(sites)){
+
+                dg <- dySeries(dg,
+                               name = stream_names[[i]])
+                               # color = rain_or_pchem_colors[i],
+                               # axis = 'y',
+                               # drawPoints = FALSE,
+                               # strokeWidth = 2,
+                               # pointSize = 2,
+                               # strokePattern = 'dashed')
+            }
+        }
+
+    } else {
+
+        dg <- plot_empty_dygraph(dates,
+                                 mainlab = colnames(alldata)[-1],
+                                 maindiv = 'main3b',#
+                                 plotgroup = 'nSiteNVar',
+                                 ylab = ylabel,
+                                 px_per_lab = 20)
+    }
+
+    return(dg)
+})
+
+output$GRAPH_QC3b <- renderPlot({
+
+    print('QC3b')
+
+    # show_qc <<- input$SHOW_QC3
+    # sites <<- na.omit(isolate(input$SITES3[1:3]))
+    # varB <<- isolate(input$VARS3[1])
+    # # dmns <<- isolate(get_domains3())
+    # conc_flux <<- isolate(input$CONC_FLUX3)
+    # conc_unit <<- isolate(input$CONC_UNIT3)
+    # flux_unit <<- isolate(input$FLUX_UNIT3)
+    # show_pchem <<- isolate(input$SHOW_PCHEM3)
+    # show_uncert <<- isolate(input$SHOW_UNCERT3)
+    # agg <<- isolate(input$AGG3)
+    # dates <<- isolate(input$DATES3)
+    # datachem <<- dataChem()
+    # dataq <<- dataQ()
+
+    show_qc <- input$SHOW_QC3
+    sites <- na.omit(isolate(input$SITES3[1:3]))
+    varB <- isolate(input$VARS3[2])
+    conc_flux <- isolate(input$CONC_FLUX3)
+    conc_unit <- isolate(input$CONC_UNIT3)
+    flux_unit <- isolate(input$FLUX_UNIT3)
+    show_pchem <- isolate(input$SHOW_PCHEM3)
+    agg <- isolate(input$AGG3)
+    dates <- isolate(input$DATES3)
+    show_uncert <- isolate(input$SHOW_UNCERT3)
+    datachem <- dataChem()
+    dataq <- dataQ()
+
+    if(reactive_vals$facet3b == 0 || ! show_qc) return()
+
+    alldata <- datachem %>%
+        select(c('datetime', 'site_name', ends_with(varB))) %>%
+        inner_join(dataq,
+                   by = c("datetime", "site_name"))
+
+    n_val_cols <- sum(grepl('^val_', colnames(alldata)))
+    if(n_val_cols < 2){
+        return(plot_empty_qc(ylab = varB))
+    }
+
+    if(show_uncert){
+
+        alldata <- alldata %>%
+            mutate(across(starts_with('val_'),
+                          .fns = list(errhi = ~(errors::drop_errors(.) +
+                                                    errors::errors(.))))) %>%
+            mutate(across(starts_with('val_') &
+                              ! ends_with('_errhi'),
+                          .fns = list(errlo = ~(errors::drop_errors(.) -
+                                                    errors::errors(.))))) %>%
+            mutate(across(starts_with('val_') &
+                              ! ends_with(c('_errhi', '_errlo')),
+                          errors::drop_errors))
+    }
+
+    cq <- ggplot(alldata,
+                 aes(x = val_discharge,
+                     y = !!sym(paste0('val_', varB)),
+                     colour = site_name)) +
+        geom_point(na.rm = TRUE,
+                   size = 1)
+
+    if(show_uncert){
+
+        cq <- cq +
+            geom_linerange(aes(ymin = !!sym(paste0('val_', varB, '_errlo')),
+                               ymax = !!sym(paste0('val_', varB, '_errhi')))) +
+            geom_errorbarh(aes(xmin = val_discharge_errlo,
+                               xmax = val_discharge_errhi))
+    }
+
+    cq <- cq +
+        scale_colour_manual(values = linecolors,
+                            breaks = c(sites)) +
+        ggthemes::theme_few() +
+        scale_y_continuous(position = "right") +
+        ylab(paste('Q', 'vs.', varB)) +
+        theme(legend.position = 'none',
+              axis.title.x = element_blank(),
+              axis.title.y = element_text(size=10),
+              axis.text.y = element_blank(),
+              axis.ticks.y = element_blank(),
+              panel.background = element_rect(fill = '#f5f5f5',
+                                              color = '#f5f5f5'),
+              plot.background = element_rect(fill = '#f5f5f5',
+                                             color = '#f5f5f5'))
+
+    return(cq)
+})
+
+output$GRAPH_MAIN3c <- renderDygraph({
+
+    # sites <<- na.omit(isolate(input$SITES3))
+    # varC <<- isolate(input$VARS3[1])
+    # conc_flux <<- isolate(input$CONC_FLUX3)
+    # flux_unit <<- isolate(input$FLUX_UNIT3)
+    # conc_unit <<- isolate(input$CONC_UNIT3)
+    # show_pchem <<- isolate(input$SHOW_PCHEM3)
+    # agg <<- isolate(input$AGG3)
+    # dates <<- isolate(input$DATES3)
+
+    sites <- na.omit(isolate(input$SITES3))
+    varC <- isolate(input$VARS3[3])#
+    conc_flux <- isolate(input$CONC_FLUX3)
+    flux_unit <- isolate(input$FLUX_UNIT3)
+    conc_unit <- isolate(input$CONC_UNIT3)
+    show_pchem <- isolate(input$SHOW_PCHEM3)
+    agg <- isolate(input$AGG3)
+    dates <- isolate(input$DATES3)
+    show_uncert <- isolate(input$SHOW_UNCERT3)
+
+    if(reactive_vals$facet3c == 0) return()#
+    print('mainA')
+
+    if(conc_flux == 'VWC'){
+        streamdata <- volWeightedChem3()
+    } else {
+        streamdata <- dataChem()
+    }
+
+    if(show_pchem){
+
+        if(conc_flux == 'VWC'){
+            raindata <- volWeightedPchem3()
+        } else {
+            raindata <- dataPchem()
+        }
+
+    } else {
+        raindata <- tibble()
+    }
+
+    # streamdata <<- streamdata
+    # raindata <<- raindata
+    # print(head(streamdata))
+
+    alldata <- pad_widen_join(v = varC,#
+                              sites = sites,
+                              dates = dates,
+                              streamdata = streamdata,
+                              raindata = raindata,
+                              show_input_concentration = show_pchem)
+
+    rainsites <- get_rainsites(alldata = alldata,
+                               streamsites = sites,
+                               show_input_concentration = show_pchem)
+
+    ylabel <- get_ylab(v = varC,#
+                       conc_flux = conc_flux,
+                       conc_unit = conc_unit,
+                       flux_unit = flux_unit)
+
+    if(nrow(alldata)){
+
+        colnms <- colnames(alldata)
+        included_cols <- colnms[colnms %in% c(sites,
+                                              paste0('P_', sites))]
+
+        if(show_uncert){
+
+            alldata <- alldata %>%
+                mutate(across(any_of(included_cols),
+                       .fns = list(errhi = ~(errors::drop_errors(.) +
+                                                 errors::errors(.))))) %>%
+                mutate(across(any_of(included_cols),
+                       .fns = list(errlo = ~(errors::drop_errors(.) -
+                                                 errors::errors(.)))))
+
+            included_cols <- c(included_cols,
+                               paste0(included_cols, '_errhi'),
+                               paste0(included_cols, '_errlo'))
+        }
+
+        dydat <- xts(alldata[, included_cols],
+                     order.by = alldata$datetime,
+                     tzone = lubridate::tz(alldata$datetime[1]))
+
+        # dimnames(dydat) <- list(NULL, included_cols)
+
+        is_inst <- ifelse(agg == 'Instantaneous',
+                          TRUE,
+                          FALSE)
+
+        dg <- dygraph(dydat,#[,1:2],
+                      group = 'nSiteNVar') %>%
+            dyOptions(useDataTimezone = FALSE,
+                      retainDateWindow = TRUE,
+
+                      #if not showing all points, use these specifications.
+                      drawPoints = FALSE,
+                      colors = selection_color_match(sites,
+                                                     included_cols,
+                                                     linecolors),
+                      strokeWidth = 2,
+                      pointSize = 2,
+                      drawGapEdgePoints = TRUE,
+
+                      # #if showing points, use these
+                      # drawPoints = TRUE,
+                      # strokeWidth = 0.01,
+                      # pointSize = 1,
+                      # strokeBorderWidth = 1,
+                      # colors = 'white',
+                      # strokeBorderColor = selection_color_match(sites,
+                      #                                           included_cols,
+                      #                                           linecolors),
+
+                      connectSeparatedPoints = is_inst) %>%
+            dyLegend(show = 'always',
+                     labelsSeparateLines = FALSE,
+                     labelsDiv = 'main3c') %>%#
+            dyAxis('y',
+                   label = ylabel,
+                   labelWidth = 16,
+                   labelHeight = 10,
+                   pixelsPerLabel = 20,
+                   rangePad = 10)
+
+        if(show_pchem){
+
+            rain_or_pchem_colors <- selection_color_match(
+                sites_selected = paste0('P_', sites),
+                sites_all = paste0('P_', included_cols[included_cols %in% sites]),
+                colorvec = pchemcolors
+            ) #minimally tested. might need to work with rainsites instead
+
+            if(show_uncert){
+
+                rain_names <- lapply(rainsites,
+                                     function(x){
+                                         c(paste0(x, '_errlo'),
+                                           x,
+                                           paste0(x, '_errhi'))
+                                     })
+            } else {
+                rain_names <- as.list(rainsites)
+            }
+
+            for(i in 1:length(rainsites)){
+
+                dg <- dySeries(dg,
+                               name = rain_names[[i]],
+                               color = rain_or_pchem_colors[i],
+                               axis = 'y',
+                               drawPoints = FALSE,
+                               strokeWidth = 2,
+                               pointSize = 2,
+                               strokePattern = 'dashed')
+            }
+        }
+
+        if(show_uncert){
+
+            stream_names <- lapply(sites,
+                                   function(x){
+                                       c(paste0(x, '_errlo'),
+                                         x,
+                                         paste0(x, '_errhi'))
+                                   })
+
+            for(i in 1:length(sites)){
+
+                dg <- dySeries(dg,
+                               name = stream_names[[i]])
+                               # color = rain_or_pchem_colors[i],
+                               # axis = 'y',
+                               # drawPoints = FALSE,
+                               # strokeWidth = 2,
+                               # pointSize = 2,
+                               # strokePattern = 'dashed')
+            }
+        }
+
+    } else {
+
+        dg <- plot_empty_dygraph(dates,
+                                 mainlab = colnames(alldata)[-1],
+                                 maindiv = 'main3c',#
+                                 plotgroup = 'nSiteNVar',
+                                 ylab = ylabel,
+                                 px_per_lab = 20)
+    }
+
+    return(dg)
+})
+
+output$GRAPH_QC3c <- renderPlot({
+
+    print('QC3a')
+
+    # show_qc <<- input$SHOW_QC3
+    # sites <<- na.omit(isolate(input$SITES3[1:3]))
+    # varC <<- isolate(input$VARS3[1])
+    # # dmns <<- isolate(get_domains3())
+    # conc_flux <<- isolate(input$CONC_FLUX3)
+    # conc_unit <<- isolate(input$CONC_UNIT3)
+    # flux_unit <<- isolate(input$FLUX_UNIT3)
+    # show_pchem <<- isolate(input$SHOW_PCHEM3)
+    # show_uncert <<- isolate(input$SHOW_UNCERT3)
+    # agg <<- isolate(input$AGG3)
+    # dates <<- isolate(input$DATES3)
+    # datachem <<- dataChem()
+    # dataq <<- dataQ()
+
+    show_qc <- input$SHOW_QC3
+    sites <- na.omit(isolate(input$SITES3[1:3]))
+    varC <- isolate(input$VARS3[3])
+    conc_flux <- isolate(input$CONC_FLUX3)
+    conc_unit <- isolate(input$CONC_UNIT3)
+    flux_unit <- isolate(input$FLUX_UNIT3)
+    show_pchem <- isolate(input$SHOW_PCHEM3)
+    agg <- isolate(input$AGG3)
+    dates <- isolate(input$DATES3)
+    show_uncert <- isolate(input$SHOW_UNCERT3)
+    datachem <- dataChem()
+    dataq <- dataQ()
+
+    if(reactive_vals$facet3a == 0 || ! show_qc) return()
+
+    alldata <- datachem %>%
+        select(c('datetime', 'site_name', ends_with(varC))) %>%
+        inner_join(dataq,
+                   by = c("datetime", "site_name"))
+
+    n_val_cols <- sum(grepl('^val_', colnames(alldata)))
+    if(n_val_cols < 2){
+        return(plot_empty_qc(ylab = varC))
+    }
+
+    if(show_uncert){
+
+        alldata <- alldata %>%
+            mutate(across(starts_with('val_'),
+                          .fns = list(errhi = ~(errors::drop_errors(.) +
+                                                    errors::errors(.))))) %>%
+            mutate(across(starts_with('val_') &
+                              ! ends_with('_errhi'),
+                          .fns = list(errlo = ~(errors::drop_errors(.) -
+                                                    errors::errors(.))))) %>%
+            mutate(across(starts_with('val_') &
+                              ! ends_with(c('_errhi', '_errlo')),
+                          errors::drop_errors))
+    }
+
+    cq <- ggplot(alldata,
+                 aes(x = val_discharge,
+                     y = !!sym(paste0('val_', varC)),
+                     colour = site_name)) +
+        geom_point(na.rm = TRUE,
+                   size = 1)
+
+    if(show_uncert){
+
+        cq <- cq +
+            geom_linerange(aes(ymin = !!sym(paste0('val_', varC, '_errlo')),
+                               ymax = !!sym(paste0('val_', varC, '_errhi')))) +
+            geom_errorbarh(aes(xmin = val_discharge_errlo,
+                               xmax = val_discharge_errhi))
+    }
+
+    cq <- cq +
+        scale_colour_manual(values = linecolors,
+                            breaks = c(sites)) +
+        ggthemes::theme_few() +
+        scale_y_continuous(position = "right") +
+        ylab(paste('Q', 'vs.', varC)) +
+        theme(legend.position = 'none',
+              axis.title.x = element_blank(),
+              axis.title.y = element_text(size=10),
+              axis.text.y = element_blank(),
+              axis.ticks.y = element_blank(),
+              panel.background = element_rect(fill = '#f5f5f5',
+                                              color = '#f5f5f5'),
+              plot.background = element_rect(fill = '#f5f5f5',
+                                             color = '#f5f5f5'))
+
+    return(cq)
+})
 
 output$GRAPH_Q3 <- renderDygraph({
 
@@ -1187,21 +1668,17 @@ output$GRAPH_Q3 <- renderDygraph({
     # dates <<- isolate(input$DATES3)
     # sites <<- na.omit(isolate(input$SITES3[1:3]))
 
-    tryCatch({
-        dataq <- spread(dataq,
-                        site_name,
-                        val_discharge)
-    }, error = function(e) NULL)
-
-    #ii <<- dates
-    #dates <- ii
-    #ww <<- sites
-    #sites <- ww
-
-    #ii <<- dates
-    #dates <- ii
-    #ww <<- sites
-    #sites <- ww
+    tryCatch(
+        {
+            dataq <- dataq %>%
+                dplyr::rename_with(~ gsub('_discharge', '', .x)) %>%
+                tidyr::pivot_wider(names_from = site_name,
+                                   values_from = c('val', 'ms_status',
+                                                   'ms_interp')) %>%
+                dplyr::rename_with(~ gsub('val_', '', .x))
+        },
+        error = function(e) NULL
+    )
 
     if(nrow(dataq)){
 
