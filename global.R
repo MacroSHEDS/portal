@@ -36,6 +36,9 @@ suppressPackageStartupMessages({
 # rsconnect::deployApp('/home/mike/git/macrosheds/portal',
 #     appName='portal', account='vlahm')
 
+# rsconnect::deployApp('C:/Users/sr446/Desktop/macrosheds/portal',
+#                      appName='MacroSheds_demo')
+
 ## 0. setup ####
 
 #options(dplyr.summarise.inform = FALSE)
@@ -58,6 +61,7 @@ source('function_aliases.R')
 conf <- jsonlite::fromJSON('../data_acquisition/config.json')
 load_portal_config(from_where = 'local')
 site_data <- filter(site_data, as.logical(in_workflow))
+
 
 #TODO: allow duplicate site_names
 # if(any(duplicated(site_data$site_name))) stop('site_names must be unique, even across domains')
@@ -168,7 +172,7 @@ sites_with_Q <- sites_by_var('discharge')
 sites_with_pchem <- sites_by_var('precip_chemistry')
 
 chemvars_display_subset <- filter_dropdown_varlist(basedata$chem)
-pchemvars_display_subset <- filter_dropdown_varlist(basedata$pchem)
+#pchemvars_display_subset <- filter_dropdown_varlist(basedata$pchem)
 
 ## 4. biplot page setup ####
 
@@ -177,32 +181,12 @@ biplot_options <- chemvars_display_subset
 biplot_data_types <- c('Concentration', 'Flux', 'Discharge',
                        'Watershed Characteristics')
 
-flux_units_bi <- c('Mg/ha', 'kg/ha', 'g/ha', 'mg/ha')
+flux_units_bi <- c('Mg', 'kg', 'g', 'mg', 'Mg/ha', 'kg/ha', 'g/ha', 'mg/ha')
 
-ws_traits <- list('Bare Ground Cover' = list('Watershed Median (%)' = 'bare_cover_median',
-                                             'Watershed Standard Deviation' = 'bare_cover_sd'),
-                  'Tree Cover' = list('Watershed Median (%)' = 'tree_cover_median',
-                                      'Watershed Standard Deviation' = 'tree_cover_sd'),
-                  'Non-Tree Cover' = list('Watershed Median (%)' = 'veg_cover_median',
-                                          'Watershed Standard Deviation' = 'veg_cover_sd'),
-                  'Start of Growing Season' = list('Watershed Median (DOY)' = 'sos_mean',
-                                                   'Watershed Standard Deviation' = 'sos_sd'),
-                  'End of Growing Season' = list('Watershed Median (DOY)' = 'eos_mean',
-                                                 'Watershed Standard Deviation' = 'eos_sd'),
-                  'Leaf Area Index' = list('Annual Maximum' = 'lai_max',
-                                           'Annual Mean' = 'lai_mean',
-                                           'Annual Minimum' = 'lai_min',
-                                           'Annual Standard Deviation' = 'lai_sd_year',
-                                           'Watershed Standard Deviation' = 'lai_sd_space'),
-                  'Fraction of Absorbed Photosynthetically Active Radiation' = list('Annual Maximum' = 'fpar_max',
-                                                                                    'Annual Mean' = 'fpar_mean',
-                                                                                    'Annual Minimum' = 'fpar_min',
-                                                                                    'Annual Standard Deviation' = 'fpar_sd_year',
-                                                                                    'Watershed Standard Deviation' = 'fpar_sd_space'),
-                  'Gross Primary Production (kg*C/m^2)' = list('Annual Sum' = 'gpp_sum',
-                                                               'Annual Standard Deviation' = 'gpp_sd_year',
-                                                               'Watershed Standard Deviation' = 'gpp_sd_space'),
-                  'Net Primary Production  (kg*C/m^2)' = list('Annual Sum' = 'npp_median',
-                                                              'Watershed Standard Deviation' = 'npp_sd'))
+conc_units_bi <- c('ng/L', 'ug/L', 'mg/L', 'g/L')
 
-ws_traits_sub <- lapply(ws_traits, `[[`, 1)
+ws_traits <- generate_dropdown_varlist_ws(variables)
+
+ws_traits_names <- unlist(ws_traits)
+
+

@@ -872,17 +872,20 @@ get_local_solar_time <- function(df, time_scheme) {
 # Biplot stuff
 
 convertible <- function(var) {
-    if(var == 'Q') {return(FALSE)}
+
     test <- pull(variables %>%
                           filter(variable_code == var) %>%
                           select(unit))
 
-    log <- !test %in% c('unitless', 'degrees C')
-    if(length(log) == 0) {
+    if(length(test) == 0){
         return(FALSE)
+    } else{
+        if(test == 'mg/L'){
+            return(TRUE)
+        } else{
+            return(FALSE)
+        }
     }
-
-    return(log)
 }
 
 convert_conc_units_bi = function(df, col, input_unit='mg/L', desired_unit){
@@ -892,7 +895,7 @@ convert_conc_units_bi = function(df, col, input_unit='mg/L', desired_unit){
     #desired unit is one of the keys in the call to `switch` below
 
     require(PeriodicTable)
-    if(input_unit %in% c('unitless', 'degrees C') | length(input_unit) == 0) {
+    if(!input_unit == 'mg/L' || length(input_unit) == 0) {
         return(df)
     }
 
@@ -934,7 +937,7 @@ convert_conc_units_bi = function(df, col, input_unit='mg/L', desired_unit){
     return(df)
 }
 
-convert_flux_units_bi = function(df, col, input_unit='kg/ha', desired_unit){
+convert_flux_units_bi = function(df, col, input_unit='kg', desired_unit, summary_file){
 
     #df is a data frame or tibble of numeric flux data
     #input_unit is the unit of flux (must be 'kg/ha/d')
@@ -942,15 +945,89 @@ convert_flux_units_bi = function(df, col, input_unit='kg/ha', desired_unit){
 
     col_name <- col
     flux_cols = col_name
-    flux_df = df[col_name]
 
-    converted = switch(desired_unit,
-                       'Mg/ha' = flux_df / 1000,
-                       'kg/ha' = flux_df,
-                       'g/ha' = flux_df * 1000,
-                       'mg/ha' = flux_df * 1000000)
+    if(grepl('/ha', desired_unit)) {
+
+        if('area' %in% colnames(df)){
+
+            df <- df %>%
+                mutate(!!flux_cols := .data[[flux_cols]]/area)
+
+        } else{
+
+           # summary_file <- read_feather('data/biplot/year.feather')
+
+            sites <- df %>%
+                pull(site_name)
+
+            sites <- unique(sites)
+
+            areas <- summary_file %>%
+                filter(site_name %in% sites,
+                       var == 'area') %>%
+                select(site_name, area=val)
+
+            df <- df %>%
+                left_join(., areas, by = 'site_name') %>%
+                mutate(!!flux_cols := .data[[flux_cols]]/area) %>%
+                select(-area)
+        }
+
+
+        flux_df = df[col_name]
+
+        converted = switch(desired_unit,
+                           'Mg/ha' = flux_df / 1000,
+                           'kg/ha' = flux_df,
+                           'g/ha' = flux_df * 1000,
+                           'mg/ha' = flux_df * 1000000)
+
+    } else{
+
+        flux_df = df[col_name]
+
+        converted = switch(desired_unit,
+                           'Mg' = flux_df / 1000,
+                           'kg' = flux_df,
+                           'g' = flux_df * 1000,
+                           'mg' = flux_df * 1000000)
+    }
 
     df[flux_cols] = converted
+
+    return(df)
+}
+
+convert_area_nor_q_bi = function(df, summary_file){
+
+    #converts q in M^3
+
+    if('area' %in% colnames(df)){
+
+        df <- df %>%
+            mutate(discharge = discharge/(area*10000)) %>%
+            filter(!is.na(discharge))
+
+    } else{
+
+       # summary_file <- read_feather('data/biplot/year.feather')
+
+        sites <- df %>%
+            pull(site_name)
+
+        sites <- unique(sites)
+
+        areas <- summary_file %>%
+            filter(site_name %in% sites,
+                   var == 'area') %>%
+            select(site_name, area=val)
+
+        df <- df %>%
+            left_join(., areas, by = 'site_name') %>%
+            mutate(discharge = discharge/(area*10000)) %>%
+            select(-area) %>%
+            filter(!is.na(discharge))
+    }
 
     return(df)
 }
@@ -988,6 +1065,46 @@ load_portal_config <- function(from_where){
     assign('site_data',
            site_data,
            pos = .GlobalEnv)
+}
+
+generate_dropdown_varlist_ws = function(variables){
+
+    ws_vars <- variables %>%
+        filter(variable_type == 'ws_char') %>%
+        mutate(displayname=ifelse(!is.na(unit), paste0(variable_name, ' (', unit, ')'), variable_name)) %>%
+        select(displayname, variable_code, variable_subtype) %>%
+        plyr::dlply(plyr::.(variable_subtype), function(x){
+            plyr::daply(x, plyr::.(displayname), function(y){
+                y['variable_code']
+            })
+        })
+
+    return(ws_vars)
+}
+
+filter_dropdown_varlist_bi = function(filter_set, vartype = 'conc'){
+
+    if(nrow(filter_set) == 0){
+        return(list(Anions = c(),
+                    Cations = c(),
+                    Other = c()))
+    }
+
+    avail_vars <- grep(vartype, unique(filter_set$var) , value = TRUE)
+
+    avail_vars <- str_remove_all(avail_vars, paste0('_', vartype))
+
+
+    vars_display_subset <- chemvars_display
+
+    for(i in 1:length(vars_display_subset)){
+
+        l <- vars_display_subset[[i]]
+        l[! l %in% avail_vars] <- NULL
+        vars_display_subset[[i]] <- l
+    }
+
+    return(vars_display_subset)
 }
 
 drop_var_prefix <- function(x){
