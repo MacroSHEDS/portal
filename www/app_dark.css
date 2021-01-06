@@ -36,11 +36,13 @@ APP TEXT FORMATTING
 */
 
 .section-heading {
+    color: #FBFBFB;
     font-weight: bold;
     font-size: 1.1em;
 }
 
 .widget-title, .control-label {
+    color: #FBFBFB;
     font-size: 1.0em;
     padding: 0px;
     margin: 0px;
@@ -48,6 +50,7 @@ APP TEXT FORMATTING
 }
 
 .widget-title-sm {
+    color: #FBFBFB;
     font-size: 0.9em;
     padding: 0px;
     margin: 0px;
@@ -76,6 +79,45 @@ SELECTIZE MODIFICATIONS
     font-size: 140% !important;
 }
 
+
+.irs-single, .irs-min, .irs-max, .irs-from, .irs-to, .irs-bar {
+    color: #FFFFFF;
+    background-color: #818181;
+    border: #818181;
+}
+
+input {
+    border-color: #E6E6E6;
+    background-color: #E6E6E6;
+}
+
+input[type="radio"]:after {
+		width: 20px;
+        height: 20px;
+	 	top: -2px;
+        right: 5px;
+        border-radius: 15px;
+        position: relative;
+        background-color: #d1d3d1;
+        content: '';
+        display: inline-block;
+        visibility: visible;
+        border: 2px solid white;
+}
+
+
+input[type='radio']:checked:after {
+        width: 20px;
+        height: 20px;
+        border-radius: 15px;
+        position: relative;
+        background-color: #828282;
+        content: '';
+        display: inline-block;
+        visibility: visible;
+        border: 2px solid white;
+}
+
 /*
 LEFT PANEL SCROLL CONTROL
 */
@@ -90,6 +132,51 @@ body {
 
 .shiny-input-container{
     margin-bottom: 0px;
+}
+
+/* MAIN PANNEL STYLE */
+nav .container-fluid {
+    background-color: #000000;
+}
+
+a:hover {
+    color: #FFFFFF;
+}
+
+.row .col-sm-3 .well {
+    background-color: #000000;
+}
+
+.col-sm-4 form.well {
+    background-color: #000000 !important;
+}
+
+.navbar-default .navbar-nav>.active>a:focus,
+.navbar-default .navbar-nav>.active>a {
+    color: #FFFFFF;
+    background-color: #000000;
+
+}
+
+.navbar-default .navbar-nav>li>a{
+    border-right-width: 1px;
+    border-right-style: solid;
+    border-right-color: #FFFFFF;
+    border-left-width: 1px;
+    border-left-style: solid;
+    border-left-color: #FFFFFF;
+}
+
+
+
+.navbar-default .navbar-nav>li>a:hover {
+    color: #FFFFFF;
+}
+
+.navbar>.container .navbar-brand, .navbar>.container-fluid .navbar-brand {
+    color: #FFFFFF;
+    font-weight: bold;
+    font-size: 1.5em;
 }
 
 /*
@@ -138,7 +225,7 @@ MISC
 [class*="col-sm-"],[class*="col-xs-"]{
     padding-right: 5pt !important;
     padding-left: 5pt !important;
-    color: #485580;
+    color: #FBFBFB;
 }
 
 /* change the background color of the entire app */
@@ -146,3 +233,15 @@ MISC
 	background-color: #f2f6f7;
 }
 
+.marker-cluster ~ div, .marker-cluster-small, .marker-cluster-medium  {
+    background: #228B2266 !important;
+    border-color: #228B22 !important;
+}
+.marker-cluster-small div, .marker-cluster-medium div {
+    background: #228B22 !important;
+    border-color: #228B22 !important;
+}
+
+/* .marker-cluster div$0 {
+    background: #2d84c8;
+}
