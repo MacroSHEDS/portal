@@ -18,7 +18,7 @@ output$MAP = renderLeaflet({
             stroke = T,
             fillOpacity = 0.2,
             color = '#000000',
-            layerId = sheds$site_id,
+            layerId = sheds$site_name,
             highlightOptions = highlightOptions(color = '#228B22', fill = '#228B22',
                                                 opacity=1),
             group = 'Catchments'
@@ -111,9 +111,9 @@ observeEvent({input$MAP_marker_click
 
          if(is.null(prev_select_m()) && is.null(input$MAP_marker_click)) { } else {
 
-             code_ <<- str_split_fixed(input$MAP_marker_click$id, '-', n=Inf)[1]
+             code_ <- str_split_fixed(input$MAP_marker_click$id, '-', n=Inf)[1]
              shed <- sheds %>%
-                 filter(site_id == code_)
+                 filter(site_name == code_)
 
              selected <- list(id = code_)
 
@@ -122,12 +122,12 @@ observeEvent({input$MAP_marker_click
                  proxy %>%
                      addPolygons(data = shed, weight = 3, smooth = 0, stroke = T,
                                  fillOpacity = 0.2, color = '#228B22',
-                                 layerId = paste0(shed$site_id, '-temp'), group = 'Catchments')
+                                 layerId = paste0(shed$site_name, '-temp'), group = 'Catchments')
 
              proxy %>%
                  addPolygons(data = shed, weight = 3, smooth = 0, stroke = T,
                      fillOpacity = 0.2, color = '#228B22',
-                     layerId = paste0(shed$site_id, '-temp'), group = 'Catchments') %>%
+                     layerId = paste0(shed$site_name, '-temp'), group = 'Catchments') %>%
                  removeShape(layerId = paste0(site_remove, '-temp'))
 
              prev_select_m(selected)
