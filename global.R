@@ -102,7 +102,7 @@ basedata <- list(
                               prodname = 'stream_chemistry'),
     flux = ms_read_portalsite(domain = default_domain,
                               site_name = default_site,
-                              prodname = 'stream_flux_inst_scaled'),
+                              prodname = 'stream_flux_inst'),
     P = ms_read_portalsite(domain = default_domain,
                            site_name = default_site,
                            prodname = 'precipitation'),
