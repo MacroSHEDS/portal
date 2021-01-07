@@ -1,4 +1,4 @@
-nSiteNVar_tab <- tabPanel("Multisite",
+nSiteNVar_tab <- tabPanel("Time-series",
                           value = 'multisite_exploration',
 
     sidebarLayout(
