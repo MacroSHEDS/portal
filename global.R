@@ -27,19 +27,19 @@ suppressPackageStartupMessages({
     #those that can't should be read from a config file or spreadsheet eventually.
 #attend to trailing comments within this script
 
-#uncomment and execute (without saving script) to deploy demo app
-# rsconnect::deployApp('/home/mike/git/macrosheds/portal',
-#     appName='MacroSheds_demo')
-# rsconnect::deployApp('/home/mike/git/macrosheds/portal',
-#     appName='portal', account='macrosheds')
-# rsconnect::setAccountInfo(name='vlahm', token='0C7F4E613117A7ACA6B3939B9003966B', secret='ypxIatQS6paxC4Vpfx1QF44ap5rTYoaTcBJDtePS')
-# rsconnect::deployApp('/home/mike/git/macrosheds/portal',
-#     appName='portal', account='vlahm')
-
-# rsconnect::deployApp('C:/Users/sr446/Desktop/macrosheds/portal',
-#                      appName='MacroSheds_demo')
-
 ## 0. setup ####
+
+conf <- jsonlite::fromJSON('config.json')
+
+# #uncomment and run this (without saving script) to allow pushing of app to our shinyapps account
+# rsconnect::setAccountInfo(name = 'macrosheds',
+#                           token = conf$shinyapps_cuahsi_token,
+#                           secret = conf$shinyapps_cuahsi_secret)
+#
+# #uncomment and run this (without saving script) to deploy app
+# rsconnect::deployApp('/home/mike/git/macrosheds/portal',
+#                      appName = 'portal',
+#                      account = 'macrosheds')
 
 #options(dplyr.summarise.inform = FALSE)
 
@@ -58,7 +58,6 @@ source('function_aliases.R')
 #load global datasets
 # googlesheets4::gs4_auth(path = '../data_acquisition/googlesheet_service_accnt.json')
 #                         use_oob = TRUE)
-conf <- jsonlite::fromJSON('../data_acquisition/config.json')
 load_portal_config(from_where = 'local')
 site_data <- filter(site_data, as.logical(in_workflow))
 

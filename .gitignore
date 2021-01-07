@@ -1,9 +1,9 @@
-/data
+data/*
+!data/general
 config.txt
 .Rhistory
 rsconnect
 temp_shinyappsio
-site_data.csv
 *.svg
 logs
 .Rproj.user

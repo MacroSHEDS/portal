@@ -32,7 +32,9 @@ landing_page =
                 column(8, offset=2,
                     br(),
                     br(),
-                    p("This portal is still under heavy development, so features and data may change. In particular, our NEON datasets will continue to expand as NEON's stream discharge product comes online."),
+                    p(HTML(paste('This portal is under heavy development, and',
+                            'we\'re still working out <strong>plenty of bugs</strong>.',
+                            'Features and data may change.'))),
                 )
             ),
             fluidRow(class='text-center',
