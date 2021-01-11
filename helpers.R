@@ -908,7 +908,7 @@ convert_flux_units_bi = function(df, col, input_unit='kg', desired_unit, summary
 
         } else{
 
-           # summary_file <- read_feather('data/biplot/year.feather')
+           # summary_file <- read_feather('data/general/biplot/year.feather')
 
             sites <- df %>%
                 pull(site_name)
@@ -963,7 +963,7 @@ convert_area_nor_q_bi = function(df, summary_file){
 
     } else{
 
-       # summary_file <- read_feather('data/biplot/year.feather')
+       # summary_file <- read_feather('data/general/biplot/year.feather')
 
         sites <- df %>%
             pull(site_name)

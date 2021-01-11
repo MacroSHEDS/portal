@@ -7,11 +7,11 @@ summary <- reactive({
     agg <- input$AGG2
 
     if(agg %in% c('YEARLY2', 'WHOLE2')) {
-        sum <- read_feather('data/biplot/year.feather')
+        sum <- read_feather('data/general/biplot/year.feather')
     }
 
     if(agg == 'MONTHLY2') {
-        sum <- read_feather('data/biplot/month.feather')
+        sum <- read_feather('data/general/biplot/month.feather')
     }
 
     return(sum)
