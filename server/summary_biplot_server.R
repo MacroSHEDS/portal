@@ -22,26 +22,26 @@ summary <- reactive({
 #at that site
 pre_filtered_bi <- reactive({
 
-    # date1 <<- input$DATES2_INTER[1]
-    # date2 <<- input$DATES2_INTER[2]
-    # domains <<- input$DOMAINS2
-    # domains_s <<- input$DOMAINS2_S
-    # sites <<- input$SITES2
-    # type <<- switch(input$SITE_SELECTION2,
-    #                 ALL_SITES2 = 'all',
-    #                 DOMINE_NETWORK2 = 'dom',
-    #                 BY_SITE2 = 'site')
-    # raw <- summary()
-
-    date1 <- input$DATES2_INTER[1]
-    date2 <- input$DATES2_INTER[2]
-    domains <- input$DOMAINS2
-    sites <- input$SITES2
-    type <- switch(input$SITE_SELECTION2,
+    date1 <<- input$DATES2_INTER[1]
+    date2 <<- input$DATES2_INTER[2]
+    domains <<- input$DOMAINS2
+    domains_s <<- input$DOMAINS2_S
+    sites <<- input$SITES2
+    type <<- switch(input$SITE_SELECTION2,
                     ALL_SITES2 = 'all',
                     DOMINE_NETWORK2 = 'dom',
                     BY_SITE2 = 'site')
     raw <- summary()
+
+    # date1 <- input$DATES2_INTER[1]
+    # date2 <- input$DATES2_INTER[2]
+    # domains <- input$DOMAINS2
+    # sites <- input$SITES2
+    # type <- switch(input$SITE_SELECTION2,
+    #                 ALL_SITES2 = 'all',
+    #                 DOMINE_NETWORK2 = 'dom',
+    #                 BY_SITE2 = 'site')
+    # raw <- summary()
 
 
 
@@ -70,33 +70,33 @@ pre_filtered_bi <- reactive({
 #Final filtering for variables and configures table for plotly graph
 filtered_bi <- reactive({
 
-    # x_var <<- input$X_VAR2
-    # y_var <<- input$Y_VAR2
-    # include_size <<- input$ADD_SIZE2
-    # size_var <<- input$SIZE_VAR2
-    # x_unit <<- input$X_UNIT2
-    # y_unit <<- input$Y_UNIT2
-    # size_unit <<- input$SIZE_UNIT2
-    # chem_x <<- input$X_TYPE2
-    # chem_y <<- input$Y_TYPE2
-    # chem_size <<- input$SIZE_TYPE2
-    # agg <<- input$AGG2
-    # fill <- pre_filtered_bi()
-    # raw <- isolate(summary())
-
-    x_var <- input$X_VAR2
-    y_var <- input$Y_VAR2
-    include_size <- input$ADD_SIZE2
-    size_var <- input$SIZE_VAR2
-    x_unit <- input$X_UNIT2
-    y_unit <- input$Y_UNIT2
-    size_unit <- input$SIZE_UNIT2
-    chem_x <- input$X_TYPE2
-    chem_y <- input$Y_TYPE2
-    chem_size <- input$SIZE_TYPE2
-    agg <- input$AGG2
+    x_var <<- input$X_VAR2
+    y_var <<- input$Y_VAR2
+    include_size <<- input$ADD_SIZE2
+    size_var <<- input$SIZE_VAR2
+    x_unit <<- input$X_UNIT2
+    y_unit <<- input$Y_UNIT2
+    size_unit <<- input$SIZE_UNIT2
+    chem_x <<- input$X_TYPE2
+    chem_y <<- input$Y_TYPE2
+    chem_size <<- input$SIZE_TYPE2
+    agg <<- input$AGG2
     fill <- pre_filtered_bi()
     raw <- isolate(summary())
+
+    # x_var <- input$X_VAR2
+    # y_var <- input$Y_VAR2
+    # include_size <- input$ADD_SIZE2
+    # size_var <- input$SIZE_VAR2
+    # x_unit <- input$X_UNIT2
+    # y_unit <- input$Y_UNIT2
+    # size_unit <- input$SIZE_UNIT2
+    # chem_x <- input$X_TYPE2
+    # chem_y <- input$Y_TYPE2
+    # chem_size <- input$SIZE_TYPE2
+    # agg <- input$AGG2
+    # fill <- pre_filtered_bi()
+    # raw <- isolate(summary())
 
 
 
@@ -348,43 +348,43 @@ n_sites <- reactive({
 
 output$SUMMARY_BIPLOT = renderPlotly({
 
-    # bi_table <<- filtered_bi()
-    # domains <<- isolate(input$DOMAINS2)
-    # sites <<- isolate(input$SITES2)
-    # x_var <<- isolate(input$X_VAR2)
-    # y_var <<- isolate(input$Y_VAR2)
-    # include_size <<- isolate(input$ADD_SIZE2)
-    # size_var <<- isolate(input$SIZE_VAR2)
-    # x_unit <<- isolate(input$X_UNIT2)
-    # y_unit <<- isolate(input$Y_UNIT2)
-    # size_unit <<- isolate(input$SIZE_UNIT2)
-    # agg <<- switch(isolate(input$AGG2),
-    #               'YEARLY2' = 'year',
-    #               'MONTHLY2' = 'm',
-    #               'WHOLE2' = 'year ')
-    # chem_x <<- isolate(input$X_TYPE2)
-    # chem_y <<- isolate(input$Y_TYPE2)
-    # chem_size <<- isolate(input$SIZE_TYPE2)
-    # num_sites <<- n_sites()
+    bi_table <<- filtered_bi()
+    domains <<- isolate(input$DOMAINS2)
+    sites <<- isolate(input$SITES2)
+    x_var <<- isolate(input$X_VAR2)
+    y_var <<- isolate(input$Y_VAR2)
+    include_size <<- isolate(input$ADD_SIZE2)
+    size_var <<- isolate(input$SIZE_VAR2)
+    x_unit <<- isolate(input$X_UNIT2)
+    y_unit <<- isolate(input$Y_UNIT2)
+    size_unit <<- isolate(input$SIZE_UNIT2)
+    agg <<- switch(isolate(input$AGG2),
+                  'YEARLY2' = 'year',
+                  'MONTHLY2' = 'm',
+                  'WHOLE2' = 'year ')
+    chem_x <<- isolate(input$X_TYPE2)
+    chem_y <<- isolate(input$Y_TYPE2)
+    chem_size <<- isolate(input$SIZE_TYPE2)
+    num_sites <<- n_sites()
 
-    bi_table <- filtered_bi()
-    domains <- isolate(input$DOMAINS2)
-    sites <- isolate(input$SITES2)
-    x_var <- isolate(input$X_VAR2)
-    y_var <- isolate(input$Y_VAR2)
-    include_size <- isolate(input$ADD_SIZE2)
-    size_var <- isolate(input$SIZE_VAR2)
-    x_unit <- isolate(input$X_UNIT2)
-    y_unit <- isolate(input$Y_UNIT2)
-    size_unit <- isolate(input$SIZE_UNIT2)
-    agg <- switch(isolate(input$AGG2),
-                   'YEARLY2' = 'year',
-                   'MONTHLY2' = 'm',
-                   'WHOLE2' = 'year ')
-    chem_x <- isolate(input$X_TYPE2)
-    chem_y <- isolate(input$Y_TYPE2)
-    chem_size <- isolate(input$SIZE_TYPE2)
-    num_sites <- n_sites()
+    # bi_table <- filtered_bi()
+    # domains <- isolate(input$DOMAINS2)
+    # sites <- isolate(input$SITES2)
+    # x_var <- isolate(input$X_VAR2)
+    # y_var <- isolate(input$Y_VAR2)
+    # include_size <- isolate(input$ADD_SIZE2)
+    # size_var <- isolate(input$SIZE_VAR2)
+    # x_unit <- isolate(input$X_UNIT2)
+    # y_unit <- isolate(input$Y_UNIT2)
+    # size_unit <- isolate(input$SIZE_UNIT2)
+    # agg <- switch(isolate(input$AGG2),
+    #                'YEARLY2' = 'year',
+    #                'MONTHLY2' = 'm',
+    #                'WHOLE2' = 'year ')
+    # chem_x <- isolate(input$X_TYPE2)
+    # chem_y <- isolate(input$Y_TYPE2)
+    # chem_size <- isolate(input$SIZE_TYPE2)
+    # num_sites <- n_sites()
 
     # Color blind safe palette
     safe_cols <- c("#88CCEE", "#CC6677", "#DDCC77", "#117733", "#332288", "#AA4499",
@@ -468,6 +468,7 @@ output$SUMMARY_BIPLOT = renderPlotly({
         if(include_size == 'SIZE_YES2') {
 
             plot <- bi_table %>%
+               # accumulate_by(~Year) %>%
                 plotly::plot_ly(x = ~get(x_tvar),
                                 y = ~get(y_tvar),
                                 size = ~get(size_tvar),
@@ -478,26 +479,28 @@ output$SUMMARY_BIPLOT = renderPlotly({
                                 type = 'scatter',
                                 mode = 'markers',
                                 text = ~paste0(size_var, ' ', size_unit, ':', round(get(size_tvar)), ', \nsite:', site_name, ', \ndomain:', domain)) %>%
-                plotly::layout(xaxis = list(title = paste0(x_var, ' ', x_unit)),
+                plotly::layout(xaxis = list(title = paste0(x_var, ' ', x_unit),
+                                            range = c(min(as.numeric(pull(bi_table[x_tvar]))), max(as.numeric(pull(bi_table[x_tvar]))))),
                                yaxis = list(title = paste0(y_var, ' ', y_unit)),
                                paper_bgcolor = 'rgba(0,0,0,0)',
                                plot_bgcolor = 'rgba(0,0,0,0)')
         } else {
 
             plot <- bi_table %>%
-                #accumulate_by(~Year) %>%
+              #  accumulate_by(~Year) %>%
                 plotly::plot_ly(x = ~get(x_tvar),
                                 y = ~get(y_tvar),
                                 size = 2,
-                                color = ~get(col_by),
-                                colors = safe_cols,
-                                frame = ~Year,
-                                fill = '',
                                 type = 'scatter',
                                 mode = 'markers',
+                                frame = ~Year,
+                                color = ~get(col_by),
+                                colors = safe_cols,
+                                fill = '',
                                 #line = list(width = 2, color = ~get(col_by)),
                                 text = ~paste0('site:', site_name, ', \ndomain:', domain)) %>%
-                plotly::layout(xaxis = list(title = paste0(x_var, ' ', x_unit)),
+                plotly::layout(xaxis = list(title = paste0(x_var, ' ', x_unit),
+                                            range = c(min(as.numeric(pull(bi_table[x_tvar]))), max(as.numeric(pull(bi_table[x_tvar]))))),
                                yaxis = list(title = paste0(y_var, ' ', y_unit)),
                                paper_bgcolor = 'rgba(0,0,0,0)',
                                plot_bgcolor = 'rgba(0,0,0,0)')

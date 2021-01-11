@@ -1,6 +1,6 @@
-#df <- network_domain_default_sites
+df <- network_domain_default_sites
 
-
+#
 # Currently viewing monthly summaries is disabled on biplot, primarilay becuase
 # general products are only saved as calendar year summaries. This should be changed
 # in the future
@@ -213,19 +213,16 @@ compute_yearly_summary <- function(df) {
                 } else {
 
                     site_flux <- read_feather(path_flux)  %>%
-                        mutate(Year = year(datetime),
-                               Month = month(datetime)) %>%
+                        mutate(Year = year(datetime)) %>%
                         select(-datetime) %>%
                         mutate(var = drop_var_prefix(var))
 
                     site_flux <- site_flux %>%
-                        group_by(site_name, Year, Month, var) %>%
-                        summarise(val = mean(val, na.rm = TRUE)) %>%
+                        group_by(site_name, Year, var) %>%
                         mutate(Date = ymd(paste(Year, 1, 1, sep = '-'))) %>%
                         ungroup() %>%
-                        select(-Month) %>%
                         group_by(site_name, Date, Year, var) %>%
-                        summarise(val = mean(val, na.rm = TRUE)*365) %>%
+                        summarise(val = sum(val, na.rm = TRUE)) %>%
                         ungroup() %>%
                         mutate(var = glue('{v}_flux', v = var)) %>%
                         mutate(domain = dom)
@@ -251,23 +248,17 @@ compute_yearly_summary <- function(df) {
                 } else {
 
                     site_q <- sm(read_feather(path_q) %>%
-                                     mutate(Year = year(datetime),
-                                            Month = month(datetime),
-                                            day = day(datetime)))
+                                     mutate(Year = year(datetime)))
 
                     site_q <- site_q %>%
-                        group_by(site_name, Year, Month, day) %>%
-                        summarise(val = mean(val, na.rm = TRUE)) %>%
-                        mutate(NAs = ifelse(is.na(val), 1, 0)) %>%
-                        ungroup() %>%
                         mutate(Date = ymd(paste(Year, 1, 1, sep = '-'))) %>%
-                        select(-Month) %>%
+                        mutate(val = val*86400) %>%
                         group_by(site_name, Date, Year) %>%
                         summarise(val = sum(val, na.rm = TRUE),
-                                  NAs = sum(NAs, na.rm = TRUE)) %>%
-                        mutate(val = val*86400/1000) %>%
+                                  count = n()) %>%
+                        mutate(val = val/1000) %>%
                         ungroup() %>%
-                        select(-NAs) %>%
+                        select(-count) %>%
                         mutate(var = 'discharge') %>%
                         mutate(domain = dom)
 
@@ -305,7 +296,7 @@ compute_yearly_summary_ws <- function(df) {
 
                 if(str_split_fixed(prod_files[p], '/', n = Inf)[1,4] %in% c('prism_precip',
                                                                             'prism_temp_mean',
-                                                                            #'npp',
+                                                                            'npp',
                                                                             'terrain')){
 
                     if(str_split_fixed(prod_files[p], '/', n = Inf)[1,4] == 'prism_precip'){
@@ -364,18 +355,18 @@ compute_yearly_summary_ws <- function(df) {
 
                     #Mistake in genral kernal that is now fixed, remove before push
 
-                    # if(str_split_fixed(prod_files[p], '/', n = Inf)[1,4] == 'npp'){
-                    #
-                    #     prod_tib <- read_feather(prod_files[p]) %>%
-                    #         filter(!is.na(year))
-                    #
-                    #     if('npp_median' %in% colnames(prod_tib)){
-                    #         prod_tib <- prod_tib %>%
-                    #             pivot_longer(cols = c('npp_median', 'npp_sd'),
-                    #                          names_to = 'var',
-                    #                          values_to = 'val')
-                    #     }
-                    # }
+                    if(str_split_fixed(prod_files[p], '/', n = Inf)[1,4] == 'npp'){
+
+                        prod_tib <- read_feather(prod_files[p]) %>%
+                            filter(!is.na(year))
+
+                        if('npp_median' %in% colnames(prod_tib)){
+                            prod_tib <- prod_tib %>%
+                                pivot_longer(cols = c('npp_median', 'npp_sd'),
+                                             names_to = 'var',
+                                             values_to = 'val')
+                        }
+                    }
 
                 } else {
                     prod_tib <- read_feather(prod_files[p])
