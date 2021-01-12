@@ -53,21 +53,25 @@ participants_tab = tabPanel('Participants', value='participants',
         ),
         fluidRow(class='text-center',
             h2('Data Scientists'),
-            column(4,
+            column(6,
                 HTML('<p><b>Mike Vlah</b><br>Duke</p>'),
                 img(src='participants/michael_vlah.jpg',
                     style='height: 100px;'),
+                br(),
                 br()
             ),
-            column(4,
+            column(6,
+                HTML('<p><b>Spencer Rhea</b><br>Duke</p>'),
+                img(src='participants/spencer_rhea.jpg',
+                    style='height: 100px;'),
+                br(),
+                br()
+            )
+        ),
+        fluidRow(class='text-center',
+            column(12,
                 HTML('<p><b>Cody Flagg</b><br>NEON</p>'),
                 img(src='participants/cody_flagg.jpg',
-                    style='height: 100px;'),
-                br()
-            ),
-            column(4,
-                HTML('<p><b>Spencer Rhea<br>&nbsp;</b></p>'),
-                img(src='participants/spencer_rhea.jpg',
                     style='height: 100px;'),
                 br()
             )

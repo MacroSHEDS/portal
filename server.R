@@ -83,13 +83,26 @@ server <- function(input, output, session){
 
     observeEvent(input$MAPDATA, {
 
-        map_selection <- str_match(input$MAPDATA, '__(.+?)_goto.*$')[,2]
-        # updateSelectizeInput(session, 'SITES4',
-        updateSelectizeInput(session,
-                             'SITES3', #temporary (switch back to SITES4 and update js call below)
-                             label=NULL,
-                             selected = map_selection,
-                             choices = default_sitelist) #temporary
+        map_selection <- str_match(input$MAPDATA, '(.+?)__(.+?)_goto.*$')[,2:3]
+
+        domain_sel <- map_selection[1]
+        site_sel <- map_selection[2]
+
+        dmn_sitelist <- get_sitelist(domain = domain_sel,
+                                     type = c('stream_gauge',
+                                              'stream_sampling_point'))
+
+        updateSelectizeInput(session = session,
+                             inputId = 'DOMAINS3',
+                             label = NULL,
+                             selected = domain_sel,
+                             choices = domains_pretty)
+
+        updateSelectizeInput(session = session,
+                             inputId = 'SITES3',
+                             label = NULL,
+                             selected = site_sel,
+                             choices = dmn_sitelist)
 
         session$sendCustomMessage('flash_plot',
                                   jsonlite::toJSON('placeholder'))

@@ -632,6 +632,17 @@ pad_widen_join <- function(v,
                                 vv = v),
                            colnames(streamdata)))
 
+    #TEMP: TODO: find out if we need to highlight interp/status points.
+    #if so, remove the above and fix either pad_widen_join or filter_agg_widen_unprefix
+    #so that it splits ms_status and ms_interp into multiple columns with sitenames appended. then
+    #update the plotters to handle this. if not, this can be moved to after the filter steps in filter_agg_widen_unprefix,
+    #and some unnecessary logic must be removed from the functions that follow, and probably some
+    #of the plotters, etc.
+    streamdata <- select(streamdata,
+                        -starts_with(c('ms_interp', 'ms_status')))
+    raindata <- select(raindata,
+                       -starts_with(c('ms_interp', 'ms_status')))
+
     if(streamdata_exist && v_present){
 
         streamdata <- streamdata %>%
@@ -897,7 +908,7 @@ convert_flux_units_bi = function(df, col, input_unit='kg', desired_unit, summary
 
         } else{
 
-           # summary_file <- read_feather('data/biplot/year.feather')
+           # summary_file <- read_feather('data/general/biplot/year.feather')
 
             sites <- df %>%
                 pull(site_name)
@@ -952,7 +963,7 @@ convert_area_nor_q_bi = function(df, summary_file){
 
     } else{
 
-       # summary_file <- read_feather('data/biplot/year.feather')
+       # summary_file <- read_feather('data/general/biplot/year.feather')
 
         sites <- df %>%
             pull(site_name)

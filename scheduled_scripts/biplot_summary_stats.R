@@ -134,7 +134,7 @@ compute_monthly_summary <- function(df) {
             all_domain <-  rbind.fill(all_domain, all_sites)
     }
 
-    write_feather(all_domain, 'data/biplot/month.feather')
+    write_feather(all_domain, 'data/general/biplot/month.feather')
 }
 compute_monthly_summary(network_domain_default_sites)
 
@@ -273,7 +273,7 @@ compute_yearly_summary <- function(df) {
 
     }
 
-    write_feather(all_domain, 'data/biplot/year.feather')
+    write_feather(all_domain, 'data/general/biplot/year.feather')
 }
 compute_yearly_summary_ws <- function(df) {
 
@@ -385,10 +385,10 @@ compute_yearly_summary_ws <- function(df) {
         }
     }
 
-    conc_sum <- read_feather('data/biplot/year.feather')
+    conc_sum <- read_feather('data/general/biplot/year.feather')
 
     final <- rbind(conc_sum, all_domain)
-    write_feather(final, 'data/biplot/year.feather')
+    write_feather(final, 'data/general/biplot/year.feather')
 }
 
 compute_yearly_summary(network_domain_default_sites)
