@@ -708,6 +708,7 @@ output$GRAPH_PRECIP3 <- renderDygraph({
             dyOptions(useDataTimezone = TRUE,
                       fillGraph = TRUE,
                       retainDateWindow = TRUE,
+                      labelsKMB = TRUE,
                       # stackedGraph = TRUE,
 
                       # #if precip panels are separated, use these specifications
@@ -883,6 +884,7 @@ output$GRAPH_MAIN3a <- renderDygraph({
                       strokeWidth = 2,
                       pointSize = 2,
                       drawGapEdgePoints = TRUE,
+                      labelsKMB = TRUE,
 
                       # #if showing points, use these
                       # drawPoints = TRUE,
@@ -1192,6 +1194,7 @@ output$GRAPH_MAIN3b <- renderDygraph({
                       strokeWidth = 2,
                       pointSize = 2,
                       drawGapEdgePoints = TRUE,
+                      labelsKMB = TRUE,
 
                       # #if showing points, use these
                       # drawPoints = TRUE,
@@ -1482,6 +1485,7 @@ output$GRAPH_MAIN3c <- renderDygraph({
                       strokeWidth = 2,
                       pointSize = 2,
                       drawGapEdgePoints = TRUE,
+                      labelsKMB = TRUE,
 
                       # #if showing points, use these
                       # drawPoints = TRUE,
@@ -1709,6 +1713,7 @@ output$GRAPH_Q3 <- renderDygraph({
                       colors = selection_color_match(sites,
                                                      displabs[displabs %in% sites],
                                                      linecolors),
+                      labelsKMB = TRUE,
                       drawGapEdgePoints = TRUE) %>%
             dyLegend(show = 'always',
                      labelsSeparateLines = FALSE,

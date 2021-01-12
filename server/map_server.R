@@ -1,6 +1,6 @@
 
 
-sheds <- sf::st_read('data/shed_boundary') %>%
+sheds <- sf::st_read('data/general/shed_boundary') %>%
     sf::st_transform(4326)
 
 output$MAP = renderLeaflet({
