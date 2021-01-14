@@ -32,14 +32,14 @@ suppressPackageStartupMessages({
 conf <- jsonlite::fromJSON('config.json')
 
 # #uncomment and run this (without saving script) to allow pushing of app to our shinyapps account
-# rsconnect::setAccountInfo(name = 'macrosheds',
+# rsconnect::setAccountInfo(name = 'cuahsi',
 #                           token = conf$shinyapps_cuahsi_token,
 #                           secret = conf$shinyapps_cuahsi_secret)
 #
 # #uncomment and run this (without saving script) to deploy app
 # rsconnect::deployApp('/home/mike/git/macrosheds/portal',
-#                      appName = 'portal',
-#                      account = 'macrosheds')
+#                      appName = 'macrosheds',
+#                      account = 'cuahsi')
 
 #options(dplyr.summarise.inform = FALSE)
 
