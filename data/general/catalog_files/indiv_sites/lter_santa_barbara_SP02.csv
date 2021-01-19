@@ -1,0 +1,10 @@
+VariableCode,VariableName,SampleRegimen,Unit,Observations,FirstRecordUTC,LastRecordUTC,MeanObsPerDay,PercentFlagged,PercentImputed
+precipitation,Basin Precip,installed-sensor,mm,6210,2000-10-01T00:00:00Z,2017-10-01T00:00:00Z,1,0,2.32
+NH4_N,Ammonium-N,grab-nonsensor,mg/L,1520,2007-07-18T00:00:00Z,2014-02-20T00:00:00Z,0.6,0,86.25
+NO3_NO2_N,Nitrate-N and nitrite-N,grab-nonsensor,mg/L,1640,2007-07-18T00:00:00Z,2014-02-20T00:00:00Z,0.7,0,86.89
+PO4_P,Phosphate-P,grab-nonsensor,mg/L,1595,2007-07-18T00:00:00Z,2014-02-20T00:00:00Z,0.7,0,86.65
+spCond,Specific Conductivity,grab-nonsensor,uS/cm,1487,2008-11-06T00:00:00Z,2014-02-20T00:00:00Z,0.8,0,86.68
+TDN,Total Dissolved Nitrogen,grab-nonsensor,mg/L,1188,2007-07-18T00:00:00Z,2013-03-09T00:00:00Z,0.6,0,85.44
+TDP,Total Dissolved Phosphorus,grab-nonsensor,mg/L,1183,2007-07-18T00:00:00Z,2012-06-03T00:00:00Z,0.7,0,85.8
+TSS,Total Suspended Solids,grab-nonsensor,mg/L,132,2008-12-15T00:00:00Z,2013-03-09T00:00:00Z,0.1,0,68.18
+discharge,Discharge,installed-sensor,L/s,2389,2008-10-01T00:00:00Z,2020-12-19T00:00:00Z,0.5,0,2.3

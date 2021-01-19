@@ -1,0 +1,37 @@
+VariableCode,VariableName,SampleRegimen,Unit,Observations,FirstRecordUTC,LastRecordUTC,MeanObsPerDay,PercentFlagged,PercentImputed
+discharge,Discharge,installed-sensor,L/s,2375,1989-06-05T00:00:00Z,2019-09-11T00:00:00Z,0.2,0,0.55
+BPC,Benthic Particulate Carbon,grab-nonsensor,mg/cm2,84,1994-06-21T00:00:00Z,1996-08-14T00:00:00Z,0.1,0,90.48
+BPN,Benthic Particulate Nitrogen,grab-nonsensor,mg/cm2,84,1994-06-21T00:00:00Z,1996-08-14T00:00:00Z,0.1,0,90.48
+BPP,Benthic Particulate Phosphorus,grab-nonsensor,mg/cm2,84,1994-06-21T00:00:00Z,1996-08-14T00:00:00Z,0.1,0,90.48
+Ca,Calcium,grab-nonsensor,mg/L,9,1990-06-02T00:00:00Z,1990-06-10T00:00:00Z,1.1,0,55.56
+K,Potassium,grab-nonsensor,mg/L,9,1990-06-02T00:00:00Z,1990-06-10T00:00:00Z,1.1,0,55.56
+Mg,Magnesium,grab-nonsensor,mg/L,9,1990-06-02T00:00:00Z,1990-06-10T00:00:00Z,1.1,0,55.56
+Na,Sodium,grab-nonsensor,mg/L,9,1990-06-02T00:00:00Z,1990-06-10T00:00:00Z,1.1,0,55.56
+NH4_N,Ammonium-N,grab-nonsensor,mg/L,469,1989-07-14T00:00:00Z,1997-08-09T00:00:00Z,0.2,0,86.57
+NO3_NO2_N,Nitrate-N and nitrite-N,grab-nonsensor,mg/L,483,1989-07-14T00:00:00Z,1997-08-09T00:00:00Z,0.2,0,85.71
+pH,pH,grab-nonsensor,unitless,161,1994-06-25T00:00:00Z,1997-06-19T00:00:00Z,0.1,21.12,85.71
+spCond,Specific Conductivity,grab-nonsensor,uS/cm,161,1994-06-25T00:00:00Z,1997-06-19T00:00:00Z,0.1,21.12,85.71
+SRP,Soluble Reactive Phosphorus,grab-nonsensor,mg/L,469,1989-07-14T00:00:00Z,1997-08-09T00:00:00Z,0.2,0,85.93
+T_ECHL,Epilithic Total Chlorophyll,grab-nonsensor,mg/cm2,312,1990-08-08T00:00:00Z,1996-08-14T00:00:00Z,0.1,0,92.31
+TCHL,Sestonic Total Chlorophyll,grab-nonsensor,mg/l,336,1991-06-15T00:00:00Z,1997-06-19T00:00:00Z,0.2,0,84.52
+TDN,Total Dissolved Nitrogen,grab-nonsensor,mg/L,42,1995-06-30T00:00:00Z,1995-08-10T00:00:00Z,1,0,92.86
+TDP,Total Dissolved Phosphorus,grab-nonsensor,mg/L,17,1996-06-20T00:00:00Z,1997-06-19T00:00:00Z,0,0,76.47
+temp,Water Temperature,grab-nonsensor,degrees C,161,1994-06-25T00:00:00Z,1997-06-19T00:00:00Z,0.1,21.12,85.09
+TPC,Total Particulate Carbon,grab-nonsensor,mg/L,45,1994-07-14T00:00:00Z,1996-08-08T00:00:00Z,0.1,0,84.44
+TPN,Total Particulate Nitrogen,grab-nonsensor,mg/L,45,1994-07-14T00:00:00Z,1996-08-08T00:00:00Z,0.1,0,84.44
+TPP,Total Particulate Phosphorus,grab-nonsensor,mg/L,45,1994-07-14T00:00:00Z,1996-08-08T00:00:00Z,0.1,0,84.44
+BPC,Benthic Particulate Carbon,grab-nonsensor,mg/cm2,75,1994-08-12T00:00:00Z,1996-08-14T00:00:00Z,0.1,0,92
+BPN,Benthic Particulate Nitrogen,grab-nonsensor,mg/cm2,75,1994-08-12T00:00:00Z,1996-08-14T00:00:00Z,0.1,0,92
+BPP,Benthic Particulate Phosphorus,grab-nonsensor,mg/cm2,75,1994-08-12T00:00:00Z,1996-08-14T00:00:00Z,0.1,0,92
+Ca,Calcium,grab-nonsensor,mg/L,9,1990-06-02T00:00:00Z,1990-06-10T00:00:00Z,1.1,0,55.56
+K,Potassium,grab-nonsensor,mg/L,9,1990-06-02T00:00:00Z,1990-06-10T00:00:00Z,1.1,0,55.56
+Mg,Magnesium,grab-nonsensor,mg/L,9,1990-06-02T00:00:00Z,1990-06-10T00:00:00Z,1.1,0,55.56
+Na,Sodium,grab-nonsensor,mg/L,9,1990-06-02T00:00:00Z,1990-06-10T00:00:00Z,1.1,0,55.56
+NH4_N,Ammonium-N,grab-nonsensor,mg/L,445,1989-07-14T00:00:00Z,1997-08-09T00:00:00Z,0.2,0,86.97
+NO3_NO2_N,Nitrate-N and nitrite-N,grab-nonsensor,mg/L,459,1989-07-14T00:00:00Z,1997-08-09T00:00:00Z,0.2,0,86.06
+SRP,Soluble Reactive Phosphorus,grab-nonsensor,mg/L,445,1989-07-14T00:00:00Z,1997-08-09T00:00:00Z,0.2,0,86.29
+TDN,Total Dissolved Nitrogen,grab-nonsensor,mg/L,42,1995-06-30T00:00:00Z,1995-08-10T00:00:00Z,1,0,92.86
+TDP,Total Dissolved Phosphorus,grab-nonsensor,mg/L,7,1996-06-30T00:00:00Z,1997-06-19T00:00:00Z,0,0,57.14
+TPC,Total Particulate Carbon,grab-nonsensor,mg/L,45,1994-07-14T00:00:00Z,1996-08-08T00:00:00Z,0.1,0,84.44
+TPN,Total Particulate Nitrogen,grab-nonsensor,mg/L,45,1994-07-14T00:00:00Z,1996-08-08T00:00:00Z,0.1,0,84.44
+TPP,Total Particulate Phosphorus,grab-nonsensor,mg/L,45,1994-07-14T00:00:00Z,1996-08-08T00:00:00Z,0.1,0,84.44

@@ -20,6 +20,7 @@ suppressPackageStartupMessages({
     library(glue)
     library(shinyjs)
     library(googlesheets4)
+    library(rhandsontable)
 })
 
 #TODO:

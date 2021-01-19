@@ -1,0 +1,27 @@
+VariableCode,VariableName,SampleRegimen,Unit,Observations,FirstRecordUTC,LastRecordUTC,MeanObsPerDay,PercentFlagged,PercentImputed
+Br,Bromide,grab-nonsensor,mg/L,1513,2008-06-24T00:00:00Z,2016-12-11T00:00:00Z,0.5,0,94.38
+CHL,Chlorophyll,grab-nonsensor,mg/L,126,1994-03-29T00:00:00Z,2000-12-22T00:00:00Z,0.1,16.67,87.3
+Cl,Chloride,grab-nonsensor,mg/L,3001,2006-07-26T00:00:00Z,2017-12-03T00:00:00Z,0.7,0,94.74
+DOC,Dissolved Organic Carbon,grab-nonsensor,mg/L,6162,1993-06-19T00:00:00Z,2017-12-03T00:00:00Z,0.7,2,92.44
+DON,Dissolved Organic Nitrogen,grab-nonsensor,mg/L,5760,1993-06-19T00:00:00Z,2017-12-03T00:00:00Z,0.6,2.14,92.86
+DOP,Dissolved Organic Phosphorus,grab-nonsensor,mg/L,4198,1993-09-21T00:00:00Z,2017-12-09T00:00:00Z,0.5,2.93,93.5
+NH4_N,Ammonium-N,grab-nonsensor,mg/L,6444,1993-06-19T00:00:00Z,2017-12-09T00:00:00Z,0.7,1.91,92.55
+NO3_N,Nitrate-N,grab-nonsensor,mg/L,4120,1993-06-19T00:00:00Z,2017-08-16T00:00:00Z,0.5,2.99,93.45
+NO3_NO2_N,Nitrate-N and nitrite-N,grab-nonsensor,mg/L,5135,2001-11-06T00:00:00Z,2017-12-03T00:00:00Z,0.9,2.63,62.53
+PO4_P,Phosphate-P,grab-nonsensor,mg/L,6444,1993-06-19T00:00:00Z,2017-12-09T00:00:00Z,0.7,1.91,92.5
+POC,Particulate Organic Carbon,grab-nonsensor,mg/L,5352,1993-06-19T00:00:00Z,2017-12-09T00:00:00Z,0.6,2.3,93.27
+PON,Particulate Organic Nitrogen,grab-nonsensor,mg/L,5352,1993-06-19T00:00:00Z,2017-12-09T00:00:00Z,0.6,2.3,93.27
+SO4_S,Sulfate-S,grab-nonsensor,mg/L,3001,2006-07-26T00:00:00Z,2017-12-03T00:00:00Z,0.7,0,94.74
+spCond,Specific Conductivity,all,uS/cm,1815,2012-12-01T00:00:00Z,2018-08-15T00:00:00Z,0.9,0,2.58
+spCond,Specific Conductivity,grab-sensor,uS/cm,33,2012-12-01T00:00:00Z,2014-01-01T00:00:00Z,0.1,0,0
+spCond,Specific Conductivity,installed-sensor,uS/cm,1782,2013-01-01T00:00:00Z,2018-08-15T00:00:00Z,0.9,0,2.58
+TDN,Total Dissolved Nitrogen,grab-nonsensor,mg/L,6162,1993-06-19T00:00:00Z,2017-12-03T00:00:00Z,0.7,2,92.44
+TDP,Total Dissolved Phosphorus,grab-nonsensor,mg/L,4198,1993-09-21T00:00:00Z,2017-12-09T00:00:00Z,0.5,2.93,93.5
+temp,Water Temperature,all,degrees C,1849,2012-12-01T00:00:00Z,2018-08-15T00:00:00Z,0.9,1.98,2.53
+temp,Water Temperature,grab-sensor,degrees C,33,2012-12-01T00:00:00Z,2014-01-01T00:00:00Z,0.1,0,0
+temp,Water Temperature,installed-sensor,degrees C,1816,2013-01-01T00:00:00Z,2018-08-15T00:00:00Z,0.9,1.98,2.53
+TN,Total Nitrogen,grab-nonsensor,mg/L,3758,2001-11-12T00:00:00Z,2017-12-01T00:00:00Z,0.6,4.66,62.72
+TOC,Total Organic Carbon,grab-nonsensor,mg/L,2726,2002-06-09T00:00:00Z,2017-12-01T00:00:00Z,0.5,0.29,61.48
+TP,Total Phosphorus,grab-nonsensor,mg/L,4241,2001-11-12T00:00:00Z,2017-12-01T00:00:00Z,0.7,3.47,58.57
+TPP,Total Particulate Phosphorus,grab-nonsensor,mg/L,4199,1993-09-21T00:00:00Z,2017-12-09T00:00:00Z,0.5,2.93,93.47
+TSS,Total Suspended Solids,grab-nonsensor,mg/L,5837,1993-06-19T00:00:00Z,2019-07-29T00:00:00Z,0.6,2.11,92.87

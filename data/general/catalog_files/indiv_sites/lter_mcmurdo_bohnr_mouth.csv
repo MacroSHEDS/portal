@@ -1,0 +1,15 @@
+VariableCode,VariableName,SampleRegimen,Unit,Observations,FirstRecordUTC,LastRecordUTC,MeanObsPerDay,PercentFlagged,PercentImputed
+Ca,Calcium,grab-nonsensor,mg/L,198,1998-12-22T00:00:00Z,2014-01-29T00:00:00Z,0,0,89.9
+Cl,Chloride,grab-nonsensor,mg/L,198,1998-12-22T00:00:00Z,2014-01-29T00:00:00Z,0,0,89.9
+DOC,Dissolved Organic Carbon,grab-nonsensor,mg/L,2,2008-01-21T00:00:00Z,2014-01-16T00:00:00Z,0,0,0
+F,Fluorine,grab-nonsensor,mg/L,198,1998-12-22T00:00:00Z,2014-01-29T00:00:00Z,0,0,89.9
+K,Potassium,grab-nonsensor,mg/L,198,1998-12-22T00:00:00Z,2014-01-29T00:00:00Z,0,0,89.9
+Li,Lithium,grab-nonsensor,mg/L,172,1998-12-22T00:00:00Z,2014-01-16T00:00:00Z,0,0,89.53
+Mg,Magnesium,grab-nonsensor,mg/L,198,1998-12-22T00:00:00Z,2014-01-29T00:00:00Z,0,0,89.9
+Na,Sodium,grab-nonsensor,mg/L,198,1998-12-22T00:00:00Z,2014-01-29T00:00:00Z,0,0,89.9
+NH4_N,Ammonium-N,grab-nonsensor,mg/L,98,2002-01-23T00:00:00Z,2014-01-29T00:00:00Z,0,0,89.8
+NO2_N,Nitrite-N,grab-nonsensor,mg/L,123,2002-12-30T00:00:00Z,2014-01-16T00:00:00Z,0,0,91.06
+NO3_N,Nitrate-N,grab-nonsensor,mg/L,148,2002-01-13T00:00:00Z,2014-01-29T00:00:00Z,0,0,88.51
+Si,Silicon,grab-nonsensor,mg/L,198,1998-12-22T00:00:00Z,2014-01-29T00:00:00Z,0,0,89.9
+SO4_S,Sulfate-S,grab-nonsensor,mg/L,198,1998-12-22T00:00:00Z,2014-01-29T00:00:00Z,0,0,89.9
+SRP,Soluble Reactive Phosphorus,grab-nonsensor,mg/L,148,2002-01-13T00:00:00Z,2014-01-29T00:00:00Z,0,0,88.51

@@ -1,0 +1,45 @@
+VariableCode,VariableName,SampleRegimen,Unit,Observations,FirstRecordUTC,LastRecordUTC,MeanObsPerDay,PercentFlagged,PercentImputed
+abs250,UV Absorbance at 250nm,grab-nonsensor,unitless,491,2018-03-07T00:00:00Z,2019-11-13T00:00:00Z,0.8,36.25,90.02
+abs280,UV Absorbance at 280nm,grab-nonsensor,unitless,491,2018-03-07T00:00:00Z,2019-11-13T00:00:00Z,0.8,36.25,90.02
+alk,Alkalinity,grab-nonsensor,mg/L,692,2018-03-07T00:00:00Z,2020-10-09T00:00:00Z,0.7,0,91.04
+ANC,Acid Neutralizing Capacity,grab-nonsensor,eq/L,593,2018-03-07T00:00:00Z,2020-10-09T00:00:00Z,0.6,33.56,90.39
+Br,Bromide,grab-nonsensor,mg/L,491,2018-03-07T00:00:00Z,2019-11-13T00:00:00Z,0.8,36.25,90.02
+Ca,Calcium,grab-nonsensor,mg/L,491,2018-03-07T00:00:00Z,2019-11-13T00:00:00Z,0.8,36.25,90.02
+CHL,Chlorophyll,installed-sensor,mg/L,766,2018-09-25T00:00:00Z,2020-12-01T00:00:00Z,1,72.32,5.61
+Cl,Chloride,grab-nonsensor,mg/L,491,2018-03-07T00:00:00Z,2019-11-13T00:00:00Z,0.8,36.25,90.02
+CO3,Carbonate,grab-nonsensor,mg/L,491,2018-03-07T00:00:00Z,2019-11-13T00:00:00Z,0.8,36.25,90.02
+DIC,Dissolved Inorganic Carbon,grab-nonsensor,mg/L,549,2018-03-07T00:00:00Z,2020-06-24T00:00:00Z,0.7,42.99,90.35
+DO,Dissolved Oxygen,installed-sensor,mg/L,766,2018-09-25T00:00:00Z,2020-12-01T00:00:00Z,1,21.41,4.83
+DOC,Dissolved Organic Carbon,grab-nonsensor,mg/L,549,2018-03-07T00:00:00Z,2020-06-24T00:00:00Z,0.7,42.99,90.35
+F,Fluorine,grab-nonsensor,mg/L,491,2018-03-07T00:00:00Z,2019-11-13T00:00:00Z,0.8,36.25,90.02
+FDOM,Fluorescent Dissolved Organic Matter,installed-sensor,QSU,766,2018-09-25T00:00:00Z,2020-12-01T00:00:00Z,1,80.81,7.05
+Fe,Iron,grab-nonsensor,mg/L,491,2018-03-07T00:00:00Z,2019-11-13T00:00:00Z,0.8,36.25,90.02
+HCO3,Bicarbonate,grab-nonsensor,mg/L,491,2018-03-07T00:00:00Z,2019-11-13T00:00:00Z,0.8,36.25,90.02
+K,Potassium,grab-nonsensor,mg/L,491,2018-03-07T00:00:00Z,2019-11-13T00:00:00Z,0.8,36.25,90.02
+Mg,Magnesium,grab-nonsensor,mg/L,491,2018-03-07T00:00:00Z,2019-11-13T00:00:00Z,0.8,36.25,90.02
+Mn,Manganese,grab-nonsensor,mg/L,491,2018-03-07T00:00:00Z,2019-11-13T00:00:00Z,0.8,36.25,90.02
+Na,Sodium,grab-nonsensor,mg/L,491,2018-03-07T00:00:00Z,2019-11-13T00:00:00Z,0.8,36.25,90.02
+NH4_N,Ammonium-N,grab-nonsensor,mg/L,492,2018-03-07T00:00:00Z,2020-02-05T00:00:00Z,0.7,37.8,89.84
+NO3_N,Nitrate-N,all,mg/L,1194,2018-03-07T00:00:00Z,2020-11-07T00:00:00Z,1.2,97,102.66
+NO3_N,Nitrate-N,grab-nonsensor,mg/L,492,2018-03-07T00:00:00Z,2020-02-05T00:00:00Z,0.7,44.72,89.84
+NO3_N,Nitrate-N,installed-sensor,mg/L,702,2018-09-25T00:00:00Z,2020-11-07T00:00:00Z,0.9,52.28,12.82
+NO3_NO2_N,Nitrate-N and nitrite-N,grab-nonsensor,mg/L,492,2018-03-07T00:00:00Z,2020-02-05T00:00:00Z,0.7,44.72,89.84
+pH,pH,all,unitless,1278,2018-03-07T00:00:00Z,2020-12-01T00:00:00Z,1.3,100.49,97.15
+pH,pH,grab-nonsensor,unitless,512,2018-03-07T00:00:00Z,2019-12-04T00:00:00Z,0.8,38.87,90.23
+pH,pH,installed-sensor,unitless,766,2018-09-25T00:00:00Z,2020-12-01T00:00:00Z,1,61.62,6.92
+PO4_P,Phosphate-P,grab-nonsensor,mg/L,492,2018-03-07T00:00:00Z,2020-02-05T00:00:00Z,0.7,36.38,89.84
+SiO2,Silica,grab-nonsensor,mg/L,491,2018-03-07T00:00:00Z,2019-11-13T00:00:00Z,0.8,36.25,90.02
+SO4,Sulfate,grab-nonsensor,mg/L,491,2018-03-07T00:00:00Z,2019-11-13T00:00:00Z,0.8,36.25,90.02
+spCond,Specific Conductivity,installed-sensor,uS/cm,766,2018-09-25T00:00:00Z,2020-12-01T00:00:00Z,1,36.95,4.83
+specificConductance,NA,grab-nonsensor,NA,512,2018-03-07T00:00:00Z,2019-12-04T00:00:00Z,0.8,38.87,90.23
+TDN,Total Dissolved Nitrogen,grab-nonsensor,mg/L,549,2018-03-07T00:00:00Z,2020-06-24T00:00:00Z,0.7,42.99,90.35
+TDP,Total Dissolved Phosphorus,grab-nonsensor,mg/L,491,2018-03-07T00:00:00Z,2019-11-13T00:00:00Z,0.8,36.25,90.02
+TDS,Total Dissolved Solids,grab-nonsensor,mg/L,491,2018-03-07T00:00:00Z,2019-11-13T00:00:00Z,0.8,36.25,90.02
+temp,Water Temperature,installed-sensor,degrees C,766,2018-09-25T00:00:00Z,2020-12-01T00:00:00Z,1,44.39,2.74
+TN,Total Nitrogen,grab-nonsensor,mg/L,569,2018-03-14T00:00:00Z,2020-06-30T00:00:00Z,0.7,46.22,90.69
+TOC,Total Organic Carbon,grab-nonsensor,mg/L,569,2018-03-14T00:00:00Z,2020-06-30T00:00:00Z,0.7,46.22,90.69
+TP,Total Phosphorus,grab-nonsensor,mg/L,505,2018-03-14T00:00:00Z,2019-12-04T00:00:00Z,0.8,39.41,90.3
+TPC,Total Particulate Carbon,grab-nonsensor,mg/L,512,2018-03-07T00:00:00Z,2019-12-04T00:00:00Z,0.8,38.87,90.23
+TPN,Total Particulate Nitrogen,grab-nonsensor,mg/L,512,2018-03-07T00:00:00Z,2019-12-04T00:00:00Z,0.8,38.87,90.23
+TSS,Total Suspended Solids,grab-nonsensor,mg/L,505,2018-03-14T00:00:00Z,2019-12-04T00:00:00Z,0.8,39.41,90.3
+turbid,Turbidity,installed-sensor,FNU,766,2018-09-25T00:00:00Z,2020-12-01T00:00:00Z,1,92.69,7.05

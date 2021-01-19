@@ -1,0 +1,21 @@
+VariableCode,VariableName,SampleRegimen,Unit,Observations,FirstRecordUTC,LastRecordUTC,MeanObsPerDay,PercentFlagged,PercentImputed
+discharge,Discharge,installed-sensor,L/s,8200,1998-07-09T00:00:00Z,2020-12-19T00:00:00Z,1,0,3.95
+precipitation_ns,Basin Precip (nonstandard),installed-sensor,mm,3187,2009-04-11T00:00:00Z,2017-12-31T00:00:00Z,1,0,0
+Cl,Chloride,grab-nonsensor,mg/L,3210,1998-11-25T00:00:00Z,2017-03-09T00:00:00Z,0.5,0,88.1
+DO,Dissolved Oxygen,grab-nonsensor,mg/L,1993,2001-10-10T00:00:00Z,2017-03-09T00:00:00Z,0.4,0,88.66
+Ecoli,Escherichia coli,grab-nonsensor,#/mL,451,2001-10-10T00:00:00Z,2008-03-05T00:00:00Z,0.2,0,86.47
+NO3_N,Nitrate-N,grab-nonsensor,mg/L,3283,1998-11-25T00:00:00Z,2017-03-09T00:00:00Z,0.5,0,87.97
+pH,pH,grab-nonsensor,unitless,2128,2001-10-10T00:00:00Z,2017-03-09T00:00:00Z,0.4,0,88.39
+PO4_P,Phosphate-P,grab-nonsensor,mg/L,3228,1998-11-25T00:00:00Z,2017-03-09T00:00:00Z,0.5,0,87.95
+SO4_S,Sulfate-S,grab-nonsensor,mg/L,3283,1998-11-25T00:00:00Z,2017-03-09T00:00:00Z,0.5,0,87.91
+spCond,Specific Conductivity,grab-nonsensor,uS/cm,542,2013-12-05T00:00:00Z,2017-03-09T00:00:00Z,0.5,0,88.75
+temp,Water Temperature,grab-nonsensor,degrees C,2190,2001-10-10T00:00:00Z,2017-03-09T00:00:00Z,0.4,0,88.4
+TN,Total Nitrogen,grab-nonsensor,mg/L,2906,1999-11-16T00:00:00Z,2017-03-09T00:00:00Z,0.5,0,88.27
+TP,Total Phosphorus,grab-nonsensor,mg/L,2906,1999-11-16T00:00:00Z,2017-03-09T00:00:00Z,0.5,0,88.16
+turbid,Turbidity,grab-nonsensor,FNU,2077,2001-10-10T00:00:00Z,2017-03-09T00:00:00Z,0.4,0,88.49
+Cl,Chloride,grab-nonsensor,mg/L,3210,1998-11-25T00:00:00Z,2017-03-09T00:00:00Z,0.5,0,88.88
+NO3_N,Nitrate-N,grab-nonsensor,mg/L,3283,1998-11-25T00:00:00Z,2017-03-09T00:00:00Z,0.5,0,88.73
+PO4_P,Phosphate-P,grab-nonsensor,mg/L,3228,1998-11-25T00:00:00Z,2017-03-09T00:00:00Z,0.5,0,88.72
+SO4_S,Sulfate-S,grab-nonsensor,mg/L,3283,1998-11-25T00:00:00Z,2017-03-09T00:00:00Z,0.5,0,88.67
+TN,Total Nitrogen,grab-nonsensor,mg/L,2906,1999-11-16T00:00:00Z,2017-03-09T00:00:00Z,0.5,0,89.02
+TP,Total Phosphorus,grab-nonsensor,mg/L,2906,1999-11-16T00:00:00Z,2017-03-09T00:00:00Z,0.5,0,88.92

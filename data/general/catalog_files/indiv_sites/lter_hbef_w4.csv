@@ -1,0 +1,110 @@
+VariableCode,VariableName,SampleRegimen,Unit,Observations,FirstRecordUTC,LastRecordUTC,MeanObsPerDay,PercentFlagged,PercentImputed
+discharge,Discharge,installed-sensor,L/s,21888,1960-07-01T00:00:00Z,2020-06-02T00:00:00Z,1,0,0
+Al_ICP,Aluminum ICP,grab-nonsensor,mg/L,2358,2012-09-11T00:00:00Z,2019-05-29T00:00:00Z,1,0,94.32
+ANC960,Acid Neutralizing Capacity 960,grab-nonsensor,ueq/L,45,2013-04-15T00:00:00Z,2013-05-29T00:00:00Z,1,0,93.33
+anionCharge,TOTAL Anion Charge,grab-nonsensor,ueq/L,17215,1969-07-02T00:00:00Z,2019-05-29T00:00:00Z,0.9,0,93.88
+Ca,Calcium,grab-nonsensor,mg/L,17881,1969-06-11T00:00:00Z,2019-05-29T00:00:00Z,1,0,93.7
+cationCharge,TOTAL Cation Charge,grab-nonsensor,ueq/L,16876,1970-01-08T00:00:00Z,2019-05-29T00:00:00Z,0.9,0,93.94
+Cl,Chloride,grab-nonsensor,mg/L,17213,1969-12-17T00:00:00Z,2019-05-29T00:00:00Z,1,0,93.88
+DOC,Dissolved Organic Carbon,grab-nonsensor,mg/L,10575,1987-05-04T00:00:00Z,2019-05-29T00:00:00Z,0.9,0,94.44
+DON,Dissolved Organic Nitrogen,grab-nonsensor,mg/L,8340,1995-06-06T00:00:00Z,2019-05-29T00:00:00Z,1,0,94.59
+F,Fluorine,grab-nonsensor,mg/L,2384,2012-09-11T00:00:00Z,2019-05-29T00:00:00Z,1,0,94.38
+Fe,Iron,grab-nonsensor,mg/L,2358,2012-09-11T00:00:00Z,2019-05-29T00:00:00Z,1,0,94.32
+ionBalance,Ion Balance,grab-nonsensor,ueq/L,16876,1970-01-08T00:00:00Z,2019-05-29T00:00:00Z,0.9,0,93.94
+ionError,Ion Error,grab-nonsensor,%,16876,1970-01-08T00:00:00Z,2019-05-29T00:00:00Z,0.9,0,93.94
+K,Potassium,grab-nonsensor,mg/L,17881,1969-06-11T00:00:00Z,2019-05-29T00:00:00Z,1,0,93.7
+Mg,Magnesium,grab-nonsensor,mg/L,17881,1969-06-11T00:00:00Z,2019-05-29T00:00:00Z,1,0,93.7
+Mn,Manganese,grab-nonsensor,mg/L,2358,2012-09-11T00:00:00Z,2019-05-29T00:00:00Z,1,0,94.32
+Na,Sodium,grab-nonsensor,mg/L,17881,1969-06-11T00:00:00Z,2019-05-29T00:00:00Z,1,0,93.7
+NH4_N,Ammonium-N,grab-nonsensor,mg/L,17191,1970-01-08T00:00:00Z,2019-05-29T00:00:00Z,1,0,93.89
+NO3_N,Nitrate-N,grab-nonsensor,mg/L,17213,1969-12-17T00:00:00Z,2019-05-29T00:00:00Z,1,0,93.88
+OMAl,Aluminum OM,grab-nonsensor,mg/L,2254,2012-09-11T00:00:00Z,2019-05-29T00:00:00Z,0.9,0,94.28
+pH,pH,grab-nonsensor,unitless,16898,1969-12-17T00:00:00Z,2019-05-29T00:00:00Z,0.9,0,93.93
+pHmetrohm,pH Metrohm,grab-nonsensor,unitless,683,2017-06-12T00:00:00Z,2019-05-29T00:00:00Z,1,0,94.73
+PO4_P,Phosphate-P,grab-nonsensor,mg/L,17048,1971-06-29T00:00:00Z,2019-05-29T00:00:00Z,1,0,93.89
+SiO2_Si,NA,grab-nonsensor,NA,16967,1971-06-29T00:00:00Z,2019-05-29T00:00:00Z,1,0,93.86
+SO4_S,Sulfate-S,grab-nonsensor,mg/L,17191,1970-01-08T00:00:00Z,2019-05-29T00:00:00Z,1,0,93.89
+spCond,Specific Conductivity,grab-nonsensor,uS/cm,16777,1972-01-05T00:00:00Z,2019-05-29T00:00:00Z,1,0,93.94
+TDN,Total Dissolved Nitrogen,grab-nonsensor,mg/L,8216,1995-06-06T00:00:00Z,2019-05-29T00:00:00Z,0.9,0,94.58
+theoryCond,Theoretical Conductivity,grab-nonsensor,uS/cm,16786,1970-01-08T00:00:00Z,2019-05-29T00:00:00Z,0.9,0,93.92
+TMAl,Aluminum TM,grab-nonsensor,mg/L,2942,2008-01-08T00:00:00Z,2019-05-29T00:00:00Z,0.7,0,94.49
+Al_ICP,Aluminum ICP,grab-nonsensor,mg/L,2358,2012-09-11T00:00:00Z,2019-05-29T00:00:00Z,1,0,94.32
+ANC960,Acid Neutralizing Capacity 960,grab-nonsensor,ueq/L,45,2013-04-15T00:00:00Z,2013-05-29T00:00:00Z,1,0,93.33
+anionCharge,TOTAL Anion Charge,grab-nonsensor,ueq/L,17215,1969-07-02T00:00:00Z,2019-05-29T00:00:00Z,0.9,0,93.88
+Ca,Calcium,grab-nonsensor,mg/L,17881,1969-06-11T00:00:00Z,2019-05-29T00:00:00Z,1,0,93.7
+cationCharge,TOTAL Cation Charge,grab-nonsensor,ueq/L,16876,1970-01-08T00:00:00Z,2019-05-29T00:00:00Z,0.9,0,93.94
+Cl,Chloride,grab-nonsensor,mg/L,17213,1969-12-17T00:00:00Z,2019-05-29T00:00:00Z,1,0,93.88
+DOC,Dissolved Organic Carbon,grab-nonsensor,mg/L,10575,1987-05-04T00:00:00Z,2019-05-29T00:00:00Z,0.9,0,94.44
+DON,Dissolved Organic Nitrogen,grab-nonsensor,mg/L,8340,1995-06-06T00:00:00Z,2019-05-29T00:00:00Z,1,0,94.59
+F,Fluorine,grab-nonsensor,mg/L,2384,2012-09-11T00:00:00Z,2019-05-29T00:00:00Z,1,0,94.38
+Fe,Iron,grab-nonsensor,mg/L,2358,2012-09-11T00:00:00Z,2019-05-29T00:00:00Z,1,0,94.32
+ionBalance,Ion Balance,grab-nonsensor,ueq/L,16876,1970-01-08T00:00:00Z,2019-05-29T00:00:00Z,0.9,0,93.94
+ionError,Ion Error,grab-nonsensor,%,16876,1970-01-08T00:00:00Z,2019-05-29T00:00:00Z,0.9,0,93.94
+K,Potassium,grab-nonsensor,mg/L,17881,1969-06-11T00:00:00Z,2019-05-29T00:00:00Z,1,0,93.7
+Mg,Magnesium,grab-nonsensor,mg/L,17881,1969-06-11T00:00:00Z,2019-05-29T00:00:00Z,1,0,93.7
+Mn,Manganese,grab-nonsensor,mg/L,2358,2012-09-11T00:00:00Z,2019-05-29T00:00:00Z,1,0,94.32
+Na,Sodium,grab-nonsensor,mg/L,17881,1969-06-11T00:00:00Z,2019-05-29T00:00:00Z,1,0,93.7
+NH4_N,Ammonium-N,grab-nonsensor,mg/L,17191,1970-01-08T00:00:00Z,2019-05-29T00:00:00Z,1,0,93.89
+NO3_N,Nitrate-N,grab-nonsensor,mg/L,17213,1969-12-17T00:00:00Z,2019-05-29T00:00:00Z,1,0,93.88
+OMAl,Aluminum OM,grab-nonsensor,mg/L,2254,2012-09-11T00:00:00Z,2019-05-29T00:00:00Z,0.9,0,94.28
+pH,pH,grab-nonsensor,unitless,16898,1969-12-17T00:00:00Z,2019-05-29T00:00:00Z,0.9,0,93.93
+pHmetrohm,pH Metrohm,grab-nonsensor,unitless,683,2017-06-12T00:00:00Z,2019-05-29T00:00:00Z,1,0,94.73
+PO4_P,Phosphate-P,grab-nonsensor,mg/L,17048,1971-06-29T00:00:00Z,2019-05-29T00:00:00Z,1,0,93.89
+SiO2_Si,NA,grab-nonsensor,NA,16967,1971-06-29T00:00:00Z,2019-05-29T00:00:00Z,1,0,93.86
+SO4_S,Sulfate-S,grab-nonsensor,mg/L,17191,1970-01-08T00:00:00Z,2019-05-29T00:00:00Z,1,0,93.89
+spCond,Specific Conductivity,grab-nonsensor,uS/cm,16777,1972-01-05T00:00:00Z,2019-05-29T00:00:00Z,1,0,93.94
+TDN,Total Dissolved Nitrogen,grab-nonsensor,mg/L,8216,1995-06-06T00:00:00Z,2019-05-29T00:00:00Z,0.9,0,94.58
+theoryCond,Theoretical Conductivity,grab-nonsensor,uS/cm,16786,1970-01-08T00:00:00Z,2019-05-29T00:00:00Z,0.9,0,93.92
+TMAl,Aluminum TM,grab-nonsensor,mg/L,2942,2008-01-08T00:00:00Z,2019-05-29T00:00:00Z,0.7,0,94.49
+precipitation,Basin Precip,installed-nonsensor,mm,23611,1956-01-01T00:00:00Z,2020-08-22T00:00:00Z,1,0,0
+Al_ICP,Aluminum ICP,grab-nonsensor,mg/L,4008,1965-06-08T00:00:00Z,2019-05-29T00:00:00Z,0.2,0,87.08
+ANC960,Acid Neutralizing Capacity 960,grab-nonsensor,ueq/L,1446,2013-06-04T00:00:00Z,2017-09-19T00:00:00Z,0.9,0,86.79
+ANCMet,Acid Neutralizing Capacity Met,grab-nonsensor,ueq/L,8243,1994-08-09T00:00:00Z,2019-05-29T00:00:00Z,0.9,0,85.98
+anionCharge,TOTAL Anion Charge,grab-nonsensor,ueq/L,2186,2013-06-04T00:00:00Z,2019-05-29T00:00:00Z,1,0,86.51
+Ca,Calcium,grab-nonsensor,mg/L,20279,1963-06-02T00:00:00Z,2019-05-29T00:00:00Z,1,0,85.79
+cationCharge,TOTAL Cation Charge,grab-nonsensor,ueq/L,2186,2013-06-04T00:00:00Z,2019-05-29T00:00:00Z,1,0,86.51
+Cl,Chloride,grab-nonsensor,mg/L,19629,1965-06-08T00:00:00Z,2019-05-29T00:00:00Z,1,0,85.92
+DIC,Dissolved Inorganic Carbon,grab-nonsensor,mg/L,8274,1996-05-29T00:00:00Z,2019-05-29T00:00:00Z,1,0,85.94
+DOC,Dissolved Organic Carbon,grab-nonsensor,mg/L,2186,2013-06-04T00:00:00Z,2019-05-29T00:00:00Z,1,0,86.51
+DON,Dissolved Organic Nitrogen,grab-nonsensor,mg/L,2186,2013-06-04T00:00:00Z,2019-05-29T00:00:00Z,1,0,86.51
+F,Fluorine,grab-nonsensor,mg/L,2186,2013-06-04T00:00:00Z,2019-05-29T00:00:00Z,1,0,86.51
+Fe,Iron,grab-nonsensor,mg/L,2186,2013-06-04T00:00:00Z,2019-05-29T00:00:00Z,1,0,86.6
+ionBalance,Ion Balance,grab-nonsensor,ueq/L,2186,2013-06-04T00:00:00Z,2019-05-29T00:00:00Z,1,0,86.51
+ionError,Ion Error,grab-nonsensor,%,2186,2013-06-04T00:00:00Z,2019-05-29T00:00:00Z,1,0,86.51
+K,Potassium,grab-nonsensor,mg/L,20279,1963-06-02T00:00:00Z,2019-05-29T00:00:00Z,1,0,85.78
+Mg,Magnesium,grab-nonsensor,mg/L,20279,1963-06-02T00:00:00Z,2019-05-29T00:00:00Z,1,0,85.79
+Mn,Manganese,grab-nonsensor,mg/L,2186,2013-06-04T00:00:00Z,2019-05-29T00:00:00Z,1,0,86.6
+Na,Sodium,grab-nonsensor,mg/L,20279,1963-06-02T00:00:00Z,2019-05-29T00:00:00Z,1,0,85.78
+NH4_N,Ammonium-N,grab-nonsensor,mg/L,19629,1965-06-08T00:00:00Z,2019-05-29T00:00:00Z,1,0,85.94
+NO3_N,Nitrate-N,grab-nonsensor,mg/L,19629,1965-06-08T00:00:00Z,2019-05-29T00:00:00Z,1,0,85.93
+OMAl,Aluminum OM,grab-nonsensor,mg/L,2186,2013-06-04T00:00:00Z,2019-05-29T00:00:00Z,1,0,86.51
+pH,pH,grab-nonsensor,unitless,19582,1963-06-02T00:00:00Z,2019-05-29T00:00:00Z,1,0,85.96
+pHmetrohm,pH Metrohm,grab-nonsensor,unitless,716,2017-06-13T00:00:00Z,2019-05-29T00:00:00Z,1,0,86.31
+PO4_P,Phosphate-P,grab-nonsensor,mg/L,17171,1972-03-01T00:00:00Z,2019-05-29T00:00:00Z,1,0,85.74
+SiO2_Si,NA,grab-nonsensor,NA,19629,1965-06-08T00:00:00Z,2019-05-29T00:00:00Z,1,0,85.93
+SO4_S,Sulfate-S,grab-nonsensor,mg/L,19629,1965-06-08T00:00:00Z,2019-05-29T00:00:00Z,1,0,85.9
+spCond,Specific Conductivity,grab-nonsensor,uS/cm,19537,1965-06-22T00:00:00Z,2019-05-29T00:00:00Z,1,0,85.93
+TDN,Total Dissolved Nitrogen,grab-nonsensor,mg/L,2186,2013-06-04T00:00:00Z,2019-05-29T00:00:00Z,1,0,86.51
+temp,Water Temperature,grab-nonsensor,degrees C,19325,1963-06-26T00:00:00Z,2019-05-29T00:00:00Z,0.9,0,85.94
+theoryCond,Theoretical Conductivity,grab-nonsensor,uS/cm,2186,2013-06-04T00:00:00Z,2019-05-29T00:00:00Z,1,0,86.55
+TMAl,Aluminum TM,grab-nonsensor,mg/L,2186,2013-06-04T00:00:00Z,2019-05-29T00:00:00Z,1,0,86.51
+Al_ICP,Aluminum ICP,grab-nonsensor,mg/L,4008,1965-06-08T00:00:00Z,2019-05-29T00:00:00Z,0.2,0,87.08
+Ca,Calcium,grab-nonsensor,mg/L,20280,1963-06-02T00:00:00Z,2019-05-29T00:00:00Z,1,0,85.78
+Cl,Chloride,grab-nonsensor,mg/L,19630,1965-06-08T00:00:00Z,2019-05-29T00:00:00Z,1,0,85.91
+DIC,Dissolved Inorganic Carbon,grab-nonsensor,mg/L,8275,1996-05-29T00:00:00Z,2019-05-29T00:00:00Z,1,0,85.93
+DOC,Dissolved Organic Carbon,grab-nonsensor,mg/L,2186,2013-06-04T00:00:00Z,2019-05-29T00:00:00Z,1,0,86.51
+DON,Dissolved Organic Nitrogen,grab-nonsensor,mg/L,2186,2013-06-04T00:00:00Z,2019-05-29T00:00:00Z,1,0,86.51
+F,Fluorine,grab-nonsensor,mg/L,2186,2013-06-04T00:00:00Z,2019-05-29T00:00:00Z,1,0,86.51
+Fe,Iron,grab-nonsensor,mg/L,2186,2013-06-04T00:00:00Z,2019-05-29T00:00:00Z,1,0,86.6
+K,Potassium,grab-nonsensor,mg/L,20280,1963-06-02T00:00:00Z,2019-05-29T00:00:00Z,1,0,85.78
+Mg,Magnesium,grab-nonsensor,mg/L,20280,1963-06-02T00:00:00Z,2019-05-29T00:00:00Z,1,0,85.79
+Mn,Manganese,grab-nonsensor,mg/L,2186,2013-06-04T00:00:00Z,2019-05-29T00:00:00Z,1,0,86.6
+Na,Sodium,grab-nonsensor,mg/L,20280,1963-06-02T00:00:00Z,2019-05-29T00:00:00Z,1,0,85.78
+NH4_N,Ammonium-N,grab-nonsensor,mg/L,19630,1965-06-08T00:00:00Z,2019-05-29T00:00:00Z,1,0,85.93
+NO3_N,Nitrate-N,grab-nonsensor,mg/L,19630,1965-06-08T00:00:00Z,2019-05-29T00:00:00Z,1,0,85.92
+OMAl,Aluminum OM,grab-nonsensor,mg/L,2186,2013-06-04T00:00:00Z,2019-05-29T00:00:00Z,1,0,86.51
+PO4_P,Phosphate-P,grab-nonsensor,mg/L,17172,1972-03-01T00:00:00Z,2019-05-29T00:00:00Z,1,0,85.74
+SiO2_Si,NA,grab-nonsensor,NA,19630,1965-06-08T00:00:00Z,2019-05-29T00:00:00Z,1,0,85.92
+SO4_S,Sulfate-S,grab-nonsensor,mg/L,19630,1965-06-08T00:00:00Z,2019-05-29T00:00:00Z,1,0,85.9
+TDN,Total Dissolved Nitrogen,grab-nonsensor,mg/L,2186,2013-06-04T00:00:00Z,2019-05-29T00:00:00Z,1,0,86.51
+TMAl,Aluminum TM,grab-nonsensor,mg/L,2186,2013-06-04T00:00:00Z,2019-05-29T00:00:00Z,1,0,86.51

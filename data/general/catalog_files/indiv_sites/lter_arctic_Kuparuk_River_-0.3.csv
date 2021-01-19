@@ -1,0 +1,64 @@
+VariableCode,VariableName,SampleRegimen,Unit,Observations,FirstRecordUTC,LastRecordUTC,MeanObsPerDay,PercentFlagged,PercentImputed
+discharge,Discharge,installed-sensor,L/s,3964,1978-05-21T00:00:00Z,2019-09-12T00:00:00Z,0.3,0,5.47
+BPC,Benthic Particulate Carbon,grab-nonsensor,mg/cm2,842,1991-07-18T00:00:00Z,2016-09-25T00:00:00Z,0.1,10.69,92.4
+BPN,Benthic Particulate Nitrogen,grab-nonsensor,mg/cm2,842,1991-07-18T00:00:00Z,2016-09-25T00:00:00Z,0.1,19.12,92.4
+BPP,Benthic Particulate Phosphorus,grab-nonsensor,mg/cm2,939,1995-07-18T00:00:00Z,2017-09-22T00:00:00Z,0.1,21.09,92.33
+Ca,Calcium,grab-nonsensor,mg/L,403,1989-06-11T00:00:00Z,2017-08-27T00:00:00Z,0,53.35,89.58
+CHL,Chlorophyll,grab-nonsensor,mg/L,615,2004-06-24T00:00:00Z,2017-08-27T00:00:00Z,0.1,0.16,93.33
+Cl,Chloride,grab-nonsensor,mg/L,378,1990-06-10T00:00:00Z,2017-08-27T00:00:00Z,0,56.35,89.15
+DOC,Dissolved Organic Carbon,grab-nonsensor,mg/L,1339,1978-05-21T00:00:00Z,2017-08-27T00:00:00Z,0.1,54.52,85.14
+E_pheophy,Epilithic Phaeophytin,grab-nonsensor,mg/cm2,715,2004-07-27T00:00:00Z,2017-09-22T00:00:00Z,0.1,0,92.45
+ECHL_A,Epilithic Chlorophyll a,grab-nonsensor,mg/cm2,715,2004-07-27T00:00:00Z,2017-09-22T00:00:00Z,0.1,0.14,92.45
+K,Potassium,grab-nonsensor,mg/L,403,1989-06-11T00:00:00Z,2017-08-27T00:00:00Z,0,64.27,89.58
+Mg,Magnesium,grab-nonsensor,mg/L,403,1989-06-11T00:00:00Z,2017-08-27T00:00:00Z,0,53.35,89.58
+MH_N,Moss: Hygrohypnum: Nitrogen,grab-nonsensor,%,29,1999-06-28T00:00:00Z,1999-07-26T00:00:00Z,1,100,93.1
+MH_P,Moss: Hygrohypnum: Phosphorus,grab-nonsensor,%,29,1999-06-28T00:00:00Z,1999-07-26T00:00:00Z,1,100,93.1
+MS_Al,Moss: Schistidium: Aluminum,grab-nonsensor,%,2,2014-08-08T00:00:00Z,2015-07-18T00:00:00Z,0,0,0
+MS_B,Moss: Schistidium: Boron,grab-nonsensor,%,2,2014-08-08T00:00:00Z,2015-07-18T00:00:00Z,0,0,0
+MS_C,Moss: Schistidium: Carbon,grab-nonsensor,%,2,2014-08-08T00:00:00Z,2015-07-18T00:00:00Z,0,0,0
+MS_Ca,Moss: Schistidium: Calcium,grab-nonsensor,%,2,2014-08-08T00:00:00Z,2015-07-18T00:00:00Z,0,0,0
+MS_Cu,Moss: Schistidium: Copper,grab-nonsensor,%,2,2014-08-08T00:00:00Z,2015-07-18T00:00:00Z,0,0,0
+MS_Fe,Moss: Schistidium: Iron,grab-nonsensor,%,2,2014-08-08T00:00:00Z,2015-07-18T00:00:00Z,0,0,0
+MS_K,Moss: Schistidium: Potassium,grab-nonsensor,%,2,2014-08-08T00:00:00Z,2015-07-18T00:00:00Z,0,0,0
+MS_Mg,Moss: Schistidium: Magnesium,grab-nonsensor,%,2,2014-08-08T00:00:00Z,2015-07-18T00:00:00Z,0,0,0
+MS_Mn,Moss: Schistidium: Manganese,grab-nonsensor,%,2,2014-08-08T00:00:00Z,2015-07-18T00:00:00Z,0,0,0
+MS_N,Moss: Schistidium: Nitrogen,grab-nonsensor,%,58,1998-06-13T00:00:00Z,2015-07-18T00:00:00Z,0,96.55,87.93
+MS_Na,Moss: Schistidium: Sodium,grab-nonsensor,%,2,2014-08-08T00:00:00Z,2015-07-18T00:00:00Z,0,0,0
+MS_P,Moss: Schistidium: Phosphorus,grab-nonsensor,%,58,1998-06-13T00:00:00Z,2015-07-18T00:00:00Z,0,96.55,87.93
+MS_S,Moss: Schistidium: Sulfur,grab-nonsensor,%,2,2014-08-08T00:00:00Z,2015-07-18T00:00:00Z,0,0,0
+MS_Zn,Moss: Schistidium: Zinc,grab-nonsensor,%,2,2014-08-08T00:00:00Z,2015-07-18T00:00:00Z,0,0,0
+Na,Sodium,grab-nonsensor,mg/L,403,1989-06-11T00:00:00Z,2017-08-27T00:00:00Z,0,65.01,89.58
+NH4_N,Ammonium-N,grab-nonsensor,mg/L,905,1998-06-23T00:00:00Z,2017-08-27T00:00:00Z,0.1,2.43,90.83
+NO3_NO2_N,Nitrate-N and nitrite-N,grab-nonsensor,mg/L,1100,1978-05-24T00:00:00Z,2017-08-27T00:00:00Z,0.1,20.09,85.73
+pH,pH,grab-nonsensor,unitless,703,1998-06-23T00:00:00Z,2017-08-27T00:00:00Z,0.1,0.43,89.76
+pheophy,Sestonic Phaeophytin,grab-nonsensor,mg/l,613,2004-06-24T00:00:00Z,2017-08-27T00:00:00Z,0.1,0.16,93.31
+SO4_S,Sulfate-S,grab-nonsensor,mg/L,378,1990-06-10T00:00:00Z,2017-08-27T00:00:00Z,0,56.35,89.15
+spCond,Specific Conductivity,grab-nonsensor,uS/cm,755,1998-06-23T00:00:00Z,2017-08-27T00:00:00Z,0.1,0.4,90.2
+SRP,Soluble Reactive Phosphorus,grab-nonsensor,mg/L,950,1998-06-23T00:00:00Z,2017-08-27T00:00:00Z,0.1,8.11,91.05
+T_ECHL,Epilithic Total Chlorophyll,grab-nonsensor,mg/cm2,1158,1986-06-20T00:00:00Z,2015-08-13T00:00:00Z,0.1,0.09,92.83
+TCHL,Sestonic Total Chlorophyll,grab-nonsensor,mg/l,747,1984-08-05T00:00:00Z,2015-08-08T00:00:00Z,0.1,0.13,91.97
+TDN,Total Dissolved Nitrogen,grab-nonsensor,mg/L,755,1998-07-02T00:00:00Z,2017-08-27T00:00:00Z,0.1,3.44,90.07
+TDP,Total Dissolved Phosphorus,grab-nonsensor,mg/L,806,1998-06-23T00:00:00Z,2017-08-27T00:00:00Z,0.1,10.42,90.82
+temp,Water Temperature,grab-nonsensor,degrees C,703,1998-06-23T00:00:00Z,2017-08-27T00:00:00Z,0.1,0.28,89.76
+TPC,Total Particulate Carbon,grab-nonsensor,mg/L,265,1998-06-23T00:00:00Z,2010-08-17T00:00:00Z,0.1,0,92.83
+TPN,Total Particulate Nitrogen,grab-nonsensor,mg/L,265,1998-06-23T00:00:00Z,2010-08-17T00:00:00Z,0.1,0,92.83
+TPP,Total Particulate Phosphorus,grab-nonsensor,mg/L,790,2000-07-14T00:00:00Z,2017-08-27T00:00:00Z,0.1,15.7,91.27
+TSS,Total Suspended Solids,grab-nonsensor,mg/L,102,2015-06-17T00:00:00Z,2017-06-25T00:00:00Z,0.1,0,73.53
+BPC,Benthic Particulate Carbon,grab-nonsensor,mg/cm2,839,1991-07-18T00:00:00Z,2016-09-25T00:00:00Z,0.1,10.73,92.49
+BPN,Benthic Particulate Nitrogen,grab-nonsensor,mg/cm2,839,1991-07-18T00:00:00Z,2016-09-25T00:00:00Z,0.1,19.19,92.49
+BPP,Benthic Particulate Phosphorus,grab-nonsensor,mg/cm2,939,1995-07-18T00:00:00Z,2017-09-22T00:00:00Z,0.1,21.09,92.33
+Ca,Calcium,grab-nonsensor,mg/L,375,1989-06-11T00:00:00Z,2017-08-27T00:00:00Z,0,49.87,89.87
+Cl,Chloride,grab-nonsensor,mg/L,346,1990-06-10T00:00:00Z,2017-08-27T00:00:00Z,0,52.31,89.31
+DOC,Dissolved Organic Carbon,grab-nonsensor,mg/L,1339,1978-05-21T00:00:00Z,2017-08-27T00:00:00Z,0.1,54.52,85.44
+K,Potassium,grab-nonsensor,mg/L,375,1989-06-11T00:00:00Z,2017-08-27T00:00:00Z,0,61.6,89.87
+Mg,Magnesium,grab-nonsensor,mg/L,375,1989-06-11T00:00:00Z,2017-08-27T00:00:00Z,0,49.87,89.87
+Na,Sodium,grab-nonsensor,mg/L,375,1989-06-11T00:00:00Z,2017-08-27T00:00:00Z,0,62.4,89.87
+NH4_N,Ammonium-N,grab-nonsensor,mg/L,901,1998-06-23T00:00:00Z,2017-08-27T00:00:00Z,0.1,2.44,90.9
+NO3_NO2_N,Nitrate-N and nitrite-N,grab-nonsensor,mg/L,1096,1978-05-24T00:00:00Z,2017-08-27T00:00:00Z,0.1,20.16,85.77
+SO4_S,Sulfate-S,grab-nonsensor,mg/L,346,1990-06-10T00:00:00Z,2017-08-27T00:00:00Z,0,52.31,89.31
+SRP,Soluble Reactive Phosphorus,grab-nonsensor,mg/L,946,1998-06-23T00:00:00Z,2017-08-27T00:00:00Z,0.1,8.14,91.12
+TDN,Total Dissolved Nitrogen,grab-nonsensor,mg/L,755,1998-07-02T00:00:00Z,2017-08-27T00:00:00Z,0.1,3.44,90.07
+TDP,Total Dissolved Phosphorus,grab-nonsensor,mg/L,802,1998-06-23T00:00:00Z,2017-08-27T00:00:00Z,0.1,10.47,90.9
+TPC,Total Particulate Carbon,grab-nonsensor,mg/L,261,1998-06-23T00:00:00Z,2010-08-17T00:00:00Z,0.1,0,93.1
+TPN,Total Particulate Nitrogen,grab-nonsensor,mg/L,261,1998-06-23T00:00:00Z,2010-08-17T00:00:00Z,0.1,0,93.1
+TPP,Total Particulate Phosphorus,grab-nonsensor,mg/L,790,2000-07-14T00:00:00Z,2017-08-27T00:00:00Z,0.1,15.7,91.27

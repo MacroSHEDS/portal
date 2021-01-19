@@ -1,0 +1,39 @@
+VariableCode,VariableName,SampleRegimen,Unit,Observations,FirstRecordUTC,LastRecordUTC,MeanObsPerDay,PercentFlagged,PercentImputed
+discharge,Discharge,installed-sensor,L/s,3964,1978-05-21T00:00:00Z,2019-09-12T00:00:00Z,0.3,0,5.47
+BPC,Benthic Particulate Carbon,grab-nonsensor,mg/cm2,357,1991-07-18T00:00:00Z,2007-08-04T00:00:00Z,0.1,6.16,91.6
+BPN,Benthic Particulate Nitrogen,grab-nonsensor,mg/cm2,357,1991-07-18T00:00:00Z,2007-08-04T00:00:00Z,0.1,6.16,91.6
+BPP,Benthic Particulate Phosphorus,grab-nonsensor,mg/cm2,366,1995-07-18T00:00:00Z,2007-08-04T00:00:00Z,0.1,17.21,92.35
+CHL,Chlorophyll,grab-nonsensor,mg/L,54,2012-06-21T00:00:00Z,2013-06-18T00:00:00Z,0.1,0,92.59
+DOC,Dissolved Organic Carbon,grab-nonsensor,mg/L,54,2012-06-21T00:00:00Z,2013-06-18T00:00:00Z,0.1,0,92.59
+E_pheophy,Epilithic Phaeophytin,grab-nonsensor,mg/cm2,111,2004-06-19T00:00:00Z,2007-08-04T00:00:00Z,0.1,0,91.89
+ECHL_A,Epilithic Chlorophyll a,grab-nonsensor,mg/cm2,111,2004-06-19T00:00:00Z,2007-08-04T00:00:00Z,0.1,0,91.89
+MH_N,Moss: Hygrohypnum: Nitrogen,grab-nonsensor,%,1,1999-06-27T00:00:00Z,1999-06-27T00:00:00Z,Inf,0,0
+MH_P,Moss: Hygrohypnum: Phosphorus,grab-nonsensor,%,1,1999-06-27T00:00:00Z,1999-06-27T00:00:00Z,Inf,0,0
+MS_N,Moss: Schistidium: Nitrogen,grab-nonsensor,%,1,1999-06-27T00:00:00Z,1999-06-27T00:00:00Z,Inf,0,0
+MS_P,Moss: Schistidium: Phosphorus,grab-nonsensor,%,1,1999-06-27T00:00:00Z,1999-06-27T00:00:00Z,Inf,0,0
+NH4_N,Ammonium-N,grab-nonsensor,mg/L,56,1990-07-20T00:00:00Z,2013-06-18T00:00:00Z,0,1.79,89.29
+NO3_NO2_N,Nitrate-N and nitrite-N,grab-nonsensor,mg/L,76,1983-07-10T00:00:00Z,2013-06-18T00:00:00Z,0,0,86.84
+pH,pH,grab-nonsensor,unitless,55,1999-07-20T00:00:00Z,2013-06-18T00:00:00Z,0,56.36,90.91
+pheophy,Sestonic Phaeophytin,grab-nonsensor,mg/l,54,2012-06-21T00:00:00Z,2013-06-18T00:00:00Z,0.1,0,92.59
+spCond,Specific Conductivity,grab-nonsensor,uS/cm,55,1999-07-20T00:00:00Z,2013-06-18T00:00:00Z,0,56.36,90.91
+SRP,Soluble Reactive Phosphorus,grab-nonsensor,mg/L,76,1983-07-10T00:00:00Z,2013-06-18T00:00:00Z,0,0,86.84
+T_ECHL,Epilithic Total Chlorophyll,grab-nonsensor,mg/cm2,728,1984-06-28T00:00:00Z,2007-08-04T00:00:00Z,0.1,0,91.9
+TCHL,Sestonic Total Chlorophyll,grab-nonsensor,mg/l,124,1984-06-28T00:00:00Z,2013-06-18T00:00:00Z,0,0,87.1
+TDN,Total Dissolved Nitrogen,grab-nonsensor,mg/L,54,2012-06-21T00:00:00Z,2013-06-18T00:00:00Z,0.1,0,92.59
+TDP,Total Dissolved Phosphorus,grab-nonsensor,mg/L,56,1998-06-23T00:00:00Z,2013-06-18T00:00:00Z,0,0,89.29
+temp,Water Temperature,grab-nonsensor,degrees C,54,2012-06-21T00:00:00Z,2013-06-18T00:00:00Z,0.1,55.56,92.59
+TPC,Total Particulate Carbon,grab-nonsensor,mg/L,1,1999-07-20T00:00:00Z,1999-07-20T00:00:00Z,Inf,0,0
+TPN,Total Particulate Nitrogen,grab-nonsensor,mg/L,1,1999-07-20T00:00:00Z,1999-07-20T00:00:00Z,Inf,0,0
+TPP,Total Particulate Phosphorus,grab-nonsensor,mg/L,54,2012-06-21T00:00:00Z,2013-06-18T00:00:00Z,0.1,0,92.59
+BPC,Benthic Particulate Carbon,grab-nonsensor,mg/cm2,353,1991-07-18T00:00:00Z,2007-08-04T00:00:00Z,0.1,6.23,92.07
+BPN,Benthic Particulate Nitrogen,grab-nonsensor,mg/cm2,353,1991-07-18T00:00:00Z,2007-08-04T00:00:00Z,0.1,6.23,92.07
+BPP,Benthic Particulate Phosphorus,grab-nonsensor,mg/cm2,365,1995-07-18T00:00:00Z,2007-08-04T00:00:00Z,0.1,17.26,92.6
+DOC,Dissolved Organic Carbon,grab-nonsensor,mg/L,54,2012-06-21T00:00:00Z,2013-06-18T00:00:00Z,0.1,0,92.59
+NH4_N,Ammonium-N,grab-nonsensor,mg/L,56,1990-07-20T00:00:00Z,2013-06-18T00:00:00Z,0,1.79,89.29
+NO3_NO2_N,Nitrate-N and nitrite-N,grab-nonsensor,mg/L,73,1983-07-13T00:00:00Z,2013-06-18T00:00:00Z,0,0,87.67
+SRP,Soluble Reactive Phosphorus,grab-nonsensor,mg/L,73,1983-07-13T00:00:00Z,2013-06-18T00:00:00Z,0,0,87.67
+TDN,Total Dissolved Nitrogen,grab-nonsensor,mg/L,54,2012-06-21T00:00:00Z,2013-06-18T00:00:00Z,0.1,0,92.59
+TDP,Total Dissolved Phosphorus,grab-nonsensor,mg/L,56,1998-06-23T00:00:00Z,2013-06-18T00:00:00Z,0,0,89.29
+TPC,Total Particulate Carbon,grab-nonsensor,mg/L,1,1999-07-20T00:00:00Z,1999-07-20T00:00:00Z,Inf,0,0
+TPN,Total Particulate Nitrogen,grab-nonsensor,mg/L,1,1999-07-20T00:00:00Z,1999-07-20T00:00:00Z,Inf,0,0
+TPP,Total Particulate Phosphorus,grab-nonsensor,mg/L,54,2012-06-21T00:00:00Z,2013-06-18T00:00:00Z,0.1,0,92.59

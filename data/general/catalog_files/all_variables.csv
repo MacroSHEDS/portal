@@ -1,0 +1,162 @@
+VariableName,VariableCode,Unit,Observations,Sites,MeanObsPerSite,FirstRecordUTC,LastRecordUTC,Availability
+UV Absorbance at 250nm,abs250,unitless,22908,27,848,2014-10-22T00:00:00Z,2019-12-20T00:00:00Z,feature not yet built
+UV Absorbance at 254nm,abs254,unitless,14946,9,1661,2001-07-20T00:00:00Z,2018-08-28T00:00:00Z,feature not yet built
+UV Absorbance at 280nm,abs280,unitless,22908,27,848,2014-10-22T00:00:00Z,2019-12-20T00:00:00Z,feature not yet built
+Aluminum,Al,mg/l,21892,18,1216,2001-07-20T00:00:00Z,2018-08-28T00:00:00Z,feature not yet built
+Aluminum ICP,Al_ICP,mg/L,148038,9,16449,1964-03-17T00:00:00Z,2019-05-29T00:00:00Z,feature not yet built
+Alkalinity,alk,mg/L,554521,40,13863,1968-10-09T00:00:00Z,2020-10-16T00:00:00Z,feature not yet built
+Acid Neutralizing Capacity,ANC,eq/L,76853,39,1971,1982-02-12T00:00:00Z,2020-10-16T00:00:00Z,feature not yet built
+Acid Neutralizing Capacity 960,ANC960,ueq/L,13620,9,1513,2013-04-15T00:00:00Z,2017-09-19T00:00:00Z,feature not yet built
+Anion-Cation Ratio,AnCaR,unitless,356532,13,27426,1978-10-12T00:00:00Z,2019-05-22T00:00:00Z,feature not yet built
+Acid Neutralizing Capacity Met,ANCMet,ueq/L,72902,9,8100,1990-01-15T00:00:00Z,2019-05-29T00:00:00Z,feature not yet built
+TOTAL Anion Charge,anionCharge,ueq/L,367232,21,17487,1969-07-02T00:00:00Z,2019-05-29T00:00:00Z,feature not yet built
+Boron,B,mg/L,425,9,47,2009-06-18T00:00:00Z,2015-08-09T00:00:00Z,feature not yet built
+Benthic Particulate Carbon,BPC,mg/cm2,22859,33,693,1991-07-18T00:00:00Z,2016-09-25T00:00:00Z,feature not yet built
+Benthic Particulate Nitrogen,BPN,mg/cm2,22687,33,687,1991-07-18T00:00:00Z,2016-09-25T00:00:00Z,feature not yet built
+Benthic Particulate Phosphorus,BPP,mg/cm2,25921,33,785,1994-06-21T00:00:00Z,2017-09-22T00:00:00Z,feature not yet built
+Bromide,Br,mg/L,41949,61,688,1994-11-30T00:00:00Z,2020-09-11T00:00:00Z,feature not yet built
+Calcium,Ca,mg/L,1350426,144,9378,1963-06-02T00:00:00Z,2020-09-11T00:00:00Z,feature not yet built
+TOTAL Cation Charge,cationCharge,ueq/L,361682,21,17223,1970-01-08T00:00:00Z,2019-05-29T00:00:00Z,feature not yet built
+Cadmium,Cd,mg/L,964,9,107,2010-06-13T00:00:00Z,2015-08-09T00:00:00Z,feature not yet built
+Methane,CH4,ppm,241,3,80,2008-05-27T00:00:00Z,2010-08-13T00:00:00Z,feature not yet built
+Chlorophyll,CHL,mg/L,32910,71,464,1994-03-29T00:00:00Z,2020-12-01T00:00:00Z,feature not yet built
+Chloride,Cl,mg/L,1248185,165,7565,1964-03-17T00:00:00Z,2020-09-11T00:00:00Z,feature not yet built
+Carbon Dioxide,CO2,ppm,394,6,66,2008-05-27T00:00:00Z,2010-08-13T00:00:00Z,feature not yet built
+Carbonate,CO3,mg/L,22968,27,851,2014-10-22T00:00:00Z,2019-12-20T00:00:00Z,feature not yet built
+Chromium,Cr,mg/L,254,9,28,2009-06-28T00:00:00Z,2015-08-09T00:00:00Z,feature not yet built
+Copper,Cu,mg/L,1418,9,158,2009-06-18T00:00:00Z,2015-08-09T00:00:00Z,feature not yet built
+Delta 18 Oxygen,d18O,ppt,20994,12,1750,1998-06-12T00:00:00Z,2017-07-07T00:00:00Z,feature not yet built
+Dissolved Inorganic Carbon,DIC,mg/L,194359,51,3811,1994-01-04T00:00:00Z,2020-06-24T00:00:00Z,feature not yet built
+Discharge,discharge,L/s,765323,113,6773,1949-10-01T00:00:00Z,2020-12-31T00:00:00Z,feature not yet built
+Dissolved Oxygen,DO,mg/L,59168,45,1315,2001-06-22T00:00:00Z,2020-12-01T00:00:00Z,feature not yet built
+Dissolved Organic Carbon,DOC,mg/L,633081,169,3746,1978-05-21T00:00:00Z,2020-06-24T00:00:00Z,feature not yet built
+Dissolved Organic Nitrogen,DON,mg/L,713715,39,18300,1968-10-09T00:00:00Z,2019-05-29T00:00:00Z,feature not yet built
+Dissolved Organic Phosphorus,DOP,mg/L,43882,17,2581,1993-09-21T00:00:00Z,2018-09-26T00:00:00Z,feature not yet built
+Epilithic Phaeophytin,E_pheophy,mg/cm2,9217,27,341,2004-06-19T00:00:00Z,2017-09-22T00:00:00Z,feature not yet built
+Epilithic Chlorophyll a,ECHL_A,mg/cm2,9239,27,342,2004-06-19T00:00:00Z,2017-09-22T00:00:00Z,feature not yet built
+Escherichia coli,Ecoli,#/mL,8227,13,633,2001-10-03T00:00:00Z,2016-06-16T00:00:00Z,feature not yet built
+Fluorine,F,mg/L,120755,72,1677,1994-11-30T00:00:00Z,2019-12-20T00:00:00Z,feature not yet built
+Fluorescent Dissolved Organic Matter,FDOM,QSU,21521,27,797,2016-08-18T00:00:00Z,2020-12-01T00:00:00Z,feature not yet built
+Iron,Fe,mg/L,106519,45,2367,2009-06-18T00:00:00Z,2019-12-20T00:00:00Z,feature not yet built
+Hydrogen,H,mg/L,66486,12,5540,1982-02-12T00:00:00Z,2018-10-19T00:00:00Z,feature not yet built
+Bicarbonate,HCO3,mg/L,35756,32,1117,1998-10-16T00:00:00Z,2019-12-20T00:00:00Z,feature not yet built
+Ion Balance,ionBalance,ueq/L,361038,21,17192,1970-01-08T00:00:00Z,2019-05-29T00:00:00Z,feature not yet built
+Ion Error,ionError,%,323172,9,35908,1970-01-08T00:00:00Z,2019-05-29T00:00:00Z,feature not yet built
+Potassium,K,mg/L,1352860,144,9395,1963-06-02T00:00:00Z,2020-09-11T00:00:00Z,feature not yet built
+Lithium,Li,mg/L,12880,34,379,1994-11-30T00:00:00Z,2014-01-24T00:00:00Z,feature not yet built
+Moss: Fontinalis: Carbon,MF_C,%,1,1,1,2009-07-23T00:00:00Z,2009-07-23T00:00:00Z,feature not yet built
+Moss: Fontinalis: Nitrogen,MF_N,%,60,3,20,1998-06-13T00:00:00Z,2009-07-23T00:00:00Z,feature not yet built
+Moss: Fontinalis: Phosphorus,MF_P,%,59,3,20,1998-06-13T00:00:00Z,1999-07-26T00:00:00Z,feature not yet built
+Magnesium,Mg,mg/L,1351210,144,9383,1963-06-02T00:00:00Z,2020-09-11T00:00:00Z,feature not yet built
+Moss: Hygrohypnum: Aluminum,MH_Al,%,14,10,1,2007-07-31T00:00:00Z,2015-07-22T00:00:00Z,feature not yet built
+Moss: Hygrohypnum: Boron,MH_B,%,14,10,1,2007-07-31T00:00:00Z,2015-07-22T00:00:00Z,feature not yet built
+Moss: Hygrohypnum: Carbon,MH_C,%,26,11,2,1996-08-13T00:00:00Z,2015-07-22T00:00:00Z,feature not yet built
+Moss: Hygrohypnum: Calcium,MH_Ca,%,14,10,1,2007-07-31T00:00:00Z,2015-07-22T00:00:00Z,feature not yet built
+Moss: Hygrohypnum: Copper,MH_Cu,%,14,10,1,2007-07-31T00:00:00Z,2015-07-22T00:00:00Z,feature not yet built
+Moss: Hygrohypnum: Iron,MH_Fe,%,14,10,1,2007-07-31T00:00:00Z,2015-07-22T00:00:00Z,feature not yet built
+Moss: Hygrohypnum: Potassium,MH_K,%,14,10,1,2007-07-31T00:00:00Z,2015-07-22T00:00:00Z,feature not yet built
+Moss: Hygrohypnum: Magnesium,MH_Mg,%,14,10,1,2007-07-31T00:00:00Z,2015-07-22T00:00:00Z,feature not yet built
+Moss: Hygrohypnum: Manganese,MH_Mn,%,14,10,1,2007-07-31T00:00:00Z,2015-07-22T00:00:00Z,feature not yet built
+Moss: Hygrohypnum: Nitrogen,MH_N,%,448,13,34,1995-06-23T00:00:00Z,2015-07-22T00:00:00Z,feature not yet built
+Moss: Hygrohypnum: Sodium,MH_Na,%,14,10,1,2007-07-31T00:00:00Z,2015-07-22T00:00:00Z,feature not yet built
+Moss: Hygrohypnum: Phosphorus,MH_P,%,448,13,34,1995-06-23T00:00:00Z,2015-07-22T00:00:00Z,feature not yet built
+Moss: Hygrohypnum: Sulfur,MH_S,%,14,10,1,2007-07-31T00:00:00Z,2015-07-22T00:00:00Z,feature not yet built
+Moss: Lemanea: Aluminum,ML_Al,%,1,1,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,feature not yet built
+Moss: Lemanea: Boron,ML_B,%,1,1,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,feature not yet built
+Moss: Lemanea: Carbon,ML_C,%,1,1,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,feature not yet built
+Moss: Lemanea: Calcium,ML_Ca,%,1,1,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,feature not yet built
+Moss: Lemanea: Copper,ML_Cu,%,1,1,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,feature not yet built
+Moss: Lemanea: Iron,ML_Fe,%,1,1,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,feature not yet built
+Moss: Lemanea: Potassium,ML_K,%,1,1,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,feature not yet built
+Moss: Lemanea: Magnesium,ML_Mg,%,1,1,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,feature not yet built
+Moss: Lemanea: Manganese,ML_Mn,%,1,1,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,feature not yet built
+Moss: Lemanea: Nitrogen,ML_N,%,1,1,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,feature not yet built
+Moss: Lemanea: Sodium,ML_Na,%,1,1,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,feature not yet built
+Moss: Lemanea: Phosphorus,ML_P,%,1,1,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,feature not yet built
+Moss: Lemanea: Sulfur,ML_S,%,1,1,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,feature not yet built
+Moss: Lemanea: Zinc,ML_Zn,%,1,1,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,feature not yet built
+Moss: Liverwort: Aluminum,MLW_Al,%,2,2,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,feature not yet built
+Moss: Liverwort: Boron,MLW_B,%,2,2,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,feature not yet built
+Moss: Liverwort: Carbon,MLW_C,%,2,2,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,feature not yet built
+Moss: Liverwort: Calcium,MLW_Ca,%,2,2,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,feature not yet built
+Moss: Liverwort: Copper,MLW_Cu,%,2,2,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,feature not yet built
+Moss: Liverwort: Iron,MLW_Fe,%,2,2,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,feature not yet built
+Moss: Liverwort: Potassium,MLW_K,%,2,2,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,feature not yet built
+Moss: Liverwort: Magnesium,MLW_Mg,%,2,2,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,feature not yet built
+Moss: Liverwort: Manganese,MLW_Mn,%,2,2,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,feature not yet built
+Moss: Liverwort: Nitrogen,MLW_N,%,2,2,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,feature not yet built
+Moss: Liverwort: Sodium,MLW_Na,%,2,2,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,feature not yet built
+Moss: Liverwort: Phosphorus,MLW_P,%,2,2,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,feature not yet built
+Moss: Liverwort: Sulfur,MLW_S,%,2,2,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,feature not yet built
+Moss: Liverwort: Zinc,MLW_Zn,%,2,2,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,feature not yet built
+Manganese,Mn,mg/L,106518,45,2367,2009-06-18T00:00:00Z,2019-12-20T00:00:00Z,feature not yet built
+Moss: Schistidium: Aluminum,MS_Al,%,22,12,2,2007-07-31T00:00:00Z,2015-07-22T00:00:00Z,feature not yet built
+Moss: Schistidium: Boron,MS_B,%,22,12,2,2007-07-31T00:00:00Z,2015-07-22T00:00:00Z,feature not yet built
+Moss: Schistidium: Carbon,MS_C,%,30,13,2,1996-08-14T00:00:00Z,2015-07-22T00:00:00Z,feature not yet built
+Moss: Schistidium: Calcium,MS_Ca,%,22,12,2,2007-07-31T00:00:00Z,2015-07-22T00:00:00Z,feature not yet built
+Moss: Schistidium: Copper,MS_Cu,%,22,12,2,2007-07-31T00:00:00Z,2015-07-22T00:00:00Z,feature not yet built
+Moss: Schistidium: Iron,MS_Fe,%,22,12,2,2007-07-31T00:00:00Z,2015-07-22T00:00:00Z,feature not yet built
+Moss: Schistidium: Potassium,MS_K,%,22,12,2,2007-07-31T00:00:00Z,2015-07-22T00:00:00Z,feature not yet built
+Moss: Schistidium: Magnesium,MS_Mg,%,22,12,2,2007-07-31T00:00:00Z,2015-07-22T00:00:00Z,feature not yet built
+Moss: Schistidium: Manganese,MS_Mn,%,22,12,2,2007-07-31T00:00:00Z,2015-07-22T00:00:00Z,feature not yet built
+Moss: Schistidium: Nitrogen,MS_N,%,335,15,22,1995-07-07T00:00:00Z,2015-07-22T00:00:00Z,feature not yet built
+Moss: Schistidium: Sodium,MS_Na,%,22,12,2,2007-07-31T00:00:00Z,2015-07-22T00:00:00Z,feature not yet built
+Moss: Schistidium: Phosphorus,MS_P,%,336,15,22,1995-07-07T00:00:00Z,2015-07-22T00:00:00Z,feature not yet built
+Moss: Schistidium: Sulfur,MS_S,%,22,12,2,2007-07-31T00:00:00Z,2015-07-22T00:00:00Z,feature not yet built
+Moss: Schistidium: Zinc,MS_Zn,%,22,12,2,2007-07-31T00:00:00Z,2015-07-22T00:00:00Z,feature not yet built
+Sodium,Na,mg/L,1352175,144,9390,1963-06-02T00:00:00Z,2020-09-11T00:00:00Z,feature not yet built
+Ammonia-N,NH3_N,mg/L,513518,13,39501,1968-10-09T00:00:00Z,2019-05-22T00:00:00Z,feature not yet built
+Ammonium,NH4,mg/L,20193,10,2019,1993-09-22T00:00:00Z,2020-09-11T00:00:00Z,feature not yet built
+Ammonium-N,NH4_N,mg/L,909341,172,5287,1964-03-17T00:00:00Z,2020-02-28T00:00:00Z,feature not yet built
+Nickel,Ni,mg/L,1359,9,151,2009-06-18T00:00:00Z,2015-08-09T00:00:00Z,feature not yet built
+Nitrite-N,NO2_N,mg/L,10913,39,280,1993-12-01T00:00:00Z,2014-01-30T00:00:00Z,feature not yet built
+Nitrate,NO3,mg/L,20161,10,2016,1993-09-22T00:00:00Z,2020-09-11T00:00:00Z,feature not yet built
+Nitrate-N,NO3_N,mg/L,1644382,144,11419,1964-03-17T00:00:00Z,2020-12-01T00:00:00Z,feature not yet built
+Nitrate-N and nitrite-N,NO3_NO2_N,mg/L,176996,100,1770,1978-05-24T00:00:00Z,2020-02-28T00:00:00Z,feature not yet built
+Aluminum OM,OMAl,mg/L,79380,9,8820,2012-09-11T00:00:00Z,2019-05-29T00:00:00Z,feature not yet built
+Lead,Pb,mg/L,718,9,80,2009-06-25T00:00:00Z,2015-08-09T00:00:00Z,feature not yet built
+pH,pH,unitless,1210397,138,8771,1963-06-02T00:00:00Z,2020-12-01T00:00:00Z,feature not yet built
+Phaeopigment,phaeopig,mg/L,497,6,83,2008-06-20T00:00:00Z,2012-07-31T00:00:00Z,feature not yet built
+Sestonic Phaeophytin,pheophy,mg/l,9939,40,248,2004-06-22T00:00:00Z,2017-08-27T00:00:00Z,feature not yet built
+pH Metrohm,pHmetrohm,unitless,18521,9,2058,2017-06-12T00:00:00Z,2019-05-29T00:00:00Z,feature not yet built
+Phosphate,PO4,mg/L,1563,7,223,2019-04-09T00:00:00Z,2020-09-11T00:00:00Z,feature not yet built
+Phosphate-P,PO4_P,mg/L,1277387,104,12283,1968-10-09T00:00:00Z,2020-02-28T00:00:00Z,feature not yet built
+Particulate Organic Carbon,POC,mg/L,25105,18,1395,1993-06-19T00:00:00Z,2017-12-09T00:00:00Z,feature not yet built
+Particulate Organic Nitrogen,PON,mg/L,22610,8,2826,1993-06-19T00:00:00Z,2017-12-09T00:00:00Z,feature not yet built
+Basin Precip,precipitation,mm,1403911,104,13499,1951-11-21T00:00:00Z,2020-12-01T00:00:00Z,feature not yet built
+Basin Precip (nonstandard),precipitation_ns,mm,28683,9,3187,2009-04-11T00:00:00Z,2017-12-31T00:00:00Z,feature not yet built
+Sulfer,S,mg/l,1751,9,195,2009-06-18T00:00:00Z,2015-08-09T00:00:00Z,feature not yet built
+Silicon,Si,mg/L,641033,75,8547,1969-10-07T00:00:00Z,2019-05-22T00:00:00Z,feature not yet built
+Silica,SiO2,mg/L,23376,27,866,2012-02-01T00:00:00Z,2019-12-20T00:00:00Z,feature not yet built
+NA,SiO2_Si,NA,593927,20,29696,1963-06-02T00:00:00Z,2019-05-29T00:00:00Z,feature not yet built
+Sulfate,SO4,mg/L,43523,30,1451,1993-09-22T00:00:00Z,2020-09-11T00:00:00Z,feature not yet built
+Sulfate-S,SO4_S,mg/L,1218631,138,8831,1964-03-17T00:00:00Z,2019-05-29T00:00:00Z,feature not yet built
+Specific Conductivity,spCond,uS/cm,1117891,171,6537,1965-06-22T00:00:00Z,2020-12-31T00:00:00Z,feature not yet built
+NA,specificConductance,NA,23498,27,870,2012-02-01T00:00:00Z,2019-12-20T00:00:00Z,feature not yet built
+Strontium,Sr,mg/L,353,9,39,2009-06-18T00:00:00Z,2009-08-13T00:00:00Z,feature not yet built
+Soluble Reactive Phosphorus,SRP,mg/L,173311,102,1699,1983-07-10T00:00:00Z,2019-01-01T00:00:00Z,feature not yet built
+Suspended Sediment,suspSed,mg/L,548457,13,42189,1968-10-09T00:00:00Z,2019-05-22T00:00:00Z,feature not yet built
+Epilithic Total Chlorophyll,T_ECHL,mg/cm2,18244,32,570,1983-07-23T00:00:00Z,2015-08-13T00:00:00Z,feature not yet built
+Sestonic Total Chlorophyll,TCHL,mg/l,18510,47,394,1983-07-23T00:00:00Z,2015-08-09T00:00:00Z,feature not yet built
+Total Dissolved Nitrogen,TDN,mg/L,907287,144,6301,1968-10-09T00:00:00Z,2020-06-24T00:00:00Z,feature not yet built
+Total Dissolved Phosphorus,TDP,mg/L,702829,124,5668,1968-10-09T00:00:00Z,2019-12-20T00:00:00Z,feature not yet built
+Total Dissolved Solids,TDS,mg/L,23376,27,866,2012-02-01T00:00:00Z,2019-12-20T00:00:00Z,feature not yet built
+Water Temperature,temp,degrees C,279175,124,2251,1963-06-26T00:00:00Z,2020-12-31T00:00:00Z,feature not yet built
+Theoretical Conductivity,theoryCond,uS/cm,321552,9,35728,1970-01-08T00:00:00Z,2019-05-29T00:00:00Z,feature not yet built
+Total Inorganic Nitrogen,TIN,mg/L,49346,12,4112,1994-01-12T00:00:00Z,2018-10-19T00:00:00Z,feature not yet built
+Total Inorganic Phosphorus,TIP,mg/L,17198,12,1433,1997-05-30T00:00:00Z,2018-10-19T00:00:00Z,feature not yet built
+Total Kjeldahl Nitrogen,TKN,mg/L,350429,13,26956,1968-10-09T00:00:00Z,2005-05-10T00:00:00Z,feature not yet built
+Aluminum TM,TMAl,mg/L,91764,9,10196,2008-01-08T00:00:00Z,2019-05-29T00:00:00Z,feature not yet built
+Total Nitrogen,TN,mg/L,177952,74,2405,1985-03-13T00:00:00Z,2020-07-21T00:00:00Z,feature not yet built
+Total Organic Carbon,TOC,mg/L,36137,42,860,2002-01-04T00:00:00Z,2020-07-21T00:00:00Z,feature not yet built
+Total Phosphorus,TP,mg/L,212442,75,2833,1989-09-06T00:00:00Z,2019-12-20T00:00:00Z,feature not yet built
+Total Particulate Carbon,TPC,mg/L,42474,75,566,1994-06-25T00:00:00Z,2019-12-20T00:00:00Z,feature not yet built
+Total Particulate Nitrogen,TPN,mg/L,485667,100,4857,1978-06-28T00:00:00Z,2019-12-20T00:00:00Z,feature not yet built
+Total Particulate Phosphorus,TPP,mg/L,606585,89,6816,1974-10-11T00:00:00Z,2019-05-22T00:00:00Z,feature not yet built
+Total Suspended Solids,TSS,mg/L,58401,71,823,1993-06-19T00:00:00Z,2019-12-31T00:00:00Z,feature not yet built
+Turbidity,turbid,FNU,62466,40,1562,2001-10-03T00:00:00Z,2020-12-01T00:00:00Z,feature not yet built
+Unfilt. Total Kjeldahl Nitrogen,UTKN,mg/L,238851,13,18373,1978-06-28T00:00:00Z,2005-05-10T00:00:00Z,feature not yet built
+Unfiltered Total Nitrogen,UTN,mg/L,406766,13,31290,1978-06-28T00:00:00Z,2019-05-22T00:00:00Z,feature not yet built
+Unfiltered Total Phosphorus,UTP,mg/L,483494,13,37192,1974-10-11T00:00:00Z,2019-05-22T00:00:00Z,feature not yet built
+NA,VSS,NA,5775,3,1925,2009-05-07T00:00:00Z,2019-12-31T00:00:00Z,feature not yet built
+Zinc,Zn,mg/L,1850,9,206,2009-06-18T00:00:00Z,2015-08-09T00:00:00Z,feature not yet built

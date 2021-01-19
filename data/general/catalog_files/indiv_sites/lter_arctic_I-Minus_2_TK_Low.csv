@@ -1,0 +1,36 @@
+VariableCode,VariableName,SampleRegimen,Unit,Observations,FirstRecordUTC,LastRecordUTC,MeanObsPerDay,PercentFlagged,PercentImputed
+Al,Aluminum,grab-nonsensor,mg/l,174,2009-06-18T00:00:00Z,2015-07-28T00:00:00Z,0.1,0,87.93
+B,Boron,grab-nonsensor,mg/L,59,2009-06-18T00:00:00Z,2015-07-28T00:00:00Z,0,0,88.14
+Ca,Calcium,grab-nonsensor,mg/L,224,2009-06-18T00:00:00Z,2015-07-28T00:00:00Z,0.1,0,88.84
+Cd,Cadmium,grab-nonsensor,mg/L,145,2010-06-13T00:00:00Z,2015-07-28T00:00:00Z,0.1,0,88.97
+CHL,Chlorophyll,grab-nonsensor,mg/L,24,2013-07-04T00:00:00Z,2015-07-28T00:00:00Z,0,0,75
+Cl,Chloride,grab-nonsensor,mg/L,225,2008-07-03T00:00:00Z,2015-07-28T00:00:00Z,0.1,0.44,88.44
+Cr,Chromium,grab-nonsensor,mg/L,3,2012-07-28T00:00:00Z,2015-07-28T00:00:00Z,0,0,0
+Cu,Copper,grab-nonsensor,mg/L,165,2010-06-13T00:00:00Z,2015-07-28T00:00:00Z,0.1,0,89.7
+DOC,Dissolved Organic Carbon,grab-nonsensor,mg/L,268,2007-07-26T00:00:00Z,2015-07-28T00:00:00Z,0.1,0,89.18
+Fe,Iron,grab-nonsensor,mg/L,224,2009-06-18T00:00:00Z,2015-07-28T00:00:00Z,0.1,0,88.84
+K,Potassium,grab-nonsensor,mg/L,223,2009-06-18T00:00:00Z,2015-07-28T00:00:00Z,0.1,0,89.24
+Mg,Magnesium,grab-nonsensor,mg/L,224,2009-06-18T00:00:00Z,2015-07-28T00:00:00Z,0.1,0,88.84
+Mn,Manganese,grab-nonsensor,mg/L,224,2009-06-18T00:00:00Z,2015-07-28T00:00:00Z,0.1,0,88.84
+Na,Sodium,grab-nonsensor,mg/L,200,2009-06-18T00:00:00Z,2015-07-28T00:00:00Z,0.1,1,88.5
+NH4_N,Ammonium-N,grab-nonsensor,mg/L,269,2007-07-26T00:00:00Z,2015-07-28T00:00:00Z,0.1,0,88.85
+Ni,Nickel,grab-nonsensor,mg/L,178,2009-07-23T00:00:00Z,2015-07-28T00:00:00Z,0.1,0,88.76
+NO3_NO2_N,Nitrate-N and nitrite-N,grab-nonsensor,mg/L,125,2007-07-26T00:00:00Z,2015-07-28T00:00:00Z,0,0,85.6
+Pb,Lead,grab-nonsensor,mg/L,98,2010-07-18T00:00:00Z,2015-06-18T00:00:00Z,0.1,0,88.78
+pH,pH,grab-nonsensor,unitless,63,2007-07-26T00:00:00Z,2015-07-28T00:00:00Z,0,1.59,82.54
+pheophy,Sestonic Phaeophytin,grab-nonsensor,mg/l,24,2013-07-04T00:00:00Z,2015-07-28T00:00:00Z,0,0,75
+S,Sulfer,grab-nonsensor,mg/l,200,2009-06-18T00:00:00Z,2015-07-28T00:00:00Z,0.1,0,89
+Si,Silicon,grab-nonsensor,mg/L,57,2009-06-18T00:00:00Z,2009-08-13T00:00:00Z,1,0,91.23
+SO4_S,Sulfate-S,grab-nonsensor,mg/L,202,2008-07-03T00:00:00Z,2015-07-28T00:00:00Z,0.1,0.5,87.62
+spCond,Specific Conductivity,grab-nonsensor,uS/cm,63,2007-07-26T00:00:00Z,2015-07-28T00:00:00Z,0,1.59,82.54
+Sr,Strontium,grab-nonsensor,mg/L,57,2009-06-18T00:00:00Z,2009-08-13T00:00:00Z,1,0,91.23
+SRP,Soluble Reactive Phosphorus,grab-nonsensor,mg/L,268,2007-07-26T00:00:00Z,2015-07-28T00:00:00Z,0.1,0.75,89.18
+TCHL,Sestonic Total Chlorophyll,grab-nonsensor,mg/l,24,2013-07-04T00:00:00Z,2015-07-28T00:00:00Z,0,0,75
+TDN,Total Dissolved Nitrogen,grab-nonsensor,mg/L,268,2007-07-26T00:00:00Z,2015-07-28T00:00:00Z,0.1,0,89.18
+TDP,Total Dissolved Phosphorus,grab-nonsensor,mg/L,268,2007-07-26T00:00:00Z,2015-07-28T00:00:00Z,0.1,0,89.55
+temp,Water Temperature,grab-nonsensor,degrees C,63,2007-07-26T00:00:00Z,2015-07-28T00:00:00Z,0,1.59,82.54
+TPC,Total Particulate Carbon,grab-nonsensor,mg/L,87,2008-07-04T00:00:00Z,2009-08-13T00:00:00Z,0.2,0,93.1
+TPN,Total Particulate Nitrogen,grab-nonsensor,mg/L,87,2008-07-04T00:00:00Z,2009-08-13T00:00:00Z,0.2,0,93.1
+TPP,Total Particulate Phosphorus,grab-nonsensor,mg/L,136,2007-08-07T00:00:00Z,2015-07-28T00:00:00Z,0,0,88.24
+TSS,Total Suspended Solids,grab-nonsensor,mg/L,46,2007-07-26T00:00:00Z,2015-07-28T00:00:00Z,0,0,86.96
+Zn,Zinc,grab-nonsensor,mg/L,224,2009-06-18T00:00:00Z,2015-07-28T00:00:00Z,0.1,0,88.84

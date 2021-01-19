@@ -1,0 +1,27 @@
+VariableCode,VariableName,SampleRegimen,Unit,Observations,FirstRecordUTC,LastRecordUTC,MeanObsPerDay,PercentFlagged,PercentImputed
+discharge,Discharge,grab-sensor,L/s,517,2015-06-28T00:00:00Z,2019-09-13T00:00:00Z,0.3,9.28,9.86
+BPC,Benthic Particulate Carbon,grab-nonsensor,mg/cm2,67,2016-07-13T00:00:00Z,2016-09-17T00:00:00Z,1,0,91.04
+BPN,Benthic Particulate Nitrogen,grab-nonsensor,mg/cm2,67,2016-07-13T00:00:00Z,2016-09-17T00:00:00Z,1,19.4,91.04
+BPP,Benthic Particulate Phosphorus,grab-nonsensor,mg/cm2,159,2016-07-13T00:00:00Z,2017-09-19T00:00:00Z,0.4,42.14,91.19
+DOC,Dissolved Organic Carbon,grab-nonsensor,mg/L,341,2015-06-28T00:00:00Z,2017-10-11T00:00:00Z,0.4,0,90.32
+E_pheophy,Epilithic Phaeophytin,grab-nonsensor,mg/cm2,159,2016-07-13T00:00:00Z,2017-09-19T00:00:00Z,0.4,0,91.19
+ECHL_A,Epilithic Chlorophyll a,grab-nonsensor,mg/cm2,159,2016-07-13T00:00:00Z,2017-09-19T00:00:00Z,0.4,0,91.19
+NH4_N,Ammonium-N,grab-nonsensor,mg/L,341,2015-06-28T00:00:00Z,2017-10-11T00:00:00Z,0.4,3.81,90.32
+NO3_NO2_N,Nitrate-N and nitrite-N,grab-nonsensor,mg/L,341,2015-06-28T00:00:00Z,2017-10-11T00:00:00Z,0.4,0,90.32
+pH,pH,grab-nonsensor,unitless,308,2004-07-05T00:00:00Z,2017-09-26T00:00:00Z,0.1,11.69,91.23
+spCond,Specific Conductivity,grab-nonsensor,uS/cm,290,2004-07-23T00:00:00Z,2017-09-26T00:00:00Z,0.1,6.21,91.03
+SRP,Soluble Reactive Phosphorus,grab-nonsensor,mg/L,336,2015-06-28T00:00:00Z,2017-10-11T00:00:00Z,0.4,0,91.07
+TDN,Total Dissolved Nitrogen,grab-nonsensor,mg/L,341,2015-06-28T00:00:00Z,2017-10-11T00:00:00Z,0.4,0,90.32
+TDP,Total Dissolved Phosphorus,grab-nonsensor,mg/L,285,2015-06-28T00:00:00Z,2017-10-11T00:00:00Z,0.3,3.51,90.18
+temp,Water Temperature,all,degrees C,791,2004-07-05T00:00:00Z,2019-09-13T00:00:00Z,0.1,10.01,97.09
+temp,Water Temperature,grab-nonsensor,degrees C,274,2004-07-05T00:00:00Z,2017-09-26T00:00:00Z,0.1,0.73,90.51
+temp,Water Temperature,grab-sensor,degrees C,517,2015-06-28T00:00:00Z,2019-09-13T00:00:00Z,0.3,9.28,6.58
+BPC,Benthic Particulate Carbon,grab-nonsensor,mg/cm2,67,2016-07-13T00:00:00Z,2016-09-17T00:00:00Z,1,0,91.04
+BPN,Benthic Particulate Nitrogen,grab-nonsensor,mg/cm2,67,2016-07-13T00:00:00Z,2016-09-17T00:00:00Z,1,19.4,91.04
+BPP,Benthic Particulate Phosphorus,grab-nonsensor,mg/cm2,159,2016-07-13T00:00:00Z,2017-09-19T00:00:00Z,0.4,42.14,91.19
+DOC,Dissolved Organic Carbon,grab-nonsensor,mg/L,302,2015-06-28T00:00:00Z,2017-10-11T00:00:00Z,0.4,8.94,91.39
+NH4_N,Ammonium-N,grab-nonsensor,mg/L,302,2015-06-28T00:00:00Z,2017-10-11T00:00:00Z,0.4,13.25,91.39
+NO3_NO2_N,Nitrate-N and nitrite-N,grab-nonsensor,mg/L,302,2015-06-28T00:00:00Z,2017-10-11T00:00:00Z,0.4,8.94,91.39
+SRP,Soluble Reactive Phosphorus,grab-nonsensor,mg/L,302,2015-06-28T00:00:00Z,2017-10-11T00:00:00Z,0.4,8.94,91.72
+TDN,Total Dissolved Nitrogen,grab-nonsensor,mg/L,302,2015-06-28T00:00:00Z,2017-10-11T00:00:00Z,0.4,8.94,91.39
+TDP,Total Dissolved Phosphorus,grab-nonsensor,mg/L,255,2015-06-28T00:00:00Z,2017-10-11T00:00:00Z,0.3,10.59,90.98

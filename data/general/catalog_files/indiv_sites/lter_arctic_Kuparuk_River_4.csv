@@ -1,0 +1,76 @@
+VariableCode,VariableName,SampleRegimen,Unit,Observations,FirstRecordUTC,LastRecordUTC,MeanObsPerDay,PercentFlagged,PercentImputed
+discharge,Discharge,installed-sensor,L/s,3964,1978-05-21T00:00:00Z,2019-09-12T00:00:00Z,0.3,0,5.47
+BPC,Benthic Particulate Carbon,grab-nonsensor,mg/cm2,537,1991-07-18T00:00:00Z,2011-08-09T00:00:00Z,0.1,8.01,91.81
+BPN,Benthic Particulate Nitrogen,grab-nonsensor,mg/cm2,537,1991-07-18T00:00:00Z,2011-08-09T00:00:00Z,0.1,8.01,91.81
+BPP,Benthic Particulate Phosphorus,grab-nonsensor,mg/cm2,567,1995-07-18T00:00:00Z,2011-08-09T00:00:00Z,0.1,14.81,92.42
+CHL,Chlorophyll,grab-nonsensor,mg/L,366,2004-06-24T00:00:00Z,2011-08-10T00:00:00Z,0.1,0.27,93.44
+DOC,Dissolved Organic Carbon,grab-nonsensor,mg/L,191,2007-06-21T00:00:00Z,2011-08-10T00:00:00Z,0.1,0.52,93.72
+E_pheophy,Epilithic Phaeophytin,grab-nonsensor,mg/cm2,329,2004-06-19T00:00:00Z,2011-08-09T00:00:00Z,0.1,0,92.71
+ECHL_A,Epilithic Chlorophyll a,grab-nonsensor,mg/cm2,329,2004-06-19T00:00:00Z,2011-08-09T00:00:00Z,0.1,8.51,92.71
+MH_Al,Moss: Hygrohypnum: Aluminum,grab-nonsensor,%,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,Inf,0,0
+MH_B,Moss: Hygrohypnum: Boron,grab-nonsensor,%,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,Inf,0,0
+MH_C,Moss: Hygrohypnum: Carbon,grab-nonsensor,%,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,Inf,0,0
+MH_Ca,Moss: Hygrohypnum: Calcium,grab-nonsensor,%,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,Inf,0,0
+MH_Cu,Moss: Hygrohypnum: Copper,grab-nonsensor,%,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,Inf,0,0
+MH_Fe,Moss: Hygrohypnum: Iron,grab-nonsensor,%,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,Inf,0,0
+MH_K,Moss: Hygrohypnum: Potassium,grab-nonsensor,%,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,Inf,0,0
+MH_Mg,Moss: Hygrohypnum: Magnesium,grab-nonsensor,%,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,Inf,0,0
+MH_Mn,Moss: Hygrohypnum: Manganese,grab-nonsensor,%,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,Inf,0,0
+MH_N,Moss: Hygrohypnum: Nitrogen,grab-nonsensor,%,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,Inf,0,0
+MH_Na,Moss: Hygrohypnum: Sodium,grab-nonsensor,%,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,Inf,0,0
+MH_P,Moss: Hygrohypnum: Phosphorus,grab-nonsensor,%,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,Inf,0,0
+MH_S,Moss: Hygrohypnum: Sulfur,grab-nonsensor,%,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,Inf,0,0
+MLW_Al,Moss: Liverwort: Aluminum,grab-nonsensor,%,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,Inf,0,0
+MLW_B,Moss: Liverwort: Boron,grab-nonsensor,%,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,Inf,0,0
+MLW_C,Moss: Liverwort: Carbon,grab-nonsensor,%,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,Inf,0,0
+MLW_Ca,Moss: Liverwort: Calcium,grab-nonsensor,%,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,Inf,0,0
+MLW_Cu,Moss: Liverwort: Copper,grab-nonsensor,%,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,Inf,0,0
+MLW_Fe,Moss: Liverwort: Iron,grab-nonsensor,%,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,Inf,0,0
+MLW_K,Moss: Liverwort: Potassium,grab-nonsensor,%,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,Inf,0,0
+MLW_Mg,Moss: Liverwort: Magnesium,grab-nonsensor,%,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,Inf,0,0
+MLW_Mn,Moss: Liverwort: Manganese,grab-nonsensor,%,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,Inf,0,0
+MLW_N,Moss: Liverwort: Nitrogen,grab-nonsensor,%,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,Inf,0,0
+MLW_Na,Moss: Liverwort: Sodium,grab-nonsensor,%,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,Inf,0,0
+MLW_P,Moss: Liverwort: Phosphorus,grab-nonsensor,%,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,Inf,0,0
+MLW_S,Moss: Liverwort: Sulfur,grab-nonsensor,%,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,Inf,0,0
+MLW_Zn,Moss: Liverwort: Zinc,grab-nonsensor,%,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,Inf,0,0
+MS_Al,Moss: Schistidium: Aluminum,grab-nonsensor,%,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,Inf,0,0
+MS_B,Moss: Schistidium: Boron,grab-nonsensor,%,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,Inf,0,0
+MS_C,Moss: Schistidium: Carbon,grab-nonsensor,%,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,Inf,0,0
+MS_Ca,Moss: Schistidium: Calcium,grab-nonsensor,%,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,Inf,0,0
+MS_Cu,Moss: Schistidium: Copper,grab-nonsensor,%,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,Inf,0,0
+MS_Fe,Moss: Schistidium: Iron,grab-nonsensor,%,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,Inf,0,0
+MS_K,Moss: Schistidium: Potassium,grab-nonsensor,%,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,Inf,0,0
+MS_Mg,Moss: Schistidium: Magnesium,grab-nonsensor,%,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,Inf,0,0
+MS_Mn,Moss: Schistidium: Manganese,grab-nonsensor,%,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,Inf,0,0
+MS_N,Moss: Schistidium: Nitrogen,grab-nonsensor,%,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,Inf,0,0
+MS_Na,Moss: Schistidium: Sodium,grab-nonsensor,%,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,Inf,0,0
+MS_P,Moss: Schistidium: Phosphorus,grab-nonsensor,%,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,Inf,0,0
+MS_S,Moss: Schistidium: Sulfur,grab-nonsensor,%,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,Inf,0,0
+MS_Zn,Moss: Schistidium: Zinc,grab-nonsensor,%,1,2007-07-31T00:00:00Z,2007-07-31T00:00:00Z,Inf,0,0
+NH4_N,Ammonium-N,grab-nonsensor,mg/L,946,1985-06-29T00:00:00Z,2011-08-10T00:00:00Z,0.1,2.11,89.85
+NO3_NO2_N,Nitrate-N and nitrite-N,grab-nonsensor,mg/L,960,1983-07-10T00:00:00Z,2011-08-10T00:00:00Z,0.1,0.1,89.38
+pH,pH,grab-nonsensor,unitless,639,1994-07-16T00:00:00Z,2013-06-18T00:00:00Z,0.1,0.94,90.92
+pheophy,Sestonic Phaeophytin,grab-nonsensor,mg/l,366,2004-06-24T00:00:00Z,2011-08-10T00:00:00Z,0.1,0.27,93.44
+spCond,Specific Conductivity,grab-nonsensor,uS/cm,644,1994-07-16T00:00:00Z,2013-06-18T00:00:00Z,0.1,4.04,90.84
+SRP,Soluble Reactive Phosphorus,grab-nonsensor,mg/L,1068,1983-07-10T00:00:00Z,2011-08-10T00:00:00Z,0.1,0.09,89.98
+T_ECHL,Epilithic Total Chlorophyll,grab-nonsensor,mg/cm2,1005,1985-07-02T00:00:00Z,2011-08-09T00:00:00Z,0.1,2.79,92.54
+TCHL,Sestonic Total Chlorophyll,grab-nonsensor,mg/l,839,1985-07-09T00:00:00Z,2011-08-10T00:00:00Z,0.1,0.12,90.23
+TDN,Total Dissolved Nitrogen,grab-nonsensor,mg/L,279,1995-08-12T00:00:00Z,2011-08-10T00:00:00Z,0,8.24,91.76
+TDP,Total Dissolved Phosphorus,grab-nonsensor,mg/L,329,1996-06-22T00:00:00Z,2011-08-10T00:00:00Z,0.1,16.72,92.1
+temp,Water Temperature,grab-nonsensor,degrees C,689,1994-07-16T00:00:00Z,2013-06-18T00:00:00Z,0.1,4.06,91.15
+TPC,Total Particulate Carbon,grab-nonsensor,mg/L,327,1995-07-20T00:00:00Z,2010-08-17T00:00:00Z,0.1,0,92.35
+TPN,Total Particulate Nitrogen,grab-nonsensor,mg/L,326,1995-07-20T00:00:00Z,2010-08-17T00:00:00Z,0.1,0,92.64
+TPP,Total Particulate Phosphorus,grab-nonsensor,mg/L,536,1996-07-06T00:00:00Z,2011-08-10T00:00:00Z,0.1,14.55,93.1
+BPC,Benthic Particulate Carbon,grab-nonsensor,mg/cm2,533,1991-07-18T00:00:00Z,2011-08-09T00:00:00Z,0.1,8.07,92.12
+BPN,Benthic Particulate Nitrogen,grab-nonsensor,mg/cm2,533,1991-07-18T00:00:00Z,2011-08-09T00:00:00Z,0.1,8.07,92.12
+BPP,Benthic Particulate Phosphorus,grab-nonsensor,mg/cm2,566,1995-07-18T00:00:00Z,2011-08-09T00:00:00Z,0.1,14.84,92.58
+DOC,Dissolved Organic Carbon,grab-nonsensor,mg/L,191,2007-06-21T00:00:00Z,2011-08-10T00:00:00Z,0.1,0.52,93.72
+NH4_N,Ammonium-N,grab-nonsensor,mg/L,942,1985-06-29T00:00:00Z,2011-08-10T00:00:00Z,0.1,2.12,90.02
+NO3_NO2_N,Nitrate-N and nitrite-N,grab-nonsensor,mg/L,953,1983-07-13T00:00:00Z,2011-08-10T00:00:00Z,0.1,0.1,89.61
+SRP,Soluble Reactive Phosphorus,grab-nonsensor,mg/L,1061,1983-07-13T00:00:00Z,2011-08-10T00:00:00Z,0.1,0.09,90.2
+TDN,Total Dissolved Nitrogen,grab-nonsensor,mg/L,279,1995-08-12T00:00:00Z,2011-08-10T00:00:00Z,0,8.24,91.76
+TDP,Total Dissolved Phosphorus,grab-nonsensor,mg/L,328,1996-06-22T00:00:00Z,2011-08-10T00:00:00Z,0.1,16.77,92.38
+TPC,Total Particulate Carbon,grab-nonsensor,mg/L,323,1995-07-20T00:00:00Z,2010-08-17T00:00:00Z,0.1,0,92.57
+TPN,Total Particulate Nitrogen,grab-nonsensor,mg/L,322,1995-07-20T00:00:00Z,2010-08-17T00:00:00Z,0.1,0,92.86
+TPP,Total Particulate Phosphorus,grab-nonsensor,mg/L,536,1996-07-06T00:00:00Z,2011-08-10T00:00:00Z,0.1,14.55,93.1

@@ -37,6 +37,7 @@ server <- function(input, output, session){
     # source('server/oneSiteNVar_server.R', local=TRUE)
     source('server/nSiteNVar_server.R', local = TRUE)
     source('server/map_server.R', local = TRUE)
+    source('server/catalog_server.R', local = TRUE)
 
     #register clicking of map popup links
     observeEvent(input$SITE_EXPLORE, {

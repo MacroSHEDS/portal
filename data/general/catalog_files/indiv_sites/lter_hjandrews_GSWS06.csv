@@ -1,0 +1,78 @@
+VariableCode,VariableName,SampleRegimen,Unit,Observations,FirstRecordUTC,LastRecordUTC,MeanObsPerDay,PercentFlagged,PercentImputed
+discharge,Discharge,installed-sensor,L/s,20455,1963-10-01T00:00:00Z,2019-10-01T00:00:00Z,1,6.24,0
+alk,Alkalinity,grab-nonsensor,mg/L,13612,1969-02-04T00:00:00Z,2017-04-05T00:00:00Z,0.8,77.42,96
+AnCaR,Anion-Cation Ratio,grab-nonsensor,unitless,9559,1978-12-13T00:00:00Z,2019-05-22T00:00:00Z,0.6,65.03,95.53
+Ca,Calcium,grab-nonsensor,mg/L,14520,1968-10-21T00:00:00Z,2017-04-05T00:00:00Z,0.8,76.42,95.98
+Cl,Chloride,grab-nonsensor,mg/L,9645,1978-11-21T00:00:00Z,2017-04-05T00:00:00Z,0.7,67.61,95.68
+DOC,Dissolved Organic Carbon,grab-nonsensor,mg/L,4426,2001-10-23T00:00:00Z,2017-04-05T00:00:00Z,0.8,49.12,97.47
+DON,Dissolved Organic Nitrogen,grab-nonsensor,mg/L,12002,1968-10-21T00:00:00Z,2017-04-05T00:00:00Z,0.7,79.62,95.86
+K,Potassium,grab-nonsensor,mg/L,14613,1968-10-21T00:00:00Z,2017-04-05T00:00:00Z,0.8,75.93,95.99
+Mg,Magnesium,grab-nonsensor,mg/L,14554,1968-10-21T00:00:00Z,2017-04-05T00:00:00Z,0.8,76.24,95.98
+Na,Sodium,grab-nonsensor,mg/L,14613,1968-10-21T00:00:00Z,2017-04-05T00:00:00Z,0.8,75.93,95.99
+NH3_N,Ammonia-N,grab-nonsensor,mg/L,13335,1968-10-21T00:00:00Z,2017-04-05T00:00:00Z,0.8,73.21,96
+NO3_N,Nitrate-N,grab-nonsensor,mg/L,14619,1968-10-21T00:00:00Z,2017-04-05T00:00:00Z,0.8,75.52,95.97
+pH,pH,grab-nonsensor,unitless,14411,1969-02-04T00:00:00Z,2019-05-22T00:00:00Z,0.8,72.24,95.9
+PO4_P,Phosphate-P,grab-nonsensor,mg/L,12062,1968-10-21T00:00:00Z,2017-04-05T00:00:00Z,0.7,75.41,95.63
+Si,Silicon,grab-nonsensor,mg/L,14391,1969-10-07T00:00:00Z,2017-04-05T00:00:00Z,0.8,75.67,95.99
+SO4_S,Sulfate-S,grab-nonsensor,mg/L,10097,1970-11-03T00:00:00Z,2017-04-05T00:00:00Z,0.6,69.06,95.6
+spCond,Specific Conductivity,grab-nonsensor,uS/cm,12367,1970-03-27T00:00:00Z,2017-11-20T00:00:00Z,0.7,71,95.9
+suspSed,Suspended Sediment,grab-nonsensor,mg/L,14124,1968-12-09T00:00:00Z,2017-04-05T00:00:00Z,0.8,76.58,95.97
+TDN,Total Dissolved Nitrogen,grab-nonsensor,mg/L,13110,1968-10-21T00:00:00Z,2017-04-05T00:00:00Z,0.7,81.34,95.87
+TDP,Total Dissolved Phosphorus,grab-nonsensor,mg/L,14146,1968-10-21T00:00:00Z,2017-04-05T00:00:00Z,0.8,77.46,95.96
+TKN,Total Kjeldahl Nitrogen,grab-nonsensor,mg/L,9416,1968-10-21T00:00:00Z,2005-05-10T00:00:00Z,0.7,99.13,95.2
+TPN,Total Particulate Nitrogen,grab-nonsensor,mg/L,10523,1978-06-28T00:00:00Z,2019-05-22T00:00:00Z,0.7,70,95.72
+TPP,Total Particulate Phosphorus,grab-nonsensor,mg/L,13006,1974-11-13T00:00:00Z,2019-05-22T00:00:00Z,0.8,71.54,95.92
+UTKN,Unfilt. Total Kjeldahl Nitrogen,grab-nonsensor,mg/L,6307,1978-06-28T00:00:00Z,2005-05-10T00:00:00Z,0.6,98.7,94.8
+UTN,Unfiltered Total Nitrogen,grab-nonsensor,mg/L,9979,1978-06-28T00:00:00Z,2017-04-05T00:00:00Z,0.7,75.71,95.83
+UTP,Unfiltered Total Phosphorus,grab-nonsensor,mg/L,12457,1974-11-13T00:00:00Z,2017-04-05T00:00:00Z,0.8,76.01,96.02
+alk,Alkalinity,grab-nonsensor,mg/L,13612,1969-02-04T00:00:00Z,2017-04-05T00:00:00Z,0.8,77.42,96
+AnCaR,Anion-Cation Ratio,grab-nonsensor,unitless,9559,1978-12-13T00:00:00Z,2019-05-22T00:00:00Z,0.6,65.03,95.53
+Ca,Calcium,grab-nonsensor,mg/L,14520,1968-10-21T00:00:00Z,2017-04-05T00:00:00Z,0.8,76.42,95.98
+Cl,Chloride,grab-nonsensor,mg/L,9645,1978-11-21T00:00:00Z,2017-04-05T00:00:00Z,0.7,67.61,95.68
+DOC,Dissolved Organic Carbon,grab-nonsensor,mg/L,4426,2001-10-23T00:00:00Z,2017-04-05T00:00:00Z,0.8,49.12,97.47
+DON,Dissolved Organic Nitrogen,grab-nonsensor,mg/L,12002,1968-10-21T00:00:00Z,2017-04-05T00:00:00Z,0.7,79.62,95.86
+K,Potassium,grab-nonsensor,mg/L,14613,1968-10-21T00:00:00Z,2017-04-05T00:00:00Z,0.8,75.93,95.99
+Mg,Magnesium,grab-nonsensor,mg/L,14554,1968-10-21T00:00:00Z,2017-04-05T00:00:00Z,0.8,76.24,95.98
+Na,Sodium,grab-nonsensor,mg/L,14613,1968-10-21T00:00:00Z,2017-04-05T00:00:00Z,0.8,75.93,95.99
+NH3_N,Ammonia-N,grab-nonsensor,mg/L,13335,1968-10-21T00:00:00Z,2017-04-05T00:00:00Z,0.8,73.21,96
+NO3_N,Nitrate-N,grab-nonsensor,mg/L,14619,1968-10-21T00:00:00Z,2017-04-05T00:00:00Z,0.8,75.52,95.97
+pH,pH,grab-nonsensor,unitless,14411,1969-02-04T00:00:00Z,2019-05-22T00:00:00Z,0.8,72.24,95.9
+PO4_P,Phosphate-P,grab-nonsensor,mg/L,12062,1968-10-21T00:00:00Z,2017-04-05T00:00:00Z,0.7,75.41,95.63
+Si,Silicon,grab-nonsensor,mg/L,14391,1969-10-07T00:00:00Z,2017-04-05T00:00:00Z,0.8,75.67,95.99
+SO4_S,Sulfate-S,grab-nonsensor,mg/L,10097,1970-11-03T00:00:00Z,2017-04-05T00:00:00Z,0.6,69.06,95.6
+spCond,Specific Conductivity,grab-nonsensor,uS/cm,12367,1970-03-27T00:00:00Z,2017-11-20T00:00:00Z,0.7,71,95.9
+suspSed,Suspended Sediment,grab-nonsensor,mg/L,14124,1968-12-09T00:00:00Z,2017-04-05T00:00:00Z,0.8,76.58,95.97
+TDN,Total Dissolved Nitrogen,grab-nonsensor,mg/L,13110,1968-10-21T00:00:00Z,2017-04-05T00:00:00Z,0.7,81.34,95.87
+TDP,Total Dissolved Phosphorus,grab-nonsensor,mg/L,14146,1968-10-21T00:00:00Z,2017-04-05T00:00:00Z,0.8,77.46,95.96
+TKN,Total Kjeldahl Nitrogen,grab-nonsensor,mg/L,9416,1968-10-21T00:00:00Z,2005-05-10T00:00:00Z,0.7,99.13,95.2
+TPN,Total Particulate Nitrogen,grab-nonsensor,mg/L,10523,1978-06-28T00:00:00Z,2019-05-22T00:00:00Z,0.7,70,95.72
+TPP,Total Particulate Phosphorus,grab-nonsensor,mg/L,13006,1974-11-13T00:00:00Z,2019-05-22T00:00:00Z,0.8,71.54,95.92
+UTKN,Unfilt. Total Kjeldahl Nitrogen,grab-nonsensor,mg/L,6307,1978-06-28T00:00:00Z,2005-05-10T00:00:00Z,0.6,98.7,94.8
+UTN,Unfiltered Total Nitrogen,grab-nonsensor,mg/L,9979,1978-06-28T00:00:00Z,2017-04-05T00:00:00Z,0.7,75.71,95.83
+UTP,Unfiltered Total Phosphorus,grab-nonsensor,mg/L,12457,1974-11-13T00:00:00Z,2017-04-05T00:00:00Z,0.8,76.01,96.02
+precipitation,Basin Precip,installed-nonsensor,mm,23878,1951-11-21T00:00:00Z,2017-04-05T00:00:00Z,1,7.38,3.35
+alk,Alkalinity,grab-nonsensor,mg/L,11480,1971-10-26T00:00:00Z,2019-05-22T00:00:00Z,0.7,9.88,95.15
+AnCaR,Anion-Cation Ratio,grab-nonsensor,unitless,6284,1978-10-12T00:00:00Z,2019-05-22T00:00:00Z,0.4,6.37,95.18
+Ca,Calcium,grab-nonsensor,mg/L,11480,1971-10-26T00:00:00Z,2019-05-22T00:00:00Z,0.7,9.88,95.15
+Cl,Chloride,grab-nonsensor,mg/L,6285,1978-10-12T00:00:00Z,2019-05-22T00:00:00Z,0.4,6.36,95.16
+DOC,Dissolved Organic Carbon,grab-nonsensor,mg/L,5678,2003-01-01T00:00:00Z,2019-05-22T00:00:00Z,0.9,5.95,95.1
+DON,Dissolved Organic Nitrogen,grab-nonsensor,mg/L,9445,1971-10-26T00:00:00Z,2019-05-22T00:00:00Z,0.5,8.69,95.13
+K,Potassium,grab-nonsensor,mg/L,11480,1971-10-26T00:00:00Z,2019-05-22T00:00:00Z,0.7,9.88,95.15
+Mg,Magnesium,grab-nonsensor,mg/L,11480,1971-10-26T00:00:00Z,2019-05-22T00:00:00Z,0.7,9.88,95.15
+Na,Sodium,grab-nonsensor,mg/L,11480,1971-10-26T00:00:00Z,2019-05-22T00:00:00Z,0.7,9.88,95.15
+NH3_N,Ammonia-N,grab-nonsensor,mg/L,9480,1971-10-26T00:00:00Z,2019-05-22T00:00:00Z,0.5,8.22,95.14
+NO3_N,Nitrate-N,grab-nonsensor,mg/L,11356,1971-10-26T00:00:00Z,2019-05-22T00:00:00Z,0.7,9.82,95.13
+pH,pH,grab-nonsensor,unitless,10805,1971-10-26T00:00:00Z,2019-05-22T00:00:00Z,0.6,10.31,95.09
+PO4_P,Phosphate-P,grab-nonsensor,mg/L,9533,1971-10-26T00:00:00Z,2019-05-22T00:00:00Z,0.5,8.91,95.15
+Si,Silicon,grab-nonsensor,mg/L,11480,1971-10-26T00:00:00Z,2019-05-22T00:00:00Z,0.7,39.78,95.15
+SO4_S,Sulfate-S,grab-nonsensor,mg/L,6285,1978-10-12T00:00:00Z,2019-05-22T00:00:00Z,0.4,6.36,95.16
+spCond,Specific Conductivity,grab-nonsensor,uS/cm,8987,1975-11-06T00:00:00Z,2017-11-21T00:00:00Z,0.6,9.5,95.15
+suspSed,Suspended Sediment,grab-nonsensor,mg/L,11379,1971-10-26T00:00:00Z,2019-05-22T00:00:00Z,0.7,9.8,95.13
+TDN,Total Dissolved Nitrogen,grab-nonsensor,mg/L,11321,1971-10-26T00:00:00Z,2019-05-22T00:00:00Z,0.7,10.22,95.12
+TDP,Total Dissolved Phosphorus,grab-nonsensor,mg/L,11480,1971-10-26T00:00:00Z,2019-05-22T00:00:00Z,0.7,9.88,95.15
+TKN,Total Kjeldahl Nitrogen,grab-nonsensor,mg/L,6361,1971-10-26T00:00:00Z,2005-05-10T00:00:00Z,0.5,13.19,95.08
+TPN,Total Particulate Nitrogen,grab-nonsensor,mg/L,9119,1978-06-28T00:00:00Z,2019-05-22T00:00:00Z,0.6,8.88,95.16
+TPP,Total Particulate Phosphorus,grab-nonsensor,mg/L,10396,1974-11-12T00:00:00Z,2019-05-22T00:00:00Z,0.6,9.79,95.15
+UTKN,Unfilt. Total Kjeldahl Nitrogen,grab-nonsensor,mg/L,4035,1978-06-28T00:00:00Z,2005-05-10T00:00:00Z,0.4,11.72,95.09
+UTN,Unfiltered Total Nitrogen,grab-nonsensor,mg/L,9119,1978-06-28T00:00:00Z,2019-05-22T00:00:00Z,0.6,8.88,95.16
+UTP,Unfiltered Total Phosphorus,grab-nonsensor,mg/L,10396,1974-11-12T00:00:00Z,2019-05-22T00:00:00Z,0.6,9.79,95.15

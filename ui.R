@@ -8,6 +8,7 @@ source('ui/participants_ui.R')
 source('ui/summary_biplot_ui.R')
 source('ui/map_ui.R')
 source('ui/now_hiring_ui.R')
+source('ui/catalog_ui.R')
 
 ui = fluidPage(
 # shinyUI(fluidPage(
@@ -30,7 +31,8 @@ ui = fluidPage(
                     # now_hiring_tab,
                     about_tab,
                     participants_tab,
-                    map_tab
+                    map_tab,
+                    catalog_tab
                 )
             ),
             div(style='width: 36px; display: inline-block; float: right',

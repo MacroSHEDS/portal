@@ -1,0 +1,31 @@
+VariableCode,VariableName,SampleRegimen,Unit,Observations,FirstRecordUTC,LastRecordUTC,MeanObsPerDay,PercentFlagged,PercentImputed
+ANC,Acid Neutralizing Capacity,grab-nonsensor,eq/L,1952,1998-07-17T00:00:00Z,2018-09-26T00:00:00Z,0.3,0,85.76
+anionCharge,TOTAL Anion Charge,grab-nonsensor,ueq/L,1918,1998-07-17T00:00:00Z,2018-09-26T00:00:00Z,0.3,0,85.56
+Ca,Calcium,grab-nonsensor,mg/L,1950,1998-07-17T00:00:00Z,2018-09-26T00:00:00Z,0.3,0,85.85
+cationCharge,TOTAL Cation Charge,grab-nonsensor,ueq/L,1950,1998-07-17T00:00:00Z,2018-09-26T00:00:00Z,0.3,0,85.85
+Cl,Chloride,grab-nonsensor,mg/L,1952,1998-07-17T00:00:00Z,2018-09-26T00:00:00Z,0.3,0,85.76
+d18O,Delta 18 Oxygen,grab-nonsensor,ppt,1332,2002-06-21T00:00:00Z,2017-07-07T00:00:00Z,0.2,0,85.74
+DOC,Dissolved Organic Carbon,grab-nonsensor,mg/L,1621,2002-06-28T00:00:00Z,2018-09-26T00:00:00Z,0.3,0,85.93
+DOP,Dissolved Organic Phosphorus,grab-nonsensor,mg/L,1633,1998-07-17T00:00:00Z,2018-09-13T00:00:00Z,0.2,0,87.51
+H,Hydrogen,grab-nonsensor,mg/L,1952,1998-07-17T00:00:00Z,2018-09-26T00:00:00Z,0.3,0,85.76
+ionBalance,Ion Balance,grab-nonsensor,ueq/L,1916,1998-07-17T00:00:00Z,2018-09-26T00:00:00Z,0.3,0,85.65
+K,Potassium,grab-nonsensor,mg/L,1951,1998-07-17T00:00:00Z,2018-09-26T00:00:00Z,0.3,0,85.8
+Mg,Magnesium,grab-nonsensor,mg/L,1830,1998-07-17T00:00:00Z,2018-09-26T00:00:00Z,0.2,0,85.85
+Na,Sodium,grab-nonsensor,mg/L,1832,1998-07-17T00:00:00Z,2018-09-26T00:00:00Z,0.2,0,85.75
+NH4_N,Ammonium-N,grab-nonsensor,mg/L,1418,1998-07-17T00:00:00Z,2018-09-26T00:00:00Z,0.2,0,87.87
+NO3_N,Nitrate-N,grab-nonsensor,mg/L,1952,1998-07-17T00:00:00Z,2018-09-26T00:00:00Z,0.3,0,85.76
+pH,pH,grab-nonsensor,unitless,1952,1998-07-17T00:00:00Z,2018-09-26T00:00:00Z,0.3,0,85.76
+PO4_P,Phosphate-P,grab-nonsensor,mg/L,1223,1998-08-14T00:00:00Z,2018-09-26T00:00:00Z,0.2,0,86.43
+POC,Particulate Organic Carbon,grab-nonsensor,mg/L,86,2002-06-28T00:00:00Z,2003-10-10T00:00:00Z,0.2,0,84.88
+Si,Silicon,grab-nonsensor,mg/L,1952,1998-07-17T00:00:00Z,2018-09-26T00:00:00Z,0.3,0,85.76
+SO4_S,Sulfate-S,grab-nonsensor,mg/L,1918,1998-07-17T00:00:00Z,2018-09-26T00:00:00Z,0.3,0,85.56
+spCond,Specific Conductivity,grab-nonsensor,uS/cm,1952,1998-07-17T00:00:00Z,2018-09-26T00:00:00Z,0.3,0,85.76
+TDN,Total Dissolved Nitrogen,grab-nonsensor,mg/L,1903,1998-07-17T00:00:00Z,2018-09-26T00:00:00Z,0.3,0,85.76
+TDP,Total Dissolved Phosphorus,grab-nonsensor,mg/L,1868,1998-07-17T00:00:00Z,2018-09-26T00:00:00Z,0.3,0,86.62
+TIN,Total Inorganic Nitrogen,grab-nonsensor,mg/L,1952,1998-07-17T00:00:00Z,2018-09-26T00:00:00Z,0.3,0,85.76
+TIP,Total Inorganic Phosphorus,grab-nonsensor,mg/L,1223,1998-08-14T00:00:00Z,2018-09-26T00:00:00Z,0.2,0,86.43
+TN,Total Nitrogen,grab-nonsensor,mg/L,840,1998-07-17T00:00:00Z,2008-10-04T00:00:00Z,0.2,0,85
+TOC,Total Organic Carbon,grab-nonsensor,mg/L,191,2002-06-21T00:00:00Z,2003-10-10T00:00:00Z,0.4,0,86.91
+TP,Total Phosphorus,grab-nonsensor,mg/L,1003,1998-07-17T00:00:00Z,2008-10-04T00:00:00Z,0.3,0,85.54
+TPN,Total Particulate Nitrogen,grab-nonsensor,mg/L,569,1998-07-17T00:00:00Z,2008-09-19T00:00:00Z,0.2,0,89.1
+TPP,Total Particulate Phosphorus,grab-nonsensor,mg/L,968,1998-07-17T00:00:00Z,2008-10-04T00:00:00Z,0.3,0,88.43

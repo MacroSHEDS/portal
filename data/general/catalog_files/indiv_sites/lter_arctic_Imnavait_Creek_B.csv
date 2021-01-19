@@ -1,0 +1,21 @@
+VariableCode,VariableName,SampleRegimen,Unit,Observations,FirstRecordUTC,LastRecordUTC,MeanObsPerDay,PercentFlagged,PercentImputed
+Ca,Calcium,grab-nonsensor,mg/L,154,2007-06-24T00:00:00Z,2016-07-31T00:00:00Z,0,32.47,89.61
+CHL,Chlorophyll,grab-nonsensor,mg/L,159,2009-07-04T00:00:00Z,2016-07-31T00:00:00Z,0.1,0,89.94
+Cl,Chloride,grab-nonsensor,mg/L,134,2006-07-02T00:00:00Z,2016-07-31T00:00:00Z,0,22.39,90.3
+DOC,Dissolved Organic Carbon,grab-nonsensor,mg/L,178,2004-07-18T00:00:00Z,2016-07-31T00:00:00Z,0,1.12,88.76
+K,Potassium,grab-nonsensor,mg/L,154,2007-06-24T00:00:00Z,2016-07-31T00:00:00Z,0,48.05,89.61
+Mg,Magnesium,grab-nonsensor,mg/L,154,2007-06-24T00:00:00Z,2016-07-31T00:00:00Z,0,32.47,89.61
+Na,Sodium,grab-nonsensor,mg/L,154,2007-06-24T00:00:00Z,2016-07-31T00:00:00Z,0,32.47,89.61
+NH4_N,Ammonium-N,grab-nonsensor,mg/L,135,2009-07-04T00:00:00Z,2016-07-31T00:00:00Z,0.1,0,89.63
+NO3_NO2_N,Nitrate-N and nitrite-N,grab-nonsensor,mg/L,161,2007-06-24T00:00:00Z,2016-07-31T00:00:00Z,0,0,90.06
+pH,pH,grab-nonsensor,unitless,174,1999-07-10T00:00:00Z,2016-07-31T00:00:00Z,0,14.94,85.63
+pheophy,Sestonic Phaeophytin,grab-nonsensor,mg/l,135,2009-07-04T00:00:00Z,2016-07-31T00:00:00Z,0.1,0,89.63
+SO4_S,Sulfate-S,grab-nonsensor,mg/L,105,2006-07-02T00:00:00Z,2016-07-31T00:00:00Z,0,28.57,89.52
+spCond,Specific Conductivity,grab-nonsensor,uS/cm,233,1999-07-10T00:00:00Z,2016-07-31T00:00:00Z,0,24.03,87.98
+SRP,Soluble Reactive Phosphorus,grab-nonsensor,mg/L,177,2007-06-24T00:00:00Z,2016-07-31T00:00:00Z,0.1,12.43,89.27
+TCHL,Sestonic Total Chlorophyll,grab-nonsensor,mg/l,49,2013-06-26T00:00:00Z,2015-08-04T00:00:00Z,0.1,0,87.76
+TDN,Total Dissolved Nitrogen,grab-nonsensor,mg/L,137,2004-07-18T00:00:00Z,2016-07-31T00:00:00Z,0,1.46,88.32
+TDP,Total Dissolved Phosphorus,grab-nonsensor,mg/L,137,2004-07-18T00:00:00Z,2016-07-31T00:00:00Z,0,22.63,88.32
+temp,Water Temperature,grab-nonsensor,degrees C,233,1999-07-10T00:00:00Z,2016-07-31T00:00:00Z,0,23.61,87.98
+TPP,Total Particulate Phosphorus,grab-nonsensor,mg/L,185,2001-07-14T00:00:00Z,2016-07-31T00:00:00Z,0,0.54,89.19
+TSS,Total Suspended Solids,grab-nonsensor,mg/L,77,2006-07-02T00:00:00Z,2011-07-02T00:00:00Z,0,1.3,89.61

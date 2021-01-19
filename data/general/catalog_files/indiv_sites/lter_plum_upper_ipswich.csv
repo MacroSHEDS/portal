@@ -1,0 +1,17 @@
+VariableCode,VariableName,SampleRegimen,Unit,Observations,FirstRecordUTC,LastRecordUTC,MeanObsPerDay,PercentFlagged,PercentImputed
+discharge,Discharge,installed-sensor,L/s,175,2001-06-28T00:00:00Z,2001-12-19T00:00:00Z,1,0,5.71
+precipitation,Basin Precip,installed-sensor,mm,6432,2000-03-27T00:00:00Z,2020-01-01T00:00:00Z,0.9,0,0.17
+DO,Dissolved Oxygen,installed-sensor,mg/L,638,2001-06-28T00:00:00Z,2003-12-23T00:00:00Z,0.7,0,13.79
+NH4_N,Ammonium-N,grab-nonsensor,mg/L,419,2001-06-27T00:00:00Z,2002-12-29T00:00:00Z,0.8,0,91.17
+NO2_N,Nitrite-N,grab-nonsensor,mg/L,309,2001-06-27T00:00:00Z,2002-08-01T00:00:00Z,0.8,0,90.61
+NO3_NO2_N,Nitrate-N and nitrite-N,grab-nonsensor,mg/L,419,2001-06-27T00:00:00Z,2002-12-29T00:00:00Z,0.8,0,91.17
+pH,pH,installed-sensor,unitless,638,2001-06-28T00:00:00Z,2003-12-23T00:00:00Z,0.7,0,13.79
+PO4_P,Phosphate-P,grab-nonsensor,mg/L,419,2001-06-27T00:00:00Z,2002-12-29T00:00:00Z,0.8,0,91.17
+Si,Silicon,grab-nonsensor,mg/L,235,2001-06-27T00:00:00Z,2002-08-01T00:00:00Z,0.6,0,89.79
+spCond,Specific Conductivity,installed-sensor,uS/cm,638,2001-06-28T00:00:00Z,2003-12-23T00:00:00Z,0.7,0,13.79
+temp,Water Temperature,installed-sensor,degrees C,638,2001-06-28T00:00:00Z,2003-12-23T00:00:00Z,0.7,0,13.79
+NH4_N,Ammonium-N,grab-nonsensor,mg/L,174,2001-06-28T00:00:00Z,2001-12-18T00:00:00Z,1,0,93.68
+NO2_N,Nitrite-N,grab-nonsensor,mg/L,174,2001-06-28T00:00:00Z,2001-12-18T00:00:00Z,1,0,93.1
+NO3_NO2_N,Nitrate-N and nitrite-N,grab-nonsensor,mg/L,174,2001-06-28T00:00:00Z,2001-12-18T00:00:00Z,1,0,93.68
+PO4_P,Phosphate-P,grab-nonsensor,mg/L,174,2001-06-28T00:00:00Z,2001-12-18T00:00:00Z,1,0,93.68
+Si,Silicon,grab-nonsensor,mg/L,100,2001-06-28T00:00:00Z,2001-12-18T00:00:00Z,0.6,0,92

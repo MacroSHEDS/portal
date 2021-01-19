@@ -1,0 +1,26 @@
+VariableCode,VariableName,SampleRegimen,Unit,Observations,FirstRecordUTC,LastRecordUTC,MeanObsPerDay,PercentFlagged,PercentImputed
+discharge,Discharge,installed-sensor,L/s,3964,1978-05-21T00:00:00Z,2019-09-12T00:00:00Z,0.3,0,5.47
+CHL,Chlorophyll,grab-nonsensor,mg/L,54,2005-06-21T00:00:00Z,2006-08-05T00:00:00Z,0.1,0,90.74
+DOC,Dissolved Organic Carbon,grab-nonsensor,mg/L,180,2016-06-18T00:00:00Z,2017-10-06T00:00:00Z,0.4,0,73.33
+E_pheophy,Epilithic Phaeophytin,grab-nonsensor,mg/cm2,52,2006-06-15T00:00:00Z,2006-08-05T00:00:00Z,1,0,94.23
+ECHL_A,Epilithic Chlorophyll a,grab-nonsensor,mg/cm2,52,2006-06-15T00:00:00Z,2006-08-05T00:00:00Z,1,0,94.23
+MS_N,Moss: Schistidium: Nitrogen,grab-nonsensor,%,2,2000-06-30T00:00:00Z,2000-08-06T00:00:00Z,0.1,0,0
+MS_P,Moss: Schistidium: Phosphorus,grab-nonsensor,%,2,2000-06-30T00:00:00Z,2000-08-06T00:00:00Z,0.1,0,0
+NH4_N,Ammonium-N,grab-nonsensor,mg/L,480,1984-06-27T00:00:00Z,2017-10-06T00:00:00Z,0,3.96,85.42
+NO3_NO2_N,Nitrate-N and nitrite-N,grab-nonsensor,mg/L,529,1983-07-25T00:00:00Z,2017-10-06T00:00:00Z,0,0,80.72
+pH,pH,grab-nonsensor,unitless,142,2005-06-21T00:00:00Z,2017-09-26T00:00:00Z,0,0,87.32
+pheophy,Sestonic Phaeophytin,grab-nonsensor,mg/l,54,2005-06-21T00:00:00Z,2006-08-05T00:00:00Z,0.1,0,90.74
+spCond,Specific Conductivity,grab-nonsensor,uS/cm,142,2005-06-21T00:00:00Z,2017-09-26T00:00:00Z,0,0,87.32
+SRP,Soluble Reactive Phosphorus,grab-nonsensor,mg/L,544,1983-07-10T00:00:00Z,2017-10-06T00:00:00Z,0,0,80.88
+T_ECHL,Epilithic Total Chlorophyll,grab-nonsensor,mg/cm2,495,1984-06-28T00:00:00Z,2006-08-05T00:00:00Z,0.1,0,91.52
+TCHL,Sestonic Total Chlorophyll,grab-nonsensor,mg/l,287,1984-06-28T00:00:00Z,2006-08-05T00:00:00Z,0,0,85.37
+TDN,Total Dissolved Nitrogen,grab-nonsensor,mg/L,180,2016-06-18T00:00:00Z,2017-10-06T00:00:00Z,0.4,0,73.33
+TDP,Total Dissolved Phosphorus,grab-nonsensor,mg/L,180,2016-06-18T00:00:00Z,2017-10-06T00:00:00Z,0.4,2.78,73.33
+temp,Water Temperature,grab-nonsensor,degrees C,142,2005-06-21T00:00:00Z,2017-09-26T00:00:00Z,0,0,87.32
+TSS,Total Suspended Solids,grab-nonsensor,mg/L,190,2016-06-18T00:00:00Z,2017-09-13T00:00:00Z,0.4,0,88.95
+DOC,Dissolved Organic Carbon,grab-nonsensor,mg/L,160,2016-06-18T00:00:00Z,2017-09-26T00:00:00Z,0.3,0,71.25
+NH4_N,Ammonium-N,grab-nonsensor,mg/L,460,1984-06-27T00:00:00Z,2017-09-26T00:00:00Z,0,4.13,85.43
+NO3_NO2_N,Nitrate-N and nitrite-N,grab-nonsensor,mg/L,509,1983-07-25T00:00:00Z,2017-09-26T00:00:00Z,0,0,80.55
+SRP,Soluble Reactive Phosphorus,grab-nonsensor,mg/L,521,1983-07-13T00:00:00Z,2017-09-26T00:00:00Z,0,0,80.81
+TDN,Total Dissolved Nitrogen,grab-nonsensor,mg/L,160,2016-06-18T00:00:00Z,2017-09-26T00:00:00Z,0.3,0,71.25
+TDP,Total Dissolved Phosphorus,grab-nonsensor,mg/L,160,2016-06-18T00:00:00Z,2017-09-26T00:00:00Z,0.3,3.12,71.25

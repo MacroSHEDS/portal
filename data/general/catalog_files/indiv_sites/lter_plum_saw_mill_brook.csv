@@ -1,0 +1,48 @@
+VariableCode,VariableName,SampleRegimen,Unit,Observations,FirstRecordUTC,LastRecordUTC,MeanObsPerDay,PercentFlagged,PercentImputed
+discharge,Discharge,all,L/s,4141,2001-06-23T00:00:00Z,2015-11-24T00:00:00Z,0.8,0,15.83
+discharge,Discharge,grab-sensor,L/s,208,2006-01-01T00:00:00Z,2006-07-27T00:00:00Z,1,0,12.02
+discharge,Discharge,installed-sensor,L/s,3933,2001-06-23T00:00:00Z,2015-11-24T00:00:00Z,0.7,0,3.81
+precipitation,Basin Precip,installed-sensor,mm,6432,2000-03-27T00:00:00Z,2020-01-01T00:00:00Z,0.9,0,0.17
+Br,Bromide,grab-nonsensor,mg/L,1472,2008-06-24T00:00:00Z,2016-12-13T00:00:00Z,0.5,0,94.36
+Cl,Chloride,grab-nonsensor,mg/L,2956,2006-07-26T00:00:00Z,2017-12-04T00:00:00Z,0.7,0,94.76
+DO,Dissolved Oxygen,installed-sensor,mg/L,972,2001-06-23T00:00:00Z,2004-12-23T00:00:00Z,0.8,0,9.98
+DOC,Dissolved Organic Carbon,grab-nonsensor,mg/L,3459,2001-11-01T00:00:00Z,2017-12-04T00:00:00Z,0.6,0,94.16
+DON,Dissolved Organic Nitrogen,grab-nonsensor,mg/L,2873,2006-07-26T00:00:00Z,2017-12-04T00:00:00Z,0.7,0,94.85
+NH4_N,Ammonium-N,grab-nonsensor,mg/L,3946,2001-06-22T00:00:00Z,2017-12-04T00:00:00Z,0.7,0,93.79
+NO2_N,Nitrite-N,grab-nonsensor,mg/L,302,2001-06-22T00:00:00Z,2002-08-01T00:00:00Z,0.7,0,89.4
+NO3_NO2_N,Nitrate-N and nitrite-N,grab-nonsensor,mg/L,4656,2001-06-22T00:00:00Z,2017-12-04T00:00:00Z,0.8,0.13,83.85
+pH,pH,installed-sensor,unitless,455,2001-06-23T00:00:00Z,2003-12-23T00:00:00Z,0.5,0,13.63
+PO4_P,Phosphate-P,grab-nonsensor,mg/L,3982,2001-06-22T00:00:00Z,2017-12-04T00:00:00Z,0.7,0,93.82
+POC,Particulate Organic Carbon,grab-nonsensor,mg/L,1821,2006-12-22T00:00:00Z,2017-12-04T00:00:00Z,0.5,0,94.62
+PON,Particulate Organic Nitrogen,grab-nonsensor,mg/L,1821,2006-12-22T00:00:00Z,2017-12-04T00:00:00Z,0.5,0,94.62
+Si,Silicon,grab-nonsensor,mg/L,234,2001-06-22T00:00:00Z,2002-08-01T00:00:00Z,0.6,0,89.32
+SO4_S,Sulfate-S,grab-nonsensor,mg/L,2956,2006-07-26T00:00:00Z,2017-12-04T00:00:00Z,0.7,0,94.76
+spCond,Specific Conductivity,all,uS/cm,2510,2001-06-23T00:00:00Z,2017-07-29T00:00:00Z,0.4,0,7.11
+spCond,Specific Conductivity,grab-sensor,uS/cm,33,2012-12-01T00:00:00Z,2014-01-01T00:00:00Z,0.1,0,0
+spCond,Specific Conductivity,installed-sensor,uS/cm,2477,2001-06-23T00:00:00Z,2017-07-29T00:00:00Z,0.4,0,7.11
+TDN,Total Dissolved Nitrogen,grab-nonsensor,mg/L,3459,2001-11-01T00:00:00Z,2017-12-04T00:00:00Z,0.6,0,94.16
+TDP,Total Dissolved Phosphorus,grab-nonsensor,mg/L,539,2001-11-27T00:00:00Z,2004-10-20T00:00:00Z,0.5,0,90.35
+temp,Water Temperature,all,degrees C,4330,2001-06-23T00:00:00Z,2017-07-29T00:00:00Z,0.7,0,3.77
+temp,Water Temperature,grab-sensor,degrees C,33,2012-12-01T00:00:00Z,2014-01-01T00:00:00Z,0.1,0,0
+temp,Water Temperature,installed-sensor,degrees C,4297,2001-06-23T00:00:00Z,2017-07-29T00:00:00Z,0.7,0,3.77
+TN,Total Nitrogen,grab-nonsensor,mg/L,1007,2001-11-01T00:00:00Z,2016-04-20T00:00:00Z,0.2,2.58,55.61
+TOC,Total Organic Carbon,grab-nonsensor,mg/L,530,2002-06-09T00:00:00Z,2015-03-25T00:00:00Z,0.1,0,45.85
+TP,Total Phosphorus,grab-nonsensor,mg/L,1152,2001-11-01T00:00:00Z,2016-04-20T00:00:00Z,0.2,2,52.26
+TSS,Total Suspended Solids,grab-nonsensor,mg/L,2636,2006-12-22T00:00:00Z,2019-08-01T00:00:00Z,0.6,0,94.42
+Br,Bromide,grab-nonsensor,mg/L,1158,2008-06-24T00:00:00Z,2015-11-24T00:00:00Z,0.4,0,94.73
+Cl,Chloride,grab-nonsensor,mg/L,2148,2006-07-26T00:00:00Z,2015-11-24T00:00:00Z,0.6,0,95.02
+DOC,Dissolved Organic Carbon,grab-nonsensor,mg/L,2489,2001-11-01T00:00:00Z,2015-11-24T00:00:00Z,0.5,0,94.9
+DON,Dissolved Organic Nitrogen,grab-nonsensor,mg/L,2057,2006-07-26T00:00:00Z,2015-11-24T00:00:00Z,0.6,0,95.09
+NH4_N,Ammonium-N,grab-nonsensor,mg/L,2843,2001-06-23T00:00:00Z,2015-11-24T00:00:00Z,0.5,0,94.48
+NO2_N,Nitrite-N,grab-nonsensor,mg/L,244,2001-06-23T00:00:00Z,2002-08-01T00:00:00Z,0.6,0,91.39
+NO3_NO2_N,Nitrate-N and nitrite-N,grab-nonsensor,mg/L,3309,2001-06-23T00:00:00Z,2015-11-24T00:00:00Z,0.6,0.06,84.19
+PO4_P,Phosphate-P,grab-nonsensor,mg/L,2879,2001-06-23T00:00:00Z,2015-11-24T00:00:00Z,0.5,0,94.51
+POC,Particulate Organic Carbon,grab-nonsensor,mg/L,1297,2007-01-01T00:00:00Z,2015-11-24T00:00:00Z,0.4,0,94.68
+PON,Particulate Organic Nitrogen,grab-nonsensor,mg/L,1297,2007-01-01T00:00:00Z,2015-11-24T00:00:00Z,0.4,0,94.68
+Si,Silicon,grab-nonsensor,mg/L,176,2001-06-23T00:00:00Z,2002-08-01T00:00:00Z,0.4,0,90.91
+SO4_S,Sulfate-S,grab-nonsensor,mg/L,2148,2006-07-26T00:00:00Z,2015-11-24T00:00:00Z,0.6,0,95.02
+TDN,Total Dissolved Nitrogen,grab-nonsensor,mg/L,2489,2001-11-01T00:00:00Z,2015-11-24T00:00:00Z,0.5,0,94.9
+TDP,Total Dissolved Phosphorus,grab-nonsensor,mg/L,356,2001-11-27T00:00:00Z,2003-11-24T00:00:00Z,0.5,0,92.7
+TN,Total Nitrogen,grab-nonsensor,mg/L,783,2001-11-01T00:00:00Z,2015-03-25T00:00:00Z,0.2,2.81,60.92
+TOC,Total Organic Carbon,grab-nonsensor,mg/L,464,2002-06-09T00:00:00Z,2015-03-25T00:00:00Z,0.1,0,53.66
+TP,Total Phosphorus,grab-nonsensor,mg/L,926,2001-11-01T00:00:00Z,2015-04-06T00:00:00Z,0.2,2.05,57.13

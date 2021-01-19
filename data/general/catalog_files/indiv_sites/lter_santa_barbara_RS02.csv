@@ -1,0 +1,21 @@
+VariableCode,VariableName,SampleRegimen,Unit,Observations,FirstRecordUTC,LastRecordUTC,MeanObsPerDay,PercentFlagged,PercentImputed
+discharge,Discharge,installed-sensor,L/s,5653,2001-12-07T00:00:00Z,2018-10-01T00:00:00Z,0.9,0,0.92
+precipitation,Basin Precip,installed-sensor,mm,6210,2000-10-01T00:00:00Z,2017-10-01T00:00:00Z,1,0,2.32
+NH4_N,Ammonium-N,grab-nonsensor,mg/L,4263,2001-04-22T00:00:00Z,2018-05-30T00:00:00Z,0.7,0,82.31
+NO3_NO2_N,Nitrate-N and nitrite-N,grab-nonsensor,mg/L,4325,2001-04-22T00:00:00Z,2018-05-30T00:00:00Z,0.7,0,82.45
+PO4_P,Phosphate-P,grab-nonsensor,mg/L,4325,2001-04-22T00:00:00Z,2018-05-30T00:00:00Z,0.7,0,82.45
+spCond,Specific Conductivity,grab-nonsensor,uS/cm,3884,2001-04-22T00:00:00Z,2018-05-30T00:00:00Z,0.6,0,81.82
+TDN,Total Dissolved Nitrogen,grab-nonsensor,mg/L,3553,2001-04-22T00:00:00Z,2015-03-06T00:00:00Z,0.7,0,81.96
+TDP,Total Dissolved Phosphorus,grab-nonsensor,mg/L,3455,2001-04-22T00:00:00Z,2012-06-28T00:00:00Z,0.8,0,82.08
+TPC,Total Particulate Carbon,grab-nonsensor,mg/L,347,2002-01-11T00:00:00Z,2010-04-13T00:00:00Z,0.1,0,78.96
+TPN,Total Particulate Nitrogen,grab-nonsensor,mg/L,347,2002-01-11T00:00:00Z,2010-04-13T00:00:00Z,0.1,0,78.96
+TPP,Total Particulate Phosphorus,grab-nonsensor,mg/L,199,2002-01-18T00:00:00Z,2002-12-24T00:00:00Z,0.6,0,80.9
+TSS,Total Suspended Solids,grab-nonsensor,mg/L,184,2003-12-25T00:00:00Z,2018-03-25T00:00:00Z,0,0,70.65
+NH4_N,Ammonium-N,grab-nonsensor,mg/L,3862,2002-01-11T00:00:00Z,2018-05-30T00:00:00Z,0.6,0,81.59
+NO3_NO2_N,Nitrate-N and nitrite-N,grab-nonsensor,mg/L,3924,2002-01-11T00:00:00Z,2018-05-30T00:00:00Z,0.7,0,81.78
+PO4_P,Phosphate-P,grab-nonsensor,mg/L,3924,2002-01-11T00:00:00Z,2018-05-30T00:00:00Z,0.7,0,81.78
+TDN,Total Dissolved Nitrogen,grab-nonsensor,mg/L,3212,2002-01-11T00:00:00Z,2015-03-06T00:00:00Z,0.7,0,81.32
+TDP,Total Dissolved Phosphorus,grab-nonsensor,mg/L,3114,2002-01-11T00:00:00Z,2012-06-28T00:00:00Z,0.8,0,81.44
+TPC,Total Particulate Carbon,grab-nonsensor,mg/L,347,2002-01-11T00:00:00Z,2010-04-13T00:00:00Z,0.1,0,79.54
+TPN,Total Particulate Nitrogen,grab-nonsensor,mg/L,347,2002-01-11T00:00:00Z,2010-04-13T00:00:00Z,0.1,0,79.54
+TPP,Total Particulate Phosphorus,grab-nonsensor,mg/L,199,2002-01-18T00:00:00Z,2002-12-24T00:00:00Z,0.6,0,80.9

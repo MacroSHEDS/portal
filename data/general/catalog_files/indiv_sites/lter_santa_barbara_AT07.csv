@@ -1,0 +1,18 @@
+VariableCode,VariableName,SampleRegimen,Unit,Observations,FirstRecordUTC,LastRecordUTC,MeanObsPerDay,PercentFlagged,PercentImputed
+discharge,Discharge,installed-sensor,L/s,1098,2004-10-01T00:00:00Z,2008-10-01T00:00:00Z,0.8,0,0
+precipitation,Basin Precip,installed-sensor,mm,6210,2000-10-01T00:00:00Z,2017-10-01T00:00:00Z,1,0,2.32
+NH4_N,Ammonium-N,grab-nonsensor,mg/L,2152,2002-06-03T00:00:00Z,2011-09-12T00:00:00Z,0.6,0,84.57
+NO3_NO2_N,Nitrate-N and nitrite-N,grab-nonsensor,mg/L,2180,2002-06-03T00:00:00Z,2011-09-12T00:00:00Z,0.6,0,84.72
+PO4_P,Phosphate-P,grab-nonsensor,mg/L,2180,2002-06-03T00:00:00Z,2011-09-12T00:00:00Z,0.6,0,84.72
+spCond,Specific Conductivity,grab-nonsensor,uS/cm,1181,2002-09-09T00:00:00Z,2010-01-11T00:00:00Z,0.4,0,79.68
+TDN,Total Dissolved Nitrogen,grab-nonsensor,mg/L,2094,2002-06-03T00:00:00Z,2011-09-12T00:00:00Z,0.6,0,84.24
+TDP,Total Dissolved Phosphorus,grab-nonsensor,mg/L,2094,2002-06-03T00:00:00Z,2011-09-12T00:00:00Z,0.6,0,84.24
+TPC,Total Particulate Carbon,grab-nonsensor,mg/L,30,2002-10-07T00:00:00Z,2002-12-09T00:00:00Z,0.5,0,90
+TPN,Total Particulate Nitrogen,grab-nonsensor,mg/L,30,2002-10-07T00:00:00Z,2002-12-09T00:00:00Z,0.5,0,90
+TPP,Total Particulate Phosphorus,grab-nonsensor,mg/L,30,2002-10-07T00:00:00Z,2002-12-09T00:00:00Z,0.5,0,90
+TSS,Total Suspended Solids,grab-nonsensor,mg/L,3,2005-10-18T00:00:00Z,2007-01-28T00:00:00Z,0,0,0
+NH4_N,Ammonium-N,grab-nonsensor,mg/L,928,2004-10-01T00:00:00Z,2008-10-01T00:00:00Z,0.6,0,75.32
+NO3_NO2_N,Nitrate-N and nitrite-N,grab-nonsensor,mg/L,928,2004-10-01T00:00:00Z,2008-10-01T00:00:00Z,0.6,0,75.32
+PO4_P,Phosphate-P,grab-nonsensor,mg/L,928,2004-10-01T00:00:00Z,2008-10-01T00:00:00Z,0.6,0,75.32
+TDN,Total Dissolved Nitrogen,grab-nonsensor,mg/L,881,2004-10-01T00:00:00Z,2008-05-05T00:00:00Z,0.7,0,74.35
+TDP,Total Dissolved Phosphorus,grab-nonsensor,mg/L,881,2004-10-01T00:00:00Z,2008-05-05T00:00:00Z,0.7,0,74.35

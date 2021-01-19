@@ -1,0 +1,12 @@
+VariableCode,VariableName,SampleRegimen,Unit,Observations,FirstRecordUTC,LastRecordUTC,MeanObsPerDay,PercentFlagged,PercentImputed
+Cl,Chloride,grab-nonsensor,mg/L,1501,2003-08-20T00:00:00Z,2010-05-12T00:00:00Z,0.6,0,90.14
+DO,Dissolved Oxygen,grab-nonsensor,mg/L,2,2007-12-12T00:00:00Z,2008-12-24T00:00:00Z,0,0,0
+Ecoli,Escherichia coli,grab-nonsensor,#/mL,330,2003-08-20T00:00:00Z,2008-03-05T00:00:00Z,0.2,0,91.21
+NO3_N,Nitrate-N,grab-nonsensor,mg/L,1501,2003-08-20T00:00:00Z,2010-05-12T00:00:00Z,0.6,0,90.14
+pH,pH,grab-nonsensor,unitless,1344,2003-11-19T00:00:00Z,2010-05-12T00:00:00Z,0.6,0,90.1
+PO4_P,Phosphate-P,grab-nonsensor,mg/L,1432,2003-08-20T00:00:00Z,2010-05-12T00:00:00Z,0.6,0,90.29
+SO4_S,Sulfate-S,grab-nonsensor,mg/L,1501,2003-08-20T00:00:00Z,2010-05-12T00:00:00Z,0.6,0,90.14
+temp,Water Temperature,grab-nonsensor,degrees C,1344,2003-11-19T00:00:00Z,2010-05-12T00:00:00Z,0.6,0,90.1
+TN,Total Nitrogen,grab-nonsensor,mg/L,1543,2003-08-20T00:00:00Z,2010-05-12T00:00:00Z,0.6,0,90.41
+TP,Total Phosphorus,grab-nonsensor,mg/L,1515,2003-08-20T00:00:00Z,2010-05-12T00:00:00Z,0.6,0,90.23
+turbid,Turbidity,grab-nonsensor,FNU,1506,2003-10-15T00:00:00Z,2010-05-12T00:00:00Z,0.6,0,90.44

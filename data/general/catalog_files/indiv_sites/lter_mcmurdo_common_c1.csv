@@ -1,0 +1,34 @@
+VariableCode,VariableName,SampleRegimen,Unit,Observations,FirstRecordUTC,LastRecordUTC,MeanObsPerDay,PercentFlagged,PercentImputed
+discharge,Discharge,installed-sensor,L/s,1981,1993-11-30T00:00:00Z,2018-02-18T00:00:00Z,0.2,24.48,1.77
+Br,Bromide,grab-nonsensor,mg/L,253,1994-12-21T00:00:00Z,2011-01-10T00:00:00Z,0,0,88.54
+Ca,Calcium,grab-nonsensor,mg/L,476,1994-01-26T00:00:00Z,2014-01-28T00:00:00Z,0.1,0,87.61
+Cl,Chloride,grab-nonsensor,mg/L,476,1994-01-26T00:00:00Z,2014-01-28T00:00:00Z,0.1,0,87.61
+DOC,Dissolved Organic Carbon,grab-nonsensor,mg/L,283,1994-12-21T00:00:00Z,2014-01-28T00:00:00Z,0,0,84.81
+F,Fluorine,grab-nonsensor,mg/L,402,1994-12-21T00:00:00Z,2014-01-28T00:00:00Z,0.1,0,88.06
+K,Potassium,grab-nonsensor,mg/L,476,1994-01-26T00:00:00Z,2014-01-28T00:00:00Z,0.1,0,87.61
+Li,Lithium,grab-nonsensor,mg/L,274,1996-01-12T00:00:00Z,2012-12-22T00:00:00Z,0,0,87.59
+Mg,Magnesium,grab-nonsensor,mg/L,476,1994-01-26T00:00:00Z,2014-01-28T00:00:00Z,0.1,0,87.61
+Na,Sodium,grab-nonsensor,mg/L,476,1994-01-26T00:00:00Z,2014-01-28T00:00:00Z,0.1,0,87.61
+NH4_N,Ammonium-N,grab-nonsensor,mg/L,531,1994-01-13T00:00:00Z,2014-01-28T00:00:00Z,0.1,0,87.19
+NO2_N,Nitrite-N,grab-nonsensor,mg/L,276,1993-12-03T00:00:00Z,2014-01-28T00:00:00Z,0,0,88.04
+NO3_N,Nitrate-N,grab-nonsensor,mg/L,696,1993-12-03T00:00:00Z,2014-01-28T00:00:00Z,0.1,0,88.07
+Si,Silicon,grab-nonsensor,mg/L,476,1994-01-26T00:00:00Z,2014-01-28T00:00:00Z,0.1,0,87.61
+SO4_S,Sulfate-S,grab-nonsensor,mg/L,476,1994-01-26T00:00:00Z,2014-01-28T00:00:00Z,0.1,0,87.61
+spCond,Specific Conductivity,installed-sensor,uS/cm,969,2006-12-04T00:00:00Z,2018-02-18T00:00:00Z,0.2,35.09,0.72
+SRP,Soluble Reactive Phosphorus,grab-nonsensor,mg/L,729,1993-12-03T00:00:00Z,2014-01-28T00:00:00Z,0.1,0,88.2
+temp,Water Temperature,installed-sensor,degrees C,958,2006-12-04T00:00:00Z,2018-02-18T00:00:00Z,0.2,50.1,1.46
+Br,Bromide,grab-nonsensor,mg/L,252,1994-12-21T00:00:00Z,2011-01-10T00:00:00Z,0,12.7,88.89
+Ca,Calcium,grab-nonsensor,mg/L,475,1994-01-26T00:00:00Z,2014-01-28T00:00:00Z,0.1,11.16,87.79
+Cl,Chloride,grab-nonsensor,mg/L,475,1994-01-26T00:00:00Z,2014-01-28T00:00:00Z,0.1,11.16,87.79
+DOC,Dissolved Organic Carbon,grab-nonsensor,mg/L,282,1994-12-21T00:00:00Z,2014-01-28T00:00:00Z,0,12.06,85.11
+F,Fluorine,grab-nonsensor,mg/L,401,1994-12-21T00:00:00Z,2014-01-28T00:00:00Z,0.1,11.97,88.28
+K,Potassium,grab-nonsensor,mg/L,475,1994-01-26T00:00:00Z,2014-01-28T00:00:00Z,0.1,11.16,87.79
+Li,Lithium,grab-nonsensor,mg/L,273,1996-01-12T00:00:00Z,2012-12-22T00:00:00Z,0,16.85,87.91
+Mg,Magnesium,grab-nonsensor,mg/L,475,1994-01-26T00:00:00Z,2014-01-28T00:00:00Z,0.1,11.16,87.79
+Na,Sodium,grab-nonsensor,mg/L,475,1994-01-26T00:00:00Z,2014-01-28T00:00:00Z,0.1,11.16,87.79
+NH4_N,Ammonium-N,grab-nonsensor,mg/L,526,1994-01-13T00:00:00Z,2014-01-28T00:00:00Z,0.1,13.31,87.26
+NO2_N,Nitrite-N,grab-nonsensor,mg/L,271,1993-12-03T00:00:00Z,2014-01-28T00:00:00Z,0,5.9,88.19
+NO3_N,Nitrate-N,grab-nonsensor,mg/L,690,1993-12-03T00:00:00Z,2014-01-28T00:00:00Z,0.1,12.75,88.26
+Si,Silicon,grab-nonsensor,mg/L,475,1994-01-26T00:00:00Z,2014-01-28T00:00:00Z,0.1,11.16,87.79
+SO4_S,Sulfate-S,grab-nonsensor,mg/L,475,1994-01-26T00:00:00Z,2014-01-28T00:00:00Z,0.1,11.16,87.79
+SRP,Soluble Reactive Phosphorus,grab-nonsensor,mg/L,723,1993-12-03T00:00:00Z,2014-01-28T00:00:00Z,0.1,16.74,88.38

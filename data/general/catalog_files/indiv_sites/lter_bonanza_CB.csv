@@ -1,0 +1,17 @@
+VariableCode,VariableName,SampleRegimen,Unit,Observations,FirstRecordUTC,LastRecordUTC,MeanObsPerDay,PercentFlagged,PercentImputed
+abs254,UV Absorbance at 254nm,grab-nonsensor,unitless,1626,2002-05-21T00:00:00Z,2018-06-19T00:00:00Z,0.3,0,91.57
+Al,Aluminum,grab-nonsensor,mg/l,1640,2002-05-21T00:00:00Z,2018-06-19T00:00:00Z,0.3,0,91.77
+Ca,Calcium,grab-nonsensor,mg/L,1640,2002-05-21T00:00:00Z,2018-06-19T00:00:00Z,0.3,0,91.71
+Cl,Chloride,grab-nonsensor,mg/L,1628,2002-05-21T00:00:00Z,2018-06-19T00:00:00Z,0.3,0,91.71
+DIC,Dissolved Inorganic Carbon,grab-nonsensor,mg/L,1640,2002-05-21T00:00:00Z,2018-06-19T00:00:00Z,0.3,0,91.65
+DOC,Dissolved Organic Carbon,grab-nonsensor,mg/L,1674,2002-05-21T00:00:00Z,2018-06-19T00:00:00Z,0.3,0,91.7
+DON,Dissolved Organic Nitrogen,grab-nonsensor,mg/L,1660,2002-05-21T00:00:00Z,2018-06-19T00:00:00Z,0.3,0,91.87
+K,Potassium,grab-nonsensor,mg/L,1613,2002-05-28T00:00:00Z,2018-06-19T00:00:00Z,0.3,0,91.75
+Mg,Magnesium,grab-nonsensor,mg/L,1640,2002-05-21T00:00:00Z,2018-06-19T00:00:00Z,0.3,0,91.71
+Na,Sodium,grab-nonsensor,mg/L,1608,2002-05-21T00:00:00Z,2018-06-19T00:00:00Z,0.3,0,91.73
+NO3_N,Nitrate-N,grab-nonsensor,mg/L,1660,2002-05-21T00:00:00Z,2018-06-19T00:00:00Z,0.3,0,91.75
+pH,pH,grab-nonsensor,unitless,1347,2002-05-21T00:00:00Z,2018-06-19T00:00:00Z,0.2,0,91.98
+SiO2_Si,NA,grab-nonsensor,NA,1400,2002-05-21T00:00:00Z,2018-06-19T00:00:00Z,0.2,0,91.71
+SO4_S,Sulfate-S,grab-nonsensor,mg/L,1660,2002-05-21T00:00:00Z,2018-06-19T00:00:00Z,0.3,0,91.69
+spCond,Specific Conductivity,grab-nonsensor,uS/cm,1632,2002-05-28T00:00:00Z,2018-06-19T00:00:00Z,0.3,0,91.73
+TDN,Total Dissolved Nitrogen,grab-nonsensor,mg/L,1674,2002-05-21T00:00:00Z,2018-06-19T00:00:00Z,0.3,0,91.82

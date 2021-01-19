@@ -1,0 +1,7 @@
+VariableCode,VariableName,SampleRegimen,Unit,Observations,FirstRecordUTC,LastRecordUTC,MeanObsPerDay,PercentFlagged,PercentImputed
+NH4_N,Ammonium-N,grab-nonsensor,mg/L,287,2004-10-14T00:00:00Z,2008-02-10T00:00:00Z,0.2,0,82.23
+NO3_NO2_N,Nitrate-N and nitrite-N,grab-nonsensor,mg/L,287,2004-10-14T00:00:00Z,2008-02-10T00:00:00Z,0.2,0,82.23
+PO4_P,Phosphate-P,grab-nonsensor,mg/L,287,2004-10-14T00:00:00Z,2008-02-10T00:00:00Z,0.2,0,82.23
+spCond,Specific Conductivity,grab-nonsensor,uS/cm,287,2004-10-14T00:00:00Z,2008-02-10T00:00:00Z,0.2,0,82.58
+TDN,Total Dissolved Nitrogen,grab-nonsensor,mg/L,287,2004-10-14T00:00:00Z,2008-02-10T00:00:00Z,0.2,0,82.23
+TDP,Total Dissolved Phosphorus,grab-nonsensor,mg/L,287,2004-10-14T00:00:00Z,2008-02-10T00:00:00Z,0.2,0,82.23

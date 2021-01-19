@@ -1,0 +1,19 @@
+VariableCode,VariableName,SampleRegimen,Unit,Observations,FirstRecordUTC,LastRecordUTC,MeanObsPerDay,PercentFlagged,PercentImputed
+discharge,Discharge,installed-sensor,L/s,179,2018-12-31T00:00:00Z,2020-12-31T00:00:00Z,0.2,21.23,0
+Br,Bromide,grab-nonsensor,mg/L,171,1994-12-15T00:00:00Z,2010-12-27T00:00:00Z,0,0,86.55
+Ca,Calcium,grab-nonsensor,mg/L,523,1993-12-15T00:00:00Z,2013-01-14T00:00:00Z,0.1,0,88.15
+Cl,Chloride,grab-nonsensor,mg/L,523,1993-12-15T00:00:00Z,2013-01-14T00:00:00Z,0.1,0,88.15
+DOC,Dissolved Organic Carbon,grab-nonsensor,mg/L,232,1994-12-15T00:00:00Z,2013-01-14T00:00:00Z,0,0,85.34
+F,Fluorine,grab-nonsensor,mg/L,478,1994-12-15T00:00:00Z,2013-01-14T00:00:00Z,0.1,0,88.49
+K,Potassium,grab-nonsensor,mg/L,523,1993-12-15T00:00:00Z,2013-01-14T00:00:00Z,0.1,0,88.15
+Li,Lithium,grab-nonsensor,mg/L,448,1994-12-15T00:00:00Z,2013-01-14T00:00:00Z,0.1,0,88.62
+Mg,Magnesium,grab-nonsensor,mg/L,523,1993-12-15T00:00:00Z,2013-01-14T00:00:00Z,0.1,0,88.15
+Na,Sodium,grab-nonsensor,mg/L,523,1993-12-15T00:00:00Z,2013-01-14T00:00:00Z,0.1,0,88.15
+NH4_N,Ammonium-N,grab-nonsensor,mg/L,580,1993-12-15T00:00:00Z,2013-01-14T00:00:00Z,0.1,0,88.62
+NO2_N,Nitrite-N,grab-nonsensor,mg/L,212,1993-12-15T00:00:00Z,2014-01-06T00:00:00Z,0,0,87.26
+NO3_N,Nitrate-N,grab-nonsensor,mg/L,738,1993-12-15T00:00:00Z,2014-01-06T00:00:00Z,0.1,0,87.67
+Si,Silicon,grab-nonsensor,mg/L,519,1993-12-15T00:00:00Z,2013-01-14T00:00:00Z,0.1,0,88.44
+SO4_S,Sulfate-S,grab-nonsensor,mg/L,523,1993-12-15T00:00:00Z,2013-01-14T00:00:00Z,0.1,0,88.15
+spCond,Specific Conductivity,installed-sensor,uS/cm,79,2019-12-31T00:00:00Z,2020-12-31T00:00:00Z,0.2,20.25,0
+SRP,Soluble Reactive Phosphorus,grab-nonsensor,mg/L,738,1993-12-15T00:00:00Z,2014-01-06T00:00:00Z,0.1,0,87.67
+temp,Water Temperature,installed-sensor,degrees C,172,2018-12-31T00:00:00Z,2020-12-31T00:00:00Z,0.2,100,0

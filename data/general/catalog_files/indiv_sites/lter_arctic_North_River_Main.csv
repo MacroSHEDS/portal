@@ -1,0 +1,32 @@
+VariableCode,VariableName,SampleRegimen,Unit,Observations,FirstRecordUTC,LastRecordUTC,MeanObsPerDay,PercentFlagged,PercentImputed
+BPC,Benthic Particulate Carbon,grab-nonsensor,mg/cm2,17,2011-05-24T00:00:00Z,2013-08-16T00:00:00Z,0,0,70.59
+BPN,Benthic Particulate Nitrogen,grab-nonsensor,mg/cm2,19,2011-05-24T00:00:00Z,2015-07-14T00:00:00Z,0,5.26,63.16
+BPP,Benthic Particulate Phosphorus,grab-nonsensor,mg/cm2,67,2012-07-31T00:00:00Z,2015-07-14T00:00:00Z,0.1,1.49,88.06
+Ca,Calcium,grab-nonsensor,mg/L,67,2012-07-31T00:00:00Z,2015-07-14T00:00:00Z,0.1,1.49,88.06
+CH4,Methane,grab-nonsensor,ppm,118,2009-06-17T00:00:00Z,2010-08-13T00:00:00Z,0.3,0,93.22
+CHL,Chlorophyll,grab-nonsensor,mg/L,173,2008-07-10T00:00:00Z,2015-07-14T00:00:00Z,0.1,0,90.75
+Cl,Chloride,grab-nonsensor,mg/L,199,2009-06-17T00:00:00Z,2015-07-14T00:00:00Z,0.1,0.5,77.39
+CO2,Carbon Dioxide,grab-nonsensor,ppm,118,2009-06-17T00:00:00Z,2010-08-13T00:00:00Z,0.3,0,93.22
+DIC,Dissolved Inorganic Carbon,grab-nonsensor,mg/L,118,2009-06-17T00:00:00Z,2010-08-13T00:00:00Z,0.3,0,93.22
+DOC,Dissolved Organic Carbon,grab-nonsensor,mg/L,199,2009-06-17T00:00:00Z,2015-07-14T00:00:00Z,0.1,2.51,75.38
+E_pheophy,Epilithic Phaeophytin,grab-nonsensor,mg/cm2,66,2013-06-29T00:00:00Z,2015-07-14T00:00:00Z,0.1,0,89.39
+ECHL_A,Epilithic Chlorophyll a,grab-nonsensor,mg/cm2,67,2012-07-31T00:00:00Z,2015-07-14T00:00:00Z,0.1,0,88.06
+K,Potassium,grab-nonsensor,mg/L,67,2012-07-31T00:00:00Z,2015-07-14T00:00:00Z,0.1,0,88.06
+Mg,Magnesium,grab-nonsensor,mg/L,67,2012-07-31T00:00:00Z,2015-07-14T00:00:00Z,0.1,1.49,88.06
+Na,Sodium,grab-nonsensor,mg/L,67,2012-07-31T00:00:00Z,2015-07-14T00:00:00Z,0.1,1.49,88.06
+NH4_N,Ammonium-N,grab-nonsensor,mg/L,227,2009-06-17T00:00:00Z,2015-07-14T00:00:00Z,0.1,0,91.63
+NO3_NO2_N,Nitrate-N and nitrite-N,grab-nonsensor,mg/L,198,2009-06-17T00:00:00Z,2015-07-14T00:00:00Z,0.1,0,76.77
+pH,pH,grab-nonsensor,unitless,65,2011-06-25T00:00:00Z,2015-07-14T00:00:00Z,0,0,87.69
+phaeopig,Phaeopigment,grab-nonsensor,mg/L,107,2008-07-10T00:00:00Z,2012-07-31T00:00:00Z,0.1,0,91.59
+pheophy,Sestonic Phaeophytin,grab-nonsensor,mg/l,66,2013-06-29T00:00:00Z,2015-07-14T00:00:00Z,0.1,0,89.39
+SO4_S,Sulfate-S,grab-nonsensor,mg/L,199,2009-06-17T00:00:00Z,2015-07-14T00:00:00Z,0.1,0,76.88
+spCond,Specific Conductivity,grab-nonsensor,uS/cm,65,2011-06-25T00:00:00Z,2015-07-14T00:00:00Z,0,0,87.69
+SRP,Soluble Reactive Phosphorus,grab-nonsensor,mg/L,227,2009-06-17T00:00:00Z,2015-07-14T00:00:00Z,0.1,22.03,91.63
+T_ECHL,Epilithic Total Chlorophyll,grab-nonsensor,mg/cm2,67,2012-07-31T00:00:00Z,2015-07-14T00:00:00Z,0.1,0,88.06
+TCHL,Sestonic Total Chlorophyll,grab-nonsensor,mg/l,67,2012-07-31T00:00:00Z,2015-07-14T00:00:00Z,0.1,0,88.06
+TDN,Total Dissolved Nitrogen,grab-nonsensor,mg/L,199,2009-06-17T00:00:00Z,2015-07-14T00:00:00Z,0.1,0,74.87
+TDP,Total Dissolved Phosphorus,grab-nonsensor,mg/L,197,2009-06-17T00:00:00Z,2015-07-14T00:00:00Z,0.1,0,78.17
+temp,Water Temperature,grab-nonsensor,degrees C,65,2011-06-25T00:00:00Z,2015-07-14T00:00:00Z,0,0,87.69
+TPC,Total Particulate Carbon,grab-nonsensor,mg/L,61,2009-07-01T00:00:00Z,2010-07-31T00:00:00Z,0.2,0,52.46
+TPN,Total Particulate Nitrogen,grab-nonsensor,mg/L,61,2009-07-01T00:00:00Z,2010-07-31T00:00:00Z,0.2,0,52.46
+TPP,Total Particulate Phosphorus,grab-nonsensor,mg/L,198,2009-06-17T00:00:00Z,2015-07-14T00:00:00Z,0.1,0,74.24

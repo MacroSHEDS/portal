@@ -1,0 +1,53 @@
+VariableCode,VariableName,SampleRegimen,Unit,Observations,FirstRecordUTC,LastRecordUTC,MeanObsPerDay,PercentFlagged,PercentImputed
+discharge,Discharge,grab-sensor,L/s,5195,1969-06-17T00:00:00Z,2018-08-22T00:00:00Z,0.3,0,36.03
+Ca,Calcium,grab-nonsensor,mg/L,3105,1993-09-22T00:00:00Z,2009-03-31T00:00:00Z,0.5,0,89.66
+Cl,Chloride,grab-nonsensor,mg/L,3105,1993-09-22T00:00:00Z,2009-03-31T00:00:00Z,0.5,0,89.66
+K,Potassium,grab-nonsensor,mg/L,3105,1993-09-22T00:00:00Z,2009-03-31T00:00:00Z,0.5,0,89.66
+Mg,Magnesium,grab-nonsensor,mg/L,3105,1993-09-22T00:00:00Z,2009-03-31T00:00:00Z,0.5,0,89.66
+Na,Sodium,grab-nonsensor,mg/L,3105,1993-09-22T00:00:00Z,2009-03-31T00:00:00Z,0.5,0,89.66
+NH4,Ammonium,grab-nonsensor,mg/L,3105,1993-09-22T00:00:00Z,2009-03-31T00:00:00Z,0.5,0,89.66
+NO3,Nitrate,grab-nonsensor,mg/L,3105,1993-09-22T00:00:00Z,2009-03-31T00:00:00Z,0.5,0,89.66
+pH,pH,grab-nonsensor,unitless,4785,1993-01-12T00:00:00Z,2009-03-31T00:00:00Z,0.8,0,89.74
+SO4,Sulfate,grab-nonsensor,mg/L,3105,1993-09-22T00:00:00Z,2009-03-31T00:00:00Z,0.5,0,89.66
+spCond,Specific Conductivity,grab-nonsensor,uS/cm,4785,1993-01-12T00:00:00Z,2009-03-31T00:00:00Z,0.8,0,89.74
+Ca,Calcium,grab-nonsensor,mg/L,3105,1993-09-22T00:00:00Z,2009-03-31T00:00:00Z,0.5,0,89.66
+Cl,Chloride,grab-nonsensor,mg/L,3105,1993-09-22T00:00:00Z,2009-03-31T00:00:00Z,0.5,0,89.66
+K,Potassium,grab-nonsensor,mg/L,3105,1993-09-22T00:00:00Z,2009-03-31T00:00:00Z,0.5,0,89.66
+Mg,Magnesium,grab-nonsensor,mg/L,3105,1993-09-22T00:00:00Z,2009-03-31T00:00:00Z,0.5,0,89.66
+Na,Sodium,grab-nonsensor,mg/L,3105,1993-09-22T00:00:00Z,2009-03-31T00:00:00Z,0.5,0,89.66
+NH4,Ammonium,grab-nonsensor,mg/L,3105,1993-09-22T00:00:00Z,2009-03-31T00:00:00Z,0.5,0,89.66
+NO3,Nitrate,grab-nonsensor,mg/L,3105,1993-09-22T00:00:00Z,2009-03-31T00:00:00Z,0.5,0,89.66
+pH,pH,grab-nonsensor,unitless,4785,1993-01-12T00:00:00Z,2009-03-31T00:00:00Z,0.8,0,89.74
+SO4,Sulfate,grab-nonsensor,mg/L,3105,1993-09-22T00:00:00Z,2009-03-31T00:00:00Z,0.5,0,89.66
+spCond,Specific Conductivity,grab-nonsensor,uS/cm,4785,1993-01-12T00:00:00Z,2009-03-31T00:00:00Z,0.8,0,89.74
+precipitation,Basin Precip,installed-sensor,mm,5390,1993-09-22T00:00:00Z,2016-10-07T00:00:00Z,0.6,0,2.19
+abs254,UV Absorbance at 254nm,grab-nonsensor,unitless,1853,2002-05-14T00:00:00Z,2018-08-14T00:00:00Z,0.3,0,47.49
+Al,Aluminum,grab-nonsensor,mg/l,1868,2002-05-14T00:00:00Z,2018-08-14T00:00:00Z,0.3,0,47.81
+Ca,Calcium,grab-nonsensor,mg/L,1866,2002-05-14T00:00:00Z,2018-08-14T00:00:00Z,0.3,0,51.29
+Cl,Chloride,grab-nonsensor,mg/L,1860,2002-05-14T00:00:00Z,2018-08-14T00:00:00Z,0.3,0,47.26
+DIC,Dissolved Inorganic Carbon,grab-nonsensor,mg/L,1868,2002-05-14T00:00:00Z,2018-08-14T00:00:00Z,0.3,0,46.31
+DOC,Dissolved Organic Carbon,grab-nonsensor,mg/L,1868,2002-05-14T00:00:00Z,2018-08-14T00:00:00Z,0.3,0,45.13
+DON,Dissolved Organic Nitrogen,grab-nonsensor,mg/L,1837,2002-05-14T00:00:00Z,2018-08-14T00:00:00Z,0.3,0,45.78
+K,Potassium,grab-nonsensor,mg/L,1867,2002-05-14T00:00:00Z,2018-08-14T00:00:00Z,0.3,0,50.78
+Mg,Magnesium,grab-nonsensor,mg/L,1866,2002-05-14T00:00:00Z,2018-08-14T00:00:00Z,0.3,0,50.05
+Na,Sodium,grab-nonsensor,mg/L,1867,2002-05-14T00:00:00Z,2018-08-14T00:00:00Z,0.3,0,50.46
+NO3_N,Nitrate-N,grab-nonsensor,mg/L,1861,2002-05-14T00:00:00Z,2018-08-14T00:00:00Z,0.3,0,45.73
+pH,pH,grab-nonsensor,unitless,1635,2002-05-14T00:00:00Z,2018-08-14T00:00:00Z,0.3,0,50.64
+SiO2_Si,NA,grab-nonsensor,NA,1467,2002-05-21T00:00:00Z,2018-08-14T00:00:00Z,0.2,0,86.84
+SO4_S,Sulfate-S,grab-nonsensor,mg/L,1861,2002-05-14T00:00:00Z,2018-08-14T00:00:00Z,0.3,0,46
+spCond,Specific Conductivity,grab-nonsensor,uS/cm,1843,2002-05-14T00:00:00Z,2018-08-14T00:00:00Z,0.3,0,44.82
+TDN,Total Dissolved Nitrogen,grab-nonsensor,mg/L,1844,2002-05-14T00:00:00Z,2018-08-14T00:00:00Z,0.3,0,44.63
+temp,Water Temperature,installed-sensor,degrees C,356,1995-01-11T00:00:00Z,1996-01-01T00:00:00Z,1,0,37.36
+Al,Aluminum,grab-nonsensor,mg/l,1690,2002-07-11T00:00:00Z,2018-08-14T00:00:00Z,0.3,0,63.79
+Ca,Calcium,grab-nonsensor,mg/L,1688,2002-07-11T00:00:00Z,2018-08-14T00:00:00Z,0.3,0,65.88
+Cl,Chloride,grab-nonsensor,mg/L,1683,2002-07-11T00:00:00Z,2018-08-14T00:00:00Z,0.3,0,63.87
+DIC,Dissolved Inorganic Carbon,grab-nonsensor,mg/L,1690,2002-07-11T00:00:00Z,2018-08-14T00:00:00Z,0.3,0,63.73
+DOC,Dissolved Organic Carbon,grab-nonsensor,mg/L,1690,2002-07-11T00:00:00Z,2018-08-14T00:00:00Z,0.3,0,62.6
+DON,Dissolved Organic Nitrogen,grab-nonsensor,mg/L,1660,2002-07-11T00:00:00Z,2018-08-14T00:00:00Z,0.3,0,62.89
+K,Potassium,grab-nonsensor,mg/L,1690,2002-07-11T00:00:00Z,2018-08-14T00:00:00Z,0.3,0,66.33
+Mg,Magnesium,grab-nonsensor,mg/L,1688,2002-07-11T00:00:00Z,2018-08-14T00:00:00Z,0.3,0,65.4
+Na,Sodium,grab-nonsensor,mg/L,1689,2002-07-11T00:00:00Z,2018-08-14T00:00:00Z,0.3,0,65.6
+NO3_N,Nitrate-N,grab-nonsensor,mg/L,1684,2002-07-11T00:00:00Z,2018-08-14T00:00:00Z,0.3,0,62.95
+SiO2_Si,NA,grab-nonsensor,NA,1335,2002-07-11T00:00:00Z,2018-08-14T00:00:00Z,0.2,0,90.94
+SO4_S,Sulfate-S,grab-nonsensor,mg/L,1684,2002-07-11T00:00:00Z,2018-08-14T00:00:00Z,0.3,0,63.3
+TDN,Total Dissolved Nitrogen,grab-nonsensor,mg/L,1666,2002-07-11T00:00:00Z,2018-08-14T00:00:00Z,0.3,0,62.12
