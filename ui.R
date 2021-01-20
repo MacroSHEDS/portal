@@ -10,6 +10,7 @@ source('ui/map_ui.R')
 source('ui/now_hiring_ui.R')
 source('ui/catalog_ui.R')
 
+
 ui = fluidPage(
 # shinyUI(fluidPage(
 

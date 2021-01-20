@@ -197,6 +197,19 @@ shinyjs.init = function() {
     $('body').ready(function(){
         $('#SENSOR_V_NONSENSOR3').click(govern_sn3);
     });
+
+
+    $('body').ready(function(){
+        $('.dataTable tbody tr').on('overflow', 'td', function(index){
+        //$('.dataTable tbody tr td').each(function(index){
+            console.log('a');
+            $this = $(this);
+            var titleVal = $this.text();
+            if(typeof titleVal === "string" && titleVal !== ''){
+                $this.attr('title', titleVal);
+            }
+        });
+    })
    
 }
 

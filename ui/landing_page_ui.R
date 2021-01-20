@@ -1,4 +1,4 @@
-landing_page =
+landing_page = quote({
     showModal(
         modalDialog(title=NULL, footer=NULL, easyClose=TRUE, id='landing',
             fluidRow(class='text-center',
@@ -48,3 +48,6 @@ landing_page =
             )
         )
     )
+
+    init_vals$enable_unitconvert = TRUE
+})

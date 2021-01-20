@@ -20,7 +20,9 @@ suppressPackageStartupMessages({
     library(glue)
     library(shinyjs)
     library(googlesheets4)
-    library(rhandsontable)
+    library(DT)
+    # library(rhandsontable)
+    library(shiny.router)
 })
 
 #TODO:
@@ -188,5 +190,4 @@ conc_units_bi <- c('ng/L', 'ug/L', 'mg/L', 'g/L')
 ws_traits <- generate_dropdown_varlist_ws(variables)
 
 ws_traits_names <- unlist(ws_traits)
-
 

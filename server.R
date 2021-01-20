@@ -37,6 +37,7 @@ server <- function(input, output, session){
     # source('server/oneSiteNVar_server.R', local=TRUE)
     source('server/nSiteNVar_server.R', local = TRUE)
     source('server/map_server.R', local = TRUE)
+    source('ui/site_catalog_ui.R', local = TRUE)
     source('server/catalog_server.R', local = TRUE)
 
     #register clicking of map popup links
@@ -71,10 +72,10 @@ server <- function(input, output, session){
                  ignoreNULL = FALSE,
                  ignoreInit = FALSE,
                  eventExpr = TRUE,
-                 handlerExpr = {
-                    landing_page
-                    init_vals$enable_unitconvert = TRUE
-                }
+                 handler.quoted = TRUE,
+                 handlerExpr = landing_page
+                    # init_vals$enable_unitconvert = TRUE
+                # }
         )
 
     # observeEvent(once=TRUE, ignoreNULL=FALSE, ignoreInit=TRUE,
@@ -113,5 +114,4 @@ server <- function(input, output, session){
     observeEvent(input$DISMISS_LANDING, {
         removeModal(session)
     })
-
 }
