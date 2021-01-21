@@ -1,2 +1,0 @@
-VariableCode,VariableName,SampleRegimen,Unit,Observations,FirstRecordUTC,LastRecordUTC,MeanObsPerDay,PercentFlagged,PercentImputed
-precipitation,Basin Precip,installed-sensor,mm,3596,2002-10-01T00:00:00Z,2017-10-01T00:00:00Z,0.7,0,0

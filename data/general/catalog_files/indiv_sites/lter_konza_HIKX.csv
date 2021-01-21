@@ -1,7 +1,0 @@
-VariableCode,VariableName,SampleRegimen,Unit,Observations,FirstRecordUTC,LastRecordUTC,MeanObsPerDay,PercentFlagged,PercentImputed
-DOC,Dissolved Organic Carbon,grab-nonsensor,mg/L,8630,1994-09-29T00:00:00Z,2019-01-01T00:00:00Z,1,0,64.03
-NH4_N,Ammonium-N,grab-nonsensor,mg/L,2124,1991-04-28T00:00:00Z,2000-12-29T00:00:00Z,0.6,0,59.98
-NO3_N,Nitrate-N,grab-nonsensor,mg/L,8969,1991-04-28T00:00:00Z,2019-01-01T00:00:00Z,0.9,0,63.82
-SRP,Soluble Reactive Phosphorus,grab-nonsensor,mg/L,8031,1996-01-03T00:00:00Z,2019-01-01T00:00:00Z,1,0,64.6
-TN,Total Nitrogen,grab-nonsensor,mg/L,2067,1994-03-09T00:00:00Z,2000-12-29T00:00:00Z,0.8,0,59.22
-TP,Total Phosphorus,grab-nonsensor,mg/L,8275,1994-03-09T00:00:00Z,2019-01-01T00:00:00Z,0.9,0,67.38

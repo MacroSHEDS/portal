@@ -1,6 +1,0 @@
-VariableCode,VariableName,SampleRegimen,Unit,Observations,FirstRecordUTC,LastRecordUTC,MeanObsPerDay,PercentFlagged,PercentImputed
-discharge,Discharge,grab-sensor,L/s,74,2019-12-31T00:00:00Z,2020-12-31T00:00:00Z,0.2,0,0
-NH4_N,Ammonium-N,grab-nonsensor,mg/L,40,2012-12-06T00:00:00Z,2013-01-14T00:00:00Z,1,0,87.5
-NO2_N,Nitrite-N,grab-nonsensor,mg/L,40,2012-12-06T00:00:00Z,2013-01-14T00:00:00Z,1,0,87.5
-NO3_N,Nitrate-N,grab-nonsensor,mg/L,40,2012-12-06T00:00:00Z,2013-01-14T00:00:00Z,1,0,87.5
-SRP,Soluble Reactive Phosphorus,grab-nonsensor,mg/L,40,2012-12-06T00:00:00Z,2013-01-14T00:00:00Z,1,0,87.5

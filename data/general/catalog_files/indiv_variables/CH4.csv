@@ -1,4 +1,0 @@
-Network,Domain,SiteCode,Unit,Observations,FirstRecordUTC,LastRecordUTC,MeanObsPerDay
-LTER,Arctic,North_River_Main,ppm,118,2009-06-17T00:00:00Z,2010-08-13T00:00:00Z,0.3
-LTER,Arctic,South_River_Main,ppm,102,2008-05-27T00:00:00Z,2010-08-13T00:00:00Z,0.1
-LTER,Arctic,VTK_REF_Main,ppm,21,2010-07-16T00:00:00Z,2010-08-05T00:00:00Z,1

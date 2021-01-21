@@ -1,7 +1,0 @@
-VariableCode,VariableName,SampleRegimen,Unit,Observations,FirstRecordUTC,LastRecordUTC,MeanObsPerDay,PercentFlagged,PercentImputed
-Cl,Chloride,grab-nonsensor,mg/L,508,1999-04-06T00:00:00Z,2000-08-25T00:00:00Z,1,0,86.22
-NO3_N,Nitrate-N,grab-nonsensor,mg/L,508,1999-04-06T00:00:00Z,2000-08-25T00:00:00Z,1,0,86.22
-PO4_P,Phosphate-P,grab-nonsensor,mg/L,508,1999-04-06T00:00:00Z,2000-08-25T00:00:00Z,1,0,86.22
-SO4_S,Sulfate-S,grab-nonsensor,mg/L,508,1999-04-06T00:00:00Z,2000-08-25T00:00:00Z,1,0,86.22
-TN,Total Nitrogen,grab-nonsensor,mg/L,285,1999-11-19T00:00:00Z,2000-08-29T00:00:00Z,1,0,85.96
-TP,Total Phosphorus,grab-nonsensor,mg/L,285,1999-11-19T00:00:00Z,2000-08-29T00:00:00Z,1,0,85.96
