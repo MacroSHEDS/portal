@@ -37,7 +37,7 @@ server <- function(input, output, session){
     # source('server/oneSiteNVar_server.R', local=TRUE)
     source('server/nSiteNVar_server.R', local = TRUE)
     source('server/map_server.R', local = TRUE)
-    source('ui/site_catalog_ui.R', local = TRUE)
+    source('ui/catalog_ui.R', local = TRUE)
     source('server/catalog_server.R', local = TRUE)
 
     #register clicking of map popup links
@@ -111,7 +111,23 @@ server <- function(input, output, session){
         # input_vals$flash_plot = input_vals$flash_plot + 1
     })
 
-    observeEvent(input$DISMISS_LANDING, {
+    observeEvent({
+        input$DISMISS_LANDING
+        input$DISMISS_VARIABLE_CATALOG
+        input$DISMISS_VARIABLE_SUBCATALOG
+        input$DISMISS_SITE_CATALOG
+        input$DISMISS_SITE_SUBCATALOG
+    }, {
         removeModal(session)
+    })
+
+    observeEvent(input$BACK_TO_VARIABLE_CATALOG, {
+        removeModal(session)
+        shinyjs::click('VARIABLE_CATALOG_BUTTON')
+    })
+
+    observeEvent(input$BACK_TO_SITE_CATALOG, {
+        removeModal(session)
+        shinyjs::click('SITE_CATALOG_BUTTON')
     })
 }

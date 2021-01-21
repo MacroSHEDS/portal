@@ -15,7 +15,33 @@
 
 output$SITE_CATALOG <- DT::renderDataTable({
 
-    d = readr::read_csv('data/general/catalog_files/all_sites.csv')
+    d <- sm(readr::read_csv('data/general/catalog_files/all_sites.csv'))
+    DT::datatable(d,
+                  options = list(scrollX = 'true'),
+                  escape = FALSE)
+                                    # autoWidth = 'true'
+                                    # columnDefs = list(list(width = '50px',
+                                    #                        targets = 1))
+        # '[{ targets: [0, 1], width: 250},{ targets: "_all", width: 50}]'
+})
+
+output$VARIABLE_CATALOG <- DT::renderDataTable({
+    d <- sm(readr::read_csv('data/general/catalog_files/all_variables.csv'))
+    DT::datatable(d,
+                  options = list(scrollX = 'true'),
+                  escape = FALSE)
+})
+
+output$VARIABLE_SUBCATALOG <- DT::renderDataTable({
+
+    d <- sm(readr::read_csv(glue('data/general/catalog_files/indiv_variables/{v}.csv',
+                         v = isolate(input$VARIABLE_SUBCATALOG_BUTTON_LISTENER))))
+    DT::datatable(d, options = list(scrollX = 'true'))
+})
+
+output$SITE_SUBCATALOG <- DT::renderDataTable({
+    d <- sm(readr::read_csv(glue('data/general/catalog_files/indiv_sites/{s}.csv',
+                         s = isolate(input$SITE_SUBCATALOG_BUTTON_LISTENER))))
     DT::datatable(d, options = list(scrollX = 'true'))
 })
 
@@ -59,4 +85,28 @@ observeEvent(
     # suspended = TRUE,
     eventExpr = input$SITE_CATALOG_BUTTON,
     handlerExpr = site_catalog
+)
+
+observeEvent(
+    ignoreNULL = TRUE,
+    ignoreInit = TRUE,
+    handler.quoted = TRUE,
+    eventExpr = input$VARIABLE_CATALOG_BUTTON,
+    handlerExpr = variable_catalog
+)
+
+observeEvent(
+    ignoreNULL = TRUE,
+    ignoreInit = TRUE,
+    handler.quoted = TRUE,
+    eventExpr = input$VARIABLE_SUBCATALOG_BUTTON_LISTENER,
+    handlerExpr = variable_subcatalog
+)
+
+observeEvent(
+    ignoreNULL = TRUE,
+    ignoreInit = TRUE,
+    handler.quoted = TRUE,
+    eventExpr = input$SITE_SUBCATALOG_BUTTON_LISTENER,
+    handlerExpr = site_subcatalog
 )

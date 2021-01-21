@@ -8,7 +8,7 @@ source('ui/participants_ui.R')
 source('ui/summary_biplot_ui.R')
 source('ui/map_ui.R')
 source('ui/now_hiring_ui.R')
-source('ui/catalog_ui.R')
+source('ui/catalog_tab_ui.R')
 
 
 ui = fluidPage(
