@@ -43,7 +43,7 @@ landing_page = quote({
                     br(),
                     br(),
                     br(),
-                    actionButton('DISMISS_LANDING', label='Continue')
+                    actionButton('DISMISS_MODAL', label='Continue')
                 )
             )
         )

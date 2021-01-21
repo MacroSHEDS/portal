@@ -25,12 +25,15 @@ output$SITE_CATALOG <- DT::renderDataTable({
         # '[{ targets: [0, 1], width: 250},{ targets: "_all", width: 50}]'
 })
 
-output$VARIABLE_CATALOG <- DT::renderDataTable({
-    d <- sm(readr::read_csv('data/general/catalog_files/all_variables.csv'))
-    DT::datatable(d,
-                  options = list(scrollX = 'true'),
-                  escape = FALSE)
-})
+output$VARIABLE_CATALOG <- DT::renderDataTable(
+    expr = {
+        d <- sm(readr::read_csv('data/general/catalog_files/all_variables.csv'))
+        DT::datatable(d,
+                      options = list(scrollX = 'true'),
+                      escape = FALSE)
+    },
+    server = FALSE
+)
 
 output$VARIABLE_SUBCATALOG <- DT::renderDataTable({
 
@@ -80,7 +83,7 @@ output$SITE_SUBCATALOG <- DT::renderDataTable({
 observeEvent(
     ignoreNULL = TRUE,
     ignoreInit = TRUE,
-    # autoDestroy = FALSE,
+    autoDestroy = FALSE,
     handler.quoted = TRUE,
     # suspended = TRUE,
     eventExpr = input$SITE_CATALOG_BUTTON,
@@ -91,6 +94,7 @@ observeEvent(
     ignoreNULL = TRUE,
     ignoreInit = TRUE,
     handler.quoted = TRUE,
+    autoDestroy = FALSE,
     eventExpr = input$VARIABLE_CATALOG_BUTTON,
     handlerExpr = variable_catalog
 )
@@ -99,6 +103,7 @@ observeEvent(
     ignoreNULL = TRUE,
     ignoreInit = TRUE,
     handler.quoted = TRUE,
+    autoDestroy = FALSE,
     eventExpr = input$VARIABLE_SUBCATALOG_BUTTON_LISTENER,
     handlerExpr = variable_subcatalog
 )
@@ -107,6 +112,7 @@ observeEvent(
     ignoreNULL = TRUE,
     ignoreInit = TRUE,
     handler.quoted = TRUE,
+    autoDestroy = FALSE,
     eventExpr = input$SITE_SUBCATALOG_BUTTON_LISTENER,
     handlerExpr = site_subcatalog
 )

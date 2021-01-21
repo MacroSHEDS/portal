@@ -111,23 +111,39 @@ server <- function(input, output, session){
         # input_vals$flash_plot = input_vals$flash_plot + 1
     })
 
-    observeEvent({
-        input$DISMISS_LANDING
-        input$DISMISS_VARIABLE_CATALOG
-        input$DISMISS_VARIABLE_SUBCATALOG
-        input$DISMISS_SITE_CATALOG
-        input$DISMISS_SITE_SUBCATALOG
-    }, {
-        removeModal(session)
-    })
+    observeEvent(
+        eventExpr = {
+            input$DISMISS_MODAL
+            # input$DISMISS_VARIABLE_CATALOG
+            # input$DISMISS_VARIABLE_SUBCATALOG
+            # input$DISMISS_SITE_CATALOG
+            # input$DISMISS_SITE_SUBCATALOG
+            # input$DISMISS_LANDING
+        },
+        handlerExpr = {
+            removeModal(session)
+        },
+        autoDestroy = FALSE,
+        ignoreInit = TRUE
+    )
 
-    observeEvent(input$BACK_TO_VARIABLE_CATALOG, {
-        removeModal(session)
-        shinyjs::click('VARIABLE_CATALOG_BUTTON')
-    })
+    observeEvent(
+        eventExpr = input$BACK_TO_VARIABLE_CATALOG,
+        handlerExpr = {
+            removeModal(session)
+            shinyjs::click('VARIABLE_CATALOG_BUTTON')
+        },
+        autoDestroy = FALSE,
+        ignoreInit = TRUE
+    )
 
-    observeEvent(input$BACK_TO_SITE_CATALOG, {
-        removeModal(session)
-        shinyjs::click('SITE_CATALOG_BUTTON')
-    })
+    observeEvent(
+        eventExpr = input$BACK_TO_SITE_CATALOG,
+        handlerExpr = {
+            removeModal(session)
+            shinyjs::click('SITE_CATALOG_BUTTON')
+        },
+        autoDestroy = FALSE,
+        ignoreInit = TRUE
+    )
 }

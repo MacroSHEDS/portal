@@ -1,11 +1,11 @@
 catalog_tab <- tabPanel('Data Catalog',
 
     br(),
-    fluidRow(class = 'text-center',
-        column(8, offset = 2,
+    fluidRow(class = 'text-left',
+        column(10, offset = 1,
             actionButton(inputId = 'SITE_CATALOG_BUTTON',
                          label = 'Site Catalog',
-                         width = '200px'),
+                         width = '100%'),
                 # icon = icon("th"))
 
      # onclick = "window.open('/site_catalog', '_blank')")
@@ -19,7 +19,7 @@ catalog_tab <- tabPanel('Data Catalog',
 
             actionButton(inputId = 'VARIABLE_CATALOG_BUTTON',
                          label = 'Variable Catalog',
-                         width = '200px')
+                         width = '100%')
         )
     )
 

@@ -1,15 +1,15 @@
 shinyjs.init = function() {
     //$(window).resize(shinyjs.getHeight50);
     
-    //gotta style landing page this way because css can't uniquely reach it
-    var checkExist = setInterval(function() {
-        if ($('#landing').length) {
-           $('#landing').parent().parent().parent().css({'width': '100%', 'height': '100%', 'margin': '0px'});
-           $('#landing').parent().parent().css({'width': '100%', 'height': '100%', 'margin': '0px'});
-           $('#landing').parent().css({'width': '100%', 'height': '100%'});
-           clearInterval(checkExist);
-        }
-    }, 100);
+    ////gotta style landing page this way because css can't uniquely reach it
+    //var checkExist = setInterval(function() {
+    //    if ($('#landing').length) {
+    //       $('#landing').parent().parent().parent().css({'width': '100%', 'height': '100%', 'margin': '0px'});
+    //       $('#landing').parent().parent().css({'width': '100%', 'height': '100%', 'margin': '0px'});
+    //       $('#landing').parent().css({'width': '100%', 'height': '100%'});
+    //       clearInterval(checkExist);
+    //    }
+    //}, 100);
 
    // var checkExist = setInterval(function() {
    //     if ($('#landing').length) {
@@ -259,9 +259,11 @@ shinyjs.init = function() {
                 btn.on('click', function(){
 
                     if(modal_id == 'variable_catalog'){
+                        console.log('VARIABLE SUB-CATALOG LISTENER');
                         Shiny.setInputValue('VARIABLE_SUBCATALOG_BUTTON_LISTENER', btn_id, {priority: 'event'});
 //                            Shiny.setInputValue('VARIABLE_SUBCATALOG_BUTTON_LISTENER', null);//, {priority: 'event'});
                     } else if(modal_id == 'site_catalog'){
+                        console.log('SITE SUB-CATALOG LISTENER');
                         Shiny.setInputValue('SITE_SUBCATALOG_BUTTON_LISTENER', btn_id, {priority: 'event'});
                     } else {
                         console.log('unhandled button detected inside a modal table');

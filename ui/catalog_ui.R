@@ -1,4 +1,5 @@
 site_catalog <- quote({
+    print('SITE CATALOG')
     showModal(
         modalDialog(title = NULL,
             footer = NULL,
@@ -6,12 +7,12 @@ site_catalog <- quote({
             id = 'site_catalog',
             size = 'l',
             fluidRow(class = 'text-left',
-                column(11,
+                column(10,
                     h3('Site Catalog', style = 'margin-top: 0px'),
                 ),
-                column(1, class = 'text-right',
-                       actionButton(inputId = 'DISMISS_SITE_SUBCATALOG',
-                                    label = 'Close'),
+                column(2, class = 'text-right',
+                       actionButton(inputId = 'DISMISS_MODAL',
+                                    label = 'Close (Esc)'),
                 ),
             ),
             fluidRow(class = 'text-left',
@@ -27,6 +28,7 @@ site_catalog <- quote({
 })
 
 variable_catalog <- quote({
+    print('VARIABLE CATALOG')
     showModal(
         modalDialog(title = NULL,
             footer = NULL,
@@ -34,12 +36,12 @@ variable_catalog <- quote({
             id = 'variable_catalog',
             size = 'l',
             fluidRow(class = 'text-left',
-                column(11,
+                column(10,
                     h3('Variable Catalog', style = 'margin-top: 0px')
                 ),
-                column(1, class = 'text-right',
-                       actionButton(inputId = 'DISMISS_VARIABLE_CATALOG',
-                                    label = 'Close'),
+                column(2, class = 'text-right',
+                       actionButton(inputId = 'DISMISS_MODAL',
+                                    label = 'Close (Esc)'),
                 ),
             ),
             fluidRow(class = 'text-left',
@@ -53,6 +55,7 @@ variable_catalog <- quote({
 })
 
 variable_subcatalog <- quote({
+    print('VARIABLE SUB-CATALOG')
 
     output$VARIABLE_SUBCATALOG_TITLE <- renderUI({
         HTML(glue('Availability for VariableCode: <strong>{v}</strong>',
@@ -66,7 +69,7 @@ variable_subcatalog <- quote({
             id = 'variable_subcatalog',
             size = 'l',
             fluidRow(class = 'text-left',
-                column(10,
+                column(9,
                     h3(htmlOutput('VARIABLE_SUBCATALOG_TITLE'),
                        style = 'margin-top: 0px')
                 ),
@@ -74,9 +77,9 @@ variable_subcatalog <- quote({
                     actionButton(inputId = 'BACK_TO_VARIABLE_CATALOG',
                                  label = 'Back'),
                 ),
-                column(1, class = 'text-right',
-                    actionButton(inputId = 'DISMISS_VARIABLE_SUBCATALOG',
-                                 label = 'Close'),
+                column(2, class = 'text-right',
+                    actionButton(inputId = 'DISMISS_MODAL',
+                                 label = 'Close (Esc)'),
                 )
             ),
             fluidRow(class = 'text-left',
@@ -87,13 +90,11 @@ variable_subcatalog <- quote({
             )
         )
     )
-
-    # shiny::updateTextInput(session = session,
-    #                        inputId = 'VARIABLE_SUBCATALOG_BUTTON_LISTENER',
-    #                        value = NULL)
 })
 
 site_subcatalog <- quote({
+
+    print('SITE SUB-CATALOG')
 
     output$SITE_SUBCATALOG_TITLE <- renderUI({
 
@@ -116,7 +117,7 @@ site_subcatalog <- quote({
             id = 'site_subcatalog',
             size = 'l',
             fluidRow(class = 'text-left',
-                column(10,
+                column(9,
                     h3(htmlOutput('SITE_SUBCATALOG_TITLE'),
                        style = 'margin-top: 0px')
                 ),
@@ -124,9 +125,9 @@ site_subcatalog <- quote({
                     actionButton(inputId = 'BACK_TO_SITE_CATALOG',
                                  label = 'Back'),
                 ),
-                column(1, class = 'text-right',
-                    actionButton(inputId = 'DISMISS_SITE_SUBCATALOG',
-                                 label = 'Close'),
+                column(2, class = 'text-right',
+                    actionButton(inputId = 'DISMISS_MODAL',
+                                 label = 'Close (Esc)'),
                 )
             ),
             fluidRow(class = 'text-left',
@@ -137,8 +138,4 @@ site_subcatalog <- quote({
             )
         )
     )
-
-    # shiny::updateTextInput(session = session,
-    #                        inputId = 'VARIABLE_SUBCATALOG_BUTTON_LISTENER',
-    #                        value = NULL)
 })
