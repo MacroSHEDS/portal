@@ -3,6 +3,5 @@ map_tab = tabPanel('Map',
 
     #this button opens the site exploration tab. the button is hidden and unclickable.
     #it's triggered by links in the popups on the map tab.
-    #right now the site is hardcoded
     actionButton('SITE_EXPLORE', '', style='display: none')
 )
