@@ -87,7 +87,7 @@ network_domain_default_sites <- site_data %>%
            default_site = site_name)
 
 default_sitelist <- get_sitelist(domain = default_domain,
-                                 # network = default_network, #TODO: observe network level within portal
+                                 # network = default_network, #TODO: observe network level within portal?
                                  type = c('stream_gauge', 'stream_sampling_point'))
 
 default_site <- get_default_site(domain = default_domain)

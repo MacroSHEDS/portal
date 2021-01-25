@@ -233,22 +233,26 @@ observe({
     # basedata <<- load_basedata()
     # vars_ <<- isolate(input$VARS3)
     # dates <<- isolate(input$DATES3)
-    basedata = load_basedata()
-    vars_ = isolate(input$VARS3)
-    dates = isolate(input$DATES3)
 
-    chemvars_display_subset = filter_dropdown_varlist(basedata$chem)
-    updateSelectizeInput(session, 'VARS3',
-        choices=chemvars_display_subset, selected=vars_)
+    basedata <- load_basedata()
+    vars_ <- isolate(input$VARS3)
+    dates <- isolate(input$DATES3)
+
+    chemvars_display_subset <- filter_dropdown_varlist(basedata$chem)
+
+    updateSelectizeInput(session = session,
+                         inputId = 'VARS3',
+                         choices = chemvars_display_subset,
+                         selected = vars_)
 
     dtrng = get_timeslider_extent(basedata, dates)
 
-    updateSliderInput(session,
-        inputId = 'DATES3',
-        min = dtrng[1],
-        max = dtrng[2],
-        value = dates,
-        timeFormat = '%b %Y')
+    updateSliderInput(session = session,
+                      inputId = 'DATES3',
+                      min = dtrng[1],
+                      max = dtrng[2],
+                      value = dates,
+                      timeFormat = '%b %Y')
 })
 
 #reduce the reactivity sensitivity of the slider, so that intermediate inputs
@@ -704,6 +708,7 @@ output$GRAPH_PRECIP3 <- renderDygraph({
             dyOptions(useDataTimezone = TRUE,
                       fillGraph = TRUE,
                       retainDateWindow = TRUE,
+                      labelsKMB = TRUE,
                       # stackedGraph = TRUE,
 
                       # #if precip panels are separated, use these specifications
@@ -781,6 +786,7 @@ output$GRAPH_MAIN3a <- renderDygraph({
     # show_pchem <<- isolate(input$SHOW_PCHEM3)
     # agg <<- isolate(input$AGG3)
     # dates <<- isolate(input$DATES3)
+    # show_uncert <<- isolate(input$SHOW_UNCERT3)
 
     sites <- na.omit(isolate(input$SITES3))
     varA <- isolate(input$VARS3[1])#
@@ -878,6 +884,7 @@ output$GRAPH_MAIN3a <- renderDygraph({
                       strokeWidth = 2,
                       pointSize = 2,
                       drawGapEdgePoints = TRUE,
+                      labelsKMB = TRUE,
 
                       # #if showing points, use these
                       # drawPoints = TRUE,
@@ -1090,6 +1097,7 @@ output$GRAPH_MAIN3b <- renderDygraph({
     # show_pchem <<- isolate(input$SHOW_PCHEM3)
     # agg <<- isolate(input$AGG3)
     # dates <<- isolate(input$DATES3)
+    # show_uncert <<- isolate(input$SHOW_UNCERT3)
 
     sites <- na.omit(isolate(input$SITES3))
     varB <- isolate(input$VARS3[2])#
@@ -1186,6 +1194,7 @@ output$GRAPH_MAIN3b <- renderDygraph({
                       strokeWidth = 2,
                       pointSize = 2,
                       drawGapEdgePoints = TRUE,
+                      labelsKMB = TRUE,
 
                       # #if showing points, use these
                       # drawPoints = TRUE,
@@ -1379,6 +1388,7 @@ output$GRAPH_MAIN3c <- renderDygraph({
     # show_pchem <<- isolate(input$SHOW_PCHEM3)
     # agg <<- isolate(input$AGG3)
     # dates <<- isolate(input$DATES3)
+    # show_uncert <<- isolate(input$SHOW_UNCERT3)
 
     sites <- na.omit(isolate(input$SITES3))
     varC <- isolate(input$VARS3[3])#
@@ -1475,6 +1485,7 @@ output$GRAPH_MAIN3c <- renderDygraph({
                       strokeWidth = 2,
                       pointSize = 2,
                       drawGapEdgePoints = TRUE,
+                      labelsKMB = TRUE,
 
                       # #if showing points, use these
                       # drawPoints = TRUE,
@@ -1702,6 +1713,7 @@ output$GRAPH_Q3 <- renderDygraph({
                       colors = selection_color_match(sites,
                                                      displabs[displabs %in% sites],
                                                      linecolors),
+                      labelsKMB = TRUE,
                       drawGapEdgePoints = TRUE) %>%
             dyLegend(show = 'always',
                      labelsSeparateLines = FALSE,
