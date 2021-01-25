@@ -37,6 +37,8 @@ server <- function(input, output, session){
     # source('server/oneSiteNVar_server.R', local=TRUE)
     source('server/nSiteNVar_server.R', local = TRUE)
     source('server/map_server.R', local = TRUE)
+    source('ui/catalog_ui.R', local = TRUE)
+    source('server/catalog_server.R', local = TRUE)
 
     #register clicking of map popup links
     observeEvent(input$SITE_EXPLORE, {
@@ -70,10 +72,10 @@ server <- function(input, output, session){
                  ignoreNULL = FALSE,
                  ignoreInit = FALSE,
                  eventExpr = TRUE,
-                 handlerExpr = {
-                    landing_page
-                    init_vals$enable_unitconvert = TRUE
-                }
+                 handler.quoted = TRUE,
+                 handlerExpr = landing_page
+                    # init_vals$enable_unitconvert = TRUE
+                # }
         )
 
     # observeEvent(once=TRUE, ignoreNULL=FALSE, ignoreInit=TRUE,
@@ -109,8 +111,39 @@ server <- function(input, output, session){
         # input_vals$flash_plot = input_vals$flash_plot + 1
     })
 
-    observeEvent(input$DISMISS_LANDING, {
-        removeModal(session)
-    })
+    observeEvent(
+        eventExpr = {
+            input$DISMISS_MODAL
+            # input$DISMISS_VARIABLE_CATALOG
+            # input$DISMISS_VARIABLE_SUBCATALOG
+            # input$DISMISS_SITE_CATALOG
+            # input$DISMISS_SITE_SUBCATALOG
+            # input$DISMISS_LANDING
+        },
+        handlerExpr = {
+            removeModal(session)
+        },
+        autoDestroy = FALSE,
+        ignoreInit = TRUE
+    )
 
+    observeEvent(
+        eventExpr = input$BACK_TO_VARIABLE_CATALOG,
+        handlerExpr = {
+            removeModal(session)
+            shinyjs::click('VARIABLE_CATALOG_BUTTON')
+        },
+        autoDestroy = FALSE,
+        ignoreInit = TRUE
+    )
+
+    observeEvent(
+        eventExpr = input$BACK_TO_SITE_CATALOG,
+        handlerExpr = {
+            removeModal(session)
+            shinyjs::click('SITE_CATALOG_BUTTON')
+        },
+        autoDestroy = FALSE,
+        ignoreInit = TRUE
+    )
 }

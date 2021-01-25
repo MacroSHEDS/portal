@@ -12,7 +12,8 @@ body {
 SPLASH PAGE (handled by js now that modals are used elsewhere in app)
 */
 
-/*.modal.in .modal-dialog {
+/*
+.shiny-modal .modal-dialog {
     width: 100%;
     height: 100%;
     margin: 0px;
@@ -21,8 +22,9 @@ SPLASH PAGE (handled by js now that modals are used elsewhere in app)
 .modal-content {
     width: 100%;
     height: 100%;
-    color: #193d85;
-}*/
+}
+*/
+
 /*color: #396060;*/
 /*0088AA*/
 
@@ -125,6 +127,23 @@ COLLAPSE SECTION
 
 .content-wrapper-wide {
     margin-left: 36px !important;
+}
+
+
+/*
+DATATABLES
+*/
+
+table.dataTable {
+    /*table-layout: fixed;*/
+    overflow: auto;
+}
+
+.dataTable td {
+    overflow: hidden; /* this is what fixes the expansion */
+    text-overflow: ellipsis; /* not supported in all browsers, but I accepted the tradeoff */
+    white-space: nowrap;
+    max-width: 200px;
 }
 
 /*

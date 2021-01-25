@@ -1,15 +1,15 @@
 shinyjs.init = function() {
     //$(window).resize(shinyjs.getHeight50);
     
-    //gotta style landing page this way because css can't uniquely reach it
-    var checkExist = setInterval(function() {
-        if ($('#landing').length) {
-           $('#landing').parent().parent().parent().css({'width': '100%', 'height': '100%', 'margin': '0px'});
-           $('#landing').parent().parent().css({'width': '100%', 'height': '100%', 'margin': '0px'});
-           $('#landing').parent().css({'width': '100%', 'height': '100%'});
-           clearInterval(checkExist);
-        }
-    }, 100);
+    ////gotta style landing page this way because css can't uniquely reach it
+    //var checkExist = setInterval(function() {
+    //    if ($('#landing').length) {
+    //       $('#landing').parent().parent().parent().css({'width': '100%', 'height': '100%', 'margin': '0px'});
+    //       $('#landing').parent().parent().css({'width': '100%', 'height': '100%', 'margin': '0px'});
+    //       $('#landing').parent().css({'width': '100%', 'height': '100%'});
+    //       clearInterval(checkExist);
+    //    }
+    //}, 100);
 
    // var checkExist = setInterval(function() {
    //     if ($('#landing').length) {
@@ -197,7 +197,88 @@ shinyjs.init = function() {
     $('body').ready(function(){
         $('#SENSOR_V_NONSENSOR3').click(govern_sn3);
     });
+
+
+    $('body').ready(function(){
+        //$('.dataTable tbody tr').on('overflow', 'td', function(index){
+        $('#dataTable').on('focus', function(i){
+        //$('#SITE_CATALOG_BUTTON').on('click', function(i){
+            console.log('gg');
+        $('#site_catalog td').each(function(i){
+        //$('.dataTable tbody tr td').each(function(i){
+            console.log('a');
+            $this = $(this);
+            var titleVal = $this.text();
+            if(typeof titleVal === "string" && titleVal !== ''){
+                $this.attr('title', titleVal);
+            }
+        });
+        });
+    });
    
+    //respond to insertions of shiny modal boxes into document.body
+    var dom_observer = new MutationObserver(async function(mutation) {
+
+        var tgt = $(target);
+        var shinymodal = tgt.children('#shiny-modal-wrapper');
+        //var nmodals = shinymodals.length;
+        //
+        //if(nmodals > 0){
+        if(shinymodal.length > 0){
+
+            //make modal fullscreen
+            shinymodal.children('.modal').css({'width': '100%', 'height': '100%', 'margin': '0px'})
+                .children('.modal-dialog').css({'width': '100%', 'height': '100%', 'margin': '0px'})
+                .children('.modal-content').css({'width': '100%', 'height': '100%'});
+
+            await new Promise(r => setTimeout(r, 1000)); //wait a second for the modal and its table to load
+
+            //for(var i = 0; i < nmodals; i++){ //for each modal present (there can only be one at a time under shiny)
+            //
+            //var modal = $(shinymodals[i]);
+            var modal_id = shinymodal.find('.modal-body').attr('id');
+            if(modal_id === 'landing'){
+                return;
+            }
+
+
+            //set all td elements' titles to their contents, so the user can mouseover to see hidden text
+            shinymodal.find('td').each(function(i){
+                var titleVal = $(this).text();
+                if(typeof titleVal === "string" && titleVal !== ''){
+                    $(this).attr('title', titleVal);
+                };
+            });
+
+            //set up listeners for all button elements inside table cells
+            shinymodal.find('td button').each(function(i){
+
+                var btn = $(this)
+                var btn_id = btn.attr('id')
+
+                btn.on('click', function(){
+
+                    if(modal_id == 'variable_catalog'){
+                        console.log('VARIABLE SUB-CATALOG LISTENER');
+                        Shiny.setInputValue('VARIABLE_SUBCATALOG_BUTTON_LISTENER', btn_id, {priority: 'event'});
+//                            Shiny.setInputValue('VARIABLE_SUBCATALOG_BUTTON_LISTENER', null);//, {priority: 'event'});
+                    } else if(modal_id == 'site_catalog'){
+                        console.log('SITE SUB-CATALOG LISTENER');
+                        Shiny.setInputValue('SITE_SUBCATALOG_BUTTON_LISTENER', btn_id, {priority: 'event'});
+                    } else {
+                        console.log('unhandled button detected inside a modal table');
+                    }
+
+                });
+            });
+            //};
+        };
+    });
+
+    //configure and register mutation observer for modals
+    var config = { attributes: true, childList: true, characterData: true };
+    dom_observer.observe(target = document.body, config);
+
 }
 
 //shinyjs.calcHeight = function(propHeight) {
