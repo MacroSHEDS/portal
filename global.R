@@ -105,16 +105,16 @@ basedata <- list(
                               prodname = 'stream_chemistry'),
     flux = ms_read_portalsite(domain = default_domain,
                               site_name = default_site,
-                              prodname = 'stream_flux_inst')
-    # P = ms_read_portalsite(domain = default_domain,
-    #                        site_name = default_site,
-    #                        prodname = 'precipitation'),
-    # pchem = ms_read_portalsite(domain = default_domain,
-    #                            site_name = default_site,
-    #                            prodname = 'precip_chemistry'),
-    # pflux = ms_read_portalsite(domain = default_domain,
-    #                            site_name = default_site,
-    #                            prodname = 'precip_flux_inst_scaled')
+                              prodname = 'stream_flux_inst_scaled'),
+    P = ms_read_portalsite(domain = default_domain,
+                           site_name = default_site,
+                           prodname = 'precipitation'),
+    pchem = ms_read_portalsite(domain = default_domain,
+                               site_name = default_site,
+                               prodname = 'precip_chemistry'),
+    pflux = ms_read_portalsite(domain = default_domain,
+                               site_name = default_site,
+                               prodname = 'precip_flux_inst_scaled')
 )
 
 #date range for date selector
