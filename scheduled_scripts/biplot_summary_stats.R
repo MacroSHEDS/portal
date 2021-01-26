@@ -1,4 +1,4 @@
-df <- network_domain_default_sites
+#df <- network_domain_default_sites
 
 #
 # Currently viewing monthly summaries is disabled on biplot, primarilay becuase

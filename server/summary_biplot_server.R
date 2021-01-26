@@ -36,6 +36,7 @@ pre_filtered_bi <- reactive({
     date1 <- input$DATES2_INTER[1]
     date2 <- input$DATES2_INTER[2]
     domains <- input$DOMAINS2
+    domains_s <- input$DOMAINS2_S
     sites <- input$SITES2
     type <- switch(input$SITE_SELECTION2,
                     ALL_SITES2 = 'all',
@@ -97,8 +98,6 @@ filtered_bi <- reactive({
     agg <- input$AGG2
     fill <- pre_filtered_bi()
     raw <- isolate(summary())
-
-
 
     #Create column names, add conc or flux
     x_var_ <- case_when(chem_x == 'Discharge' ~ 'discharge',
