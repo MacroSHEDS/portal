@@ -904,7 +904,7 @@ convert_flux_units_bi = function(df, col, input_unit='kg', desired_unit, summary
         if('area' %in% colnames(df)){
 
             df <- df %>%
-                mutate(!!flux_cols := .data[[flux_cols]]/(area*100))
+                mutate(!!flux_cols := .data[[flux_cols]]/area)
 
         } else{
 
@@ -922,7 +922,7 @@ convert_flux_units_bi = function(df, col, input_unit='kg', desired_unit, summary
 
             df <- df %>%
                 left_join(., areas, by = 'site_name') %>%
-                mutate(!!flux_cols := .data[[flux_cols]]/(area*100)) %>%
+                mutate(!!flux_cols := .data[[flux_cols]]/area) %>%
                 select(-area)
         }
 
@@ -958,7 +958,7 @@ convert_area_nor_q_bi = function(df, summary_file){
     if('area' %in% colnames(df)){
 
         df <- df %>%
-            mutate(discharge = discharge/(area*1000000)) %>%
+            mutate(discharge = discharge/(area*10000)) %>%
             filter(!is.na(discharge))
 
     } else{
@@ -977,7 +977,7 @@ convert_area_nor_q_bi = function(df, summary_file){
 
         df <- df %>%
             left_join(., areas, by = 'site_name') %>%
-            mutate(discharge = discharge/(area*1000000)) %>%
+            mutate(discharge = discharge/(area*10000)) %>%
             select(-area) %>%
             filter(!is.na(discharge))
     }

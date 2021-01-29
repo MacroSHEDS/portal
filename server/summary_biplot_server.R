@@ -92,10 +92,12 @@ filtered_bi <- reactive({
     x_unit <- input$X_UNIT2
     y_unit <- input$Y_UNIT2
     size_unit <- input$SIZE_UNIT2
-    chem_x <- input$X_TYPE2
-    chem_y <- input$Y_TYPE2
-    chem_size <- input$SIZE_TYPE2
+    chem_x <- isolate(input$X_TYPE2)
+    chem_y <- isolate(input$Y_TYPE2)
+    chem_size <- isolate(input$SIZE_TYPE2)
     agg <- input$AGG2
+    domains <- isolate(input$DOMAINS2)
+    sites <- isolate(input$SITES2)
     fill <- pre_filtered_bi()
     raw <- isolate(summary())
 
@@ -230,6 +232,29 @@ filtered_bi <- reactive({
 })
 
 # Update axis options ####
+#remove year as an axis option when aggrigation the whole records
+observe({
+    agg <- input$AGG2
+
+    yearly <- c('Concentration',
+                'Flux',
+                'Discharge',
+                'Year',
+                'Watershed Characteristics')
+
+    whole <- c('Concentration',
+               'Flux',
+               'Discharge',
+               'Watershed Characteristics')
+
+    if(agg == 'YEARLY2'){
+        updateSelectInput(session, 'X_TYPE2', choices = yearly)
+    } else{
+        updateSelectInput(session, 'X_TYPE2', choices = whole)
+    }
+})
+
+#update individual options for varibles based on varible type
 observe({
     data <- pre_filtered_bi()
     data_type <- input$X_TYPE2
@@ -319,6 +344,7 @@ observe({
     updateSelectInput(session, 'SIZE_UNIT2', choices = units, selected = choose)
 })
 
+#update sites based on domains selected
 observe({
     data_type <- input$DOMAINS2_S
 
@@ -328,6 +354,41 @@ observe({
         pull(site_name)
 
     updateSelectInput(session, 'SITES2', choices = sites_choices)
+})
+
+#update unit options if they are not contertable
+observe({
+    x_var <<- input$X_VAR2
+    y_var <<- input$Y_VAR2
+    size_var <<- input$SIZE_VAR2
+    chem_x <<- isolate(input$X_TYPE2)
+    chem_y <<- isolate(input$Y_TYPE2)
+    chem_size <<- isolate(input$SIZE_TYPE2)
+
+    if(!convertible(x_var) && chem_x == 'Concentration'){
+        updateSelectInput(session, 'X_UNIT2', choices = '')
+    }
+
+    if(convertible(x_var) && chem_x == 'Concentration'){
+        updateSelectInput(session, 'X_UNIT2', choices = conc_units[3])
+    }
+
+    if(!convertible(y_var) && chem_x == 'Concentration'){
+        updateSelectInput(session, 'Y_UNIT2', choices = '')
+    }
+
+    if(convertible(y_var) && chem_y == 'Concentration'){
+        updateSelectInput(session, 'Y_UNIT2', choices = conc_units[3])
+    }
+
+    if(!convertible(x_var) && chem_x == 'Concentration'){
+        updateSelectInput(session, 'SIZE_UNIT2', choices = '')
+    }
+
+    if(convertible(size_var) && chem_size == 'Concentration'){
+        updateSelectInput(session, 'SIZE_UNIT2', choices = conc_units[3])
+    }
+
 })
 
 # Plot data ####
@@ -345,7 +406,7 @@ n_sites <- reactive({
     return(num)
 })
 
-output$SUMMARY_BIPLOT = renderPlotly({
+output$SUMMARY_BIPLOT <- renderPlotly({
 
     # bi_table <<- filtered_bi()
     # domains <<- isolate(input$DOMAINS2)
@@ -366,7 +427,7 @@ output$SUMMARY_BIPLOT = renderPlotly({
     # chem_size <<- isolate(input$SIZE_TYPE2)
     # num_sites <<- n_sites()
 
-    bi_table <- filtered_bi()
+    bi_table <<- filtered_bi()
     domains <- isolate(input$DOMAINS2)
     sites <- isolate(input$SITES2)
     x_var <- isolate(input$X_VAR2)
@@ -377,25 +438,38 @@ output$SUMMARY_BIPLOT = renderPlotly({
     y_unit <- isolate(input$Y_UNIT2)
     size_unit <- isolate(input$SIZE_UNIT2)
     agg <- switch(isolate(input$AGG2),
-                   'YEARLY2' = 'year',
-                   'MONTHLY2' = 'm',
-                   'WHOLE2' = 'year ')
+                  'MONTHLY2' = 'm',
+                  'YEARLY2' = 'year',
+                  'WHOLE2' = 'year ')
     chem_x <- isolate(input$X_TYPE2)
     chem_y <- isolate(input$Y_TYPE2)
     chem_size <- isolate(input$SIZE_TYPE2)
-    num_sites <- n_sites()
+    num_sites <- isolate(n_sites())
+
+    if(nrow(bi_table) == 0) {
+
+        plot <- plotly::plot_ly() %>%
+            plotly::layout(annotations = list(text="No data available for \nthe selected variables",
+                                              xref = "paper",
+                                              yref = "paper",
+                                              opacity = 0.4,
+                                              "showarrow" = F,
+                                              font=list(size = 30)))
+
+        return(plot)
+    }
 
     # Color blind safe palette
     safe_cols <- c("#88CCEE", "#CC6677", "#DDCC77", "#117733", "#332288", "#AA4499",
                    "#44AA99", "#999933", "#882255", "#661100", "#6699CC", "#888888")
 
-    x_test <- convertible(x_var)
-    y_test <- convertible(y_var)
-    size_test <- convertible(size_var)
-
-    if(!x_test) { x_unit <- '' }
-    if(!y_test) { y_unit <- '' }
-    if(!size_test) { size_unit <- '' }
+    # x_test <- convertible(x_var)
+    # y_test <- convertible(y_var)
+    # size_test <- convertible(size_var)
+    #
+    # if(!x_test) { x_unit <- '' }
+    # if(!y_test) { y_unit <- '' }
+    # if(!size_test) { size_unit <- '' }
 
     x_tvar <- case_when(chem_x == 'Discharge' ~ 'discharge',
                         chem_x == 'Concentration' ~ paste0(x_var, '_conc'),
@@ -554,7 +628,6 @@ output$SUMMARY_BIPLOT = renderPlotly({
 
     return(plot)
 })
-
 
 # Old code, will be usful for map selections ####
 

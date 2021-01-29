@@ -24,6 +24,7 @@ TDN,Total Dissolved Nitrogen,mg/L,persulfate digestion - calorimetric analysis,c
 DON,Dissolved Organic Nitrogen,mg/L,derived,chem_discrete,Other,expression(UNKNOWN),1,1,N,NA
 DIC,Dissolved Inorganic Carbon,mg/L,UNKNOWN,chem_discrete,Other,expression(UNKNOWN),1,1,C,NA
 SiO2,Silica,mg/L,molybdenum blue,chem_discrete,Other,expression(SiO[2]),1,1,NA,NA
+SiO2_Si,Silica-Si,mg/L,UNKNOWN,chem_discrete,Other,expression(UNKNOWN),1,1,Si,NA
 ANC960,Acid Neutralizing Capacity 960,ueq/L,UNKNOWN,chem_mix,Other,expression(UNKNOWN),NA,0,NA,standardize this to ANC (hbef?)
 ANCMet,Acid Neutralizing Capacity Met,ueq/L,UNKNOWN,chem_mix,Other,expression(UNKNOWN),NA,0,NA,standardize this to ANC (hbef?)
 spCond,Specific Conductivity,uS/cm,UNKNOWN,chem_mix,Other,expression(UNKNOWN),NA,0,NA,NA
@@ -36,11 +37,11 @@ precipitation,Basin Precip,mm,UNKNOWN,phys,Other,expression(UNKNOWN),NA,0,NA,NA
 discharge,Discharge,L/s,UNKNOWN,phys,Other,expression(UNKNOWN),NA,0,NA,NA
 alk,Alkalinity,mg/L,electrometric titration to pH 4.5,chem_mix,Other,expression(UNKNOWN),NA,1,NA,NA
 suspSed,Suspended Sediment,mg/L,gravimetric,phys,Other,expression(UNKNOWN),NA,1,NA,NA
-NH4_N,Ammonium-N,mg/L,phenate method,chem_discrete,Cations,expression(UNKNOWN),1,1,NA,NA
-NH3_N,Ammonia-N,mg/L,phenate method,chem_discrete,Cations,expression(UNKNOWN),3,1,NA,NA
-NO3_N,Nitrate-N,mg/L,cadmium reduction,chem_discrete,Anions,expression(UNKNOWN),1,1,NA,NA
-PO4_P,Phosphate-P,mg/L,ascorbic acid,chem_discrete,Anions,expression(UNKNOWN),3,1,NA,NA
-SO4_S,Sulfate-S,mg/L,ion chromatography,chem_discrete,Anions,expression(UNKNOWN),2,1,NA,NA
+NH4_N,Ammonium-N,mg/L,phenate method,chem_discrete,Cations,expression(UNKNOWN),1,1,N,NA
+NH3_N,Ammonia-N,mg/L,phenate method,chem_discrete,Cations,expression(UNKNOWN),3,1,N,NA
+NO3_N,Nitrate-N,mg/L,cadmium reduction,chem_discrete,Anions,expression(UNKNOWN),1,1,N,NA
+PO4_P,Phosphate-P,mg/L,ascorbic acid,chem_discrete,Anions,expression(UNKNOWN),3,1,P,NA
+SO4_S,Sulfate-S,mg/L,ion chromatography,chem_discrete,Anions,expression(UNKNOWN),2,1,S,NA
 TDP,Total Dissolved Phosphorus,mg/L,persulfate digestion - ascorbic acid finish,chem_discrete,Other,expression(UNKNOWN),1,1,P,NA
 TKN,Total Kjeldahl Nitrogen,mg/L,Kjeldahl digestion - nessler finish,chem_discrete,Other,expression(UNKNOWN),1,1,N,NA
 UTKN,Unfilt. Total Kjeldahl Nitrogen,mg/L,Kjeldahl digestion - nessler finish,chem_discrete,Other,expression(UNKNOWN),1,1,N,NA
@@ -50,9 +51,9 @@ ANC,Acid Neutralizing Capacity,eq/L,UNKNOWN,chem_mix,Other,expression(UNKNOWN),N
 Br,Bromide,mg/L,UNKNOWN,chem_discrete,Anions,expression(Br^'-'),1,1,NA,NA
 CO3,Carbonate,mg/L,UNKNOWN,chem_discrete,Anions,expression(CO[3]^'-2'),2,1,NA,NA
 HCO3,Bicarbonate,mg/L,UNKNOWN,chem_discrete,Anions,expression(HCO[3]^'-'),3,1,NA,NA
-NO2_N,Nitrite-N,mg/L,UNKNOWN,chem_discrete,Other,expression(UNKNOWN),1,1,NA,NA
+NO2_N,Nitrite-N,mg/L,UNKNOWN,chem_discrete,Other,expression(UNKNOWN),1,1,N,NA
 NO3_NO2,Nitrate and nitrite,mg/L,UNKNOWN,chem_discrete,Other,expression(UNKNOWN),1,1,NO3,NA
-NO3_NO2_N,Nitrate-N and nitrite-N,mg/L,UNKNOWN,chem_discrete,Other,expression(UNKNOWN),1,1,NA,NA
+NO3_NO2_N,Nitrate-N and nitrite-N,mg/L,UNKNOWN,chem_discrete,Other,expression(UNKNOWN),1,1,N,NA
 Si,Silicon,mg/L,UNKNOWN,chem_discrete,Anions,expression(Si^'-4'),4,1,NA,NA
 TDS,Total Dissolved Solids,mg/L,UNKNOWN,chem_mix,Other,expression(UNKNOWN),NA,0,NA,NA
 TN,Total Nitrogen,mg/L,UNKNOWN,chem_discrete,Other,expression(UNKNOWN),1,1,N,NA
@@ -118,12 +119,14 @@ tree_cover_median,Watershed Median,%,NA,ws_char,Tree Cover,NA,NA,0,NA,NA
 tree_cover_sd,Watershed Standard Deviation,NA,NA,ws_char,Tree Cover,NA,NA,0,NA,NA
 veg_cover_median,Watershed Median,%,NA,ws_char,Non-Tree Cover,NA,NA,0,NA,NA
 veg_cover_sd,Watershed Standard Deviation,NA,NA,ws_char,Non-Tree Cover,NA,NA,0,NA,NA
-sos_mean,Watershed Median,DOY,NA,ws_char,Start of Growing Season,NA,NA,0,NA,NA
+sos_mean,Watershed Mean,DOY,NA,ws_char,Start of Growing Season,NA,NA,0,NA,NA
 sos_sd,Watershed Standard Deviation,NA,NA,ws_char,Start of Growing Season,NA,NA,0,NA,NA
-eos_mean,Watershed Median,DOY,NA,ws_char,End of Growing Season,NA,NA,0,NA,NA
+eos_mean,Watershed Mean,DOY,NA,ws_char,End of Growing Season,NA,NA,0,NA,NA
 eos_sd,Watershed Standard Deviation,NA,NA,ws_char,End of Growing Season,NA,NA,0,NA,NA
-season_length_mean,Watershed Mean,Days,NA,ws_char,Season Length,NA,NA,0,NA,NA
-season_length_sd,Watershed Standard Deviation,%,NA,ws_char,Season Length,NA,NA,0,NA,NA
+los_mean,Watershed Mean,Days,NA,ws_char,Length of Growing Season,NA,NA,0,NA,NA
+los_sd,Watershed Standard Deviation,NA,NA,ws_char,Length of Growing Season,NA,NA,0,NA,NA
+mos_mean,Watershed Mean,DOY,NA,ws_char,Max Day in Growing Season,NA,NA,NA,NA,NA
+mos_sd,Watershed Standard Deviation,NA,NA,ws_char,Max Day in Growing Season,NA,NA,NA,NA,NA
 lai_max,Annual Maximum,m2/m2,NA,ws_char,Leaf Area Index,NA,NA,0,NA,NA
 lai_mean,Annual Mean,m2/m2,NA,ws_char,Leaf Area Index,NA,NA,0,NA,NA
 lai_min,Annual Minimum,m2/m2,NA,ws_char,Leaf Area Index,NA,NA,0,NA,NA
@@ -140,7 +143,7 @@ gpp_sd_space,Watershed Standard Deviation,NA,NA,ws_char,Gross Primary Production
 npp_median,Annual Sum,kg*C/m^2,NA,ws_char,Net Primary Production,NA,NA,0,NA,NA
 npp_sd,Watershed Standard Deviation,NA,NA,ws_char,Net Primary Production,NA,NA,0,NA,NA
 slope_mean,Mean Slope,%,NA,ws_char,Terrain,NA,NA,0,NA,NA
-area,Area,m^2,NA,ws_char,Terrain,NA,NA,0,NA,NA
+area,Area,km^2,NA,ws_char,Terrain,NA,NA,0,NA,NA
 MH_Al,Moss: Hygrohypnum: Aluminum,%,Dry weight before and after 550C muffle,bio,Other,expression(UNKNOWN),NA,0,NA,From Arctic LTER
 MH_B,Moss: Hygrohypnum: Boron,%,Dry weight before and after 550C muffle,bio,Other,expression(UNKNOWN),NA,0,NA,From Arctic LTER
 MH_Ca,Moss: Hygrohypnum: Calcium,%,Dry weight before and after 550C muffle,bio,Other,expression(UNKNOWN),NA,0,NA,From Arctic LTER

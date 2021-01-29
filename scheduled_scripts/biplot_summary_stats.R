@@ -349,6 +349,7 @@ compute_yearly_summary_ws <- function(df) {
                     if(str_split_fixed(prod_files[p], '/', n = Inf)[1,4] == 'terrain'){
 
                         prod_tib <- read_feather(prod_files[p]) %>%
+                            filter(var != 'area') %>%
                             select(-domain)
 
                     }
@@ -385,9 +386,20 @@ compute_yearly_summary_ws <- function(df) {
         }
     }
 
+
+
     conc_sum <- read_feather('data/general/biplot/year.feather')
 
     final <- rbind(conc_sum, all_domain)
+
+    areas <- site_data %>%
+        filter(site_type == 'stream_gauge') %>%
+        select(site_name, domain, val = ws_area_ha) %>%
+        mutate(Date = NA,
+               Year = NA,
+               var = 'area')
+
+    final <- rbind(areas, final)
     write_feather(final, 'data/general/biplot/year.feather')
 }
 
