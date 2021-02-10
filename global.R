@@ -64,7 +64,6 @@ source('function_aliases.R')
 load_portal_config(from_where = 'local')
 site_data <- filter(site_data, as.logical(in_workflow))
 
-
 #TODO: allow duplicate site_names
 # if(any(duplicated(site_data$site_name))) stop('site_names must be unique, even across domains')
 ## 1. nSiteNVar page setup ####

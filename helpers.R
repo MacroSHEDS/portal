@@ -445,7 +445,7 @@ generate_dropdown_varlist = function(chemvars, filter_set=NULL){
 
     chemvars = chemvars %>%
         mutate(displayname=paste0(variable_name, ' (', unit, ')')) %>%
-        select(displayname, variable_code, variable_subtype) %>%
+    select(displayname, variable_code, variable_subtype) %>%
         plyr::dlply(plyr::.(variable_subtype), function(x){
             plyr::daply(x, plyr::.(displayname), function(y){
                 y['variable_code']
@@ -488,36 +488,21 @@ numeric_any <- function(num_vec){
     return(as.numeric(any(as.logical(num_vec))))
 }
 
-# df=data3; agg_selection=agg; which_dataset='pchem'; conc_flux_selection=conc_flux
-# df=pchem3; agg_selection=agg; which_dataset='pchem'; conc_flux_selection=conc_flux
 ms_aggregate <- function(d, agg_selection, conc_flux_selection = NULL){
 
     #agg_selection is a user input object, e.g. input$AGG3
-    #which_dataset is one of 'chem', 'q', 'p', 'pchem'
-    #conc_flux_selection must be supplied as e.g. input$CONC_FLUX3 if
-        #which_dataset is 'chem' or 'pchem'
-
-    # if(! which_dataset %in% c('chem', 'q', 'p', 'pchem')){
-    #     stop("which_dataset must be one of 'chem', 'q', 'p', 'pchem'")
-    # }
-    #
-    # if(which_dataset %in% c('chem', 'pchem') && is.null(conc_flux_selection)){
-    #     stop(paste0("conc_flux_selection must be supplied when which_dataset",
-    #         "is 'chem' or'pchem'"))
-    # }
+    #conc_flux_selection is a user input object, e.g. input$CONC_FLUX3
 
     if(nrow(d) == 0) return(d)
     if(agg_selection == 'Instantaneous') return(d)
-    # if(agg_selection == 'Daily' && which_dataset == 'pchem') return(d)
 
     agg_period <- switch(agg_selection,
                          'Daily' = 'day',
                          'Monthly' = 'month',
                          'Yearly' = 'year')
 
-    # var_is_volumetric <- d$var[1] %in% c('precipitation', 'discharge')
     var_is_p <- d$var[1] == 'precipitation'
-    var_is_q <- d$var[1] == 'discharge'
+    # var_is_q <- d$var[1] == 'discharge'
 
     #round to desired_interval and summarize
     d <- sw(d %>%
@@ -526,11 +511,11 @@ ms_aggregate <- function(d, agg_selection, conc_flux_selection = NULL){
         group_by(site_name, var, datetime) %>%
         summarize(
             val = if(n() > 1){
-                if(var_is_q){
-                    max_ind <- which.max(val)
-                    if(max_ind) val[max_ind] else NA #max removes error
-                    # max(val, na.rm = TRUE)
-                } else if(conc_flux_selection == 'VWC' || var_is_p){
+                # if(var_is_q){
+                #     max_ind <- which.max(val)
+                #     if(max_ind) val[max_ind] else NA #max removes error
+                if(var_is_p){
+                # } else if(! conc_flux_selection %in% 'Concentration' || var_is_p){
                     sum(val, na.rm = TRUE)
                 } else {
                     mean(val, na.rm = TRUE)
@@ -996,11 +981,17 @@ load_portal_config <- function(from_where){
 
     if(from_where == 'remote'){
 
-        variables <- sm(googlesheets4::read_sheet(conf$variables_gsheet,
-                                                na = c('', 'NA')))
+        variables <- sm(googlesheets4::read_sheet(
+            conf$variables_gsheet,
+            na = c('', 'NA'),
+            col_types = 'cccccccnncc'
+        ))
 
-        site_data <- sm(googlesheets4::read_sheet(conf$site_data_gsheet,
-                                                  na = c('', 'NA')))
+        site_data <- sm(googlesheets4::read_sheet(
+            conf$site_data_gsheet,
+            na = c('', 'NA'),
+            col_types = 'ccccccccnnnnncc'
+        ))
 
     } else if(from_where == 'local'){
 
