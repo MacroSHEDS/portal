@@ -890,7 +890,7 @@ convert_conc_units_bi = function(df, col, input_unit='mg/L', desired_unit){
     return(df)
 }
 
-convert_flux_units_bi = function(df, col, input_unit='kg', desired_unit, summary_file){
+convert_flux_units_bi = function(df, col, input_unit='kg/year', desired_unit, summary_file){
 
     #df is a data frame or tibble of numeric flux data
     #input_unit is the unit of flux (must be 'kg/ha/d')
@@ -925,28 +925,30 @@ convert_flux_units_bi = function(df, col, input_unit='kg', desired_unit, summary
                 mutate(!!flux_cols := .data[[flux_cols]]/area) %>%
                 select(-area)
         }
-
-
-        flux_df = df[col_name]
-
-        converted = switch(desired_unit,
-                           'Mg/ha' = flux_df / 1000,
-                           'kg/ha' = flux_df,
-                           'g/ha' = flux_df * 1000,
-                           'mg/ha' = flux_df * 1000000)
-
-    } else{
-
-        flux_df = df[col_name]
-
-        converted = switch(desired_unit,
-                           'Mg' = flux_df / 1000,
-                           'kg' = flux_df,
-                           'g' = flux_df * 1000,
-                           'mg' = flux_df * 1000000)
     }
 
+    flux_df = df[col_name]
+
+    desired_unit_pre <- str_split_fixed(desired_unit, '/', n = Inf)[1,1]
+
+    converted = switch(desired_unit_pre,
+                       'Mg' = flux_df / 1000,
+                       'kg' = flux_df,
+                       'g' = flux_df * 1000,
+                       'mg' = flux_df * 1000000)
+
     df[flux_cols] = converted
+
+    time_length <- try(str_split_fixed(desired_unit, '/', n = Inf)[1,3])
+
+    if(time_length == 'd'){
+
+        flux_df = df[col_name]
+
+        time_conver <- flux_df/365
+
+        df[flux_cols] = time_conver
+    }
 
     return(df)
 }
@@ -982,6 +984,9 @@ convert_area_nor_q_bi = function(df, summary_file){
             filter(!is.na(discharge))
     }
 
+    df <- df %>%
+        rename(discharge_a = discharge)
+
     return(df)
 }
 
@@ -997,7 +1002,8 @@ load_portal_config <- function(from_where){
     if(from_where == 'remote'){
 
         variables <- sm(googlesheets4::read_sheet(conf$variables_gsheet,
-                                                na = c('', 'NA')))
+                                                na = c('', 'NA'),
+                                                col_types = 'cccccccnncc'))
 
         site_data <- sm(googlesheets4::read_sheet(conf$site_data_gsheet,
                                                   na = c('', 'NA')))
@@ -1170,4 +1176,49 @@ filter_agg_widen_unprefix <- function(d,
     # }
 
     return(d)
+}
+
+biplot_selection_to_name <- function(chem, unit, var){
+
+    var_ <- case_when(chem == 'Discharge' & unit == 'm^3' ~ 'discharge',
+                      chem == 'Discharge' & unit %in% c('mm/year', 'mm/d') ~ 'discharge_a',
+                      chem == 'Stream Concentration' ~ paste0(var, '_conc'),
+                      chem == 'Stream Flux' ~ paste0(var, '_flux'),
+                      chem == 'Watershed Characteristics' ~ var,
+                      chem == 'Year' ~ 'Year',
+                      chem == 'Precipitation' ~ 'precip',
+                      chem == 'Precipitation Chemistry' ~ paste0(var, '_precip_conc'),
+                      chem == 'Precipitation Chemistry Flux' ~ paste0(var, '_precip_flux'),
+                      chem == 'Proportion of Record Missing' ~ 'missing')
+
+    return(var_)
+}
+
+detrmin_mean_record_length <- function(df){
+
+    test <- df %>%
+        filter(Year != year(Sys.Date())) %>%
+        group_by(Year, Month, Day) %>%
+        summarise(max = max(val, na.rm = TRUE)) %>%
+        ungroup() %>%
+        filter(!(Month == 2 & Day == 29)) %>%
+        group_by(Month, Day) %>%
+        summarise(n = n())
+
+    if(mean(test$n, na.rm = TRUE) < 3){
+        return(nrow(test))
+    }
+
+    if(nrow(test) < 365) {
+
+        quart_val <- quantile(test$n, .2)
+
+        q_check <- test %>%
+            filter(n >= quart_val)
+
+        days_in_rec <- nrow(q_check)
+    } else{
+        days_in_rec <- 365
+    }
+    return(days_in_rec)
 }

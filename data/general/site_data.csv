@@ -100,7 +100,7 @@ neon,NEON,neon,NEON,Walker Branch,WALK,Walker Branch,stream_gauge,35.95947,-84.2
 neon,NEON,neon,NEON,LeConte Creek,LECO,LeConte Creek,stream_gauge,35.69043,-83.50379,4326,912.099386541036,1,NA,America/New_York
 konza,Konza,lter,LTER,N04D,N04D,?,stream_gauge,39.0874,-96.5844,4326,126.444670122611,1,NA,America/Chicago
 konza,Konza,lter,LTER,N20B,N20B,?,stream_gauge,39.08858,-96.57654,4326,76.0179275160646,1,NA,America/Chicago
-konza,Konza,lter,LTER,N01B,N01B,?,stream_gauge,39.08668,-96.577,4326,118.945889363743,1,NA,America/Chicago
+konza,Konza,lter,LTER,N01B,N01B,?,stream_gauge,39.08668,-96.577,4326,121.415317380234,1,NA,America/Chicago
 konza,Konza,lter,LTER,N02B,N02B,?,stream_gauge,39.0898,-96.5886,4326,95.980740688174,1,NA,America/Chicago
 konza,Konza,lter,LTER,HIKN,HIKN,Hiking Trail,stream_sampling_point,39.10713,-96.60664,4326,NA,1,NA,America/Chicago
 konza,Konza,lter,LTER,HOKN,HOKN,Hokanson,stream_sampling_point,39.10376,-96.59542,4326,NA,1,NA,America/Chicago
@@ -120,7 +120,7 @@ konza,Konza,lter,LTER,NA,N4DU,?,rain_gauge,39.0778,-96.5898,4326,NA,1,NA,America
 konza,Konza,lter,LTER,NA,002C,?,rain_gauge,39.0678,-96.5792,4326,NA,1,NA,America/Chicago
 konza,Konza,lter,LTER,NA,020B,?,rain_gauge,39.0756,-96.5758,4326,NA,1,NA,America/Chicago
 konza,Konza,lter,LTER,NA,K01B,?,rain_gauge,39.0862,-96.5631,4326,NA,1,NA,America/Chicago
-konza,Konza,lter,LTER,NA,N01B,?,rain_gauge,39.0849,-96.571,4326,118.945889363743,1,NA,America/Chicago
+konza,Konza,lter,LTER,NA,N01B,?,rain_gauge,39.0849,-96.571,4326,121.415317380234,1,NA,America/Chicago
 konza,Konza,lter,LTER,NA,N4DF,?,rain_gauge,39.0876,-96.5843,4326,NA,1,NA,America/Chicago
 konza,Konza,lter,LTER,Kings Creek,HIKX,Hiking Trail,stream_sampling_point,39.107,-96.6068,4326,NA,1,NA,America/Chicago
 baltimore,Baltimore,lter,LTER,NA,WXCMNC,Carrie Murray Nature Center,rain_gauge,39.30724722,-76.69507222,4326,NA,1,NA,America/New_York
@@ -230,10 +230,10 @@ santa_barbara,Santa Barbara,lter,LTER,NA,RG204,Refugio at Rancho La Scherpa,rain
 santa_barbara,Santa Barbara,lter,LTER,NA,HO201,Arroyo Hondo at East Avocado Orchard,rain_gauge,34.47651,-120.14064,4326,NA,1,NA,America/Los_Angeles
 santa_barbara,Santa Barbara,lter,LTER,NA,HO202,Arroyo Hondo at Upper Outlaw Trail,rain_gauge,34.49059,-120.13678,4326,NA,1,NA,America/Los_Angeles
 santa_barbara,Santa Barbara,lter,LTER,NA,GV201,Gaviota at Hwy 101 N rest stop,rain_gauge,34.48011,-120.22917,4326,NA,1,NA,America/Los_Angeles
-bonanza,Bonanza Creek,lter,LTER,NA,C2,NA,stream_gauge,65.159188,-147.607454,4326,494.220404853478,1,"alt site name:  C-2, C2-1100, C2 Flume",America/Anchorage
-bonanza,Bonanza Creek,lter,LTER,NA,C3,NA,stream_gauge,65.144853,-147.574368,4326,NA,1,alt site name:  C-3,America/Anchorage
+bonanza,Bonanza Creek,lter,LTER,NA,C2,NA,stream_gauge,65.159188,-147.607454,4326,516.252735472744,1,"alt site name:  C-2, C2-1100, C2 Flume",America/Anchorage
+bonanza,Bonanza Creek,lter,LTER,NA,C3,NA,stream_gauge,65.144853,-147.574368,4326,527.453940325682,1,alt site name:  C-3,America/Anchorage
 bonanza,Bonanza Creek,lter,LTER,NA,CB,NA,stream_sampling_point,65.15,-147.56,4326,NA,1,NA,America/Anchorage
-bonanza,Bonanza Creek,lter,LTER,NA,C4,Little Poker Creek,stream_gauge,65.162726,-147.50057,4326,0.658448056033891,1,"alt site name: C-4, C4 CTRL, Little Poker Creek, C4",America/Anchorage
+bonanza,Bonanza Creek,lter,LTER,NA,C4,Little Poker Creek,stream_gauge,65.162726,-147.50057,4326,NA,1,"alt site name: C-4, C4 CTRL, Little Poker Creek, C4",America/Anchorage
 bonanza,Bonanza Creek,lter,LTER,NA,P6,NA,stream_sampling_point,65.184791,-147.388939,4326,NA,1,NA,America/Anchorage
 bonanza,Bonanza Creek,lter,LTER,Poker Creek,PJ,NA,stream_sampling_point,65.15154566,-147.4841681,4326,NA,1,"alt site name: P-J, Poker Creek, Poker Main",America/Anchorage
 bonanza,Bonanza Creek,lter,LTER,Caribou Creek,CJ,NA,stream_sampling_point,65.15147902,-147.4856181,4326,NA,1,"alt site name:  C-J, Caribou Main, CM, Caribou Creek",America/Anchorage

@@ -1,6 +1,6 @@
 shinyjs.init = function() {
     //$(window).resize(shinyjs.getHeight50);
-    
+
     ////gotta style landing page this way because css can't uniquely reach it
     //var checkExist = setInterval(function() {
     //    if ($('#landing').length) {
@@ -70,7 +70,7 @@ shinyjs.init = function() {
         }
 
 
-        if( datatype !== 'VWC' && ! $('#SHOW_PCHEM3').is(':checked') ){ 
+        if( datatype !== 'VWC' && ! $('#SHOW_PCHEM3').is(':checked') ){
             $('input[name=AGG3][value=Daily]').removeAttr('disabled').siblings().css('color', '#485580');
             $('input[name=AGG3][value=Instantaneous]').removeAttr('disabled').siblings().css('color', '#485580');
         }
@@ -122,7 +122,7 @@ shinyjs.init = function() {
     function govern_qc3(){
         if( $('#SHOW_QC3').is(':checked') ){
             //$('#inlineQC3a').css('display', 'inline-block');
-            
+
             //$('[id^="inlineQC3"').attr('style', 'width: 25% !important; display: inline-block; vertical-align: top');
             //$('[id^="inlineMAIN3"').attr('style', 'width: 75% !important; display: inline-block; vertical-align: top');
             $('[id^="inlineQC3"').css('width', '25%');
@@ -131,7 +131,7 @@ shinyjs.init = function() {
             //$("inlineMAIN3a").css('width', '75%');
         } else {
             //$('#inlineQC3a').css('display', 'none');
-            
+
             //$('[id^="inlineQC3"').attr('style', 'width: 0% !important; display: inline-block; vertical-align: top');
             //$('[id^="inlineMAIN3"').attr('style', 'width: 100% !important; display: inline-block; vertical-align: top');
             $('[id^="inlineQC3"]').css('width', '0%');
@@ -175,7 +175,7 @@ shinyjs.init = function() {
     $('body').ready(function(){
         $('#INSTALLED_V_GRAB3').click(govern_gi3);
     });
-   
+
     //for sensor/nonsensor, ensure that at least one box is checked
     function govern_sn3(){
 
@@ -215,7 +215,7 @@ shinyjs.init = function() {
         });
         });
     });
-   
+
     //respond to insertions of shiny modal boxes into document.body
     var dom_observer = new MutationObserver(async function(mutation) {
 
