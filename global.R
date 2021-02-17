@@ -111,10 +111,10 @@ basedata <- list(
                            prodname = 'precipitation'),
     pchem = ms_read_portalsite(domain = default_domain,
                                site_name = default_site,
-                               prodname = 'precip_chemistry'),
-    pflux = ms_read_portalsite(domain = default_domain,
-                               site_name = default_site,
-                               prodname = 'precip_flux_inst_scaled')
+                               prodname = 'precip_chemistry')
+    # pflux = ms_read_portalsite(domain = default_domain,
+    #                            site_name = default_site,
+    #                            prodname = 'precip_flux_inst_scaled')
 )
 
 #date range for date selector
@@ -180,12 +180,17 @@ chemvars_display_subset <- filter_dropdown_varlist(basedata$chem)
 
 biplot_options <- chemvars_display_subset
 
-biplot_data_types <- c('Concentration', 'Flux', 'Discharge',
-                       'Watershed Characteristics')
+biplot_data_types <- c('Stream Concentration', 'Stream Flux', 'Discharge',
+                       'Watershed Characteristics', 'Precipitation',
+                       'Precipitation Chemistry', 'Precipitation Chemistry Flux')
 
-flux_units_bi <- c('Mg', 'kg', 'g', 'mg', 'Mg/ha', 'kg/ha', 'g/ha', 'mg/ha')
+flux_units_bi <- c('Mg/ha/d', 'kg/ha/d', 'g/ha/d', 'mg/ha/d',
+                   'Mg/ha/year', 'kg/ha/year','g/ha/year', 'mg/ha/year',
+                   'Mg/year', 'kg/year', 'g/year', 'mg/year')
 
 conc_units_bi <- c('ng/L', 'ug/L', 'mg/L', 'g/L')
+
+discharge_units_bi <- c('m^3', 'mm/year', 'mm/d')
 
 ws_traits <- generate_dropdown_varlist_ws(variables)
 

@@ -195,7 +195,7 @@ load_basedata <- eventReactive({
     chem <- read_combine_feathers('stream_chemistry',
                                   dmns = dmns,
                                   sites = sites)
-    flux <- read_combine_feathers('stream_flux_inst',
+    flux <- read_combine_feathers('stream_flux_inst_scaled',
                                   dmns = dmns,
                                   sites = sites)
     P <- read_combine_feathers('precipitation',
