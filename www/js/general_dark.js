@@ -52,7 +52,7 @@ shinyjs.init = function() {
 
         if( ['Concentration', 'VWC'].includes(datatype) &&
                 ['Monthly', 'Yearly'].includes($('input[name=AGG3]:checked').val()) ){
-            $('#SHOW_PCHEM3').removeAttr('disabled').siblings().css('color', '#333');
+            $('#SHOW_PCHEM3').removeAttr('disabled').siblings().css('color', '#FFFFFF');
 
             if(datatype == 'VWC'){
                 $('input[name=AGG3][value=Daily]').attr('disabled','disabled').siblings().css('color', 'gray');
@@ -64,15 +64,15 @@ shinyjs.init = function() {
             $('#SHOW_PCHEM3').attr('disabled','disabled').siblings().css('color', 'gray');
 
             if(datatype == 'VWC'){
-                $('input[name=AGG3][value=Daily]').removeAttr('disabled').siblings().css('color', '#333');
+                $('input[name=AGG3][value=Daily]').removeAttr('disabled').siblings().css('color', '#FFFFFF');
                 $('input[name=AGG3][value=Instantaneous]').removeAttr('disabled').siblings().css('color', '#333');
             }
         }
 
 
-        if( datatype !== 'VWC' && ! $('#SHOW_PCHEM3').is(':checked') ){ 
-            $('input[name=AGG3][value=Daily]').removeAttr('disabled').siblings().css('color', '#333');
-            $('input[name=AGG3][value=Instantaneous]').removeAttr('disabled').siblings().css('color', '#333');
+        if( datatype !== 'VWC' && ! $('#SHOW_PCHEM3').is(':checked') ){
+            $('input[name=AGG3][value=Daily]').removeAttr('disabled').siblings().css('color', '#FFFFFF');
+            $('input[name=AGG3][value=Instantaneous]').removeAttr('disabled').siblings().css('color', '#FFFFFF');
         }
 
     };
@@ -88,7 +88,7 @@ shinyjs.init = function() {
     //disable VWC unless monthly or annual aggregation selected
     function govern_VWC3(){
         if( ['Monthly', 'Yearly'].includes($('input[name=AGG3]:checked').val()) ){
-            $('input[name=CONC_FLUX3][value=VWC]').removeAttr('disabled').siblings().css('color', '#333');
+            $('input[name=CONC_FLUX3][value=VWC]').removeAttr('disabled').siblings().css('color', '#FFFFFF');
         } else {
             $('input[name=CONC_FLUX3][value=VWC]').attr('disabled', 'disabled').siblings().css('color', 'gray');
         }
@@ -105,11 +105,11 @@ shinyjs.init = function() {
             $('input[name=AGG3][value=Instantaneous]').attr('disabled', 'disabled').siblings().css('color', 'gray');
             $('input[name=AGG3][value=Daily]').attr('disabled', 'disabled').siblings().css('color', 'gray');
         } else {
-            $('input[name=CONC_FLUX3][value=Flux]').removeAttr('disabled').siblings().css('color', '#333');
+            $('input[name=CONC_FLUX3][value=Flux]').removeAttr('disabled').siblings().css('color', '#FFFFFF');
 
             if( $('input[name=CONC_FLUX3]:checked').val() !== 'VWC' ){
                 $('input[name=AGG3][value=Instantaneous]').removeAttr('disabled').siblings().css('color', '#333');
-                $('input[name=AGG3][value=Daily]').removeAttr('disabled').siblings().css('color', '#333');
+                $('input[name=AGG3][value=Daily]').removeAttr('disabled').siblings().css('color', '#FFFFFF');
             }
         }
     };
@@ -134,7 +134,7 @@ shinyjs.init = function() {
     //$('body').ready(function(){
     //    $('#SHOW_QC3').click(govern_qc3);
     //});
-   
+
 }
 
 //shinyjs.calcHeight = function(propHeight) {

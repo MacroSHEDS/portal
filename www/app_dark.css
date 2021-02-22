@@ -35,6 +35,10 @@ SPLASH PAGE (handled by js now that modals are used elsewhere in app)
 APP TEXT FORMATTING
 */
 
+#landing, .modal-content {
+    background-color: #000000;
+}
+
 .section-heading {
     color: #FBFBFB;
     font-weight: bold;
@@ -150,6 +154,10 @@ a:hover {
 .col-sm-4 form.well {
     background-color: #000000 !important;
 }
+
+/*.col-sm-8, .tab-pane, .container-fluid, .content {
+    background-color: #B0B0B0;
+}*/
 
 .navbar-default .navbar-nav>.active>a:focus,
 .navbar-default .navbar-nav>.active>a {

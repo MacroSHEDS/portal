@@ -64,6 +64,7 @@ TPC,Total Particulate Carbon,mg/L,UNKNOWN,chem_discrete,Other,expression(UNKNOWN
 TPN,Total Particulate Nitrogen,mg/L,UNKNOWN,chem_discrete,Other,expression(UNKNOWN),NA,0,N,NA
 TPP,Total Particulate Phosphorus,mg/L,UNKNOWN,chem_discrete,Other,expression(UNKNOWN),NA,0,P,also known as particulate phosphorus
 TSS,Total Suspended Solids,mg/L,UNKNOWN,phys,Other,expression(UNKNOWN),NA,0,NA,NA
+VSS,Volatile Suspended Sediment,mg/L,UNKNOWN,phys,Other,expression(UNKNOWN),NA,0,NA,NA
 abs250,UV Absorbance at 250nm,unitless,UNKNOWN,phys,Other,expression(UNKNOWN),NA,0,NA,NA
 abs280,UV Absorbance at 280nm,unitless,UNKNOWN,phys,Other,expression(UNKNOWN),NA,0,NA,NA
 abs254,UV Absorbance at 254nm,unitless,UNKNOWN,phys,Other,expression(UNKNOWN),NA,0,NA,NA
@@ -153,8 +154,8 @@ sos_mean,Watershed Mean,DOY,UNKNOWN,ws_char,Start of Growing Season,NA,NA,0,NA,N
 sos_sd,Watershed Standard Deviation,NA,UNKNOWN,ws_char,Start of Growing Season,NA,NA,0,NA,NA
 eos_mean,Watershed Mean,DOY,UNKNOWN,ws_char,End of Growing Season,NA,NA,0,NA,NA
 eos_sd,Watershed Standard Deviation,NA,UNKNOWN,ws_char,End of Growing Season,NA,NA,0,NA,NA
-los_mean,Watershed Mean,Days,UNKNOWN,ws_char,Length of Growing Season,NA,NA,0,NA,NA
-los_sd,Watershed Standard Deviation,NA,UNKNOWN,ws_char,Length of Growing Season,NA,NA,0,NA,NA
+season_length_mean,Watershed Mean,Days,UNKNOWN,ws_char,Length of Growing Season,NA,NA,0,NA,NA
+season_length_sd,Watershed Standard Deviation,NA,UNKNOWN,ws_char,Length of Growing Season,NA,NA,0,NA,NA
 mos_mean,Watershed Mean,DOY,UNKNOWN,ws_char,Max Day in Growing Season,NA,NA,0,NA,NA
 mos_sd,Watershed Standard Deviation,NA,UNKNOWN,ws_char,Max Day in Growing Season,NA,NA,0,NA,NA
 lai_max,Annual Maximum,m2/m2,UNKNOWN,ws_char,Leaf Area Index,NA,NA,0,NA,NA
