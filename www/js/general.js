@@ -216,14 +216,53 @@ shinyjs.init = function() {
         });
     });
 
+    //set td elements' titles to their contents, so the user can mouseover to see hidden text
+    set_td_titles = function(i){
+        var titleVal = $(this).text();
+        if(typeof titleVal === "string" && titleVal !== ''){
+            $(this).attr('title', titleVal);
+        };
+    };
+
+    var partial = function(fn, var_args) {
+      var args = Array.prototype.slice.call(arguments, 1);
+      return function() {
+        // Clone the array (with slice()) and append additional arguments
+        // to the existing arguments.
+        var newArgs = args.slice();
+        newArgs.push.apply(newArgs, arguments);
+        return fn.apply(this, newArgs);
+      };
+    };
+
+    //make variable subcatalogs pop up when user clicks "see availability" buttons in modals
+    set_tablebutton_listener = function(btn, modal_id_){
+
+        //var btn = $(this);
+        var btn = $(btn);
+        var btn_id = btn.attr('id');
+
+        btn.on('click', function(){
+
+            if(modal_id_ == 'variable_catalog'){
+                console.log('VARIABLE SUB-CATALOG LISTENER');
+                Shiny.setInputValue('VARIABLE_SUBCATALOG_BUTTON_LISTENER', btn_id, {priority: 'event'});
+//                            Shiny.setInputValue('VARIABLE_SUBCATALOG_BUTTON_LISTENER', null);//, {priority: 'event'});
+            } else if(modal_id_ == 'site_catalog'){
+                console.log('SITE SUB-CATALOG LISTENER');
+                Shiny.setInputValue('SITE_SUBCATALOG_BUTTON_LISTENER', btn_id, {priority: 'event'});
+            } else {
+                console.log('unhandled button detected inside a modal table');
+            }
+
+        });
+    };
+
     //respond to insertions of shiny modal boxes into document.body
-    var dom_observer = new MutationObserver(async function(mutation) {
+    var dom_observer1 = new MutationObserver(async function(mutation) {
 
         var tgt = $(target);
         var shinymodal = tgt.children('#shiny-modal-wrapper');
-        //var nmodals = shinymodals.length;
-        //
-        //if(nmodals > 0){
         if(shinymodal.length > 0){
 
             //make modal fullscreen
@@ -231,53 +270,53 @@ shinyjs.init = function() {
                 .children('.modal-dialog').css({'width': '100%', 'height': '100%', 'margin': '0px'})
                 .children('.modal-content').css({'width': '100%', 'height': '100%'});
 
-            await new Promise(r => setTimeout(r, 1000)); //wait a second for the modal and its table to load
-
-            //for(var i = 0; i < nmodals; i++){ //for each modal present (there can only be one at a time under shiny)
-            //
-            //var modal = $(shinymodals[i]);
             var modal_id = shinymodal.find('.modal-body').attr('id');
             if(modal_id === 'landing'){
                 return;
             }
 
+            await new Promise(r => setTimeout(r, 1000)); //wait a second for the modal and its table to load
 
-            //set all td elements' titles to their contents, so the user can mouseover to see hidden text
-            shinymodal.find('td').each(function(i){
-                var titleVal = $(this).text();
-                if(typeof titleVal === "string" && titleVal !== ''){
-                    $(this).attr('title', titleVal);
-                };
-            });
+            shinymodal.find('td').each(set_td_titles);
 
-            //set up listeners for all button elements inside table cells
-            shinymodal.find('td button').each(function(i){
+            //set up listeners for all button elements inside table cells (uses partial application)
+            shinymodal.find('td button').each(partial(function(index, value){
+                set_tablebutton_listener(btn = arguments[2], modal_id_ = arguments[0]);
+            }, modal_id));
 
-                var btn = $(this)
-                var btn_id = btn.attr('id')
-
-                btn.on('click', function(){
-
-                    if(modal_id == 'variable_catalog'){
-                        console.log('VARIABLE SUB-CATALOG LISTENER');
-                        Shiny.setInputValue('VARIABLE_SUBCATALOG_BUTTON_LISTENER', btn_id, {priority: 'event'});
-//                            Shiny.setInputValue('VARIABLE_SUBCATALOG_BUTTON_LISTENER', null);//, {priority: 'event'});
-                    } else if(modal_id == 'site_catalog'){
-                        console.log('SITE SUB-CATALOG LISTENER');
-                        Shiny.setInputValue('SITE_SUBCATALOG_BUTTON_LISTENER', btn_id, {priority: 'event'});
-                    } else {
-                        console.log('unhandled button detected inside a modal table');
-                    }
-
-                });
-            });
-            //};
+            ////set up listeners that update td titles and button events when paginate buttons are clicked
+            //shinymodal.find("a[class^='paginate_button']").click(function listener_recurse(i, v){
+            //    console.log('a');
+            //    window.setTimeout(function(){
+            //        console.log('gg');
+            //    }, 500);
+            //    $('td').each(set_td_titles);
+            //    $("a[class^='paginate_button']").click(listener_recurse(i, v));
+            //});
         };
     });
 
     //configure and register mutation observer for modals
-    var config = { attributes: true, childList: true, characterData: true };
-    dom_observer.observe(target = document.body, config);
+    var mutation_observer_config_1 = { attributes: true, childList: true, characterData: true };
+    dom_observer1.observe(target = document.body, mutation_observer_config_1);
+
+    //each time a new catalog page is loaded, remake the cell titles and button events
+    $('body').on('click', "a[class^='paginate_button']", function(i, v){
+
+        window.setTimeout(function(){
+
+            var modl = $('.modal-body');
+            var modal_id = modl.attr('id');
+
+            modl.find('td').each(set_td_titles);
+            
+            //set up listeners for all button elements inside table cells (uses partial application)
+            modl.find('td button').each(partial(function(index, value){
+                set_tablebutton_listener(btn = arguments[2], modal_id_ = arguments[0]);
+            }, modal_id));
+
+        }, 200);
+    });
 
 }
 

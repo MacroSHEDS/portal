@@ -39,7 +39,7 @@ observeEvent({
         ! is.null(input$FLAGS3) &&
         ! is.null(input$INTERP3) &&
         length(input$VARS3) == 1
-    ){ TRUE } else return()
+    ){ TRUE } else NULL
 }, {
     print('rvalA')
     reactive_vals$facet3a = reactive_vals$facet3a + 1
@@ -63,7 +63,7 @@ observeEvent({
         ! is.null(input$FLAGS3) &&
         ! is.null(input$INTERP3) &&
         length(input$VARS3) == 2
-    ){ TRUE } else return()
+    ){ TRUE } else NULL
     # if(length(input$VARS3) == 2){
     #     TRUE
     # } else return()
@@ -91,7 +91,7 @@ observeEvent({
         ! is.null(input$FLAGS3) &&
         ! is.null(input$INTERP3) &&
         length(input$VARS3) == 3
-    ){ TRUE } else return()
+    ){ TRUE } else NULL
     # if(length(input$VARS3) == 3){
     #     TRUE
     # } else return()
