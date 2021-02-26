@@ -15,19 +15,19 @@ hbef,HBEF,lter,LTER,NA,RG22,Rain Gauge 22,rain_gauge,43.9440218597392,-71.701229
 hbef,HBEF,lter,LTER,NA,N,?,rain_gauge,44,-72,4326,NA,1,still need real coords for these,America/New_York
 hbef,HBEF,lter,LTER,NA,S,?,rain_gauge,44,-72,4326,NA,1,still need real coords for these,America/New_York
 hbef,HBEF,lter,LTER,NA,SP,?,rain_gauge,44,-72,4326,NA,1,still need real coords for these,America/New_York
-hjandrews,H. J. Andrews,lter,LTER,Lookout Creek,GSLOOK,?,stream_gauge,44.2101255022,-122.257145776,4326,5425.68309458722,1,NA,America/Los_Angeles
-hjandrews,H. J. Andrews,lter,LTER,Stream 1,GSWS01,?,stream_gauge,44.2073394042,-122.258027394,4326,98.179909867494,1,NA,America/Los_Angeles
-hjandrews,H. J. Andrews,lter,LTER,Stream 2,GSWS02,?,stream_gauge,44.2120146041,-122.244875675,4326,59.1765131338648,1,NA,America/Los_Angeles
-hjandrews,H. J. Andrews,lter,LTER,Stream 3,GSWS03,?,stream_gauge,44.2194395724,-122.24300003,4326,93.0122661536392,1,NA,America/Los_Angeles
-hjandrews,H. J. Andrews,lter,LTER,Stream 6,GSWS06,?,stream_gauge,44.2615081253,-122.180706523,4326,12.0161624840476,1,NA,America/Los_Angeles
-hjandrews,H. J. Andrews,lter,LTER,Stream 7,GSWS07,?,stream_gauge,44.2646368258,-122.175264862,4326,12.4289382059047,1,NA,America/Los_Angeles
-hjandrews,H. J. Andrews,lter,LTER,Stream 8,GSWS08,?,stream_gauge,44.266294258,-122.170792538,4326,16.0432452391735,1,NA,America/Los_Angeles
-hjandrews,H. J. Andrews,lter,LTER,Stream 9,GSWS09,?,stream_gauge,44.2011898244,-122.258801374,4326,7.16819826797768,1,NA,America/Los_Angeles
-hjandrews,H. J. Andrews,lter,LTER,stream 10,GSWS10,?,stream_gauge,44.2170569856,-122.261055512,4326,11.4555450985217,1,NA,America/Los_Angeles
+hjandrews,H. J. Andrews,lter,LTER,Lookout Creek,GSLOOK,?,stream_gauge,44.2101255022,-122.257145776,4326,5425.57434443947,1,NA,America/Los_Angeles
+hjandrews,H. J. Andrews,lter,LTER,Stream 1,GSWS01,?,stream_gauge,44.2073394042,-122.258027394,4326,98.17802012866,1,NA,America/Los_Angeles
+hjandrews,H. J. Andrews,lter,LTER,Stream 2,GSWS02,?,stream_gauge,44.2120146041,-122.244875675,4326,59.1752301556378,1,NA,America/Los_Angeles
+hjandrews,H. J. Andrews,lter,LTER,Stream 3,GSWS03,?,stream_gauge,44.2194395724,-122.24300003,4326,93.0102424025951,1,NA,America/Los_Angeles
+hjandrews,H. J. Andrews,lter,LTER,Stream 6,GSWS06,?,stream_gauge,44.2615081253,-122.180706523,4326,12.0159725946428,1,NA,America/Los_Angeles
+hjandrews,H. J. Andrews,lter,LTER,Stream 7,GSWS07,?,stream_gauge,44.2646368258,-122.175264862,4326,12.428741828231,1,NA,America/Los_Angeles
+hjandrews,H. J. Andrews,lter,LTER,Stream 8,GSWS08,?,stream_gauge,44.266294258,-122.170792538,4326,16.0429908562031,1,NA,America/Los_Angeles
+hjandrews,H. J. Andrews,lter,LTER,Stream 9,GSWS09,?,stream_gauge,44.2011898244,-122.258801374,4326,7.16809254811332,1,NA,America/Los_Angeles
+hjandrews,H. J. Andrews,lter,LTER,stream 10,GSWS10,?,stream_gauge,44.2170569856,-122.261055512,4326,11.4553743832537,1,NA,America/Los_Angeles
 hjandrews,H. J. Andrews,lter,LTER,Mack Creek,GSWSMA,?,stream_gauge,44.217,-122.171,4326,1.08024168624171,1,estimated ws area from Q and gage location by eyeballing,America/Los_Angeles
 hjandrews,H. J. Andrews,lter,LTER,Mack Creek,GSWSMC,?,stream_gauge,44.2194360697,-122.16744705,4326,577.800466448268,1,NA,America/Los_Angeles
 hjandrews,H. J. Andrews,lter,LTER,Mack Creek,GSWSMF,?,stream_gauge,44.212,-122.16,4326,373.097955591284,1,estimated ws area from Q and gage location by eyeballing,America/Los_Angeles
-hjandrews,H. J. Andrews,lter,LTER,Mack Creek,GSMACK,?,stream_gauge,44.21944,-122.1674,4326,579.06121190667,1,NA,America/Los_Angeles
+hjandrews,H. J. Andrews,lter,LTER,Mack Creek,GSMACK,?,stream_gauge,44.21944,-122.1674,4326,579.049557975353,1,NA,America/Los_Angeles
 hjandrews,H. J. Andrews,lter,LTER,NA,RD1507,1507 Road Storage RG,rain_gauge,44.205599,-122.166083,4326,NA,1,NA,America/Los_Angeles
 hjandrews,H. J. Andrews,lter,LTER,NA,L523RG,Hi-15 Unit L523 Storage RG,rain_gauge,44.265333,-122.18207,4326,NA,1,NA,America/Los_Angeles
 hjandrews,H. J. Andrews,lter,LTER,NA,BLUERD,Blue Ridge Standard RG,rain_gauge,44.234765,-122.230991,4326,NA,1,NA,America/Los_Angeles
@@ -37,7 +37,7 @@ hjandrews,H. J. Andrews,lter,LTER,NA,EARTHF,Earthflow Standard RG,rain_gauge,44.
 hjandrews,H. J. Andrews,lter,LTER,NA,FORKS_,Forks Standard RG,rain_gauge,44.22249,-122.240035,4326,NA,1,NA,America/Los_Angeles
 hjandrews,H. J. Andrews,lter,LTER,NA,FRISEL,Frissell Ridge Storage RG,rain_gauge,44.227168,-122.10624,4326,NA,1,NA,America/Los_Angeles
 hjandrews,H. J. Andrews,lter,LTER,NA,WS3GRD,WS#3 G Road Standard RG,rain_gauge,44.216648,-122.231448,4326,NA,1,NA,America/Los_Angeles
-hjandrews,H. J. Andrews,lter,LTER,NA,GSMACK,Mack Creek Gaging Station Standard RG,rain_gauge,44.21928,-122.167472,4326,579.06121190667,1,NA,America/Los_Angeles
+hjandrews,H. J. Andrews,lter,LTER,NA,GSMACK,Mack Creek Gaging Station Standard RG,rain_gauge,44.21928,-122.167472,4326,579.049557975353,1,NA,America/Los_Angeles
 hjandrews,H. J. Andrews,lter,LTER,NA,WS3JRD,WS#3 J Road Standard RG,rain_gauge,44.211035,-122.233762,4326,NA,1,NA,America/Los_Angeles
 hjandrews,H. J. Andrews,lter,LTER,NA,MCRAEB,McRae Bridge Standard RG,rain_gauge,44.232959,-122.209223,4326,NA,1,NA,America/Los_Angeles
 hjandrews,H. J. Andrews,lter,LTER,NA,MIDWAY,Midway Standard RG,rain_gauge,44.251137,-122.185031,4326,NA,1,NA,America/Los_Angeles
@@ -131,18 +131,18 @@ baltimore,Baltimore,lter,LTER,NA,WXGFND,Gwynns Falls Near Delight,rain_gauge,39.
 baltimore,Baltimore,lter,LTER,NA,WXMCDO,McDonogh School,rain_gauge,39.39633611,-76.77140833,4326,NA,1,NA,America/New_York
 baltimore,Baltimore,lter,LTER,NA,WXORDG,Oregon Ridge Park,rain_gauge,39.49656944,-76.68900556,4326,NA,1,NA,America/New_York
 baltimore,Baltimore,lter,LTER,NA,WXUMBC,UMBC Campus,rain_gauge,39.2543,-76.70233889,4326,NA,1,NA,America/New_York
-baltimore,Baltimore,lter,LTER,Gwynns Falls,GFCP,Gwynns Falls at Carroll Park,stream_gauge,39.2715,-76.649,4326,16317.4478798946,1,Collocated with USGS gauge 01589352,America/New_York
-baltimore,Baltimore,lter,LTER,Gwynns Falls,GFGB,Gwynns Falls at Gwynnbrook Avenue,stream_gauge,39.443,-76.783,4326,1052.82335077648,1,Collocated with USGS gauge 01589197,America/New_York
-baltimore,Baltimore,lter,LTER,Gwynns Falls,GFGL,Gwynns Falls at Glyndon,stream_gauge,39.4718,-76.817,4326,85.4460652716263,1,Collocated with USGS gauge 01589180,America/New_York
-baltimore,Baltimore,lter,LTER,Gwynns Falls,GFVN,Gwynns Falls at Villa Nova,stream_gauge,39.3458,-76.733,4326,8295.10280539584,1,Collocated with USGS gauge 01589300,America/New_York
-baltimore,Baltimore,lter,LTER,Pond Branch,POBR,Pond Branch forested reference site,stream_gauge,39.4803,-76.688,4326,35.797559317447,1,Collocated with USGS gauge 01583570,America/New_York
-baltimore,Baltimore,lter,LTER,Dead Run,DRKR,Dead Run at Krome Avenue,stream_gauge,39.3112,-76.717,4326,1411.38315697822,1,Collocated with USGS gauge 01589330,America/New_York
-baltimore,Baltimore,lter,LTER,Baisman Run,BARN,Baisman Run at Ivy Hill Road,stream_gauge,39.4794,-76.678,4326,382.395121543823,1,Collocated with USGS gauge 01583580,America/New_York
+baltimore,Baltimore,lter,LTER,Gwynns Falls,GFCP,Gwynns Falls at Carroll Park,stream_gauge,39.2715,-76.649,4326,16317.4586167544,1,Collocated with USGS gauge 01589352,America/New_York
+baltimore,Baltimore,lter,LTER,Gwynns Falls,GFGB,Gwynns Falls at Gwynnbrook Avenue,stream_gauge,39.443,-76.783,4326,1052.82392379943,1,Collocated with USGS gauge 01589197,America/New_York
+baltimore,Baltimore,lter,LTER,Gwynns Falls,GFGL,Gwynns Falls at Glyndon,stream_gauge,39.4718,-76.817,4326,85.446106678451,1,Collocated with USGS gauge 01589180,America/New_York
+baltimore,Baltimore,lter,LTER,Gwynns Falls,GFVN,Gwynns Falls at Villa Nova,stream_gauge,39.3458,-76.733,4326,8295.10738784443,1,Collocated with USGS gauge 01589300,America/New_York
+baltimore,Baltimore,lter,LTER,Pond Branch,POBR,Pond Branch forested reference site,stream_gauge,39.4803,-76.688,4326,35.7976002761846,1,Collocated with USGS gauge 01583570,America/New_York
+baltimore,Baltimore,lter,LTER,Dead Run,DRKR,Dead Run at Krome Avenue,stream_gauge,39.3112,-76.717,4326,1411.38383839179,1,Collocated with USGS gauge 01589330,America/New_York
+baltimore,Baltimore,lter,LTER,Baisman Run,BARN,Baisman Run at Ivy Hill Road,stream_gauge,39.4794,-76.678,4326,382.395526291699,1,Collocated with USGS gauge 01583580,America/New_York
 baltimore,Baltimore,lter,LTER,NA,RGHT,Rognel Heights,stream_sampling_point,39.2547,-76.69,4326,NA,1,point does not look to be on a flow line,America/New_York
-baltimore,Baltimore,lter,LTER,NA,MCDN,McDonogh agricultural site,stream_gauge,39.4004,-76.77,4326,5.61447168191599,1,Collocated with USGS gauge 01589238.,America/New_York
+baltimore,Baltimore,lter,LTER,NA,MCDN,McDonogh agricultural site,stream_gauge,39.4004,-76.77,4326,5.61447518986847,1,Collocated with USGS gauge 01589238.,America/New_York
 baltimore,Baltimore,lter,LTER,Gwynns Run,GRGF,Gwynns Run at Gwynns Run,stream_sampling_point,NA,NA,4326,NA,0,"In baltimore meta data but cant find coordinates, maybe collocated with USGS gauge 0158935180",America/New_York
 baltimore,Baltimore,lter,LTER,Gwynns Falls,GFuGR,Gwynns Falls above Gwynns Run,stream_sampling_point,NA,NA,4326,NA,0,In baltimore meta data but cant find coordinates,America/New_York
-baltimore,Baltimore,lter,LTER,Maidens Choice,MAWI,Maidens Choice at Wilkens Avenue,stream_gauge,39.2755,-76.666,4326,1217.57110640112,1,"Was collocated with USGS gauge 01589351, but sampling and gauging only overlap for a short time",America/New_York
+baltimore,Baltimore,lter,LTER,Maidens Choice,MAWI,Maidens Choice at Wilkens Avenue,stream_gauge,39.2755,-76.666,4326,1224.15109685439,1,"Was collocated with USGS gauge 01589351, but sampling and gauging only overlap for a short time",America/New_York
 baltimore,Baltimore,lter,LTER,Gwynns Run,GRuTW,Gwynns Run above trash weir,stream_sampling_point,NA,NA,4326,NA,0,In baltimore meta data but cant find coordinates,America/New_York
 baltimore,Baltimore,lter,LTER,NA,CBLM,NA,stream_sampling_point,NA,NA,4326,NA,0,In baltimore meta data but cant find coordinates,America/New_York
 baltimore,Baltimore,lter,LTER,Red Run,RR1,"Red Run at Painters Mill Bridge Road, Suburban",stream_sampling_point,39.404756,-76.779566,4326,NA,1,Cant find collocated USGS gauge,America/New_York
@@ -168,11 +168,11 @@ niwot,Niwot,lter,LTER,Saddle Stream 007,SADDLE_007,Saddle Stream 007,stream_samp
 niwot,Niwot,lter,LTER,Saddle Stream,SADDLE,Saddle Stream,stream_gauge,40.04903177,-105.5923174,4326,19.9508915072608,1,NA,America/Denver
 niwot,Niwot,lter,LTER,NA,FLUME,Watershed Flume,stream_sampling_point,40.01368597,-105.5578493,4326,NA,1,NA,America/Denver
 niwot,Niwot,lter,LTER,NA,ROCK_GLACIER,Green Lake 5 Rock Glacier,stream_sampling_point,40.05213501,-105.6289841,4326,NA,1,NA,America/Denver
-niwot,Niwot,lter,LTER,NA,saddle,Saddle Climate Station,rain_gauge,40.05492794,-105.5893007,4326,NA,NA,NA,America/Denver
-niwot,Niwot,lter,LTER,NA,C1,C1 Climate Station,rain_gauge,40.0361669465,-105.543515181,4326,NA,NA,NA,America/Denver
-niwot,Niwot,lter,LTER,NA,D1,D1 Climate Station,rain_gauge,40.059693,-105.617012,4326,NA,NA,NA,America/Denver
+niwot,Niwot,lter,LTER,NA,saddle,Saddle Climate Station,rain_gauge,40.05492794,-105.5893007,4326,NA,1,NA,America/Denver
+niwot,Niwot,lter,LTER,NA,C1,C1 Climate Station,rain_gauge,40.0361669465,-105.543515181,4326,NA,1,NA,America/Denver
+niwot,Niwot,lter,LTER,NA,D1,D1 Climate Station,rain_gauge,40.059693,-105.617012,4326,NA,1,NA,America/Denver
 santa_barbara,Santa Barbara,lter,LTER,Arroyo Burro,AB00,"Arroyo Burro, Arroyo Burro at Cliff Drive",stream_gauge,34.40505027,-119.74021,4326,2336.62239240964,1,NA,America/Los_Angeles
-santa_barbara,Santa Barbara,lter,LTER,Atascadero Creek,AT07,"Atascadero Creek, Atascadero at Puente",stream_gauge,34.43226,-119.78414,4326,5.97553227657677,1,NA,America/Los_Angeles
+santa_barbara,Santa Barbara,lter,LTER,Atascadero Creek,AT07,"Atascadero Creek, Atascadero at Puente",stream_gauge,34.43226,-119.78414,4326,999.7354,1,NA,America/Los_Angeles
 santa_barbara,Santa Barbara,lter,LTER,Bell Canyon Creek,BC02,Bell Canyon Creek at Winchester Canyon Road culvert,stream_gauge,34.43854,-119.90563,4326,1514.06006854324,1,NA,America/Los_Angeles
 santa_barbara,Santa Barbara,lter,LTER,Devereaux Creek,DV01,Devereaux Creek at Devereaux Slough inflow,stream_gauge,34.41761,-119.87406,4326,827.431000714369,1,NA,America/Los_Angeles
 santa_barbara,Santa Barbara,lter,LTER,"Gaviota, Gaviota",GV01,"Gaviota, Gaviota at Hwy 101 South Rest Stop Exit",stream_gauge,34.4855,-120.22917,4326,4963.38328913674,1,NA,America/Los_Angeles
@@ -184,7 +184,7 @@ santa_barbara,Santa Barbara,lter,LTER,Refugio Creek,RG01,Refugio at Hwy 101 Brid
 santa_barbara,Santa Barbara,lter,LTER,Rattlesnake Creek,RS02,Rattlesnake at Las Canoas Bridge,stream_gauge,34.45761111,-119.69222,4326,549.919864558674,1,NA,America/Los_Angeles
 santa_barbara,Santa Barbara,lter,LTER,San Pedro Creek,SP02,"San Pedro Creek at Stow Canyon Park, Goleta",stream_gauge,34.44861,-119.84028,4326,908.028483525354,1,NA,America/Los_Angeles
 santa_barbara,Santa Barbara,lter,LTER,Franklin Creek,FK00,"Franklin Creek, Carpinteria Ave",stream_gauge,34.40164787,-119.52145,4326,697.006548219606,1,NA,America/Los_Angeles
-santa_barbara,Santa Barbara,lter,LTER,Tecolotito Creek,TE03,"Tecolotito Creek, Hollister Road",stream_gauge,34.43055,-119.85762,4326,NA,1,NA,America/Los_Angeles
+santa_barbara,Santa Barbara,lter,LTER,Tecolotito Creek,TE03,"Tecolotito Creek, Hollister Road",stream_gauge,34.43055,-119.85762,4326,181.199034121387,1,NA,America/Los_Angeles
 santa_barbara,Santa Barbara,lter,LTER,Santa Monica Creek,SM04,Santa Monica at Scoop,stream_gauge,34.41898512,-119.52701,4326,926.920942848895,1,NA,America/Los_Angeles
 santa_barbara,Santa Barbara,lter,LTER,Carpinteria Creek,CP00,"Carpinteria Creek, 8th St Foot Bridge",stream_gauge,34.39301245,-119.51413,4326,NA,1,NA,America/Los_Angeles
 santa_barbara,Santa Barbara,lter,LTER,Tecolote Creek,TO02,"Tecolote Creek, at Vereda Galeria, Goleta",stream_sampling_point,34.440614,-119.917915,4326,NA,1,NA,America/Los_Angeles
@@ -289,7 +289,7 @@ plum,Plum Island Ecosystem,lter,LTER,NA,governors_academy,"meteorological statio
 plum,Plum Island Ecosystem,lter,LTER,Fish Brook,fish_brook,"Fish Brook, Boxford, MA",stream_sampling_point,42.65831,-71.004821,4326,NA,1,NA,America/New_York
 plum,Plum Island Ecosystem,lter,LTER,Cart Creek,cart_creek,"Cart Creek (forest landuse), Newbury, MA",stream_gauge,42.7692,-70.9165,4326,240.109281119725,1,NA,America/New_York
 plum,Plum Island Ecosystem,lter,LTER,Saw Mill Brook,saw_mill_brook,"Saw Mill Brook (urban landuse), Burlington, MA",stream_gauge,42.523601531982,-71.184997558594,4326,339.127745610234,1,NA,America/New_York
-plum,Plum Island Ecosystem,lter,LTER,Bear Meadow Brook,bear_meadow,"Cedar Swamp (wetland landuse), Bear Meadow Brook, Reading, MA",stream_gauge,42.5495,-71.0909,4326,19.7515524396511,1,NA,America/New_York
+plum,Plum Island Ecosystem,lter,LTER,Bear Meadow Brook,bear_meadow,"Cedar Swamp (wetland landuse), Bear Meadow Brook, Reading, MA",stream_gauge,42.5495,-71.0909,4326,284.899,1,watershed is not being delineated correctly,America/New_York
 plum,Plum Island Ecosystem,lter,LTER,Ispwich River,upper_ipswich,Ipswich River at N. Reading site,stream_gauge,42.5625662,-71.1093305,4326,4726.48936172005,1,NA,America/New_York
 plum,Plum Island Ecosystem,lter,LTER,Ispwich River,ipswich_dam,Ipswich River Sylvania Dam,stream_sampling_point,42.677543640137,-70.837684631348,4326,NA,1,Plum lter associates chemistry at this point with USGS gauge 01102000 but it is upstream from sampling point,America/New_York
 plum,Plum Island Ecosystem,lter,LTER,Parker River,parker_dam,Parker River Central St Dam,stream_sampling_point,42.750007629395,-70.929214477539,4326,NA,1,Plum lter associates chemistry at this point with USGS gauge 01101000 but it is upstream from sampling point,America/New_York
@@ -371,18 +371,18 @@ boulder,Boulder Creek,czo,CZO,NA,GGU_SPW1,Gordon Gulch Upper Spring 1,stream_sam
 boulder,Boulder Creek,czo,CZO,NA,GGU_SPW2,Gordon Gulch Upper Spring 2,stream_sampling_point,40.019453,-105.474922,4326,NA,1,NA,America/Denver
 catalina_jemez,Santa Catalina Mountains and Jemez River Basin,czo,CZO,NA,RedondoMeadow,Redondo Meadow,stream_gauge,35.8546,-106.5941,4326,NA,1,NA,America/Denver
 catalina_jemez,Santa Catalina Mountains and Jemez River Basin,czo,CZO,Redondo Creek,UpperRedondo,Upper Redondo Creek,stream_gauge,35.8929,-106.5766,4326,NA,1,NA,America/Denver
-catalina_jemez,Santa Catalina Mountains and Jemez River Basin,czo,CZO,NA,HistoryGrove,History Grove,stream_gauge,35.8759,-106.5125,4326,NA,1,NA,America/Denver
-catalina_jemez,Santa Catalina Mountains and Jemez River Basin,czo,CZO,Jaramillo Creek,UpperJaramillo,Upper Jaramillo Creek,stream_gauge,35.9092,-106.5304,4326,NA,1,NA,America/Denver
+catalina_jemez,Santa Catalina Mountains and Jemez River Basin,czo,CZO,NA,HistoryGrove,History Grove,stream_gauge,35.8759,-106.5125,4326,236.973878097655,1,NA,America/Denver
+catalina_jemez,Santa Catalina Mountains and Jemez River Basin,czo,CZO,Jaramillo Creek,UpperJaramillo,Upper Jaramillo Creek,stream_gauge,35.9092,-106.5304,4326,786.531988698722,1,NA,America/Denver
 catalina_jemez,Santa Catalina Mountains and Jemez River Basin,czo,CZO,Jaramillo Creek,LowerJaramillo,Lower Jaramillo Creek,stream_gauge,35.8929,-106.4958,4326,NA,1,NA,America/Denver
-catalina_jemez,Santa Catalina Mountains and Jemez River Basin,czo,CZO,La Jara Creek,UpperLaJara,Upper La Jara Creek,stream_gauge,35.87033,-106.527,4326,NA,1,NA,America/Denver
-catalina_jemez,Santa Catalina Mountains and Jemez River Basin,czo,CZO,La Jara Creek,LowerLaJara,Lower La Jara Creek,stream_gauge,35.8667,-106.5215,4326,NA,1,NA,America/Denver
-catalina_jemez,Santa Catalina Mountains and Jemez River Basin,czo,CZO,Redondo Creek,LowerRedondo,Lower Redondo Creek,stream_gauge,35.8663,-106.5978,4326,NA,1,NA,America/Denver
-catalina_jemez,Santa Catalina Mountains and Jemez River Basin,czo,CZO,NA,MC_ FLUME,Mixed Conifer ZOB,stream_gauge,35.88083,-106.53575,4326,NA,1,NA,America/Denver
-catalina_jemez,Santa Catalina Mountains and Jemez River Basin,czo,CZO,Marshall Gulch,MarshallGulch,Marshall Gulch,stream_gauge,32.427351,-110.757857,4326,NA,1,NA,America/Denver
-catalina_jemez,Santa Catalina Mountains and Jemez River Basin,czo,CZO,NA,Bigelow,Bigelow Zero Order Basin,stream_gauge,32.4152,-110.7243,4326,NA,1,NA,America/Denver
-catalina_jemez,Santa Catalina Mountains and Jemez River Basin,czo,CZO,NA,OracleRidge,Oracle Ridge,stream_gauge,32.4494,-110.7399,4326,NA,1,NA,America/Denver
+catalina_jemez,Santa Catalina Mountains and Jemez River Basin,czo,CZO,La Jara Creek,UpperLaJara,Upper La Jara Creek,stream_gauge,35.87033,-106.527,4326,352.16802147914,1,NA,America/Denver
+catalina_jemez,Santa Catalina Mountains and Jemez River Basin,czo,CZO,La Jara Creek,LowerLaJara,Lower La Jara Creek,stream_gauge,35.8667,-106.5215,4326,359.070862985532,1,NA,America/Denver
+catalina_jemez,Santa Catalina Mountains and Jemez River Basin,czo,CZO,Redondo Creek,LowerRedondo,Lower Redondo Creek,stream_gauge,35.8663,-106.5978,4326,1338.02596757187,1,NA,America/Denver
+catalina_jemez,Santa Catalina Mountains and Jemez River Basin,czo,CZO,NA,MC_ FLUME,Mixed Conifer ZOB,stream_gauge,35.88083,-106.53575,4326,43.6678900612867,1,NA,America/Denver
+catalina_jemez,Santa Catalina Mountains and Jemez River Basin,czo,CZO,Marshall Gulch,MarshallGulch,Marshall Gulch,stream_gauge,32.427351,-110.757857,4326,154.980948717892,1,NA,America/Denver
+catalina_jemez,Santa Catalina Mountains and Jemez River Basin,czo,CZO,NA,Bigelow,Bigelow Zero Order Basin,stream_gauge,32.4152,-110.7243,4326,3.33303105864549,1,NA,America/Denver
+catalina_jemez,Santa Catalina Mountains and Jemez River Basin,czo,CZO,NA,OracleRidge,Oracle Ridge,stream_gauge,32.4494,-110.7399,4326,86.026135194536,1,NA,America/Denver
 catalina_jemez,Santa Catalina Mountains and Jemez River Basin,czo,CZO,Redondo Creek,UpperRedondo,Upper Redondo Creek,stream_gauge,35.8929,-106.577,4326,NA,1,NA,America/Denver
-catalina_jemez,Santa Catalina Mountains and Jemez River Basin,czo,CZO,NA,FLUME_MCZOB,MC ZOB Flume,stream_gauge,35.88083,-106.536,4326,NA,1,NA,America/Denver
+catalina_jemez,Santa Catalina Mountains and Jemez River Basin,czo,CZO,NA,FLUME_MCZOB,MC ZOB Flume,stream_gauge,35.88083,-106.536,4326,43.6678904288823,1,NA,America/Denver
 catalina_jemez,Santa Catalina Mountains and Jemez River Basin,czo,CZO,NA,B2_Rain1,B2 desert site rain gage 1 (GR1),rain_gauge,32.55696,-110.841,4326,NA,1,NA,America/Denver
 catalina_jemez,Santa Catalina Mountains and Jemez River Basin,czo,CZO,NA,B2_Rain2,B2 desert site rain gage 2 (GR2),rain_gauge,32.55537,-110.84,4326,NA,1,NA,America/Denver
 catalina_jemez,Santa Catalina Mountains and Jemez River Basin,czo,CZO,NA,OR_PC1,Oracle Ridge Precipitation Collector,rain_gauge,32.44983,-110.74,4326,NA,1,NA,America/Denver
@@ -408,7 +408,20 @@ calhoun,Calhoun,czo,CZO,NA,Ref4_Drain,Ref 4 Drain,stream_sampling_point,34.5976,
 calhoun,Calhoun,czo,CZO,NA,Tyger_River_Sardis_Rd,Tyger River at Sardis Rd,stream_sampling_point,34.61535,-81.6665,4326,NA,1,NA,US/Eastern
 calhoun,Calhoun,czo,CZO,NA,Ref4_Below_Bowl,Ref 4 Below Bowl,stream_sampling_point,34.59963,-81.6741,4326,NA,1,NA,US/Eastern
 calhoun,Calhoun,czo,CZO,NA,weir_1,Weir 1,stream_sampling_point,34.59971,-81.6838,4326,NA,1,NA,US/Eastern
-calhoun,Calhoun,czo,CZO,NA,weir_3,Weir 3,stream_gauge,34.6098,-81.6952,4326,NA,1,NA,US/Eastern
-calhoun,Calhoun,czo,CZO,NA,weir_4,Weir 4,stream_gauge,34.61222,-81.6943,4326,NA,1,NA,US/Eastern
+calhoun,Calhoun,czo,CZO,NA,weir_3,Weir 3,stream_gauge,34.6098,-81.6952,4326,7.84350187148416,1,NA,US/Eastern
+calhoun,Calhoun,czo,CZO,NA,weir_4,Weir 4,stream_gauge,34.61222,-81.6943,4326,6.9,1,NA,US/Eastern
 calhoun,Calhoun,czo,CZO,NA,Holcombes_Branch,Holcombe's Branch,stream_sampling_point,34.61308,-81.6966,4326,NA,1,NA,US/Eastern
-calhoun,Calhoun,czo,CZO,NA,weir_2,Weir 2,stream_gauge,34.61411,-81.6933,4326,NA,1,NA,US/Eastern
+calhoun,Calhoun,czo,CZO,NA,weir_2,Weir 2,stream_gauge,34.61411,-81.6933,4326,7.23953466993381,1,NA,US/Eastern
+luquillo,Luquillo,lter,LTER,NA,Q1,Quebrada uno-Bisley,stream_gauge,18.315717,-65.74538,4326,5.76332994919415,1,NA,Etc/GMT-4
+luquillo,Luquillo,lter,LTER,NA,Q2,Quebrada dos-Bisley,stream_gauge,18.314637,-65.74629,4326,NA,1,NA,Etc/GMT-4
+luquillo,Luquillo,lter,LTER,NA,Q3,Quebrada tres-Bisley,stream_gauge,18.314091,-65.747312,4326,NA,1,NA,Etc/GMT-4
+luquillo,Luquillo,lter,LTER,NA,QG,Quebrada Guaba,stream_gauge,18.283889,-65.788889,4326,NA,1,usgs 50074950,Etc/GMT-4
+luquillo,Luquillo,lter,LTER,NA,QPA,Quebrada Prieta A,stream_sampling_point,NA,NA,4326,NA,0,NA,Etc/GMT-4
+luquillo,Luquillo,lter,LTER,NA,QPB,Quebrada Prieta B,stream_sampling_point,NA,NA,4326,NA,0,NA,Etc/GMT-4
+luquillo,Luquillo,lter,LTER,NA,QP,Quebrada Prieta,stream_gauge,18.2957,-65.8006,4326,2.63280746627962,1,NA,Etc/GMT-4
+luquillo,Luquillo,lter,LTER,NA,QS,Quebrada Sonadora,stream_gauge,18.322013,-65.817991,4326,164.795008459469,1,usgs 50063440,Etc/GMT-4
+luquillo,Luquillo,lter,LTER,NA,MG,Rio Mameyes,stream_sampling_point,18.3561,-65.7685,4326,NA,1,NA,Etc/GMT-4
+luquillo,Luquillo,lter,LTER,NA,RI,Rio Icacos,stream_gauge,18.275091,-65.785529,4326,328.095619913542,1,usgs 50075000,Etc/GMT-4
+luquillo,Luquillo,lter,LTER,NA,MPR,Puente Roto Mameyes,stream_gauge,18.326951,-65.750292,4326,1783.39089439801,1,usgs 50065500,Etc/GMT-4
+luquillo,Luquillo,lter,LTER,NA,El_Verde,NA,rain_gauge,18.3212,-65.8199,4326,NA,1,NA,Etc/GMT-4
+luquillo,Luquillo,lter,LTER,NA,Bisley_Tower,NA,rain_gauge,18.3144,-65.7449,4326,NA,1,NA,Etc/GMT-4
