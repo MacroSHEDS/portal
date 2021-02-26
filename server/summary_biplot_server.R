@@ -260,9 +260,9 @@ filtered_bi <- reactive({
 
     return(final)
 })
-
-filtered_bi_d <- filtered_bi %>%
-    debounce(100)
+#
+# filtered_bi_d <- filtered_bi %>%
+#     debounce(100)
 
 # Update axis options ####
 #remove year as an axis option when aggrigation the whole records
@@ -542,7 +542,7 @@ output$SUMMARY_BIPLOT <- renderPlotly({
     # chem_size <<- isolate(input$SIZE_TYPE2)
     # num_sites <<- isolate(n_sites())
 
-    bi_table <- filtered_bi_d()
+    bi_table <- filtered_bi()
     domains <- isolate(input$DOMAINS2)
     sites <- isolate(input$SITES2)
     x_var <- isolate(input$X_VAR2)

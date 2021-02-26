@@ -399,6 +399,7 @@ compute_yearly_summary <- function(df) {
         mutate(missing = missing*100) %>%
         mutate(missing = as.numeric(substr(missing, 1, 2)))
 
+    dir.create('data/general/biplot')
     write_feather(all_domain, 'data/general/biplot/year.feather')
 }
 

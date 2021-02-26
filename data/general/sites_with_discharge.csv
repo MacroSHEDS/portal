@@ -1,4 +1,9 @@
 network,domain,site_name
+czo,boulder,BC_SW_20
+czo,boulder,BC_SW_4
+czo,boulder,GGL
+czo,boulder,GGU
+czo,calhoun,weir_4
 lter,arctic,Kuparuk_River_-0.1
 lter,arctic,Kuparuk_River_-0.177
 lter,arctic,Kuparuk_River_-0.3
@@ -68,6 +73,14 @@ lter,konza,N01B
 lter,konza,N02B
 lter,konza,N04D
 lter,konza,N20B
+lter,luquillo,MPR
+lter,luquillo,Q1
+lter,luquillo,Q2
+lter,luquillo,Q3
+lter,luquillo,QG
+lter,luquillo,QP
+lter,luquillo,QS
+lter,luquillo,RI
 lter,mcmurdo,aiken_f5
 lter,mcmurdo,andrsn_h1
 lter,mcmurdo,bohner_b5
