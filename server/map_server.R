@@ -3,10 +3,15 @@
 sheds <- sf::st_read('data/general/shed_boundary') %>%
     sf::st_transform(4326)
 
+sg = filter(site_data, site_type == 'stream_gauge')
+
+sheds <- sheds %>%
+    filter(site_name %in% sg$site_name)
+
 output$MAP = renderLeaflet({
 
     rg = filter(site_data, site_type == 'rain_gauge')
-    sg = filter(site_data, site_type == 'stream_gauge')
+
 
     leaflet() %>% addProviderTiles("Esri.WorldTopoMap",
         group='Topo Mahttps://www.dropbox.com/s/kjkhwip0t8erh3a/MTM_PQ_data.csv?dl=0p') %>%
