@@ -332,20 +332,20 @@ shinyjs.init = function() {
     $('body').on('change', '#SITES3', function(){
         window.setTimeout(function(){
             $('#REFRESH').trigger('click');
-        }, 5000);
+        }, 2000);
     });
 
     $('body').on('change', '#VARS3', function(){
         window.setTimeout(function(){
             $('#REFRESH').trigger('click');
-        }, 3000);
+        }, 2000);
     });
 
     $(document).ready(function(){
         loaded('GRAPH_MAIN3a', function(){
             window.setTimeout(function(){
                 $('#REFRESH').trigger('click');
-            }, 8000);
+            }, 3000);
         });
     });
 

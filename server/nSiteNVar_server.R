@@ -931,7 +931,7 @@ output$GRAPH_MAIN3a <- renderDygraph({
                          tickHeight = 0,
                          width = 0,
                          series = watermark_specs$series,
-                         tooltip = ''))
+                         tooltip = '')
 
         if(show_pchem){
 
@@ -1253,7 +1253,7 @@ output$GRAPH_MAIN3b <- renderDygraph({
                          tickHeight = 0,
                          width = 0,
                          series = watermark_specs$series,
-                         tooltip = ''))
+                         tooltip = '')
 
         if(show_pchem){
 
@@ -1556,7 +1556,7 @@ output$GRAPH_MAIN3c <- renderDygraph({
                          tickHeight = 0,
                          width = 0,
                          series = watermark_specs$series,
-                         tooltip = ''))
+                         tooltip = '')
 
         if(show_pchem){
 
@@ -1787,7 +1787,7 @@ output$GRAPH_Q3 <- renderDygraph({
                          tickHeight = 0,
                          width = 0,
                          series = watermark_specs$series,
-                         tooltip = ''))
+                         tooltip = '')
 
     } else {
 
