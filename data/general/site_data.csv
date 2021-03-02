@@ -65,7 +65,7 @@ hjandrews,H. J. Andrews,lter,LTER,NA,VARMET,Vanilla Leaf Met Meadow Recording RG
 hjandrews,H. J. Andrews,lter,LTER,NA,WS10RG,Top of WS#10 Storage RG,rain_gauge,44.219956,-122.25684,4326,NA,1,NA,America/Los_Angeles
 hjandrews,H. J. Andrews,lter,LTER,NA,WS09RG,Top of WS#9 Storage RG,rain_gauge,44.203214,-122.254851,4326,NA,1,NA,America/Los_Angeles
 neon,NEON,neon,NEON,Little Rock Lake,LIRO,Little Rock Lake,lake_gauge,45.998269,-89.704767,4326,NA,0,NA,America/Chicago
-neon,NEON,neon,NEON,Toolik Lake,TOOK,Toolik Lake,lake_gauge,68.630692,-149.610636,4326,NA,0,NA,America/Anchorage
+neon,NEON,neon,NEON,Toolik Lake,TOOK,Toolik Lake,stream_gauge,68.64181,-149.59366,4326,NA,1,NA,America/Anchorage
 neon,NEON,neon,NEON,Ordway-Swisher Biological Station - Suggs Lake,SUGG,Ordway-Swisher Biological Station - Suggs Lake,lake_gauge,29.68705,-82.01617,4326,NA,0,NA,America/New_York
 neon,NEON,neon,NEON,Crampton Lake,CRAM,Crampton Lake,lake_gauge,46.21111,-89.47825,4326,NA,0,NA,America/Chicago
 neon,NEON,neon,NEON,Ordway-Swisher Biological Station - Barco Lake,BARC,Ordway-Swisher Biological Station - Barco Lake,lake_gauge,29.67647,-82.00909,4326,NA,0,NA,America/New_York
@@ -418,8 +418,8 @@ luquillo,Luquillo,lter,LTER,NA,Q3,Quebrada tres-Bisley,stream_gauge,18.314091,-6
 luquillo,Luquillo,lter,LTER,NA,QG,Quebrada Guaba,stream_gauge,18.283889,-65.788889,4326,NA,1,usgs 50074950,Etc/GMT-4
 luquillo,Luquillo,lter,LTER,NA,QPA,Quebrada Prieta A,stream_sampling_point,NA,NA,4326,NA,0,NA,Etc/GMT-4
 luquillo,Luquillo,lter,LTER,NA,QPB,Quebrada Prieta B,stream_sampling_point,NA,NA,4326,NA,0,NA,Etc/GMT-4
-luquillo,Luquillo,lter,LTER,NA,QP,Quebrada Prieta,stream_gauge,18.2957,-65.8006,4326,2.63280746627962,1,NA,Etc/GMT-4
-luquillo,Luquillo,lter,LTER,NA,QS,Quebrada Sonadora,stream_gauge,18.322013,-65.817991,4326,164.795008459469,1,usgs 50063440,Etc/GMT-4
+luquillo,Luquillo,lter,LTER,NA,QP,Quebrada Prieta,stream_gauge,18.2957,-65.8006,4326,2.63280746627962,1,this ws is listed as 30.77ha on czo site,Etc/GMT-4
+luquillo,Luquillo,lter,LTER,NA,QS,Quebrada Sonadora,stream_gauge,18.322013,-65.817991,4326,164.795008459469,1,"usgs 50063440, czo site lists the ws area as 261.59 ha",Etc/GMT-4
 luquillo,Luquillo,lter,LTER,NA,MG,Rio Mameyes,stream_sampling_point,18.3561,-65.7685,4326,NA,1,NA,Etc/GMT-4
 luquillo,Luquillo,lter,LTER,NA,RI,Rio Icacos,stream_gauge,18.275091,-65.785529,4326,328.095619913542,1,usgs 50075000,Etc/GMT-4
 luquillo,Luquillo,lter,LTER,NA,MPR,Puente Roto Mameyes,stream_gauge,18.326951,-65.750292,4326,1783.39089439801,1,usgs 50065500,Etc/GMT-4
