@@ -17,6 +17,15 @@ shinyjs.init = function() {
    //     }
    // }, 100);
 
+    //this lets us trigger an event when a specific element has fully loaded in the DOM
+    function loaded(selector, callback){
+        $(function(){ callback($(selector)); });
+        var parentSelector = '* > ' + selector;
+        $(document).on('DOMNodeInserted', parentSelector, function(e){
+            callback($(this).find(selector));
+        });
+    }
+
     //connect map buttons to app tabs
     $('body').ready(function(){
         $('body').on('click', '[id$="_goto"]', function(){
@@ -317,6 +326,29 @@ shinyjs.init = function() {
 
         }, 200);
     });
+
+    //all this crap (and associated CSS) is necessary just to make "macrosheds.org"
+    //appear (and STAY appeared) in the bottom of each dygraph as an annotation
+    $('body').on('change', '#SITES3', function(){
+        window.setTimeout(function(){
+            $('#REFRESH').trigger('click');
+        }, 5000);
+    });
+
+    $('body').on('change', '#VARS3', function(){
+        window.setTimeout(function(){
+            $('#REFRESH').trigger('click');
+        }, 3000);
+    });
+
+    $(document).ready(function(){
+        loaded('GRAPH_MAIN3a', function(){
+            window.setTimeout(function(){
+                $('#REFRESH').trigger('click');
+            }, 8000);
+        });
+    });
+
 
 }
 

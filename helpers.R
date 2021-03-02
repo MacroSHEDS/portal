@@ -510,21 +510,16 @@ ms_aggregate <- function(d, agg_selection, conc_flux_selection = NULL){
                                                 agg_period)) %>%
         group_by(site_name, var, datetime) %>%
         summarize(
+            across(any_of(c('ms_status', 'ms_interp')), numeric_any),
             val = if(n() > 1){
-                # if(var_is_q){
-                #     max_ind <- which.max(val)
-                #     if(max_ind) val[max_ind] else NA #max removes error
                 if(var_is_p){
-                # } else if(! conc_flux_selection %in% 'Concentration' || var_is_p){
                     sum(val, na.rm = TRUE)
                 } else {
                     mean(val, na.rm = TRUE)
                 }
             } else {
                 first(val) #needed for uncertainty propagation to work
-            },
-            across(any_of(c('ms_status', 'ms_interp')), numeric_any)) %>%
-            # ms_status = numeric_any(ms_status)) %>%
+            }) %>%
         ungroup() %>%
         select(datetime, site_name, var, val, one_of('ms_status', 'ms_interp')))
 
@@ -1211,4 +1206,27 @@ detrmin_mean_record_length <- function(df){
         days_in_rec <- 365
     }
     return(days_in_rec)
+}
+
+get_watermark_specs <- function(dydat = dydat,
+                                displabs = displabs){
+
+    max_dt_ind <- -Inf
+    max_dt_series <- ''
+    for(i in seq_along(displabs)){
+
+        sitelab <- displabs[i]
+        rightmost <- Position(function(x) ! is.na(x), dydat[, sitelab],
+                              right = TRUE)
+
+        if(rightmost > max_dt_ind){
+            max_dt_series <- sitelab
+            max_dt_ind <- rightmost
+        }
+    }
+
+    max_dt <- index(dydat)[max_dt_ind]
+
+    return(list(dt = max_dt,
+                series = max_dt_series))
 }

@@ -418,8 +418,8 @@ luquillo,Luquillo,lter,LTER,NA,Q3,Quebrada tres-Bisley,stream_gauge,18.314091,-6
 luquillo,Luquillo,lter,LTER,NA,QG,Quebrada Guaba,stream_gauge,18.283889,-65.788889,4326,NA,1,usgs 50074950,Etc/GMT-4
 luquillo,Luquillo,lter,LTER,NA,QPA,Quebrada Prieta A,stream_sampling_point,NA,NA,4326,NA,0,NA,Etc/GMT-4
 luquillo,Luquillo,lter,LTER,NA,QPB,Quebrada Prieta B,stream_sampling_point,NA,NA,4326,NA,0,NA,Etc/GMT-4
-luquillo,Luquillo,lter,LTER,NA,QP,Quebrada Prieta,stream_gauge,18.2957,-65.8006,4326,2.63280746627962,1,NA,Etc/GMT-4
-luquillo,Luquillo,lter,LTER,NA,QS,Quebrada Sonadora,stream_gauge,18.322013,-65.817991,4326,164.795008459469,1,usgs 50063440,Etc/GMT-4
+luquillo,Luquillo,lter,LTER,NA,QP,Quebrada Prieta,stream_gauge,18.2957,-65.8006,4326,2.63280746627962,1,this ws is listed as 30.77ha on czo site,Etc/GMT-4
+luquillo,Luquillo,lter,LTER,NA,QS,Quebrada Sonadora,stream_gauge,18.322013,-65.817991,4326,164.795008459469,1,"usgs 50063440, czo site lists the ws area as 261.59 ha",Etc/GMT-4
 luquillo,Luquillo,lter,LTER,NA,MG,Rio Mameyes,stream_sampling_point,18.3561,-65.7685,4326,NA,1,NA,Etc/GMT-4
 luquillo,Luquillo,lter,LTER,NA,RI,Rio Icacos,stream_gauge,18.275091,-65.785529,4326,328.095619913542,1,usgs 50075000,Etc/GMT-4
 luquillo,Luquillo,lter,LTER,NA,MPR,Puente Roto Mameyes,stream_gauge,18.326951,-65.750292,4326,1783.39089439801,1,usgs 50065500,Etc/GMT-4
