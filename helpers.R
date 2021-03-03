@@ -262,56 +262,36 @@ pad_ts <- function(d,
                         tz = 'UTC') %>%
         lubridate::with_tz(lubridate::tz(d$datetime[1]))
 
-    pad_rows <- d[c(1, nrow(d)), ]
+    ms_cols <- grep(pattern = '(?:P_)?ms_(status|interp)_',
+                    x = colnames(d),
+                    value = TRUE)
 
-    ms_cols <- grepl(pattern = '(?:P_)?ms_(status|interp)_',
-                     x = colnames(pad_rows))
+    if(dtcol[1] < d$datetime[1]){
+        row_to_bind <- tibble(datetime = dtcol[1])
+        row_to_bind[, ms_cols] <- 0
+        d <- bind_rows(row_to_bind, d)
+    }
 
-    pad_rows[, ms_cols] <- 0
-    pad_rows[, ! ms_cols] <- NA
-    pad_rows$datetime <- dtcol
+    if(dtcol[2] > d$datetime[nrow(d)]){
+        row_to_bind <- tibble(datetime = dtcol[2])
+        row_to_bind[, ms_cols] <- 0
+        d <- bind_rows(d, row_to_bind)
+    }
 
-    d_padded <- bind_rows(d, pad_rows)
+    # pad_rows <- d[c(1, nrow(d)), ]
 
-    # if('site_name' %in% colnames(d)){
-    #     spatial_unit = 'site_name'
-    #     sites_or_dmns = unique(d$site_name)
-    # } else if('domain' %in% colnames(d)){
-    #     spatial_unit = 'domain'
-    #     sites_or_dmns = unique(d$domain)
-    # } else{ #probably never run, but here for unforseen back-compatibility needs
-    #     spatial_unit = 'site_name'
-    #     sites_or_dmns = 'placeholder'
-    # }
+    # ms_cols <- grep(pattern = '(?:P_)?ms_(status|interp)_',
+    #                 x = colnames(pad_rows),
+    #                 value = TRUE)
 
-    # cnms <- colnames(d)
-    # sites <- cnms[! grepl(pattern = '(?:ms_|datetime)',
-    #                       x = cnms,
-    #                       perl = TRUE)]
-    # nsites <- length(sites)
-    # nvars <- length(vars)
-    #
-    # dt_pad_rows <- tibble(a = rep(x = as.POSIXct(datebounds),
-    #                               times = nsites),
-    #                       b = rep(sites, each=2))
-    #
-    # dt_pad_rows <- dplyr::bind_cols(dt_pad_rows,
-    #                                 as.data.frame(matrix(NA_real_,
-    #                                                      ncol = nvars,
-    #                                                      nrow = nsites * 2)))
-    #
-    # colnames(dt_pad_rows) = c('datetime', spatial_unit, vars)
-    # dt_pad_rows$datetime = lubridate::force_tz(dt_pad_rows$datetime, 'UTC')
-    #
-    #
-    # df_padded = d %>%
-    #     bind_rows(dt_pad_rows)
+    # pad_rows[, ms_cols] <- 0
+    # # pad_rows <- select(pad_rows, datetime, all_of(ms_cols))
+    # pad_rows[, ! ms_cols] <- NA
+    # pad_rows$datetime <- dtcol
 
-    # if(sites_or_dmns[1] == 'placeholder'){
-    #     df_padded = select(df_padded, -site_name)
-    # }
+    # d_padded <- bind_rows(d, pad_rows)
 
-    return(d_padded)
+    return(d)
 }
 
 # r=raindata; l=streamdata#
@@ -445,7 +425,7 @@ generate_dropdown_varlist = function(chemvars, filter_set=NULL){
 
     chemvars = chemvars %>%
         mutate(displayname=paste0(variable_name, ' (', unit, ')')) %>%
-        select(displayname, variable_code, variable_subtype) %>%
+    select(displayname, variable_code, variable_subtype) %>%
         plyr::dlply(plyr::.(variable_subtype), function(x){
             plyr::daply(x, plyr::.(displayname), function(y){
                 y['variable_code']
@@ -488,36 +468,21 @@ numeric_any <- function(num_vec){
     return(as.numeric(any(as.logical(num_vec))))
 }
 
-# df=data3; agg_selection=agg; which_dataset='pchem'; conc_flux_selection=conc_flux
-# df=pchem3; agg_selection=agg; which_dataset='pchem'; conc_flux_selection=conc_flux
 ms_aggregate <- function(d, agg_selection, conc_flux_selection = NULL){
 
     #agg_selection is a user input object, e.g. input$AGG3
-    #which_dataset is one of 'chem', 'q', 'p', 'pchem'
-    #conc_flux_selection must be supplied as e.g. input$CONC_FLUX3 if
-        #which_dataset is 'chem' or 'pchem'
-
-    # if(! which_dataset %in% c('chem', 'q', 'p', 'pchem')){
-    #     stop("which_dataset must be one of 'chem', 'q', 'p', 'pchem'")
-    # }
-    #
-    # if(which_dataset %in% c('chem', 'pchem') && is.null(conc_flux_selection)){
-    #     stop(paste0("conc_flux_selection must be supplied when which_dataset",
-    #         "is 'chem' or'pchem'"))
-    # }
+    #conc_flux_selection is a user input object, e.g. input$CONC_FLUX3
 
     if(nrow(d) == 0) return(d)
     if(agg_selection == 'Instantaneous') return(d)
-    # if(agg_selection == 'Daily' && which_dataset == 'pchem') return(d)
 
     agg_period <- switch(agg_selection,
                          'Daily' = 'day',
                          'Monthly' = 'month',
                          'Yearly' = 'year')
 
-    # var_is_volumetric <- d$var[1] %in% c('precipitation', 'discharge')
     var_is_p <- d$var[1] == 'precipitation'
-    var_is_q <- d$var[1] == 'discharge'
+    # var_is_q <- d$var[1] == 'discharge'
 
     #round to desired_interval and summarize
     d <- sw(d %>%
@@ -525,21 +490,16 @@ ms_aggregate <- function(d, agg_selection, conc_flux_selection = NULL){
                                                 agg_period)) %>%
         group_by(site_name, var, datetime) %>%
         summarize(
+            across(any_of(c('ms_status', 'ms_interp')), numeric_any),
             val = if(n() > 1){
-                if(var_is_q){
-                    max_ind <- which.max(val)
-                    if(max_ind) val[max_ind] else NA #max removes error
-                    # max(val, na.rm = TRUE)
-                } else if(conc_flux_selection == 'VWC' || var_is_p){
+                if(var_is_p){
                     sum(val, na.rm = TRUE)
                 } else {
                     mean(val, na.rm = TRUE)
                 }
             } else {
                 first(val) #needed for uncertainty propagation to work
-            },
-            across(any_of(c('ms_status', 'ms_interp')), numeric_any)) %>%
-            # ms_status = numeric_any(ms_status)) %>%
+            }) %>%
         ungroup() %>%
         select(datetime, site_name, var, val, one_of('ms_status', 'ms_interp')))
 
@@ -1001,12 +961,17 @@ load_portal_config <- function(from_where){
 
     if(from_where == 'remote'){
 
-        variables <- sm(googlesheets4::read_sheet(conf$variables_gsheet,
-                                                na = c('', 'NA'),
-                                                col_types = 'cccccccnncc'))
+        variables <- sm(googlesheets4::read_sheet(
+            conf$variables_gsheet,
+            na = c('', 'NA'),
+            col_types = 'cccccccnncc'
+        ))
 
-        site_data <- sm(googlesheets4::read_sheet(conf$site_data_gsheet,
-                                                  na = c('', 'NA')))
+        site_data <- sm(googlesheets4::read_sheet(
+            conf$site_data_gsheet,
+            na = c('', 'NA'),
+            col_types = 'ccccccccnnnnncc'
+        ))
 
     } else if(from_where == 'local'){
 
@@ -1221,4 +1186,27 @@ detrmin_mean_record_length <- function(df){
         days_in_rec <- 365
     }
     return(days_in_rec)
+}
+
+get_watermark_specs <- function(dydat = dydat,
+                                displabs = displabs){
+
+    max_dt_ind <- -Inf
+    max_dt_series <- ''
+    for(i in seq_along(displabs)){
+
+        sitelab <- displabs[i]
+        rightmost <- Position(function(x) ! is.na(x), dydat[, sitelab],
+                              right = TRUE)
+
+        if(rightmost > max_dt_ind){
+            max_dt_series <- sitelab
+            max_dt_ind <- rightmost
+        }
+    }
+
+    max_dt <- index(dydat)[max_dt_ind]
+
+    return(list(dt = max_dt,
+                series = max_dt_series))
 }

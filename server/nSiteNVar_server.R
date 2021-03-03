@@ -8,9 +8,6 @@ reactive_vals = reactiveValues()
 reactive_vals$facet3a = 0
 reactive_vals$facet3b = 0
 reactive_vals$facet3c = 0
-# reactive_vals$facet3aP = 0
-# reactive_vals$facet3bP = 0
-# reactive_vals$facet3cP = 0
 reactive_vals$update_basedata = 0
 
 #main facets
@@ -39,7 +36,7 @@ observeEvent({
         ! is.null(input$FLAGS3) &&
         ! is.null(input$INTERP3) &&
         length(input$VARS3) == 1
-    ){ TRUE } else return()
+    ){ TRUE } else NULL
 }, {
     print('rvalA')
     reactive_vals$facet3a = reactive_vals$facet3a + 1
@@ -63,7 +60,7 @@ observeEvent({
         ! is.null(input$FLAGS3) &&
         ! is.null(input$INTERP3) &&
         length(input$VARS3) == 2
-    ){ TRUE } else return()
+    ){ TRUE } else NULL
     # if(length(input$VARS3) == 2){
     #     TRUE
     # } else return()
@@ -91,7 +88,7 @@ observeEvent({
         ! is.null(input$FLAGS3) &&
         ! is.null(input$INTERP3) &&
         length(input$VARS3) == 3
-    ){ TRUE } else return()
+    ){ TRUE } else NULL
     # if(length(input$VARS3) == 3){
     #     TRUE
     # } else return()
@@ -417,8 +414,6 @@ dataPrecip <- reactive({
                                        show_imputed = show_imputed,
                                        conc_or_flux = conc_flux)
 
-    warning('does precip need to be aggregated by median and sum?')
-
     # dates <- isolate(input$DATES3)
     # timeSliderUpdate()
     # agg = input$AGG3
@@ -472,6 +467,7 @@ dataQ <- reactive({
     # show_uncert <<- input$SHOW_UNCERT3
     # show_flagged <<- input$FLAGS3
     # show_imputed <<- input$INTERP3
+    # conc_flux <<- input$CONC_FLUX3
 
     basedata <- load_basedata()
     dates <- isolate(input$DATES3)
@@ -481,6 +477,7 @@ dataQ <- reactive({
     show_uncert <- input$SHOW_UNCERT3
     show_flagged <- input$FLAGS3
     show_imputed <- input$INTERP3
+    conc_flux <- input$CONC_FLUX3
 
     dataQ <- basedata$Q
 
@@ -674,6 +671,8 @@ output$GRAPH_PRECIP3 <- renderDygraph({
     # dates <<- isolate(input$DATES3)
     # dataP <<- dataPrecip()
 
+    # if(reactive_vals$precip3 == 0) return()
+
     tryCatch(
         {
             dataP <- dataP %>%
@@ -685,8 +684,6 @@ output$GRAPH_PRECIP3 <- renderDygraph({
         },
         error = function(e) NULL
     )
-
-    # reactive_vals$facet3aP
 
     if(nrow(dataP)){
 
@@ -702,6 +699,9 @@ output$GRAPH_PRECIP3 <- renderDygraph({
 
         ymax <- max(dydat,
                     na.rm = TRUE)
+
+        # watermark_specs <- get_watermark_specs(dydat = dydat,
+        #                                        displabs = displabs)
 
         dg <- dygraph(dydat,
                       group = 'nSiteNVar') %>%
@@ -738,9 +738,7 @@ output$GRAPH_PRECIP3 <- renderDygraph({
                       #                                           linecolors)
             ) %>%
             dyLegend(show = 'always',
-            # dyLegend(show = 'onmouseover',
                      labelsSeparateLines = FALSE,
-                     # labelsDiv = 'main3aP') %>%
                      labelsDiv = 'P3') %>%
             dyAxis('y',
                    label = 'P (mm)',
@@ -750,6 +748,15 @@ output$GRAPH_PRECIP3 <- renderDygraph({
                    labelHeight = 10,
                    pixelsPerLabel = 10,
                    rangePad = 10)
+            # # dyCSS('~/git/macrosheds/portal/www/dygraph.css') %>%
+            # dyAnnotation(x = watermark_specs$dt,
+            #              text = 'macrosheds.org',
+            #              attachAtBottom = TRUE,
+            #              # cssClass = 'dygraph-watermark',
+            #              tickHeight = 0,
+            #              width = 0,
+            #              series = watermark_specs$series,
+            #              tooltip = '')
 
         #alternative way to show points in different color? also needs work)
         # dg2 <- dySeries(dg,
@@ -787,6 +794,7 @@ output$GRAPH_MAIN3a <- renderDygraph({
     # agg <<- isolate(input$AGG3)
     # dates <<- isolate(input$DATES3)
     # show_uncert <<- isolate(input$SHOW_UNCERT3)
+    # dmns <<- get_domains3()
 
     sites <- na.omit(isolate(input$SITES3))
     varA <- isolate(input$VARS3[1])#
@@ -797,6 +805,7 @@ output$GRAPH_MAIN3a <- renderDygraph({
     agg <- isolate(input$AGG3)
     dates <- isolate(input$DATES3)
     show_uncert <- isolate(input$SHOW_UNCERT3)
+    dmns <- get_domains3()
 
     if(reactive_vals$facet3a == 0) return()#
     print('mainA')
@@ -871,6 +880,9 @@ output$GRAPH_MAIN3a <- renderDygraph({
                           TRUE,
                           FALSE)
 
+        # watermark_specs <- get_watermark_specs(dydat = dydat,
+        #                                        displabs = included_cols)
+
         dg <- dygraph(dydat,#[,1:2],
                       group = 'nSiteNVar') %>%
             dyOptions(useDataTimezone = FALSE,
@@ -906,6 +918,17 @@ output$GRAPH_MAIN3a <- renderDygraph({
                    labelHeight = 10,
                    pixelsPerLabel = 20,
                    rangePad = 10)
+            # # dyCSS('~/git/macrosheds/portal/www/dygraph.css') %>%
+            # # dyCSS('www/dygraph.css') %>%
+            # dyAnnotation(x = watermark_specs$dt,
+            #              text = 'macrosheds.org',
+            #              attachAtBottom = TRUE,
+            #              # cssClass = 'dygraphDefaultAnnotation',
+            #              # cssClass = 'dygraph-watermark',
+            #              tickHeight = 0,
+            #              width = 0,
+            #              series = watermark_specs$series,
+            #              tooltip = '')
 
         if(show_pchem){
 
@@ -1701,6 +1724,8 @@ output$GRAPH_Q3 <- renderDygraph({
                      tzone = lubridate::tz(dataq$datetime[1]))
 
         dimnames(dydat) <- list(NULL, displabs)
+
+        print(colnames(dydat))
 
         dg <- dygraph(dydat,
                       group = 'nSiteNVar') %>%

@@ -22,7 +22,7 @@ suppressPackageStartupMessages({
     library(googlesheets4)
     library(DT)
     # library(rhandsontable)
-    library(shiny.router)
+    # library(shiny.router)
 })
 
 #TODO:
@@ -62,8 +62,17 @@ source('function_aliases.R')
 # googlesheets4::gs4_auth(path = '../data_acquisition/googlesheet_service_accnt.json')
 #                         use_oob = TRUE)
 load_portal_config(from_where = 'local')
-site_data <- filter(site_data, as.logical(in_workflow))
 
+sites_with_Q <- sm(read_csv('../portal/data/general/sites_with_discharge.csv')) %>%
+    select(-network) %>%
+    tidyr::unite(col = 'nds',
+                 domain, site_name,
+                 remove = TRUE) %>%
+    pull(nds)
+
+site_data <- filter(site_data,
+                    as.logical(in_workflow),
+                    paste(domain, site_name, sep = '_') %in% sites_with_Q)
 
 #TODO: allow duplicate site_names
 # if(any(duplicated(site_data$site_name))) stop('site_names must be unique, even across domains')
@@ -169,9 +178,9 @@ names(conc_flux_names)[2] <- paste('Flux (interpolated)',
 names(conc_flux_names)[3] <- paste('Flux (VWC)',
                                    enc2native('\U2753'))
 
-sites_with_P <- sites_by_var('precipitation')
-sites_with_Q <- sites_by_var('discharge')
-sites_with_pchem <- sites_by_var('precip_chemistry')
+# sites_with_P <- sites_by_var('precipitation')
+# sites_with_Q <- sites_by_var('discharge')
+# sites_with_pchem <- sites_by_var('precip_chemistry')
 
 chemvars_display_subset <- filter_dropdown_varlist(basedata$chem)
 #pchemvars_display_subset <- filter_dropdown_varlist(basedata$pchem)

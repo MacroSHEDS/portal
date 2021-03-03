@@ -255,7 +255,7 @@ nSiteNVar_tab <- tabPanel("Time-series",
                         # ),
 
                         #ANOTHER WAY (requires somewhat hacky css and js)
-                        div(id='main3a'), #plot key: communicates with dygraphs
+                        div(id = 'main3a'), #plot key: communicates with dygraphs
                         div(id = 'inlineContainerA',
                             style = 'font-size: 0px',
                             div(id = 'inlineMAIN3a',

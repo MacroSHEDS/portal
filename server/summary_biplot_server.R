@@ -832,12 +832,14 @@ output$SUMMARY_BIPLOT <- renderPlotly({
     }
 
     plot <- plot %>%
-        plotly::layout(annotations = list(text=paste0('MacoSheds', ' data provided by: ', networks_cite),
-                                          xref = "paper",
-                                          yref = "paper",
-                                          opacity = 0.4,
-                                          "showarrow" = F,
-                                          font=list(size = 20)))
+        plotly::layout(annotations = list(
+            text = paste0('macrosheds.org data provided by: ', networks_cite),
+            xref = "paper",
+            yref = "paper",
+            opacity = 0.10,
+            showarrow = FALSE,
+            textangle = -45,
+            font = list(size = 28)))
 
     return(plot)
 })

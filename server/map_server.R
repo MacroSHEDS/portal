@@ -73,71 +73,78 @@ output$MAP = renderLeaflet({
 
 #Highlight on click
 proxy <- leafletProxy("MAP", session)
+
 #Highlight stream gauges when watersheds are clicked
 prev_select <- reactiveVal()
- observeEvent({input$MAP_shape_click
-     input$MAP_click},{
 
-     if(is.null(prev_select()) && is.null(input$MAP_shape_click)) { } else {
+observeEvent({
+        input$MAP_shape_click
+        input$MAP_click
+    }, {
 
-     code <- str_split_fixed(input$MAP_shape_click$id, '-', n=Inf)[1]
+    if(is.null(prev_select()) && is.null(input$MAP_shape_click)) { } else {
 
-     sg <- filter(site_data, site_type == 'stream_gauge') %>%
-         filter(site_name == code)
+        code <- str_split_fixed(input$MAP_shape_click$id, '-', n = Inf)[1]
 
-     selected <- list(id = code, lat = sg$latitude, lng = sg$longitude)
+        sg <- filter(site_data, site_type == 'stream_gauge') %>%
+            filter(site_name == code)
 
-     proxy %>%
-         addCircleMarkers(layerId = paste0(code, '-temp'),
-                       lng=sg$longitude,
-                       lat=sg$latitude,
-                       color='#228B22', stroke = T, opacity=1, radius=4,
-                       weight=10, fillOpacity=1, fillColor='#228B22',
-                       popup=glue(stream_gauge_buttons, domain=sg$domain,
-                                  pretty_domain=sg$pretty_domain, stream=sg$stream,
-                                  site_code=sg$site_name, site_name=sg$full_name,
-                                  site_type=sg$site_type, latitude=sg$latitude,
-                                  longitude=sg$longitude,
-                                  attribution=paste0(sg$domain, "__", sg$site_name)),
-                       popupOptions=c(
-                           className=paste0(sg$domain, "__", sg$site_name, '_popup'),
-                           minWidth=200, maxWidth=500), label = sg$site_name,
-                       data=sg)  %>%
-         removeMarker(layerId = paste0(prev_select()$id, '-temp'))
+        selected <- list(id = code, lat = sg$latitude, lng = sg$longitude)
 
-     prev_select(selected)
-     }
- })
+        proxy %>%
+            addCircleMarkers(
+                layerId = paste0(code, '-temp'),
+                lng = sg$longitude,
+                lat = sg$latitude,
+                color = '#228B22', stroke = TRUE, opacity = 1, radius = 4,
+                weight = 10, fillOpacity = 1, fillColor = '#228B22',
+                popup = glue(stream_gauge_buttons, domain = sg$domain,
+                             pretty_domain = sg$pretty_domain, stream = sg$stream,
+                             site_code = sg$site_name, site_name = sg$full_name,
+                             site_type = sg$site_type, latitude = sg$latitude,
+                             longitude = sg$longitude,
+                             attribution = paste0(sg$domain, "__", sg$site_name)),
+                popupOptions = c(
+                    className = paste0(sg$domain, "__", sg$site_name, '_popup'),
+                    minWidth = 200, maxWidth = 500), label = sg$site_name,
+                data = sg)  %>%
+            removeMarker(layerId = paste0(prev_select()$id, '-temp'))
+
+        prev_select(selected)
+    }
+})
 
 # Highlight watersheds when stream guages are clicked
 prev_select_m <- reactiveVal()
-observeEvent({input$MAP_marker_click
-     input$MAP_click},{
+observeEvent({
+        input$MAP_marker_click
+        input$MAP_click
+    }, {
 
-         if(is.null(prev_select_m()) && is.null(input$MAP_marker_click)) { } else {
+    if(is.null(prev_select_m()) && is.null(input$MAP_marker_click)) { } else {
 
-             code_ <- str_split_fixed(input$MAP_marker_click$id, '-', n=Inf)[1]
-             shed <- sheds %>%
-                 filter(site_name == code_)
+        code_ <- str_split_fixed(input$MAP_marker_click$id, '-', n=Inf)[1]
+        shed <- sheds %>%
+            filter(site_name == code_)
 
-             selected <- list(id = code_)
+        selected <- list(id = code_)
 
-             site_remove <- prev_select_m()$id
+        site_remove <- prev_select_m()$id
 
-                 proxy %>%
-                     addPolygons(data = shed, weight = 3, smooth = 0, stroke = T,
-                                 fillOpacity = 0.2, color = '#228B22',
-                                 layerId = paste0(shed$site_name, '-temp'), group = 'Catchments')
+            proxy %>%
+                addPolygons(data = shed, weight = 3, smooth = 0, stroke = T,
+                            fillOpacity = 0.2, color = '#228B22',
+                            layerId = paste0(shed$site_name, '-temp'), group = 'Catchments')
 
-             proxy %>%
-                 addPolygons(data = shed, weight = 3, smooth = 0, stroke = T,
-                     fillOpacity = 0.2, color = '#228B22',
-                     layerId = paste0(shed$site_name, '-temp'), group = 'Catchments') %>%
-                 removeShape(layerId = paste0(site_remove, '-temp'))
+        proxy %>%
+            addPolygons(data = shed, weight = 3, smooth = 0, stroke = T,
+                fillOpacity = 0.2, color = '#228B22',
+                layerId = paste0(shed$site_name, '-temp'), group = 'Catchments') %>%
+            removeShape(layerId = paste0(site_remove, '-temp'))
 
-             prev_select_m(selected)
-         }
-     })
+        prev_select_m(selected)
+    }
+})
 
 
 ## Add site as a class

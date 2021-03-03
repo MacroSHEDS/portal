@@ -17,6 +17,30 @@ shinyjs.init = function() {
    //     }
    // }, 100);
 
+    //this lets us trigger an event when a specific element has fully loaded in the DOM
+   // function loaded(selector, callback){
+   //     $(function(){ callback($(selector)); });
+   //     var parentSelector = '* > ' + selector;
+   //     $(document).on('DOMNodeInserted', parentSelector, function(e){
+   //         callback($(this).find(selector));
+   //     });
+   // }
+   
+   //function debounce(func, wait, immediate){
+   //    var timeout;
+   //    return function(){
+   //        var context = this, args = arguments;
+   //        var later = function(){
+   //                        timeout = null;
+   //                        if(!immediate) func.apply(context, args);
+   //                    };
+   //        var callNow = immediate && ! timeout;
+   //        clearTimeout(timeout);
+   //        timeout = setTimeout(later, wait);
+   //        if(callNow) func.apply(context, args);
+   //    };
+   //};
+
     //connect map buttons to app tabs
     $('body').ready(function(){
         $('body').on('click', '[id$="_goto"]', function(){
@@ -200,30 +224,64 @@ shinyjs.init = function() {
 
 
     $('body').ready(function(){
-        //$('.dataTable tbody tr').on('overflow', 'td', function(index){
         $('#dataTable').on('focus', function(i){
-        //$('#SITE_CATALOG_BUTTON').on('click', function(i){
-            console.log('gg');
-        $('#site_catalog td').each(function(i){
-        //$('.dataTable tbody tr td').each(function(i){
-            console.log('a');
-            $this = $(this);
-            var titleVal = $this.text();
-            if(typeof titleVal === "string" && titleVal !== ''){
-                $this.attr('title', titleVal);
-            }
-        });
+            $('#site_catalog td').each(function(i){
+                var $this = $(this);
+                var titleVal = $this.text();
+                if(typeof titleVal === "string" && titleVal !== ''){
+                    $this.attr('title', titleVal);
+                }
+            });
         });
     });
 
+    //set td elements' titles to their contents, so the user can mouseover to see hidden text
+    set_td_titles = function(i){
+        var titleVal = $(this).text();
+        if(typeof titleVal === "string" && titleVal !== ''){
+            $(this).attr('title', titleVal);
+        };
+    };
+
+    var partial = function(fn, var_args) {
+      var args = Array.prototype.slice.call(arguments, 1);
+      return function() {
+        // Clone the array (with slice()) and append additional arguments
+        // to the existing arguments.
+        var newArgs = args.slice();
+        newArgs.push.apply(newArgs, arguments);
+        return fn.apply(this, newArgs);
+      };
+    };
+
+    //make variable subcatalogs pop up when user clicks "see availability" buttons in modals
+    set_tablebutton_listener = function(btn, modal_id_){
+
+        //var btn = $(this);
+        var btn = $(btn);
+        var btn_id = btn.attr('id');
+
+        btn.on('click', function(){
+
+            if(modal_id_ == 'variable_catalog'){
+                console.log('VARIABLE SUB-CATALOG LISTENER');
+                Shiny.setInputValue('VARIABLE_SUBCATALOG_BUTTON_LISTENER', btn_id, {priority: 'event'});
+//                            Shiny.setInputValue('VARIABLE_SUBCATALOG_BUTTON_LISTENER', null);//, {priority: 'event'});
+            } else if(modal_id_ == 'site_catalog'){
+                console.log('SITE SUB-CATALOG LISTENER');
+                Shiny.setInputValue('SITE_SUBCATALOG_BUTTON_LISTENER', btn_id, {priority: 'event'});
+            } else {
+                console.log('unhandled button detected inside a modal table');
+            }
+
+        });
+    };
+
     //respond to insertions of shiny modal boxes into document.body
-    var dom_observer = new MutationObserver(async function(mutation) {
+    var dom_observer1 = new MutationObserver(async function(mutation) {
 
         var tgt = $(target);
         var shinymodal = tgt.children('#shiny-modal-wrapper');
-        //var nmodals = shinymodals.length;
-        //
-        //if(nmodals > 0){
         if(shinymodal.length > 0){
 
             //make modal fullscreen
@@ -231,53 +289,108 @@ shinyjs.init = function() {
                 .children('.modal-dialog').css({'width': '100%', 'height': '100%', 'margin': '0px'})
                 .children('.modal-content').css({'width': '100%', 'height': '100%'});
 
-            await new Promise(r => setTimeout(r, 1000)); //wait a second for the modal and its table to load
-
-            //for(var i = 0; i < nmodals; i++){ //for each modal present (there can only be one at a time under shiny)
-            //
-            //var modal = $(shinymodals[i]);
             var modal_id = shinymodal.find('.modal-body').attr('id');
             if(modal_id === 'landing'){
                 return;
             }
 
+            await new Promise(r => setTimeout(r, 1000)); //wait a second for the modal and its table to load
 
-            //set all td elements' titles to their contents, so the user can mouseover to see hidden text
-            shinymodal.find('td').each(function(i){
-                var titleVal = $(this).text();
-                if(typeof titleVal === "string" && titleVal !== ''){
-                    $(this).attr('title', titleVal);
-                };
-            });
+            shinymodal.find('td').each(set_td_titles);
 
-            //set up listeners for all button elements inside table cells
-            shinymodal.find('td button').each(function(i){
+            //set up listeners for all button elements inside table cells (uses partial application)
+            shinymodal.find('td button').each(partial(function(index, value){
+                set_tablebutton_listener(btn = arguments[2], modal_id_ = arguments[0]);
+            }, modal_id));
 
-                var btn = $(this)
-                var btn_id = btn.attr('id')
-
-                btn.on('click', function(){
-
-                    if(modal_id == 'variable_catalog'){
-                        console.log('VARIABLE SUB-CATALOG LISTENER');
-                        Shiny.setInputValue('VARIABLE_SUBCATALOG_BUTTON_LISTENER', btn_id, {priority: 'event'});
-//                            Shiny.setInputValue('VARIABLE_SUBCATALOG_BUTTON_LISTENER', null);//, {priority: 'event'});
-                    } else if(modal_id == 'site_catalog'){
-                        console.log('SITE SUB-CATALOG LISTENER');
-                        Shiny.setInputValue('SITE_SUBCATALOG_BUTTON_LISTENER', btn_id, {priority: 'event'});
-                    } else {
-                        console.log('unhandled button detected inside a modal table');
-                    }
-
-                });
-            });
-            //};
+            ////set up listeners that update td titles and button events when paginate buttons are clicked
+            //shinymodal.find("a[class^='paginate_button']").click(function listener_recurse(i, v){
+            //    console.log('a');
+            //    window.setTimeout(function(){
+            //        console.log('gg');
+            //    }, 500);
+            //    $('td').each(set_td_titles);
+            //    $("a[class^='paginate_button']").click(listener_recurse(i, v));
+            //});
         };
     });
 
     //configure and register mutation observer for modals
-    var config = { attributes: true, childList: true, characterData: true };
-    dom_observer.observe(target = document.body, config);
+    var mutation_observer_config_1 = { attributes: true, childList: true, characterData: true };
+    dom_observer1.observe(target = document.body, mutation_observer_config_1);
+
+    //each time a new catalog page is loaded, remake the cell titles and button events
+    $('body').on('click', "a[class^='paginate_button']", function(i, v){
+
+        window.setTimeout(function(){
+
+            var modl = $('.modal-body');
+            var modal_id = modl.attr('id');
+
+            modl.find('td').each(set_td_titles);
+            
+            //set up listeners for all button elements inside table cells (uses partial application)
+            modl.find('td button').each(partial(function(index, value){
+                set_tablebutton_listener(btn = arguments[2], modal_id_ = arguments[0]);
+            }, modal_id));
+
+        }, 200);
+    });
+
+    //all this crap (and associated CSS) is necessary just to make "macrosheds.org"
+    //appear (and STAY appeared) in the bottom of each dygraph as an annotation
+    
+    window.enable_attribution = false 
+
+   // $('body').on('change', '#DATES3', debounce(function(){
+   //     if(enable_attribution){
+   //         window.setTimeout(function(){
+   //             $('[class^="ms-attribution"]').remove()
+   //             $('#GRAPH_PRECIP3').css('position', 'relative').append($('<p class="ms-attribution-low">macrosheds.org</p>'));
+   //             $('[id^="GRAPH_MAIN3"]').css('position', 'relative').append($('<p class="ms-attribution-low">macrosheds.org</p>'));
+   //             $('#GRAPH_Q3').css('position', 'relative').append($('<p class="ms-attribution-high">macrosheds.org</p>'));
+   //         }, 2000);
+   //     };
+
+   //     //the next listener (for VARS3 and SITES3 changes) executes first! so enable attribution here
+   //     enable_attribution = true
+   // }, 1000));
+
+   // $('body').on('change', '#VARS3, #SITES3', function(){
+   //     if(enable_attribution){
+   //         $('[class^="ms-attribution"]').remove()
+   //         $('#GRAPH_PRECIP3').css('position', 'relative').append($('<p class="ms-attribution-low">macrosheds.org</p>'));
+   //         $('[id^="GRAPH_MAIN3"]').css('position', 'relative').append($('<p class="ms-attribution-low">macrosheds.org</p>'));
+   //         $('#GRAPH_Q3').css('position', 'relative').append($('<p class="ms-attribution-high">macrosheds.org</p>'));
+   //     };
+   // });
+
+   // $('body').on('click', 'a[data-value="multisite_exploration"]', function(){
+   //     window.setTimeout(function(){
+   //         $('[class^="ms-attribution"]').remove()
+   //         $('#GRAPH_PRECIP3').css('position', 'relative').append($('<p class="ms-attribution-low">macrosheds.org</p>'));
+   //         $('[id^="GRAPH_MAIN3"]').css('position', 'relative').append($('<p class="ms-attribution-low">macrosheds.org</p>'));
+   //         $('#GRAPH_Q3').css('position', 'relative').append($('<p class="ms-attribution-high">macrosheds.org</p>'));
+   //     }, 3000);
+   // });
+    
+    $(document).on('shiny:idle', function(event){
+        enable_attribution = true
+    });
+
+    $('div[id^="GRAPH_"]').on('shiny:value', function(event){
+        if(enable_attribution){
+            let $this = $(this)
+            window.setTimeout(function(){
+                $this.children('[class^="ms-attribution"]').remove()
+                if($this.attr('id') === 'GRAPH_Q3'){
+                    $this.css('position', 'relative').append($('<p class="ms-attribution-high">macrosheds.org</p>'));
+                } else {
+                    $this.css('position', 'relative').append($('<p class="ms-attribution-low">macrosheds.org</p>'));
+                };
+            }, 500);
+        };
+    });
 
 }
 

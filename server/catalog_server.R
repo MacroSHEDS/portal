@@ -31,8 +31,8 @@ output$VARIABLE_CATALOG <- DT::renderDataTable(
         DT::datatable(d,
                       options = list(scrollX = 'true'),
                       escape = FALSE)
-    },
-    server = FALSE
+    }
+    # server = FALSE
 )
 
 output$VARIABLE_SUBCATALOG <- DT::renderDataTable({
