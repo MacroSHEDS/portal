@@ -262,56 +262,36 @@ pad_ts <- function(d,
                         tz = 'UTC') %>%
         lubridate::with_tz(lubridate::tz(d$datetime[1]))
 
-    pad_rows <- d[c(1, nrow(d)), ]
+    ms_cols <- grep(pattern = '(?:P_)?ms_(status|interp)_',
+                    x = colnames(d),
+                    value = TRUE)
 
-    ms_cols <- grepl(pattern = '(?:P_)?ms_(status|interp)_',
-                     x = colnames(pad_rows))
+    if(dtcol[1] < d$datetime[1]){
+        row_to_bind <- tibble(datetime = dtcol[1])
+        row_to_bind[, ms_cols] <- 0
+        d <- bind_rows(row_to_bind, d)
+    }
 
-    pad_rows[, ms_cols] <- 0
-    pad_rows[, ! ms_cols] <- NA
-    pad_rows$datetime <- dtcol
+    if(dtcol[2] > d$datetime[nrow(d)]){
+        row_to_bind <- tibble(datetime = dtcol[2])
+        row_to_bind[, ms_cols] <- 0
+        d <- bind_rows(d, row_to_bind)
+    }
 
-    d_padded <- bind_rows(d, pad_rows)
+    # pad_rows <- d[c(1, nrow(d)), ]
 
-    # if('site_name' %in% colnames(d)){
-    #     spatial_unit = 'site_name'
-    #     sites_or_dmns = unique(d$site_name)
-    # } else if('domain' %in% colnames(d)){
-    #     spatial_unit = 'domain'
-    #     sites_or_dmns = unique(d$domain)
-    # } else{ #probably never run, but here for unforseen back-compatibility needs
-    #     spatial_unit = 'site_name'
-    #     sites_or_dmns = 'placeholder'
-    # }
+    # ms_cols <- grep(pattern = '(?:P_)?ms_(status|interp)_',
+    #                 x = colnames(pad_rows),
+    #                 value = TRUE)
 
-    # cnms <- colnames(d)
-    # sites <- cnms[! grepl(pattern = '(?:ms_|datetime)',
-    #                       x = cnms,
-    #                       perl = TRUE)]
-    # nsites <- length(sites)
-    # nvars <- length(vars)
-    #
-    # dt_pad_rows <- tibble(a = rep(x = as.POSIXct(datebounds),
-    #                               times = nsites),
-    #                       b = rep(sites, each=2))
-    #
-    # dt_pad_rows <- dplyr::bind_cols(dt_pad_rows,
-    #                                 as.data.frame(matrix(NA_real_,
-    #                                                      ncol = nvars,
-    #                                                      nrow = nsites * 2)))
-    #
-    # colnames(dt_pad_rows) = c('datetime', spatial_unit, vars)
-    # dt_pad_rows$datetime = lubridate::force_tz(dt_pad_rows$datetime, 'UTC')
-    #
-    #
-    # df_padded = d %>%
-    #     bind_rows(dt_pad_rows)
+    # pad_rows[, ms_cols] <- 0
+    # # pad_rows <- select(pad_rows, datetime, all_of(ms_cols))
+    # pad_rows[, ! ms_cols] <- NA
+    # pad_rows$datetime <- dtcol
 
-    # if(sites_or_dmns[1] == 'placeholder'){
-    #     df_padded = select(df_padded, -site_name)
-    # }
+    # d_padded <- bind_rows(d, pad_rows)
 
-    return(d_padded)
+    return(d)
 }
 
 # r=raindata; l=streamdata#

@@ -8,9 +8,6 @@ reactive_vals = reactiveValues()
 reactive_vals$facet3a = 0
 reactive_vals$facet3b = 0
 reactive_vals$facet3c = 0
-# reactive_vals$facet3aP = 0
-# reactive_vals$facet3bP = 0
-# reactive_vals$facet3cP = 0
 reactive_vals$update_basedata = 0
 
 #main facets
@@ -674,6 +671,8 @@ output$GRAPH_PRECIP3 <- renderDygraph({
     # dates <<- isolate(input$DATES3)
     # dataP <<- dataPrecip()
 
+    # if(reactive_vals$precip3 == 0) return()
+
     tryCatch(
         {
             dataP <- dataP %>%
@@ -685,8 +684,6 @@ output$GRAPH_PRECIP3 <- renderDygraph({
         },
         error = function(e) NULL
     )
-
-    # reactive_vals$facet3aP
 
     if(nrow(dataP)){
 
@@ -703,8 +700,8 @@ output$GRAPH_PRECIP3 <- renderDygraph({
         ymax <- max(dydat,
                     na.rm = TRUE)
 
-        watermark_specs <- get_watermark_specs(dydat = dydat,
-                                               displabs = displabs)
+        # watermark_specs <- get_watermark_specs(dydat = dydat,
+        #                                        displabs = displabs)
 
         dg <- dygraph(dydat,
                       group = 'nSiteNVar') %>%
@@ -750,16 +747,16 @@ output$GRAPH_PRECIP3 <- renderDygraph({
                    labelWidth = 16,
                    labelHeight = 10,
                    pixelsPerLabel = 10,
-                   rangePad = 10) %>%
-            # dyCSS('~/git/macrosheds/portal/www/dygraph.css') %>%
-            dyAnnotation(x = watermark_specs$dt,
-                         text = 'macrosheds.org',
-                         attachAtBottom = TRUE,
-                         # cssClass = 'dygraph-watermark',
-                         tickHeight = 0,
-                         width = 0,
-                         series = watermark_specs$series,
-                         tooltip = '')
+                   rangePad = 10)
+            # # dyCSS('~/git/macrosheds/portal/www/dygraph.css') %>%
+            # dyAnnotation(x = watermark_specs$dt,
+            #              text = 'macrosheds.org',
+            #              attachAtBottom = TRUE,
+            #              # cssClass = 'dygraph-watermark',
+            #              tickHeight = 0,
+            #              width = 0,
+            #              series = watermark_specs$series,
+            #              tooltip = '')
 
         #alternative way to show points in different color? also needs work)
         # dg2 <- dySeries(dg,
@@ -883,8 +880,8 @@ output$GRAPH_MAIN3a <- renderDygraph({
                           TRUE,
                           FALSE)
 
-        watermark_specs <- get_watermark_specs(dydat = dydat,
-                                               displabs = included_cols)
+        # watermark_specs <- get_watermark_specs(dydat = dydat,
+        #                                        displabs = included_cols)
 
         dg <- dygraph(dydat,#[,1:2],
                       group = 'nSiteNVar') %>%
@@ -920,18 +917,18 @@ output$GRAPH_MAIN3a <- renderDygraph({
                    labelWidth = 16,
                    labelHeight = 10,
                    pixelsPerLabel = 20,
-                   rangePad = 10) %>%
-            # dyCSS('~/git/macrosheds/portal/www/dygraph.css') %>%
-            # dyCSS('www/dygraph.css') %>%
-            dyAnnotation(x = watermark_specs$dt,
-                         text = 'macrosheds.org',
-                         attachAtBottom = TRUE,
-                         # cssClass = 'dygraphDefaultAnnotation',
-                         # cssClass = 'dygraph-watermark',
-                         tickHeight = 0,
-                         width = 0,
-                         series = watermark_specs$series,
-                         tooltip = '')
+                   rangePad = 10)
+            # # dyCSS('~/git/macrosheds/portal/www/dygraph.css') %>%
+            # # dyCSS('www/dygraph.css') %>%
+            # dyAnnotation(x = watermark_specs$dt,
+            #              text = 'macrosheds.org',
+            #              attachAtBottom = TRUE,
+            #              # cssClass = 'dygraphDefaultAnnotation',
+            #              # cssClass = 'dygraph-watermark',
+            #              tickHeight = 0,
+            #              width = 0,
+            #              series = watermark_specs$series,
+            #              tooltip = '')
 
         if(show_pchem){
 
@@ -1207,9 +1204,6 @@ output$GRAPH_MAIN3b <- renderDygraph({
                           TRUE,
                           FALSE)
 
-        watermark_specs <- get_watermark_specs(dydat = dydat,
-                                               displabs = included_cols)
-
         dg <- dygraph(dydat,#[,1:2],
                       group = 'nSiteNVar') %>%
             dyOptions(useDataTimezone = FALSE,
@@ -1244,16 +1238,7 @@ output$GRAPH_MAIN3b <- renderDygraph({
                    labelWidth = 16,
                    labelHeight = 10,
                    pixelsPerLabel = 20,
-                   rangePad = 10) %>%
-            # dyCSS('www/dygraph.css') %>%
-            dyAnnotation(x = watermark_specs$dt,
-                         text = 'macrosheds.org',
-                         attachAtBottom = TRUE,
-                         # cssClass = 'dygraph-watermark',
-                         tickHeight = 0,
-                         width = 0,
-                         series = watermark_specs$series,
-                         tooltip = '')
+                   rangePad = 10)
 
         if(show_pchem){
 
@@ -1510,9 +1495,6 @@ output$GRAPH_MAIN3c <- renderDygraph({
                           TRUE,
                           FALSE)
 
-        watermark_specs <- get_watermark_specs(dydat = dydat,
-                                               displabs = included_cols)
-
         dg <- dygraph(dydat,#[,1:2],
                       group = 'nSiteNVar') %>%
             dyOptions(useDataTimezone = FALSE,
@@ -1547,16 +1529,7 @@ output$GRAPH_MAIN3c <- renderDygraph({
                    labelWidth = 16,
                    labelHeight = 10,
                    pixelsPerLabel = 20,
-                   rangePad = 10) %>%
-            # dyCSS('www/dygraph.css') %>%
-            dyAnnotation(x = watermark_specs$dt,
-                         text = 'macrosheds.org',
-                         attachAtBottom = TRUE,
-                         # cssClass = 'dygraph-watermark',
-                         tickHeight = 0,
-                         width = 0,
-                         series = watermark_specs$series,
-                         tooltip = '')
+                   rangePad = 10)
 
         if(show_pchem){
 
@@ -1750,9 +1723,6 @@ output$GRAPH_Q3 <- renderDygraph({
                      order.by = dataq$datetime,
                      tzone = lubridate::tz(dataq$datetime[1]))
 
-        watermark_specs <- get_watermark_specs(dydat = dydat,
-                                               displabs = displabs)
-
         dimnames(dydat) <- list(NULL, displabs)
 
         print(colnames(dydat))
@@ -1778,16 +1748,7 @@ output$GRAPH_Q3 <- renderDygraph({
                    labelWidth = 16,
                    labelHeight = 10,
                    pixelsPerLabel = 10,
-                   rangePad = 10) %>%
-            # dyCSS('www/dygraph.css') %>%
-            dyAnnotation(x = watermark_specs$dt,
-                         text = 'macrosheds.org',
-                         attachAtBottom = TRUE,
-                         # cssClass = 'dygraph-watermark',
-                         tickHeight = 0,
-                         width = 0,
-                         series = watermark_specs$series,
-                         tooltip = '')
+                   rangePad = 10)
 
     } else {
 

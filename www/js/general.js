@@ -18,13 +18,28 @@ shinyjs.init = function() {
    // }, 100);
 
     //this lets us trigger an event when a specific element has fully loaded in the DOM
-    function loaded(selector, callback){
-        $(function(){ callback($(selector)); });
-        var parentSelector = '* > ' + selector;
-        $(document).on('DOMNodeInserted', parentSelector, function(e){
-            callback($(this).find(selector));
-        });
-    }
+   // function loaded(selector, callback){
+   //     $(function(){ callback($(selector)); });
+   //     var parentSelector = '* > ' + selector;
+   //     $(document).on('DOMNodeInserted', parentSelector, function(e){
+   //         callback($(this).find(selector));
+   //     });
+   // }
+   
+   //function debounce(func, wait, immediate){
+   //    var timeout;
+   //    return function(){
+   //        var context = this, args = arguments;
+   //        var later = function(){
+   //                        timeout = null;
+   //                        if(!immediate) func.apply(context, args);
+   //                    };
+   //        var callNow = immediate && ! timeout;
+   //        clearTimeout(timeout);
+   //        timeout = setTimeout(later, wait);
+   //        if(callNow) func.apply(context, args);
+   //    };
+   //};
 
     //connect map buttons to app tabs
     $('body').ready(function(){
@@ -209,19 +224,14 @@ shinyjs.init = function() {
 
 
     $('body').ready(function(){
-        //$('.dataTable tbody tr').on('overflow', 'td', function(index){
         $('#dataTable').on('focus', function(i){
-        //$('#SITE_CATALOG_BUTTON').on('click', function(i){
-            console.log('gg');
-        $('#site_catalog td').each(function(i){
-        //$('.dataTable tbody tr td').each(function(i){
-            console.log('a');
-            $this = $(this);
-            var titleVal = $this.text();
-            if(typeof titleVal === "string" && titleVal !== ''){
-                $this.attr('title', titleVal);
-            }
-        });
+            $('#site_catalog td').each(function(i){
+                var $this = $(this);
+                var titleVal = $this.text();
+                if(typeof titleVal === "string" && titleVal !== ''){
+                    $this.attr('title', titleVal);
+                }
+            });
         });
     });
 
@@ -329,26 +339,58 @@ shinyjs.init = function() {
 
     //all this crap (and associated CSS) is necessary just to make "macrosheds.org"
     //appear (and STAY appeared) in the bottom of each dygraph as an annotation
-    $('body').on('change', '#SITES3', function(){
-        window.setTimeout(function(){
-            $('#REFRESH').trigger('click');
-        }, 2000);
+    
+    window.enable_attribution = false 
+
+   // $('body').on('change', '#DATES3', debounce(function(){
+   //     if(enable_attribution){
+   //         window.setTimeout(function(){
+   //             $('[class^="ms-attribution"]').remove()
+   //             $('#GRAPH_PRECIP3').css('position', 'relative').append($('<p class="ms-attribution-low">macrosheds.org</p>'));
+   //             $('[id^="GRAPH_MAIN3"]').css('position', 'relative').append($('<p class="ms-attribution-low">macrosheds.org</p>'));
+   //             $('#GRAPH_Q3').css('position', 'relative').append($('<p class="ms-attribution-high">macrosheds.org</p>'));
+   //         }, 2000);
+   //     };
+
+   //     //the next listener (for VARS3 and SITES3 changes) executes first! so enable attribution here
+   //     enable_attribution = true
+   // }, 1000));
+
+   // $('body').on('change', '#VARS3, #SITES3', function(){
+   //     if(enable_attribution){
+   //         $('[class^="ms-attribution"]').remove()
+   //         $('#GRAPH_PRECIP3').css('position', 'relative').append($('<p class="ms-attribution-low">macrosheds.org</p>'));
+   //         $('[id^="GRAPH_MAIN3"]').css('position', 'relative').append($('<p class="ms-attribution-low">macrosheds.org</p>'));
+   //         $('#GRAPH_Q3').css('position', 'relative').append($('<p class="ms-attribution-high">macrosheds.org</p>'));
+   //     };
+   // });
+
+   // $('body').on('click', 'a[data-value="multisite_exploration"]', function(){
+   //     window.setTimeout(function(){
+   //         $('[class^="ms-attribution"]').remove()
+   //         $('#GRAPH_PRECIP3').css('position', 'relative').append($('<p class="ms-attribution-low">macrosheds.org</p>'));
+   //         $('[id^="GRAPH_MAIN3"]').css('position', 'relative').append($('<p class="ms-attribution-low">macrosheds.org</p>'));
+   //         $('#GRAPH_Q3').css('position', 'relative').append($('<p class="ms-attribution-high">macrosheds.org</p>'));
+   //     }, 3000);
+   // });
+    
+    $(document).on('shiny:idle', function(event){
+        enable_attribution = true
     });
 
-    $('body').on('change', '#VARS3', function(){
-        window.setTimeout(function(){
-            $('#REFRESH').trigger('click');
-        }, 2000);
-    });
-
-    $(document).ready(function(){
-        loaded('GRAPH_MAIN3a', function(){
+    $('div[id^="GRAPH_"]').on('shiny:value', function(event){
+        if(enable_attribution){
+            let $this = $(this)
             window.setTimeout(function(){
-                $('#REFRESH').trigger('click');
-            }, 3000);
-        });
+                $this.children('[class^="ms-attribution"]').remove()
+                if($this.attr('id') === 'GRAPH_Q3'){
+                    $this.css('position', 'relative').append($('<p class="ms-attribution-high">macrosheds.org</p>'));
+                } else {
+                    $this.css('position', 'relative').append($('<p class="ms-attribution-low">macrosheds.org</p>'));
+                };
+            }, 500);
+        };
     });
-
 
 }
 
