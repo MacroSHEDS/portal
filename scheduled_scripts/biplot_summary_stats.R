@@ -1,6 +1,6 @@
 df <- network_domain_default_sites
-#
-#
+
+
 # Currently viewing monthly summaries is disabled on biplot, primarilay becuase
 # general products are only saved as calendar year summaries. This should be changed
 # in the future
