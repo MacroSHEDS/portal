@@ -279,7 +279,7 @@ compute_yearly_summary <- function(df) {
 
                     site_flux <- site_flux %>%
                         group_by(site_name, Year, Month, Day, var) %>%
-                        summarise(val = mean(val, na.rm = T)) %>%
+                        summarise(val = sum(val, na.rm = T)) %>%
                         ungroup() %>%
                         group_by(site_name, Year, var) %>%
                         mutate(Date = ymd(paste(Year, 1, 1, sep = '-'))) %>%
@@ -312,7 +312,7 @@ compute_yearly_summary <- function(df) {
 
                     site_precip <- site_precip %>%
                         group_by(site_name, Year, Month, Day) %>%
-                        summarise(val = mean(val, na.rm = T)) %>%
+                        summarise(val = sum(val, na.rm = T)) %>%
                         ungroup() %>%
                         mutate(Date = ymd(paste(Year, 1, 1, sep = '-'))) %>%
                         group_by(site_name, Date, Year) %>%
@@ -372,7 +372,7 @@ compute_yearly_summary <- function(df) {
 
                     site_precip_flux <- site_precip_flux %>%
                         group_by(site_name, Year, Month, Day, var) %>%
-                        summarise(val = mean(val, na.rm = T)) %>%
+                        summarise(val = sum(val, na.rm = T)) %>%
                         ungroup() %>%
                         group_by(site_name, Year, var) %>%
                         mutate(Date = ymd(paste(Year, 1, 1, sep = '-'))) %>%
