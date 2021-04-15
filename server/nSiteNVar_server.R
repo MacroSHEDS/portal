@@ -300,15 +300,20 @@ dataChem <- reactive({
 
     datachem <- if(conc_flux == 'Flux') basedata$flux else basedata$chem
 
-    datachem <- filter_agg_widen_unprefix(d = datachem,
-                                          selected_vars = vars_,
-                                          selected_datebounds = dates,
-                                          selected_agg = agg,
-                                          selected_prefixes = igsn,
-                                          show_uncert = show_uncert,
-                                          show_flagged = show_flagged,
-                                          show_imputed = show_imputed,
-                                          conc_or_flux = conc_flux)
+    datachem <- filter_and_unprefix(d = datachem,
+                                    selected_vars = vars_,
+                                    selected_datebounds = dates,
+                                    selected_prefixes = igsn,
+                                    show_uncert = show_uncert,
+                                    show_flagged = show_flagged,
+                                    show_imputed = show_imputed)
+
+    datachem <- ms_aggregate(d = datachem,
+                             agg_selection = selected_agg)
+
+    datachem <- pivot_wider(datachem,
+                            names_from = var,
+                            values_from = c('val', 'ms_status', 'ms_interp'))
 
     datachem <- convert_portal_units(d = datachem,
                                      conversion_enabled = enable_unitconvert,
@@ -317,6 +322,95 @@ dataChem <- reactive({
                                      flux_unit = flux_unit)
 
     return(datachem)
+})
+
+dataVWC <- reactive({
+
+    # basedata <<- load_basedata()
+    # dates <<- isolate(input$DATES3)
+    # timeSliderUpdate()
+    # vars_ <<- input$VARS3
+    # conc_flux <<- input$CONC_FLUX3
+    # conc_unit <<- input$CONC_UNIT3
+    # flux_unit <<- input$FLUX_UNIT3
+    # agg <<- input$AGG3
+    # igsn <<- c(input$INSTALLED_V_GRAB3, input$SENSOR_V_NONSENSOR3)
+    # show_uncert <<- input$SHOW_UNCERT3
+    # show_flagged <<- input$FLAGS3
+    # show_imputed <<- input$INTERP3
+    # enable_unitconvert <<- init_vals$enable_unitconvert
+
+    basedata <- load_basedata()
+    dates <- isolate(input$DATES3)
+    timeSliderUpdate()
+    vars_ <- input$VARS3
+    conc_flux <- input$CONC_FLUX3
+    conc_unit <- input$CONC_UNIT3
+    flux_unit <- input$FLUX_UNIT3
+    agg <- input$AGG3
+    igsn <- c(input$INSTALLED_V_GRAB3, input$SENSOR_V_NONSENSOR3)
+    show_uncert <- input$SHOW_UNCERT3
+    show_flagged <- input$FLAGS3
+    show_imputed <- input$INTERP3
+    enable_unitconvert <- init_vals$enable_unitconvert
+
+    agg_unit <- ifelse(agg == 'Monthly', 'month', 'year') #this won't run if agg < monthly
+
+    dataq <- filter_and_unprefix(d = basedata$Q,
+                                 selected_vars = 'discharge',
+                                 selected_datebounds = dates,
+                                 # selected_agg = agg,
+                                 selected_prefixes = igsn,
+                                 show_uncert = show_uncert,
+                                 show_flagged = show_flagged,
+                                 show_imputed = show_imputed)
+                                 # conc_or_flux = conc_flux)
+
+    dataflux <- filter_and_unprefix(d = basedata$flux,
+                                    selected_vars = vars_,
+                                    selected_datebounds = dates,
+                                    selected_prefixes = igsn,
+                                    show_uncert = show_uncert,
+                                    show_flagged = show_flagged,
+                                    show_imputed = show_imputed)
+
+    period_mean_Q <- dataq %>%
+        mutate(datetime = lubridate::floor_date(datetime, unit = agg_unit)) %>%
+        group_by(site_name, datetime) %>%
+        summarize(val = mean(val, na.rm = TRUE),
+                  ms_status = numeric_any(ms_status),
+                  ms_interp = numeric_any(ms_interp),
+                  .groups = 'drop')
+
+    datavwc <- dataflux %>%
+        mutate(datetime = lubridate::floor_date(datetime, unit = agg_unit)) %>%
+        group_by(site_name, var, datetime) %>%
+        summarize(val = sum(val, na.rm = TRUE),
+                  ms_status = numeric_any(ms_status),
+                  ms_interp = numeric_any(ms_interp),
+                  .groups = 'drop') %>%
+        left_join(period_mean_Q,
+                  by = c('datetime', 'site_name'),
+                  suffix = c('.flux', '.Q')) %>%
+        left_join(site_data[c('site_name', 'ws_area_ha')],
+                  by = 'site_name') %>%
+             #mg/L = kg/ha/d  /  L/s  *  ha
+        mutate(val = val.flux / val.Q * ws_area_ha * 1e6 / 86400,
+               ms_status = numeric_any_v(ms_status.flux, ms_status.Q),
+               ms_interp = numeric_any_v(ms_interp.flux, ms_interp.Q)) %>%
+        select(datetime, site_name, var, val, ms_status, ms_interp)
+
+    datavwc <- pivot_wider(datavwc,
+                           names_from = var,
+                           values_from = c('val', 'ms_status', 'ms_interp'))
+
+    datavwc <- convert_portal_units(d = datavwc,
+                                    conversion_enabled = enable_unitconvert,
+                                    conc_flux_selection = conc_flux,
+                                    conc_unit = conc_unit,
+                                    flux_unit = flux_unit)
+
+    return(datavwc)
 })
 
 dataPchem <- reactive({
@@ -358,15 +452,20 @@ dataPchem <- reactive({
 
     dataPchem <- if(conc_flux == 'Flux') basedata$pflux else basedata$pchem
 
-    dataPchem <- filter_agg_widen_unprefix(d = dataPchem,
-                                           selected_vars = vars_,
-                                           selected_datebounds = dates,
-                                           selected_agg = agg,
-                                           selected_prefixes = igsn,
-                                           show_uncert = show_uncert,
-                                           show_flagged = show_flagged,
-                                           show_imputed = show_imputed,
-                                           conc_or_flux = conc_flux)
+    dataPchem <- filter_and_unprefix(d = dataPchem,
+                                     selected_vars = vars_,
+                                     selected_datebounds = dates,
+                                     selected_prefixes = igsn,
+                                     show_uncert = show_uncert,
+                                     show_flagged = show_flagged,
+                                     show_imputed = show_imputed)
+
+    dataPchem <- ms_aggregate(d = dataPchem,
+                              agg_selection = selected_agg)
+
+    dataPchem <- pivot_wider(dataPchem,
+                          names_from = var,
+                          values_from = c('val', 'ms_status', 'ms_interp'))
 
     dataPchem <- convert_portal_units(d = dataPchem,
                                       conversion_enabled = enable_unitconvert,
@@ -376,6 +475,93 @@ dataPchem <- reactive({
 
 
     return(dataPchem)
+})
+
+dataPVWC <- reactive({
+
+    # basedata <<- load_basedata()
+    # dates <<- isolate(input$DATES3)
+    # timeSliderUpdate()
+    # vars_ <<- input$VARS3
+    # conc_flux <<- input$CONC_FLUX3
+    # conc_unit <<- input$CONC_UNIT3
+    # flux_unit <<- input$FLUX_UNIT3
+    # agg <<- input$AGG3
+    # igsn <<- c(input$INSTALLED_V_GRAB3, input$SENSOR_V_NONSENSOR3)
+    # show_uncert <<- input$SHOW_UNCERT3
+    # show_flagged <<- input$FLAGS3
+    # show_imputed <<- input$INTERP3
+    # enable_unitconvert <<- init_vals$enable_unitconvert
+
+    basedata <- load_basedata()
+    dates <- isolate(input$DATES3)
+    timeSliderUpdate()
+    vars_ <- input$VARS3
+    conc_flux <- input$CONC_FLUX3
+    conc_unit <- input$CONC_UNIT3
+    flux_unit <- input$FLUX_UNIT3
+    agg <- input$AGG3
+    igsn <- c(input$INSTALLED_V_GRAB3, input$SENSOR_V_NONSENSOR3)
+    show_uncert <- input$SHOW_UNCERT3
+    show_flagged <- input$FLAGS3
+    show_imputed <- input$INTERP3
+    enable_unitconvert <- init_vals$enable_unitconvert
+
+    agg_unit <- ifelse(agg == 'Monthly', 'month', 'year') #this won't run if agg < monthly
+
+    datap <- filter_and_unprefix(d = basedata$P,
+                                 selected_vars = 'precipitation',
+                                 selected_datebounds = dates,
+                                 selected_prefixes = igsn,
+                                 show_uncert = show_uncert,
+                                 show_flagged = show_flagged,
+                                 show_imputed = show_imputed)
+
+    dataPflux <- filter_and_unprefix(d = basedata$pflux,
+                                     selected_vars = vars_,
+                                     selected_datebounds = dates,
+                                     selected_prefixes = igsn,
+                                     show_uncert = show_uncert,
+                                     show_flagged = show_flagged,
+                                     show_imputed = show_imputed)
+
+    period_mean_P <- datap %>%
+        mutate(datetime = lubridate::floor_date(datetime, unit = agg_unit)) %>%
+        group_by(site_name, datetime) %>%
+        summarize(val = mean(val, na.rm = TRUE),
+                  ms_status = numeric_any(ms_status),
+                  ms_interp = numeric_any(ms_interp),
+                  .groups = 'drop')
+
+    dataPvwc <- dataPflux %>%
+        mutate(datetime = lubridate::floor_date(datetime, unit = agg_unit)) %>%
+        group_by(site_name, var, datetime) %>%
+        summarize(val = sum(val, na.rm = TRUE),
+                  ms_status = numeric_any(ms_status),
+                  ms_interp = numeric_any(ms_interp),
+                  .groups = 'drop') %>%
+        left_join(period_mean_P,
+                  by = c('datetime', 'site_name'),
+                  suffix = c('.flux', '.P')) %>%
+        left_join(site_data[c('site_name', 'ws_area_ha')],
+                  by = 'site_name') %>%
+             #mg/L = kg/ha/d  /  L/s  *  ha
+        mutate(val = val.flux / val.P * ws_area_ha * 1e6 / 86400,
+               ms_status = numeric_any_v(ms_status.flux, ms_status.P),
+               ms_interp = numeric_any_v(ms_interp.flux, ms_interp.P)) %>%
+        select(datetime, site_name, var, val, ms_status, ms_interp)
+
+    dataPvwc <- pivot_wider(dataPvwc,
+                            names_from = var,
+                            values_from = c('val', 'ms_status', 'ms_interp'))
+
+    dataPvwc <- convert_portal_units(d = dataPvwc,
+                                     conversion_enabled = enable_unitconvert,
+                                     conc_flux_selection = conc_flux,
+                                     conc_unit = conc_unit,
+                                     flux_unit = flux_unit)
+
+    return(dataPvwc)
 })
 
 dataPrecip <- reactive({
@@ -402,55 +588,20 @@ dataPrecip <- reactive({
     show_flagged <- input$FLAGS3
     show_imputed <- input$INTERP3
 
-    dataP <- basedata$P
+    dataP <- filter_and_unprefix(d = dataPchem,
+                                 selected_vars = 'precipitation',
+                                 selected_datebounds = dates,
+                                 selected_prefixes = igsn,
+                                 show_uncert = show_uncert,
+                                 show_flagged = show_flagged,
+                                 show_imputed = show_imputed)
 
-    dataP <- filter_agg_widen_unprefix(d = dataP,
-                                       selected_vars = 'precipitation',
-                                       selected_datebounds = dates,
-                                       selected_agg = agg,
-                                       selected_prefixes = igsn,
-                                       show_uncert = show_uncert,
-                                       show_flagged = show_flagged,
-                                       show_imputed = show_imputed,
-                                       conc_or_flux = conc_flux)
+    dataP <- ms_aggregate(d = dataP,
+                          agg_selection = selected_agg)
 
-    # dates <- isolate(input$DATES3)
-    # timeSliderUpdate()
-    # agg = input$AGG3
-    # sites = input$SITES3
-    # basedata = load_basedata()
-    # dmns = isolate(get_domains3())
-    # input$TIME_SCHEME3
-
-    # dataprecip = basedata$P
-    # # dataprecip <<- basedata$P
-    #
-    # if(nrow(dataprecip) == 0) return(dataprecip)
-    #
-    # dataprecip = dataprecip %>%
-    #     filter(datetime >= dates[1], datetime <= dates[2]) %>%
-    #     select(one_of('datetime', 'site_name', 'precip'))
-    #
-    # if(nrow(dataprecip) == 0) return(dataprecip)
-    #
-    # dataprecip = pad_ts(dataprecip, vars='precip', datebounds=dates)
-    # dataprecip = ms_aggregate(dataprecip, agg, which_dataset='p')
-    #
-    # dataprecip = dataprecip %>%
-    #     group_by(datetime, site_name) %>%
-    #     summarize(sumPrecip=sum(precip, na.rm=TRUE),
-    #         medianPrecip=median(precip, na.rm=TRUE)) %>%
-    #     ungroup()
-    #
-    # #append rows for selected sites with no data
-    # missing_sites = sites[! sites %in% unique(dataprecip$site_name)]
-    # if(length(missing_sites)){
-    #     for(m in missing_sites){
-    #         fake_date = lubridate::force_tz(as.POSIXct(dates[2]), tzone='UTC')
-    #         dataprecip = bind_rows(dataprecip,
-    #             tibble(datetime=fake_date, site_name=m, precip=as.numeric(NA)))
-    #     }
-    # }
+    dataP <-  ivot_wider(dataP,
+                         names_from = var,
+                         values_from = c('val', 'ms_status', 'ms_interp'))
 
     return(dataP)
 })
@@ -479,182 +630,22 @@ dataQ <- reactive({
     show_imputed <- input$INTERP3
     conc_flux <- input$CONC_FLUX3
 
-    dataQ <- basedata$Q
+    dataQ <- filter_and_unprefix(d = basedata$Q,
+                                 selected_vars = 'discharge',
+                                 selected_datebounds = dates,
+                                 selected_prefixes = igsn,
+                                 show_uncert = show_uncert,
+                                 show_flagged = show_flagged,
+                                 show_imputed = show_imputed)
 
-    dataQ <- filter_agg_widen_unprefix(d = dataQ,
-                                       selected_vars = 'discharge',
-                                       selected_datebounds = dates,
-                                       selected_agg = agg,
-                                       selected_prefixes = igsn,
-                                       show_uncert = show_uncert,
-                                       show_flagged = show_flagged,
-                                       show_imputed = show_imputed,
-                                       conc_or_flux = conc_flux)
+    dataQ <- ms_aggregate(d = dataQ,
+                          agg_selection = selected_agg)
 
-    # if(nrow(dataq) == 0) return(dataq)
-    #
-    # dataq = dataq %>%
-    #     filter(datetime > dates[1], datetime < dates[2])
-    #     # select(datetime, site_name, discharge)
-    #
-    # if(nrow(dataq) == 0) return(dataq)
-    #
-    # dataq = pad_ts(dataq, vars='discharge', datebounds=dates)
-    # dataq = ms_aggregate(dataq, agg, which_dataset='q')
-    #
-    # if(agg == 'Instantaneous'){ #revisit this. needed?
-    #     dataq = dataq %>%
-    #         group_by(datetime, site_name) %>%
-    #         summarise(discharge=max(discharge, na.rm=TRUE)) %>%
-    #         ungroup()
-    # }
+    dataQ <- pivot_wider(dataQ,
+                         names_from = var,
+                         values_from = c('val', 'ms_status', 'ms_interp'))
 
     return(dataQ)
-})
-
-## post-filtering data modifications ####
-
-#these should only update when prerequisite reactive data (above) updates, so
-#all user inputs should be isolated
-
-#calculate VWC (volume weighted concentration) from chem and q
-#only possible at monthly and yearly agg. conditionals controlled by ui
-volWeightedChem3 <- reactive({
-
-    datachem <- dataChem()
-    dataQ <- dataQ()
-    agg <- isolate(input$AGG3)
-    # datachem <<- dataChem()
-    # dataQ <<- dataQ()
-    # agg <<- isolate(input$AGG3)
-
-    samplevel <- datachem %>%
-        left_join(dataQ,
-                  by = c('datetime', 'site_name')) %>%
-        mutate(
-            across(matches('^val_(?!discharge)',
-                           perl = TRUE),
-                   ~(. * val_discharge)),
-            across(matches('^ms_status_(?!discharge)',
-                           perl = TRUE),
-                   ~(bitwOr(., ms_status_discharge))),
-            across(matches('^ms_interp_(?!discharge)',
-                           perl = TRUE),
-                   ~(bitwOr(., ms_interp_discharge))))
-
-    if(agg == 'Monthly'){
-
-        samplevel <- samplevel %>%
-            mutate(year = lubridate::year(datetime))
-
-        agglevel <- samplevel %>%
-            select(site_name, year, val_discharge) %>%
-            group_by(year, site_name) %>%
-            summarize(Qsum = sum(val_discharge,
-                                 na.rm = TRUE),
-                      .groups = 'drop')
-
-        volWeightedConc <- samplevel %>%
-            select(-ends_with('discharge')) %>%
-            left_join(agglevel,
-                      by = c('year', 'site_name')) %>%
-            mutate(across(starts_with('val_'),
-                          ~(. / Qsum))) %>%
-            select(-Qsum, -year)
-
-    } else if(agg == 'Yearly'){
-
-        agglevel <- samplevel %>%
-            group_by(site_name) %>%
-            summarize(Qsum = sum(val_discharge,
-                                 na.rm = TRUE),
-                      .groups = 'drop')
-
-        volWeightedConc <- samplevel %>%
-            select(-ends_with('discharge')) %>%
-            left_join(agglevel,
-                      by = 'site_name') %>%
-            mutate(across(starts_with('val_'),
-                          ~(. / Qsum))) %>%
-            select(-Qsum)
-    }
-
-    return(volWeightedConc)
-})
-
-#calculate VWC (volume weighted concentration) from pchem and p
-#only possible at monthly and yearly agg. conditionals controlled by ui
-volWeightedPchem3 <- reactive({
-
-    # datapchem <<- dataPchem()
-    # dataP <<- dataPrecip()
-    # agg <<- isolate(input$AGG3)
-    datapchem <- dataPchem()
-    dataP <- dataPrecip()
-    agg <- isolate(input$AGG3)
-
-    samplevel <- datapchem %>%
-        left_join(dataP,
-                  by = c('datetime', 'site_name')) %>%
-        mutate(
-            across(matches('^val_(?!precipitation)',
-                           perl = TRUE),
-                   ~(. * val_precipitation)),
-            across(matches('^ms_status_(?!precipitation)',
-                           perl = TRUE),
-                   ~(bitwOr(., ms_status_precipitation))),
-            across(matches('^ms_interp_(?!precipitation)',
-                           perl = TRUE),
-                   ~(bitwOr(., ms_interp_precipitation))))
-
-    # samplevel = samplevel %>%
-    #     left_join(select(dataprecip, -medianPrecip),
-    #               by=c('datetime', 'site_name')) %>%
-    #     left_join(select(site_data, site_name, ws_area_ha),
-    #               by='site_name') %>%
-    #     mutate(precipVol=sumPrecip * ws_area_ha) %>%
-    #     mutate_at(vars(one_of(vars_)), ~(. * precipVol)) %>%
-    #     select(datetime, site_name, one_of(vars_), sumPrecip) %>%
-    #     rename(P=sumPrecip)
-
-    if(agg == 'Monthly'){
-
-        samplevel <- samplevel %>%
-            mutate(year = lubridate::year(datetime))
-
-        agglevel <- samplevel %>%
-            select(site_name, year, val_precipitation) %>%
-            group_by(year, site_name) %>%
-            summarize(Psum = sum(val_precipitation,
-                                 na.rm = TRUE),
-                      .groups = 'drop')
-
-        volWeightedConc <- samplevel %>%
-            select(-ends_with('precipitation')) %>%
-            left_join(agglevel,
-                      by = c('year', 'site_name')) %>%
-            mutate(across(starts_with('val_'),
-                          ~(. / Psum))) %>%
-            select(-Psum, -year)
-
-    } else if(agg == 'Yearly'){
-
-        agglevel <- samplevel %>%
-            group_by(site_name) %>%
-            summarize(Psum = sum(val_precipitation,
-                                 na.rm = TRUE),
-                      .groups = 'drop')
-
-        volWeightedConc <- samplevel %>%
-            select(-ends_with('precipitation')) %>%
-            left_join(agglevel,
-                      by = 'site_name') %>%
-            mutate(across(starts_with('val_'),
-                          ~(. / Psum))) %>%
-            select(-Psum)
-    }
-
-    return(volWeightedConc)
 })
 
 ## plot generators ####
@@ -1716,6 +1707,15 @@ output$GRAPH_Q3 <- renderDygraph({
 
     if(nrow(dataq)){
 
+        # d0 = filter(dataq, datetime <= as.POSIXct('2001-10-01', tz='UTC'))
+        # d1 = tibble(datetime = c(as.POSIXct('2001-10-02', tz='UTC'),
+        #                          as.POSIXct('2002-07-09', tz='UTC')),
+        #             C2 = c(NA, NA),
+        #             ms_status_C2 = c(0, 0),
+        #             ms_interp_C2 = c(0, 0))
+        # d2 = filter(dataq, datetime >= as.POSIXct('2002-07-10', tz='UTC'))
+        # dataq = rbind(d0, d1, d2)
+
         colnms <- colnames(dataq)
         displabs <- colnms[colnms %in% sites]
 
@@ -1724,8 +1724,6 @@ output$GRAPH_Q3 <- renderDygraph({
                      tzone = lubridate::tz(dataq$datetime[1]))
 
         dimnames(dydat) <- list(NULL, displabs)
-
-        print(colnames(dydat))
 
         dg <- dygraph(dydat,
                       group = 'nSiteNVar') %>%

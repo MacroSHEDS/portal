@@ -468,10 +468,36 @@ numeric_any <- function(num_vec){
     return(as.numeric(any(as.logical(num_vec))))
 }
 
-ms_aggregate <- function(d, agg_selection, conc_flux_selection = NULL){
+numeric_any_v <- function(...){
+
+    #...: numeric vectors of equal length. should be just 0s and 1s, but
+    #   integers other than 1 are also considered TRUE by as.logical()
+
+    #the vectorized version of numeric_any. good for stuff like:
+    #    mutate(ms_status = numeric_any(c(ms_status_x, ms_status_flow)))
+
+    #returns a single vector of the same length as arguments
+
+    #this func could be useful in global situations
+    numeric_any_positional <- function(...) numeric_any(c(...))
+
+    numeric_any_elementwise <- function(...){
+        Map(function(...) numeric_any_positional(...), ...)
+    }
+
+    out <- do.call(numeric_any_elementwise,
+                   args = list(...)) %>%
+        unlist()
+
+    if(is.null(out)) out <- numeric()
+
+    return(out)
+}
+
+ms_aggregate <- function(d, agg_selection)#, conc_flux_selection = NULL){
 
     #agg_selection is a user input object, e.g. input$AGG3
-    #conc_flux_selection is a user input object, e.g. input$CONC_FLUX3
+    #OBSOLETE conc_flux_selection is a user input object, e.g. input$CONC_FLUX3
 
     if(nrow(d) == 0) return(d)
     if(agg_selection == 'Instantaneous') return(d)
@@ -499,43 +525,29 @@ ms_aggregate <- function(d, agg_selection, conc_flux_selection = NULL){
                 }
             } else {
                 first(val) #needed for uncertainty propagation to work
-            }) %>%
-        ungroup() %>%
-        select(datetime, site_name, var, val, one_of('ms_status', 'ms_interp')))
+            },
+            .groups = 'drop'))
 
-    # d <- mutate(d,
-    #              datetime = lubridate::floor_date(datetime,
-    #                                               agg_period))
-    #
-    # # if('site_name' %in% colnames(d)){
-    # d <- group_by(d,
-    #                datetime, site_name, var)
-    # # } else if('domain' %in% colnames(d)){
-    # #     d = group_by(d, datetime, domain)
-    # # } else {
-    # #     d = group_by(d, datetime)
-    # # }
-    #
-    # # if(which_dataset %in% c('chem', 'pchem')){
-    # if(drop_var_prefix(d$var[1]) %in% c('precipitation', 'discharge')){
-    #     d <- summarize_all(d,
-    #                         list(~max(., na.rm=TRUE)))
-    # } else if(conc_flux_selection == 'VWC'){
-    #     d <- summarize_all(d,
-    #                         list(~sum(., na.rm=TRUE)))
-    # } else {
-    #     d <- summarize_all(d,
-    #                         list(~mean(., na.rm=TRUE)))
-    # }
 
-    # d <- inject_timeseries_NAs(d = ungroup(d),
-    #                             fill_by = agg_period)
+    if(agg_period %in% c('month', 'year')){
+
+        d <- d %>%
+            group_by(site_name, var) %>%
+            tidyr::complete(datetime = seq(min(datetime),
+                                           max(datetime),
+                                           by = agg_period))
+    }
+
+    d <- select(d,
+                datetime, site_name, var, val, one_of('ms_status', 'ms_interp'))
 
     return(d)
 }
 
 # df=ungroup(df); fill_by=agg_period
 inject_timeseries_NAs = function(df, fill_by){
+
+    #replaced by tidyr::complete
 
     dt_fill = seq.POSIXt(df$datetime[1], df$datetime[nrow(df)], by=fill_by)
     ndates = length(dt_fill)
@@ -1078,15 +1090,15 @@ ms_read_portalsite <- function(domain,
     return(d)
 }
 
-filter_agg_widen_unprefix <- function(d,
-                                      selected_vars,
-                                      selected_datebounds,
-                                      selected_agg,
-                                      selected_prefixes,
-                                      show_uncert,
-                                      show_flagged,
-                                      show_imputed,
-                                      conc_or_flux){
+filter_and_unprefix <- function(d,
+                                selected_vars,
+                                selected_datebounds,
+                                # selected_agg,
+                                selected_prefixes,
+                                show_uncert,
+                                show_flagged,
+                                show_imputed){
+                                # conc_or_flux){
 
     if(nrow(d) == 0) return(d)
 
@@ -1118,27 +1130,13 @@ filter_agg_widen_unprefix <- function(d,
 
     if(nrow(d) == 0) return(d)
 
-    # d = pad_ts(d, vars=selected_vars, datebounds=selected_datebounds)
-    d <- ms_aggregate(d = d,
-                      agg_selection = selected_agg,
-                      conc_flux_selection = conc_or_flux)
-
-    d <-  pivot_wider(d,
-                      names_from = var,
-                      values_from = c('val', 'ms_status', 'ms_interp'))
-
-    # if(init_vals$enable_unitconvert){
+    # d <- ms_aggregate(d = d,
+    #                   agg_selection = selected_agg,
+    #                   #conc_flux_selection = conc_or_flux)
     #
-    #     if(conc_flux %in% c('Concentration', 'VWC')){
-    #
-    #         datachem <- convert_conc_units(datachem,
-    #                                        desired_unit = conc_unit)
-    #     } else if(conc_flux == 'Flux'){
-    #
-    #         datachem <- convert_flux_units(datachem,
-    #                                        desired_unit = flux_unit)
-    #     }
-    # }
+    # d <-  pivot_wider(d,
+    #                   names_from = var,
+    #                   values_from = c('val', 'ms_status', 'ms_interp'))
 
     return(d)
 }

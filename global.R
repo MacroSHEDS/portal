@@ -21,6 +21,7 @@ suppressPackageStartupMessages({
     library(shinyjs)
     library(googlesheets4)
     library(DT)
+    library(errors)
     # library(rhandsontable)
     # library(shiny.router)
 })
@@ -52,7 +53,7 @@ conf <- jsonlite::fromJSON('config.json')
 # options(shiny.trace = TRUE) #see every communication between ui and server
 # options(shiny.reactlog = TRUE) #see map of reactivity by running reactlogShow()
 # options(shiny.error='recover') #enter debugger when error occurs
-options(shiny.fullstacktrace=TRUE) #see stack traces for all errors (incl. dplyr)
+# options(shiny.fullstacktrace=TRUE) #see stack traces for all errors (incl. dplyr)
 # options(shiny.sanitize.errors = TRUE) #hide errors in the app
 
 source('helpers.R') #maybe package these or put them in a namespace called "ms"
@@ -63,7 +64,7 @@ source('function_aliases.R')
 #                         use_oob = TRUE)
 load_portal_config(from_where = 'local')
 
-sites_with_Q <- sm(read_csv('../portal/data/general/sites_with_discharge.csv')) %>%
+sites_with_Q <- sm(read_csv('data/general/sites_with_discharge.csv')) %>%
     select(-network) %>%
     tidyr::unite(col = 'nds',
                  domain, site_name,

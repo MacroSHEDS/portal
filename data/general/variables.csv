@@ -31,9 +31,8 @@ spCond,Specific Conductivity,uS/cm,UNKNOWN,chem_mix,Other,expression(UNKNOWN),NA
 theoryCond,Theoretical Conductivity,uS/cm,UNKNOWN,chem_mix,Other,expression(UNKNOWN),NA,0,NA,NA
 temp,Water Temperature,degrees C,UNKNOWN,phys,Other,expression(UNKNOWN),NA,0,NA,NA
 ionBalance,Ion Balance,ueq/L,UNKNOWN,chem_mix,Other,expression(UNKNOWN),NA,0,NA,NA
-precipitation_ns,Basin Precip (nonstandard),mm,UNKNOWN,phys,Other,expression(UNKNOWN),NA,0,NA,NA
-discharge_ns,Discharge (nonstandard),L/s,UNKNOWN,phys,Other,expression(UNKNOWN),NA,0,NA,NA
-precipitation,Basin Precip,mm,UNKNOWN,phys,Other,expression(UNKNOWN),NA,0,NA,NA
+CUSTOMprecipitation,Basin Precipitation (determined by source),mm,UNKNOWN,phys,Other,expression(UNKNOWN),NA,0,NA,NA
+precipitation,Precipitation at gauge,mm,UNKNOWN,phys,Other,expression(UNKNOWN),NA,0,NA,NA
 discharge,Discharge,L/s,UNKNOWN,phys,Other,expression(UNKNOWN),NA,0,NA,NA
 alk,Alkalinity,mg/L,electrometric titration to pH 4.5,chem_mix,Other,expression(UNKNOWN),NA,1,NA,NA
 suspSed,Suspended Sediment,mg/L,gravimetric,phys,Other,expression(UNKNOWN),NA,1,NA,NA
@@ -70,6 +69,7 @@ abs280,UV Absorbance at 280nm,unitless,UNKNOWN,phys,Other,expression(UNKNOWN),NA
 abs254,UV Absorbance at 254nm,unitless,UNKNOWN,phys,Other,expression(UNKNOWN),NA,0,NA,NA
 PAR,Photosynthetically Active Radiation,uM/m^2/s,UNKNOWN,phys,Other,expression(UNKNOWN),NA,0,NA,NA
 DO,Dissolved Oxygen,mg/L,UNKNOWN,gas,Other,expression(UNKNOWN),NA,0,O,NA
+DO_sat,Dissolved Oxygen Percent Saturation,%,UNKNOWN,gas,Other,expression(UNKNOWN),NA,0,O,NA
 CHL,Chlorophyll,mg/L,UNKNOWN,bio,Other,expression(UNKNOWN),NA,0,NA,NA
 turbid,Turbidity,FNU,UNKNOWN,phys,Other,expression(UNKNOWN),NA,0,NA,NA
 FDOM,Fluorescent Dissolved Organic Matter,QSU,UNKNOWN,chem_mix,Other,expression(UNKNOWN),NA,0,NA,NA
@@ -86,7 +86,8 @@ H,Hydrogen,mg/L,UNKNOWN,chem_discrete,Cations,expression(H^'+'),1,1,NA,NA
 POC,Particulate Organic Carbon,mg/L,UNKNOWN,chem_discrete,Other,expression(UNKNOWN),NA,1,C,NA
 acidity,Acidity,ueq/L,UNKNOWN,chem_mix,Other,expression(UNKNOWN),NA,0,NA,NA
 TIN,Total Inorganic Nitrogen,mg/L,UNKNOWN,chem_discrete,Other,expression(UNKNOWN),1,1,N,NA
-d18O,Delta 18 Oxygen,ppt,UNKNOWN,phys,Other,expression(UNKNOWN),NA,0,O,NA
+d18O,Delta 18 Oxygen,ppt,UNKNOWN,phys,Other,expression(UNKNOWN),NA,0,O,parts per thousand
+deuterium,Deuterium,unitless,UNKNOWN,phys,Other,expression(UNKNOWN),NA,0,H,ALso called H-2 or delta h2
 Ecoli,Escherichia coli,#/mL,UNKNOWN,bio,Other,expression(UNKNOWN),NA,0,NA,Ecoli is generally measured in CFU/ml and PNC/ml but they are roughly comparable so we can use #/ml
 Li,Lithium,mg/L,UNKNOWN,chem_discrete,Cations,expression(UNKNOWN),1,1,Li,NA
 SRP,Soluble Reactive Phosphorus,mg/L,UNKNOWN,chem_discrete,Anions,expression(UNKNOWN),3,1,PO4,NA
@@ -104,14 +105,17 @@ Zn,Zinc,mg/L,Absorption/Emission Spectrophotometer,chem_discrete,Other,expressio
 Sr,Strontium,mg/L,Absorption/Emission Spectrophotometer,chem_discrete,Other,expression(Sr^'+2'),2,1,Sr,NA
 S,Sulfer,mg/L,Absorption/Emission Spectrophotometer,chem_discrete,Other,expression(UNKNOWN),6,1,S,NA
 Be,Beryllium,mg/L,UNKNOWN,chem_discrete,Cations,expression(Be^'+2'),2,1,Be,NA
+Ti,Titanium,mg/L,UNKNOWN,chem_discrete,Cations,expression(UNKNOWN),2.5,1,Ti,NA
 Ti49,Titanium-49,mg/L,UNKNOWN,chem_discrete,Cations,expression(UNKNOWN),2.5,1,Ti,NA
 V,Vanadium,mg/L,UNKNOWN,chem_discrete,Cations,expression(UNKNOWN),NA,1,V,Not sure what valence to use
 Co,Cobalt,mg/L,UNKNOWN,chem_discrete,Cations,expression(UNKNOWN),2.5,1,Co,Check valence
 As,Arsenic,mg/L,UNKNOWN,chem_discrete,Cations,expression(As^'+3'),3,1,As,Check valence
-Se78,Selenium-78,mg/L,UNKNOWN,chem_discrete,Anions,expression(As^'-2'),2,1,Se,NA
+Se,Selenium,mg/L,UNKNOWN,chem_discrete,Anions,expression(Se^'-2'),2,1,Se,NA
+Se78,Selenium-78,mg/L,UNKNOWN,chem_discrete,Anions,expression(Se^'-2'),2,1,Se,NA
 Y,Yttrium,mg/L,UNKNOWN,chem_discrete,Cations,expression(Y^'+3'),3,1,Y,NA
 Mo,Molybdenum,mg/L,UNKNOWN,chem_discrete,Cations,expression(UNKNOWN),NA,1,Mo,Not sure what valence to use
 Ag,Silver,mg/L,UNKNOWN,chem_discrete,Cations,expression(UNKNOWN),NA,1,Ag,Not sure what valence to use
+Sn,Tin,mg/L,UNKNOWN,chem_discrete,Cations,expression(UNKNOWN),3,1,Sn,"Tin looks like it has both 2+ and 4+, using 3 as mean"
 Sn118,Tin-118,mg/L,UNKNOWN,chem_discrete,Cations,expression(UNKNOWN),3,1,Sn,"Tin looks like it has both 2+ and 4+, using 3 as mean"
 Sb,Antimony,mg/L,UNKNOWN,chem_discrete,Cations,expression(UNKNOWN),4,1,Sb,"Antimony looks like it has both 3+ and 5+, using 4 as mean"
 Ba,Barium,mg/L,UNKNOWN,chem_discrete,Cations,expression(Ba^'+2'),2,1,Ba,NA
@@ -131,6 +135,11 @@ Yb,Ytterbium,mg/L,UNKNOWN,chem_discrete,Cations,expression(UNKNOWN),NA,1,Yb,Not 
 Lu,Lutetium,mg/L,UNKNOWN,chem_discrete,Cations,expression(UNKNOWN),NA,1,Lu,Not sure what valence to use
 U,Uranium,mg/L,UNKNOWN,chem_discrete,Cations,expression(UNKNOWN),NA,1,U,Not sure what valence to use
 Tl,Thallium,mg/L,UNKNOWN,chem_discrete,Cations,expression(UNKNOWN),NA,1,Tl,Not sure what valence to use
+Cs,Caesium,mg/L,UNKNOWN,chem_discrete,Cations,expression(UNKNOWN),NA,1,Cs,Not sure what valence to use
+Ge,Germanium,mg/L,UNKNOWN,chem_discrete,Cations,expression(UNKNOWN),NA,1,Ge,Not sure what valence to use
+Rb,Rubidium,mg/L,UNKNOWN,chem_discrete,Cations,expression(UNKNOWN),NA,1,Rb,Not sure what valence to use
+Th,Thorium,mg/L,UNKNOWN,chem_discrete,Cations,expression(UNKNOWN),NA,1,Th,Not sure what valence to use
+Zr,Zirconium,mg/L,UNKNOWN,chem_discrete,Cations,expression(UNKNOWN),NA,1,Zr,Not sure what valence to use
 pheophy,Sestonic Phaeophytin,mg/l,Acetone TurnerDesigns 10AU Fluorometer,bio,Other,expression(UNKNOWN),NA,0,NA,Not sure what valence to use
 TCHL,Sestonic Total Chlorophyll,mg/l,Acetone TurnerDesigns 10AU Fluorometer,bio,Other,expression(UNKNOWN),NA,0,NA,Not sure what valence to use
 BPC,Benthic Particulate Carbon,mg/cm2,"Epilithic - Whole Rock, PE2400 CHN Combustion Method",chem_discrete,Other,expression(mg/cm^'2'),NA,0,NA,NA
