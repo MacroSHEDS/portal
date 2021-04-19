@@ -45,7 +45,7 @@ conf <- jsonlite::fromJSON('config.json')
 #                      appName = 'macrosheds',
 #                      account = 'cuahsi')
 
-#options(dplyr.summarise.inform = FALSE)
+options(dplyr.summarise.inform = FALSE)
 
 #for local testing (comment all before pushing live)
 # setwd('~/git/macrosheds/portal')
@@ -113,15 +113,15 @@ basedata <- list(
     chem = ms_read_portalsite(domain = default_domain,
                               site_name = default_site,
                               prodname = 'stream_chemistry'),
-    flux = ms_read_portalsite(domain = default_domain,
-                              site_name = default_site,
-                              prodname = 'stream_flux_inst_scaled'),
+    # flux = ms_read_portalsite(domain = default_domain,
+    #                           site_name = default_site,
+    #                           prodname = 'stream_flux_inst_scaled'),
     P = ms_read_portalsite(domain = default_domain,
                            site_name = default_site,
-                           prodname = 'precipitation'),
-    pchem = ms_read_portalsite(domain = default_domain,
-                               site_name = default_site,
-                               prodname = 'precip_chemistry')
+                           prodname = 'precipitation')
+    # pchem = ms_read_portalsite(domain = default_domain,
+    #                            site_name = default_site,
+    #                            prodname = 'precip_chemistry')
     # pflux = ms_read_portalsite(domain = default_domain,
     #                            site_name = default_site,
     #                            prodname = 'precip_flux_inst_scaled')

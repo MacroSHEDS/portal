@@ -201,7 +201,7 @@ load_basedata <- eventReactive({
     pchem <- read_combine_feathers('precip_chemistry',
                                    dmns = dmns,
                                    sites = sites)
-    pflux <- read_combine_feathers('precip_flux_inst',
+    pflux <- read_combine_feathers('precip_flux_inst_scaled',
                                    dmns = dmns,
                                    sites = sites)
 
@@ -309,7 +309,9 @@ dataChem <- reactive({
                                     show_imputed = show_imputed)
 
     datachem <- ms_aggregate(d = datachem,
-                             agg_selection = selected_agg)
+                             agg_selection = agg)
+
+    if(nrow(datachem) == 0) return(datachem)
 
     datachem <- pivot_wider(datachem,
                             names_from = var,
@@ -366,6 +368,26 @@ dataVWC <- reactive({
                                  show_imputed = show_imputed)
                                  # conc_or_flux = conc_flux)
 
+    first_two_rows <- dataq[1:2,]
+    if(first_two_rows$site_name[1] == first_two_rows$site_name[2]){
+        dtdiff <- diff(first_two_rows$datetime)
+        units(dtdiff) <- 'mins'
+        if(as.numeric(dtdiff) == 15){
+            stop('are we in high-res mode? if so, time to write pre-aggregated (by day) flux, P, and Q datasets to portal/data, so that vwc (and maybe other stuff) can be calculated without having to do a daily groupby
+    the two VWC functions should only ever receive P, Q, and flux data in daily increments')
+        }
+    }
+
+    if(agg == 'Monthly'){
+        agg_unit <- 'month'
+        period_complete_n <- 30 #for filtering below. not worth using actual n days per month
+    } else if(agg == 'Yearly'){
+        agg_unit <- 'year'
+        period_complete_n <- 365
+    } else {
+        stop('this should never run when agg < monthly')
+    }
+
     dataflux <- filter_and_unprefix(d = basedata$flux,
                                     selected_vars = vars_,
                                     selected_datebounds = dates,
@@ -377,6 +399,7 @@ dataVWC <- reactive({
     period_mean_Q <- dataq %>%
         mutate(datetime = lubridate::floor_date(datetime, unit = agg_unit)) %>%
         group_by(site_name, datetime) %>%
+        #divisor of vwc is MEAN(Q) (unlike Pvwc), because Q is expressed as a rate (L/s)
         summarize(val = mean(val, na.rm = TRUE),
                   ms_status = numeric_any(ms_status),
                   ms_interp = numeric_any(ms_interp),
@@ -385,10 +408,12 @@ dataVWC <- reactive({
     datavwc <- dataflux %>%
         mutate(datetime = lubridate::floor_date(datetime, unit = agg_unit)) %>%
         group_by(site_name, var, datetime) %>%
-        summarize(val = sum(val, na.rm = TRUE),
+        summarize(nday = sum(! is.na(val)),
+                  val = sum(val, na.rm = TRUE),
                   ms_status = numeric_any(ms_status),
                   ms_interp = numeric_any(ms_interp),
                   .groups = 'drop') %>%
+        filter(nday > period_complete_n * 0.1) %>%
         left_join(period_mean_Q,
                   by = c('datetime', 'site_name'),
                   suffix = c('.flux', '.Q')) %>%
@@ -399,6 +424,8 @@ dataVWC <- reactive({
                ms_status = numeric_any_v(ms_status.flux, ms_status.Q),
                ms_interp = numeric_any_v(ms_interp.flux, ms_interp.Q)) %>%
         select(datetime, site_name, var, val, ms_status, ms_interp)
+
+    if(nrow(datavwc) == 0) return(datavwc)
 
     datavwc <- pivot_wider(datavwc,
                            names_from = var,
@@ -449,7 +476,6 @@ dataPchem <- reactive({
     show_imputed <- input$INTERP3
     enable_unitconvert <- init_vals$enable_unitconvert
 
-
     dataPchem <- if(conc_flux == 'Flux') basedata$pflux else basedata$pchem
 
     dataPchem <- filter_and_unprefix(d = dataPchem,
@@ -461,7 +487,9 @@ dataPchem <- reactive({
                                      show_imputed = show_imputed)
 
     dataPchem <- ms_aggregate(d = dataPchem,
-                              agg_selection = selected_agg)
+                              agg_selection = agg)
+
+    if(nrow(dataPchem) == 0) return(dataPchem)
 
     dataPchem <- pivot_wider(dataPchem,
                           names_from = var,
@@ -507,7 +535,15 @@ dataPVWC <- reactive({
     show_imputed <- input$INTERP3
     enable_unitconvert <- init_vals$enable_unitconvert
 
-    agg_unit <- ifelse(agg == 'Monthly', 'month', 'year') #this won't run if agg < monthly
+    if(agg == 'Monthly'){
+        agg_unit <- 'month'
+        period_complete_n <- 30 #for filtering below. not worth using actual n days per month
+    } else if(agg == 'Yearly'){
+        agg_unit <- 'year'
+        period_complete_n <- 365
+    } else {
+        stop('this should never run when agg < monthly')
+    }
 
     datap <- filter_and_unprefix(d = basedata$P,
                                  selected_vars = 'precipitation',
@@ -525,10 +561,11 @@ dataPVWC <- reactive({
                                      show_flagged = show_flagged,
                                      show_imputed = show_imputed)
 
-    period_mean_P <- datap %>%
+    period_sum_P <- datap %>%
         mutate(datetime = lubridate::floor_date(datetime, unit = agg_unit)) %>%
         group_by(site_name, datetime) %>%
-        summarize(val = mean(val, na.rm = TRUE),
+        #divisor of Pvwc is SUM(P) (unlike vwc), because P is expressed as a length (mm)
+        summarize(val = sum(val, na.rm = TRUE),
                   ms_status = numeric_any(ms_status),
                   ms_interp = numeric_any(ms_interp),
                   .groups = 'drop')
@@ -536,20 +573,22 @@ dataPVWC <- reactive({
     dataPvwc <- dataPflux %>%
         mutate(datetime = lubridate::floor_date(datetime, unit = agg_unit)) %>%
         group_by(site_name, var, datetime) %>%
-        summarize(val = sum(val, na.rm = TRUE),
+        summarize(nday = sum(! is.na(val)),
+                  val = sum(val, na.rm = TRUE),
                   ms_status = numeric_any(ms_status),
                   ms_interp = numeric_any(ms_interp),
                   .groups = 'drop') %>%
-        left_join(period_mean_P,
+        filter(nday > period_complete_n * 0.5) %>%
+        left_join(period_sum_P,
                   by = c('datetime', 'site_name'),
                   suffix = c('.flux', '.P')) %>%
-        left_join(site_data[c('site_name', 'ws_area_ha')],
-                  by = 'site_name') %>%
-             #mg/L = kg/ha/d  /  L/s  *  ha
-        mutate(val = val.flux / val.P * ws_area_ha * 1e6 / 86400,
+             #mg/L = kg/ha/d  /  mm (~ per month or per year) * 1e6 / 1e4 * d
+        mutate(val = val.flux / val.P * 100 * period_complete_n,
                ms_status = numeric_any_v(ms_status.flux, ms_status.P),
                ms_interp = numeric_any_v(ms_interp.flux, ms_interp.P)) %>%
         select(datetime, site_name, var, val, ms_status, ms_interp)
+
+    if(nrow(dataPvwc) == 0) return(dataPvwc)
 
     dataPvwc <- pivot_wider(dataPvwc,
                             names_from = var,
@@ -588,7 +627,7 @@ dataPrecip <- reactive({
     show_flagged <- input$FLAGS3
     show_imputed <- input$INTERP3
 
-    dataP <- filter_and_unprefix(d = dataPchem,
+    dataP <- filter_and_unprefix(d = basedata$P,
                                  selected_vars = 'precipitation',
                                  selected_datebounds = dates,
                                  selected_prefixes = igsn,
@@ -597,9 +636,11 @@ dataPrecip <- reactive({
                                  show_imputed = show_imputed)
 
     dataP <- ms_aggregate(d = dataP,
-                          agg_selection = selected_agg)
+                          agg_selection = agg)
 
-    dataP <-  ivot_wider(dataP,
+    if(nrow(dataP) == 0) return(dataP)
+
+    dataP <- pivot_wider(dataP,
                          names_from = var,
                          values_from = c('val', 'ms_status', 'ms_interp'))
 
@@ -639,7 +680,9 @@ dataQ <- reactive({
                                  show_imputed = show_imputed)
 
     dataQ <- ms_aggregate(d = dataQ,
-                          agg_selection = selected_agg)
+                          agg_selection = agg)
+
+    if(nrow(dataQ) == 0) return(dataQ)
 
     dataQ <- pivot_wider(dataQ,
                          names_from = var,
@@ -802,7 +845,7 @@ output$GRAPH_MAIN3a <- renderDygraph({
     print('mainA')
 
     if(conc_flux == 'VWC'){
-        streamdata <- volWeightedChem3()
+        streamdata <- dataVWC()
     } else {
         streamdata <- dataChem()
     }
@@ -810,7 +853,7 @@ output$GRAPH_MAIN3a <- renderDygraph({
     if(show_pchem){
 
         if(conc_flux == 'VWC'){
-            raindata <- volWeightedPchem3()
+            raindata <- dataPVWC()
         } else {
             raindata <- dataPchem()
         }
@@ -1127,7 +1170,7 @@ output$GRAPH_MAIN3b <- renderDygraph({
     print('mainA')
 
     if(conc_flux == 'VWC'){
-        streamdata <- volWeightedChem3()
+        streamdata <- dataVWC()
     } else {
         streamdata <- dataChem()
     }
@@ -1135,7 +1178,7 @@ output$GRAPH_MAIN3b <- renderDygraph({
     if(show_pchem){
 
         if(conc_flux == 'VWC'){
-            raindata <- volWeightedPchem3()
+            raindata <- dataPVWC()
         } else {
             raindata <- dataPchem()
         }
@@ -1418,7 +1461,7 @@ output$GRAPH_MAIN3c <- renderDygraph({
     print('mainA')
 
     if(conc_flux == 'VWC'){
-        streamdata <- volWeightedChem3()
+        streamdata <- dataVWC()
     } else {
         streamdata <- dataChem()
     }
@@ -1426,7 +1469,7 @@ output$GRAPH_MAIN3c <- renderDygraph({
     if(show_pchem){
 
         if(conc_flux == 'VWC'){
-            raindata <- volWeightedPchem3()
+            raindata <- dataPVWC()
         } else {
             raindata <- dataPchem()
         }

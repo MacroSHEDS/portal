@@ -494,7 +494,7 @@ numeric_any_v <- function(...){
     return(out)
 }
 
-ms_aggregate <- function(d, agg_selection)#, conc_flux_selection = NULL){
+ms_aggregate <- function(d, agg_selection){#, conc_flux_selection = NULL){
 
     #agg_selection is a user input object, e.g. input$AGG3
     #OBSOLETE conc_flux_selection is a user input object, e.g. input$CONC_FLUX3
@@ -510,32 +510,73 @@ ms_aggregate <- function(d, agg_selection)#, conc_flux_selection = NULL){
     var_is_p <- d$var[1] == 'precipitation'
     # var_is_q <- d$var[1] == 'discharge'
 
-    #round to desired_interval and summarize
-    d <- sw(d %>%
-        mutate(datetime = lubridate::round_date(datetime,
-                                                agg_period)) %>%
-        group_by(site_name, var, datetime) %>%
-        summarize(
-            across(any_of(c('ms_status', 'ms_interp')), numeric_any),
-            val = if(n() > 1){
-                if(var_is_p){
-                    sum(val, na.rm = TRUE)
-                } else {
-                    mean(val, na.rm = TRUE)
-                }
-            } else {
-                first(val) #needed for uncertainty propagation to work
-            },
-            .groups = 'drop'))
-
+    # #round to desired_interval and summarize
+    # d <- sw(d %>%
+    #     mutate(datetime = lubridate::floor_date(datetime,
+    #                                             agg_period)) %>%
+    #     group_by(site_name, var, datetime) %>%
+    #     summarize(
+    #         val = if(n() > 1){
+    #             if(var_is_p){
+    #                 sum(val, na.rm = TRUE)
+    #             } else {
+    #                 mean(val, na.rm = TRUE)
+    #             }
+    #         } else {
+    #             first(val) #needed for uncertainty propagation to work
+    #         },
+    #         ms_status = numeric_any(ms_status),
+    #         ms_interp = numeric_any(ms_interp),
+    #         .groups = 'drop'))
 
     if(agg_period %in% c('month', 'year')){
 
-        d <- d %>%
+        period_complete_n <- ifelse(agg_period == 'month', 30, 365)
+
+        #round to desired_interval and summarize
+        d <- sw(d %>%
+            mutate(datetime = lubridate::floor_date(datetime,
+                                                    agg_period)) %>%
+            group_by(site_name, var, datetime) %>%
+            summarize(
+                nday = sum(! is.na(val)),
+                val = if(n() > 1){
+                    if(var_is_p){
+                        sum(val, na.rm = TRUE)
+                    } else {
+                        mean(val, na.rm = TRUE)
+                    }
+                } else {
+                    first(val) #needed for uncertainty propagation to work
+                },
+                ms_status = numeric_any(ms_status),
+                ms_interp = numeric_any(ms_interp),
+                .groups = 'drop') %>%
+            filter(nday > period_complete_n * 0.1) %>%
             group_by(site_name, var) %>%
             tidyr::complete(datetime = seq(min(datetime),
                                            max(datetime),
                                            by = agg_period))
+    } else {
+
+        #round to desired_interval and summarize
+        d <- sw(d %>%
+            mutate(datetime = lubridate::floor_date(datetime,
+                                                    agg_period)) %>%
+            group_by(site_name, var, datetime) %>%
+            summarize(
+                val = if(n() > 1){
+                    if(var_is_p){
+                        sum(val, na.rm = TRUE)
+                    } else {
+                        mean(val, na.rm = TRUE)
+                    }
+                } else {
+                    first(val) #needed for uncertainty propagation to work
+                },
+                ms_status = numeric_any(ms_status),
+                ms_interp = numeric_any(ms_interp),
+                .groups = 'drop'))
     }
 
     d <- select(d,
