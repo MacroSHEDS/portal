@@ -145,6 +145,10 @@ convert_conc_units <- function(d,
     #input_unit is the unit of concs (must be 'mg/L')
     #desired unit is one of the keys in the call to `switch` below
 
+    if(input_unit != 'mg/L'){
+        stop('convert_conc_units is not equipped yet to handle input_unit != "mg/L"')
+    }
+
     cnms <- colnames(d)
 
     varnames <- str_match(string = cnms[grepl('val_', cnms)],
@@ -164,33 +168,31 @@ convert_conc_units <- function(d,
                               'mg/L' = 1,
                               'g/L' = 0.001)
 
+        conv_factors <- rep(conv_factor, length(varnames))
+
     } else {
 
         constituents <- parse_molecular_formulae(varnames)
         molar_masses <- sapply(constituents, combine_atomic_masses)
 
         conv_factors <- switch(substr(desired_unit, 0, 1),
-            'n' = molar_masses * 1000000, #desired unit could be nM or neq/L
-            'u' = molar_masses * 1000, #and so on...
-            'm' = molar_masses,
-            'M' = molar_masses / 1000, #desired unit must be 'M'
-            'e' = molar_masses / 1000) #desired unit must be 'eq/L'
+            'n' = 1 / molar_masses * 1000000, #desired unit could be nM or neq/L
+            'u' = 1 / molar_masses * 1000, #and so on...
+            'm' = 1 / molar_masses,
+            'M' = 1 / molar_masses / 1000, #desired unit must be 'M'
+            'e' = 1 / molar_masses / 1000) #desired unit must be 'eq/L'
 
         if(grepl('q', desired_unit)){
             valences <- variables$valence[variables$variable_code %in% varnames]
             conv_factors <- conv_factors * valences
         }
-
-        # converted = data.frame(mapply(`*`, conc_df, mm_scaled, SIMPLIFY=FALSE))
     }
 
-    for(vn in varnames){
+    for(i in seq_along(varnames)){
 
-        vn <- paste0('val_', vn)
+        vn <- paste0('val_', varnames[i])
         d <- mutate(d,
-                    !!vn := !!sym(vn) * conv_factor)
-                    # across(! starts_with('ms_') & ! matches('datetime'),
-                    #       ~(. * conv_factor)))
+                    !!vn := !!sym(vn) * conv_factors[i])
     }
 
     return(d)
@@ -556,7 +558,7 @@ ms_aggregate <- function(d, agg_selection){#, conc_flux_selection = NULL){
             group_by(site_name, var) %>%
             tidyr::complete(datetime = seq(min(datetime),
                                            max(datetime),
-                                           by = agg_period))
+                                           by = agg_period)))
     } else {
 
         #round to desired_interval and summarize

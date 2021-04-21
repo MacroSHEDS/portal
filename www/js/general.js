@@ -62,51 +62,106 @@ shinyjs.init = function() {
     });
 
     //tooltips and some styling
-    $('input[name^="CONC_FLUX"][value="Flux"]').parent()
-        .attr('title', 'Interpolated flux: mean concentration times mean discharge over the aggregation period (below), linearly interpolated. NOTE: only available when "Show precip chemistry" is off.')
-    $('input[name^="CONC_FLUX"][value="VWC"]').parent()
-        .attr('title', 'Volume-weighted concentration: summation of instantaneous concentration and Q (or precipitation) volume divided by total volume over the aggregation period (below). NOTE: only available when aggregation > daily.')
-    //    .css('color', 'blue')
-    $('#SHOW_PCHEM3').parent().parent().attr('title', 'Enabled only when unit is concentration or VWC and aggregation > daily.');
+    //$('input[name^="CONC_FLUX"][value="Flux"]').parent()
+    //    .attr('title', 'Interpolated flux: mean concentration times mean discharge over the aggregation period (below), linearly interpolated. NOTE: only available when "Show precip chemistry" is off.')
+    //$('input[name^="CONC_FLUX"][value="VWC"]').parent()
+    //    .attr('title', 'Mean flux rate divided by mean discharge rate, over the aggregation period. NOTE: only available when aggregation > daily.');
+    //    .attr('title', 'Volume-weighted concentration: summation of instantaneous concentration and Q (or precipitation) volume divided by total volume over the aggregation period (below). NOTE: only available when aggregation > daily.')
+    //$('#flags3-tooltip').attr('title', 'Points flagged as erroneous (bad data) have been removed from the dataset. Points flagged as questionable can be toggled here.');
+    //$('#interp3-tooltip').attr('title', 'We linearly interpolate data gaps of up to 3 days for discharge and precip, and up to 15 days for chemistry.');
+    //$('#SHOW_PCHEM3').parent().parent().attr('title', 'Enabled only when unit is concentration or VWC and aggregation > daily.');
+    $('input[name="CONC_FLUX3"][value="VWC"]').parent('label').replaceWith(
+        '<div style = "white-space: nowrap">' +
+        '<label style = "display: inline-block; vertical-align: middle; white-space: normal">' +
+        '<input type="radio" name="CONC_FLUX3" value="VWC">' +
+        '<span>Volume-Weighted Concentration</span>' +
+        '</label>' +
+        '<div id = "vwc-tooltip" style = "display: inline-block; vertical-align: middle"' +
+        'title = "Mean flux rate divided by mean discharge rate, over the aggregation period. NOTE: only available when aggregation > daily.">&#x2753;</div>' +
+        '</div>'
+    );
+    
+    //if somebody clicks a question mark, tell them to hover on it instead
+    $(document).ready(function(){
+        $('#flags3-tooltip').click(function(){
+            $(this).addClass('instruct-hover').delay(800).queue(function(){
+                $(this).removeClass('instruct-hover').dequeue();
+            });
+        });
+        $('#interp3-tooltip').click(function(){
+            $(this).addClass('instruct-hover').delay(800).queue(function(){
+                $(this).removeClass('instruct-hover').dequeue();
+            });
+        });
+        $('#vwc-tooltip').click(function(){
+            $(this).addClass('instruct-hover').delay(800).queue(function(){
+                $(this).removeClass('instruct-hover').dequeue();
+            });
+        });
+        $('#agg3-tooltip').click(function(){
+            $(this).addClass('instruct-hover').delay(800).queue(function(){
+                $(this).removeClass('instruct-hover').dequeue();
+            });
+        });
+    });
 
-    //disable input conc checkbox unless monthly or annual conc or VWC selected; manage aggregation options too
-    function govern_showpchem3(){
 
-        var datatype = $('input[name=CONC_FLUX3]:checked').val()
+   // //disable input conc checkbox unless monthly or annual conc or VWC selected; manage aggregation options too (REPLACED BY govern_agg3)
+   // function govern_showpchem3(){
 
-        if( ['Concentration', 'VWC'].includes(datatype) &&
-                ['Monthly', 'Yearly'].includes($('input[name=AGG3]:checked').val()) ){
-            $('#SHOW_PCHEM3').removeAttr('disabled').siblings().css('color', '#485580');
+   //     var datatype = $('input[name=CONC_FLUX3]:checked').val()
 
-            if(datatype == 'VWC'){
-                $('input[name=AGG3][value=Daily]').attr('disabled','disabled').siblings().css('color', 'gray');
-                $('input[name=AGG3][value=Instantaneous]').attr('disabled','disabled').siblings().css('color', 'gray');
-            }
+   //     if( ['Concentration', 'VWC'].includes(datatype) &&
+   //             ['Monthly', 'Yearly'].includes($('input[name=AGG3]:checked').val()) ){
+   //         $('#SHOW_PCHEM3').removeAttr('disabled').siblings().css('color', '#485580');
 
+   //         if(datatype == 'VWC'){
+   //             $('input[name=AGG3][value=Daily]').attr('disabled','disabled').siblings().css('color', 'gray');
+   //             $('input[name=AGG3][value=Instantaneous]').attr('disabled','disabled').siblings().css('color', 'gray');
+   //         }
+
+   //     } else {
+
+   //         $('#SHOW_PCHEM3').attr('disabled','disabled').siblings().css('color', 'gray');
+
+   //         if(datatype == 'VWC'){
+   //             $('input[name=AGG3][value=Daily]').removeAttr('disabled').siblings().css('color', '#485580');
+   //             $('input[name=AGG3][value=Instantaneous]').removeAttr('disabled').siblings().css('color', '#485580');
+   //         }
+   //     }
+
+
+   //     if( datatype !== 'VWC' && ! $('#SHOW_PCHEM3').is(':checked') ){
+   //         $('input[name=AGG3][value=Daily]').removeAttr('disabled').siblings().css('color', '#485580');
+   //         $('input[name=AGG3][value=Instantaneous]').removeAttr('disabled').siblings().css('color', '#485580');
+   //     }
+
+   // };
+
+   // $('body').ready(function(){
+   //     $('#CONC_FLUX3').change(govern_showpchem3);
+   // });
+
+   // $('body').ready(function(){
+   //     $('#AGG3').change(govern_showpchem3);
+   // });
+
+    //disable instantaneous and daily agg if VWC selected
+    function govern_agg3(){
+
+        var datatype = $('input[name=CONC_FLUX3]:checked').val();
+
+        if(datatype == 'VWC'){
+            $('input[name=AGG3][value=Daily]').attr('disabled','disabled').siblings().css('color', 'gray');
+            $('input[name=AGG3][value=Instantaneous]').attr('disabled','disabled').siblings().css('color', 'gray');
         } else {
-
-            $('#SHOW_PCHEM3').attr('disabled','disabled').siblings().css('color', 'gray');
-
-            if(datatype == 'VWC'){
-                $('input[name=AGG3][value=Daily]').removeAttr('disabled').siblings().css('color', '#485580');
-                $('input[name=AGG3][value=Instantaneous]').removeAttr('disabled').siblings().css('color', '#485580');
-            }
-        }
-
-
-        if( datatype !== 'VWC' && ! $('#SHOW_PCHEM3').is(':checked') ){
             $('input[name=AGG3][value=Daily]').removeAttr('disabled').siblings().css('color', '#485580');
             $('input[name=AGG3][value=Instantaneous]').removeAttr('disabled').siblings().css('color', '#485580');
-        }
-
+        };
     };
 
     $('body').ready(function(){
-        $('#CONC_FLUX3').change(govern_showpchem3);
-    });
-
-    $('body').ready(function(){
-        $('#AGG3').change(govern_showpchem3);
+        $('#CONC_FLUX3').change(govern_agg3);
     });
 
     //disable VWC unless monthly or annual aggregation selected
@@ -122,25 +177,25 @@ shinyjs.init = function() {
         $('input[name=AGG3]').change(govern_VWC3);
     });
 
-    //disable interp flux if precip viz selected
-    function govern_flux3(){
-        if( $('#SHOW_PCHEM3').is(':checked') ){
-            $('input[name=CONC_FLUX3][value=Flux]').attr('disabled', 'disabled').siblings().css('color', 'gray');
-            $('input[name=AGG3][value=Instantaneous]').attr('disabled', 'disabled').siblings().css('color', 'gray');
-            $('input[name=AGG3][value=Daily]').attr('disabled', 'disabled').siblings().css('color', 'gray');
-        } else {
-            $('input[name=CONC_FLUX3][value=Flux]').removeAttr('disabled').siblings().css('color', '#485580');
+   // //disable flux if precip viz selected (why??)
+   // function govern_flux3(){
+   //     if( $('#SHOW_PCHEM3').is(':checked') ){
+   //         $('input[name=CONC_FLUX3][value=Flux]').attr('disabled', 'disabled').siblings().css('color', 'gray');
+   //         $('input[name=AGG3][value=Instantaneous]').attr('disabled', 'disabled').siblings().css('color', 'gray');
+   //         $('input[name=AGG3][value=Daily]').attr('disabled', 'disabled').siblings().css('color', 'gray');
+   //     } else {
+   //         $('input[name=CONC_FLUX3][value=Flux]').removeAttr('disabled').siblings().css('color', '#485580');
 
-            if( $('input[name=CONC_FLUX3]:checked').val() !== 'VWC' ){
-                $('input[name=AGG3][value=Instantaneous]').removeAttr('disabled').siblings().css('color', '#485580');
-                $('input[name=AGG3][value=Daily]').removeAttr('disabled').siblings().css('color', '#485580');
-            }
-        }
-    };
+   //         if( $('input[name=CONC_FLUX3]:checked').val() !== 'VWC' ){
+   //             $('input[name=AGG3][value=Instantaneous]').removeAttr('disabled').siblings().css('color', '#485580');
+   //             $('input[name=AGG3][value=Daily]').removeAttr('disabled').siblings().css('color', '#485580');
+   //         }
+   //     }
+   // };
 
-    $('body').ready(function(){
-        $('#SHOW_PCHEM3').click(govern_flux3);
-    });
+   // $('body').ready(function(){
+   //     $('#SHOW_PCHEM3').click(govern_flux3);
+   // });
 
     //only show QC plots when their box is checked
     function govern_qc3(){

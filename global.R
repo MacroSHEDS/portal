@@ -165,19 +165,22 @@ conc_vars <- variables %>%
     pull(variable_code)
 
 #these are the available selections for the unit conversion menus
-conc_units <- c('ng/L', 'ug/L', 'mg/L', 'g/L', 'nM', 'uM', 'mM', 'M',
-                'neq/L', 'ueq/L', 'meq/L', 'eq/L') #TODO: add ppt, ppm, ppb to this list (see TODO above)
+conc_units <- c('ng/L', '\u03BCg/L'='ug/L', 'mg/L', 'g/L', 'nM', '\u03BCM'='uM', 'mM', 'M',
+                'neq/L', '\u03BCeq/L'='ueq/L', 'meq/L', 'eq/L') #TODO: add ppt, ppm, ppb to this list (see TODO above)
 flux_units <- c('Mg/ha/d', 'kg/ha/d', 'g/ha/d', 'mg/ha/d')
 
 #map conc/flux display options to internal IDs for conc/flux metrics
 conc_flux_names <- c('Concentration' = 'Concentration',
-                     '_x' = 'Flux',
-                     '_y' = 'VWC')
+                     # '_x' = 'Flux',
+                     'Flux' = 'Flux',
+                     'VWC' = 'VWC')
+                     # '_y' = 'VWC')
 
-names(conc_flux_names)[2] <- paste('Flux (interpolated)',
-                                   enc2native('\U2753'))
-names(conc_flux_names)[3] <- paste('Flux (VWC)',
-                                   enc2native('\U2753'))
+# names(conc_flux_names)[2] <- paste('Flux (interpolated)',
+#                                    enc2native('\U2753'))
+# names(conc_flux_names)[3] <- paste('Flux (VWC)',
+# names(conc_flux_names)[3] <- paste('Volume-Weighted Concentration',
+#                                    enc2native('\U2753'))
 
 # sites_with_P <- sites_by_var('precipitation')
 # sites_with_Q <- sites_by_var('discharge')

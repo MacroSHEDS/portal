@@ -204,3 +204,13 @@ MISC
 	background-color: #f2f6f7;
 }
 
+/* indicate that the mouse must be hovered over a question mark to see the tooltip (title) */
+
+.instruct-hover:after {
+    content: "\00A0\00A0hover, don't click";
+    position: relative;
+    z-index: 100;
+    padding: 5px;
+    border: 1px solid #ccc;
+    right: 10%;
+}

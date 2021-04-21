@@ -409,7 +409,8 @@ dataVWC <- reactive({
         mutate(datetime = lubridate::floor_date(datetime, unit = agg_unit)) %>%
         group_by(site_name, var, datetime) %>%
         summarize(nday = sum(! is.na(val)),
-                  val = sum(val, na.rm = TRUE),
+                  #vwc dividend is a mean, not a sum, because flux is also a rate
+                  val = mean(val, na.rm = TRUE),
                   ms_status = numeric_any(ms_status),
                   ms_interp = numeric_any(ms_interp),
                   .groups = 'drop') %>%
@@ -574,7 +575,8 @@ dataPVWC <- reactive({
         mutate(datetime = lubridate::floor_date(datetime, unit = agg_unit)) %>%
         group_by(site_name, var, datetime) %>%
         summarize(nday = sum(! is.na(val)),
-                  val = sum(val, na.rm = TRUE),
+                  #Pvwc dividend is a mean, not a sum, because flux is a rate
+                  val = mean(val, na.rm = TRUE),
                   ms_status = numeric_any(ms_status),
                   ms_interp = numeric_any(ms_interp),
                   .groups = 'drop') %>%
