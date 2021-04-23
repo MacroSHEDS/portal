@@ -378,9 +378,24 @@ dataVWC <- reactive({
         }
     }
 
+    #NOTE: the "traditional" way to compute VWC is:
+    #VWC = sum(concentrations * volumes) / sum(volumes)
+    #over a given period. Because we have discharge (a rate), rather than volume,
+    #we could scale it to the sample interval and then use the equation
+    #above. For simplicity, I use this instead, which works out the same:
+    #VWC = mean(concentrations * discharges) / mean(discharges)
+    #Note also that we're starting from flux here, for computational
+    #efficiency, so the "concentrations * volumes" part is already computed,
+    #and it's a rate too. That means the modified equation is:
+    #VWC = mean(fluxes) / mean(discharges). There are two minor introductions of
+    #error. The first is that we don't omit discharge values from the denominator
+    #that lack a corresponding flux value (this is expensive, and not doing it
+    #should rarely skew the results). The second is that a "month" is considered
+    #30 days here, which only affects coverage filtering.
+
     if(agg == 'Monthly'){
         agg_unit <- 'month'
-        period_complete_n <- 30 #for filtering below. not worth using actual n days per month
+        period_complete_n <- 30 #for filtering below. see justification in comment below
     } else if(agg == 'Yearly'){
         agg_unit <- 'year'
         period_complete_n <- 365
@@ -420,7 +435,7 @@ dataVWC <- reactive({
                   suffix = c('.flux', '.Q')) %>%
         left_join(site_data[c('site_name', 'ws_area_ha')],
                   by = 'site_name') %>%
-             #mg/L = kg/ha/d  /  L/s  *  ha
+        #     mg/L = kg/ha/d  /  L/s  *  ha          ...
         mutate(val = val.flux / val.Q * ws_area_ha * 1e6 / 86400,
                ms_status = numeric_any_v(ms_status.flux, ms_status.Q),
                ms_interp = numeric_any_v(ms_interp.flux, ms_interp.Q)) %>%
@@ -535,6 +550,18 @@ dataPVWC <- reactive({
     show_flagged <- input$FLAGS3
     show_imputed <- input$INTERP3
     enable_unitconvert <- init_vals$enable_unitconvert
+
+    #NOTE: the "traditional" way to compute VWC is:
+    #VWC = sum(concentrations * volumes) / sum(volumes)
+    #over a given period. We're starting from flux here, for computational
+    #efficiency, so the "concentrations * volumes" part is already computed,
+    #and it's a rate, which means the modified equation is:
+    #VWC = mean(fluxes) * ndays / sum(volumes). There are two minor introductions of
+    #error. The first is that we don't omit precip volumes from the denominator
+    #that lack a corresponding flux value (this is expensive, and not doing it
+    #should rarely skew the results). The second is that a "month" is considered
+    #30 days here. So the mean daily flux for Feb will get multiplied by 30
+    #instead of 28, etc. That avoids a slow dplyr conditional.
 
     if(agg == 'Monthly'){
         agg_unit <- 'month'
@@ -757,9 +784,11 @@ output$GRAPH_PRECIP3 <- renderDygraph({
                       drawPoints = FALSE,
                       strokeWidth = 1,
                       fillAlpha = 0.4,
-                      colors = selection_color_match(sites,
-                                                     displabs[displabs %in% sites],
-                                                     pchemcolors),
+                      colors = selection_color_match(
+                          sites_selected = sites,
+                          sites_all = displabs[displabs %in% sites],
+                          colorvec = pchemcolors
+                      ),
                       drawGapEdgePoints = TRUE
 
                       # #if showing points, use these (needs work)
@@ -769,9 +798,12 @@ output$GRAPH_PRECIP3 <- renderDygraph({
                       # strokeBorderWidth = 1,
                       # colors = 'white',
                       # fillAlpha = 0.4,
-                      # strokeBorderColor = selection_color_match(sites,
-                      #                                           displabs,
-                      #                                           linecolors)
+                      # strokeBorderColors = selection_color_match(
+                      #     sites_selected = sites,
+                      #     sites_all = displabs,
+                      #     colorvec = linecolors
+                      # ),
+
             ) %>%
             dyLegend(show = 'always',
                      labelsSeparateLines = FALSE,
@@ -926,9 +958,10 @@ output$GRAPH_MAIN3a <- renderDygraph({
 
                       #if not showing all points, use these specifications.
                       drawPoints = FALSE,
-                      colors = selection_color_match(sites,
-                                                     included_cols,
-                                                     linecolors),
+                      colors = selection_color_match( #pchem NAs required here
+                          sites_selected = sites,
+                          sites_all = included_cols,
+                          colorvec = linecolors),
                       strokeWidth = 2,
                       pointSize = 2,
                       drawGapEdgePoints = TRUE,
@@ -940,9 +973,11 @@ output$GRAPH_MAIN3a <- renderDygraph({
                       # pointSize = 1,
                       # strokeBorderWidth = 1,
                       # colors = 'white',
-                      # strokeBorderColor = selection_color_match(sites,
-                      #                                           included_cols,
-                      #                                           linecolors),
+                      # strokeBorderColor = selection_color_match(
+                      #     sites_selected = sites,
+                      #     sites_all = included_cols,
+                      #     colorvec = linecolors
+                      # ),
 
                       connectSeparatedPoints = is_inst) %>%
             dyLegend(show = 'always',
@@ -968,11 +1003,17 @@ output$GRAPH_MAIN3a <- renderDygraph({
 
         if(show_pchem){
 
+            rainsite_names <- paste0('P_', sites)
+
             rain_or_pchem_colors <- selection_color_match(
-                sites_selected = paste0('P_', sites),
+                sites_selected = rainsite_names,
                 sites_all = paste0('P_', included_cols[included_cols %in% sites]),
+                sites_missing = rainsite_names[! rainsite_names %in% colnms],
                 colorvec = pchemcolors
-            ) #minimally tested. might need to work with rainsites instead
+            )
+
+            # rain_or_pchem_colors <- rain_or_pchem_colors[! is.na(rainsites)]
+            rainsites <- rainsites[! is.na(rainsites)]
 
             if(show_uncert){
 
@@ -1049,7 +1090,7 @@ output$GRAPH_QC3a <- renderPlot({
     # show_uncert <<- isolate(input$SHOW_UNCERT3)
     # agg <<- isolate(input$AGG3)
     # dates <<- isolate(input$DATES3)
-    # datachem <<- dataChem()
+    # datachem <<- if(conc_flux == 'VWC') dataVWC() else dataChem()
     # dataq <<- dataQ()
 
     show_qc <- input$SHOW_QC3
@@ -1062,8 +1103,8 @@ output$GRAPH_QC3a <- renderPlot({
     agg <- isolate(input$AGG3)
     dates <- isolate(input$DATES3)
     show_uncert <- isolate(input$SHOW_UNCERT3)
-    datachem <- dataChem()
     dataq <- dataQ()
+    datachem <- if(conc_flux == 'VWC') dataVWC() else dataChem()
 
     if(reactive_vals$facet3a == 0 || ! show_qc) return()
 
@@ -1247,9 +1288,10 @@ output$GRAPH_MAIN3b <- renderDygraph({
 
                       #if not showing all points, use these specifications.
                       drawPoints = FALSE,
-                      colors = selection_color_match(sites,
-                                                     included_cols,
-                                                     linecolors),
+                      colors = selection_color_match( #pchem NAs required here
+                          sites_selected = sites,
+                          sites_all = included_cols,
+                          colorvec = linecolors),
                       strokeWidth = 2,
                       pointSize = 2,
                       drawGapEdgePoints = TRUE,
@@ -1261,9 +1303,12 @@ output$GRAPH_MAIN3b <- renderDygraph({
                       # pointSize = 1,
                       # strokeBorderWidth = 1,
                       # colors = 'white',
-                      # strokeBorderColor = selection_color_match(sites,
-                      #                                           included_cols,
-                      #                                           linecolors),
+                      # strokeBorderColor = selection_color_match(
+                      #     sites_selected = sites,
+                      #     sites_all = included_cols,
+                      #     colorvec = linecolors
+                      # ),
+
 
                       connectSeparatedPoints = is_inst) %>%
             dyLegend(show = 'always',
@@ -1278,11 +1323,16 @@ output$GRAPH_MAIN3b <- renderDygraph({
 
         if(show_pchem){
 
+            rainsite_names <- paste0('P_', sites)
+
             rain_or_pchem_colors <- selection_color_match(
-                sites_selected = paste0('P_', sites),
+                sites_selected = rainsite_names,
                 sites_all = paste0('P_', included_cols[included_cols %in% sites]),
+                sites_missing = rainsite_names[! rainsite_names %in% colnms],
                 colorvec = pchemcolors
-            ) #minimally tested. might need to work with rainsites instead
+            )
+
+            rainsites <- rainsites[! is.na(rainsites)]
 
             if(show_uncert){
 
@@ -1359,7 +1409,7 @@ output$GRAPH_QC3b <- renderPlot({
     # show_uncert <<- isolate(input$SHOW_UNCERT3)
     # agg <<- isolate(input$AGG3)
     # dates <<- isolate(input$DATES3)
-    # datachem <<- dataChem()
+    # datachem <<- if(conc_flux == 'VWC') dataVWC() else dataChem()
     # dataq <<- dataQ()
 
     show_qc <- input$SHOW_QC3
@@ -1372,8 +1422,8 @@ output$GRAPH_QC3b <- renderPlot({
     agg <- isolate(input$AGG3)
     dates <- isolate(input$DATES3)
     show_uncert <- isolate(input$SHOW_UNCERT3)
-    datachem <- dataChem()
     dataq <- dataQ()
+    datachem <- if(conc_flux == 'VWC') dataVWC() else dataChem()
 
     if(reactive_vals$facet3b == 0 || ! show_qc) return()
 
@@ -1538,9 +1588,10 @@ output$GRAPH_MAIN3c <- renderDygraph({
 
                       #if not showing all points, use these specifications.
                       drawPoints = FALSE,
-                      colors = selection_color_match(sites,
-                                                     included_cols,
-                                                     linecolors),
+                      colors = selection_color_match( #pchem NAs required here
+                          sites_selected = sites,
+                          sites_all = included_cols,
+                          colorvec = linecolors),
                       strokeWidth = 2,
                       pointSize = 2,
                       drawGapEdgePoints = TRUE,
@@ -1552,9 +1603,11 @@ output$GRAPH_MAIN3c <- renderDygraph({
                       # pointSize = 1,
                       # strokeBorderWidth = 1,
                       # colors = 'white',
-                      # strokeBorderColor = selection_color_match(sites,
-                      #                                           included_cols,
-                      #                                           linecolors),
+                      # strokeBorderColor = selection_color_match(
+                      #     sites_selected = sites,
+                      #     sites_all = included_cols,
+                      #     colorvec = linecolors
+                      # ),
 
                       connectSeparatedPoints = is_inst) %>%
             dyLegend(show = 'always',
@@ -1569,11 +1622,16 @@ output$GRAPH_MAIN3c <- renderDygraph({
 
         if(show_pchem){
 
+            rainsite_names <- paste0('P_', sites)
+
             rain_or_pchem_colors <- selection_color_match(
-                sites_selected = paste0('P_', sites),
+                sites_selected = rainsite_names,
                 sites_all = paste0('P_', included_cols[included_cols %in% sites]),
+                sites_missing = rainsite_names[! rainsite_names %in% colnms],
                 colorvec = pchemcolors
-            ) #minimally tested. might need to work with rainsites instead
+            )
+
+            rainsites <- rainsites[! is.na(rainsites)]
 
             if(show_uncert){
 
@@ -1650,7 +1708,7 @@ output$GRAPH_QC3c <- renderPlot({
     # show_uncert <<- isolate(input$SHOW_UNCERT3)
     # agg <<- isolate(input$AGG3)
     # dates <<- isolate(input$DATES3)
-    # datachem <<- dataChem()
+    # datachem <<- if(conc_flux == 'VWC') dataVWC() else dataChem()
     # dataq <<- dataQ()
 
     show_qc <- input$SHOW_QC3
@@ -1663,8 +1721,8 @@ output$GRAPH_QC3c <- renderPlot({
     agg <- isolate(input$AGG3)
     dates <- isolate(input$DATES3)
     show_uncert <- isolate(input$SHOW_UNCERT3)
-    datachem <- dataChem()
     dataq <- dataQ()
+    datachem <- if(conc_flux == 'VWC') dataVWC() else dataChem()
 
     if(reactive_vals$facet3a == 0 || ! show_qc) return()
 
@@ -1778,9 +1836,11 @@ output$GRAPH_Q3 <- renderDygraph({
                       strokeWidth = 1,
                       fillAlpha = 0.4,
                       retainDateWindow = TRUE,
-                      colors = selection_color_match(sites,
-                                                     displabs[displabs %in% sites],
-                                                     linecolors),
+                      colors = selection_color_match(
+                          sites_selected = sites,
+                          sites_all = displabs[displabs %in% sites],
+                          colorvec = linecolors
+                      ),
                       labelsKMB = TRUE,
                       drawGapEdgePoints = TRUE) %>%
             dyLegend(show = 'always',

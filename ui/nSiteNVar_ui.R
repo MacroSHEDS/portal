@@ -56,9 +56,19 @@ nSiteNVar_tab <- tabPanel("Time-series",
                           label = paste('Show precip chemistry')),
                                         # enc2native('\U2753'))),
 
-            checkboxInput('SHOW_QC3',
-                          value = FALSE,
-                          label = paste('Show Q-C plots')),
+            div(style = "white-space: nowrap",
+                div(style = "display: inline-block; vertical-align: middle; white-space: normal",
+                    checkboxInput('SHOW_QC3',
+                                  value = FALSE,
+                                  label = paste('Show Q-C (Q-F) plots')),
+                ),
+                div(id = 'qc3-tooltip',
+                    style = "display: inline-block; vertical-align: middle",
+                    title = paste('The y-axis reflects all selections made in',
+                                  'the Unit section below.'),
+                    enc2native('\U2753')
+                )
+            ),
             br(),
 
             # conditionalPanel('input.SHOW_PCHEM3 == true',
@@ -114,7 +124,7 @@ nSiteNVar_tab <- tabPanel("Time-series",
                                  # 'and "Show rain chemistry" is off."',
                                  'Precipitation aggregates by sum',
                                  enc2native('\U02014'),
-                                 'everything else by mean.'),
+                                 'everything else by mean. See Notes/Caveats tab for more'),
                     enc2native('\U2753')
                 )
             ),

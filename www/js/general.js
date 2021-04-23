@@ -77,7 +77,7 @@ shinyjs.init = function() {
         '<span>Volume-Weighted Concentration</span>' +
         '</label>' +
         '<div id = "vwc-tooltip" style = "display: inline-block; vertical-align: middle"' +
-        'title = "Mean flux rate divided by mean discharge rate, over the aggregation period. NOTE: only available when aggregation > daily.">&#x2753;</div>' +
+        'title = "Total flux divided by total discharge (or precip), over the aggregation period. Only available when aggregation > daily. See Notes/Caveats tab for more.">&#x2753;</div>' +
         '</div>'
     );
     
@@ -99,6 +99,11 @@ shinyjs.init = function() {
             });
         });
         $('#agg3-tooltip').click(function(){
+            $(this).addClass('instruct-hover').delay(800).queue(function(){
+                $(this).removeClass('instruct-hover').dequeue();
+            });
+        });
+        $('#qc3-tooltip').click(function(){
             $(this).addClass('instruct-hover').delay(800).queue(function(){
                 $(this).removeClass('instruct-hover').dequeue();
             });

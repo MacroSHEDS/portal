@@ -755,17 +755,20 @@ get_rainsites <- function(alldata,
                           streamsites,
                           show_input_concentration){
 
-    #streamsites needed in order to correctly order rainsites
+    #reorder rainsites so they match the selection order (uses streamsites
+    #to do the matching)
 
     if(show_input_concentration && nrow(alldata)){
 
-        # if(conc_flux_selection == 'VWC'){
-        cnms <- colnames(alldata)
-        rainsites <- cnms[grep('^P_(?!ms_)',
-                               cnms,
-                               perl = TRUE)]
-        siteorder <- order(streamsites)
-        rainsites <- sort(rainsites)[siteorder]
+        # cnms <- colnames(alldata)
+        # rainsites <- cnms[grep('^P_(?!ms_)',
+        #                        cnms,
+        #                        perl = TRUE)]
+        # siteorder <- order(streamsites)
+        # rainsites <- sort(rainsites)[siteorder]
+
+        rainsites <- paste0('P_', streamsites)
+        rainsites[! rainsites %in% colnames(alldata)] <- NA
 
     } else {
         rainsites <- vector(length = 0,
@@ -788,12 +791,19 @@ generate_dropdown_sitelist = function(domain_vec){
     return(sitelist)
 }
 
-# sites_selected=sites; sites_all=displabs
-# colorvec=linecolors; pad_length=length(displabs)
-selection_color_match = function(sites_selected, sites_all, colorvec){
+selection_color_match <- function(sites_selected,
+                                  sites_all,
+                                  sites_missing = NULL,
+                                  colorvec){
 
-    as.character(factor(sites_all, levels=sites_selected))
-    matched_colors = colorvec[match(sites_all, sites_selected)]
+    # matched_colors <- colorvec[match(sites_all, sites_selected)]
+    color_order <- match(sites_all, sites_selected)
+
+    if(! is.null(sites_missing)){
+        color_order <- color_order[! sites_all %in% sites_missing]
+    }
+
+    matched_colors <- colorvec[color_order]
 
     return(matched_colors)
 }
