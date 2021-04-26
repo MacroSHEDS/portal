@@ -14,6 +14,7 @@ source('ui/notes_ui.R')
 
 ui = fluidPage(
 # shinyUI(fluidPage(
+    # theme = shinytheme('lumen'),
 
     #screen shouldn't go gray when plots are updating.
     # tags$style(type="text/css", ".recalculating { opacity: 1.0; }" ),

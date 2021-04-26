@@ -1,6 +1,14 @@
 @charset "UTF-8";
 
 /*
+GLOBALS
+*/
+:root {
+    --darkblue: #485580;
+    --slate: #6C7A89;
+}
+
+/*
 GENERAL
 */
 
@@ -38,11 +46,13 @@ APP TEXT FORMATTING
 */
 
 .section-heading {
+    color: var(--darkblue);
     font-weight: bold;
     font-size: 1.1em;
 }
 
 .widget-title, .control-label {
+    color: var(--darkblue);
     font-size: 1.0em;
     padding: 0px;
     margin: 0px;
@@ -50,6 +60,7 @@ APP TEXT FORMATTING
 }
 
 .widget-title-sm {
+    color: var(--darkblue);
     font-size: 0.9em;
     padding: 0px;
     margin: 0px;
@@ -115,6 +126,120 @@ SELECTIZE MODIFICATIONS
     color: black !important;
     background-color: #efefef !important;
     font-size: 140% !important;
+}
+
+
+/* SLIDER */
+.irs-bar {
+	border-top-color: var(--slate) !important;
+	border-bottom-color: var(--slate) !important; 
+	border-radius: 0 !important;
+} 
+.irs-bar-edge {
+	border-color: var(--slate) !important;
+	border-radius: 0 !important;
+}
+.irs-single, .irs-bar-edge, .irs-bar, .irs-from, .irs-to {
+	background-color: var(--slate) !important;
+	border-radius: 3px !important;
+}
+.irs-handle.from, .irs-handle.to, .irs-slider.from, .irs-slider.to {
+	border: 2px solid var(--slate) !important;
+	width: 2px !important;
+	height: 20px !important;
+	border-radius: 3px !important;
+    padding: 3px !important;
+    /*margin: -3px !important;*/
+}
+.irs-grid-pol{
+    height: 3px !important;
+	background-color: var(--slate) !important;
+}
+.irs-grid-pol.small {
+    height: 0px !important;
+}
+
+input {
+    border-color: #E6E6E6;
+    background-color: #E6E6E6;
+}
+
+input[type='radio'] {
+    appearance: none;
+    background: transparent;
+    position: relative;
+}
+
+input[type='radio'] + span::before {
+    background-color: #fff;
+    width: 18px;
+    height: 18px;
+    /*top: -2px;
+    right: 5px;
+    position: relative;
+    display: inline-block;*/
+    border-radius: 15px;
+    content: '';
+    top: 0;
+    left: 0;
+    position: absolute;
+    display: block;
+    visibility: visible;
+    border: 1px solid #d1d3d1;
+}
+
+input[type='radio']:checked + span::before {
+    background-color: #fff;
+    background: var(--slate);
+    box-shadow: inset 0px 0px 0px 4px #fff;
+    width: 18px;
+    height: 18px;
+    border-radius: 15px;
+    content: '';
+    position: absolute;
+    display: block;
+    visibility: visible;
+    border: 1px solid #d1d3d1;
+}
+
+input[type='checkbox'] {
+    appearance: none;
+    background: transparent;
+    position: relative;
+}
+
+input[type='checkbox'] + span::before {
+    background-color: #fff;
+    width: 16px;
+    height: 16px;
+    top: 0;
+    left: 0;
+    position: absolute;
+    content: '';
+    display: block;
+    visibility: visible;
+    border: 1px solid #d1d3d1;
+    border-radius: 1px;
+}
+
+input[type='checkbox']:checked + span::before {
+    background-color: #fff;
+    background: var(--slate);
+    box-shadow: inset 0px 0px 0px 4px #fff;
+    width: 16px;
+    height: 16px;
+    top: 0;
+    left: 0;
+    position: absolute;
+    content: '';
+    display: block;
+    /*width: 20px;
+    height: 20px;
+    position: relative;
+    display: inline-block;*/
+    visibility: visible;
+    border: 1px solid #d1d3d1;
+    border-radius: 1px;
 }
 
 /*
@@ -196,7 +321,7 @@ MISC
 [class*="col-sm-"],[class*="col-xs-"]{
     padding-right: 5pt !important;
     padding-left: 5pt !important;
-    color: #485580;
+    color: var(--darkblue);
 }
 
 /* change the background color of the entire app */

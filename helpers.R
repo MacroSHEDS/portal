@@ -751,33 +751,6 @@ manufacture_empty_plotdata = function(sites){
     return(outdata)
 }
 
-get_rainsites <- function(alldata,
-                          streamsites,
-                          show_input_concentration){
-
-    #reorder rainsites so they match the selection order (uses streamsites
-    #to do the matching)
-
-    if(show_input_concentration && nrow(alldata)){
-
-        # cnms <- colnames(alldata)
-        # rainsites <- cnms[grep('^P_(?!ms_)',
-        #                        cnms,
-        #                        perl = TRUE)]
-        # siteorder <- order(streamsites)
-        # rainsites <- sort(rainsites)[siteorder]
-
-        rainsites <- paste0('P_', streamsites)
-        rainsites[! rainsites %in% colnames(alldata)] <- NA
-
-    } else {
-        rainsites <- vector(length = 0,
-                            mode = 'character')
-    }
-
-    return(rainsites)
-}
-
 generate_dropdown_sitelist = function(domain_vec){
 
     sitelist = list()

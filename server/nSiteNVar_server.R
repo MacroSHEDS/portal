@@ -750,8 +750,11 @@ output$GRAPH_PRECIP3 <- renderDygraph({
 
     if(nrow(dataP)){
 
+        dataP <- select(dataP,
+                        datetime, any_of(sites)) #preserve order
+
         colnms <- colnames(dataP)
-        displabs <- colnms[colnms %in% sites]
+        displabs <- colnms[! colnms == 'datetime']
 
         dydat <- xts(dataP[, displabs],
                      order.by = dataP$datetime,
@@ -908,10 +911,6 @@ output$GRAPH_MAIN3a <- renderDygraph({
                               raindata = raindata,
                               show_input_concentration = show_pchem)
 
-    rainsites <- get_rainsites(alldata = alldata,
-                               streamsites = sites,
-                               show_input_concentration = show_pchem)
-
     ylabel <- get_ylab(v = varA,#
                        conc_flux = conc_flux,
                        conc_unit = conc_unit,
@@ -919,9 +918,11 @@ output$GRAPH_MAIN3a <- renderDygraph({
 
     if(nrow(alldata)){
 
+        streamsites_rainsites <- c(sites, paste0('P_', sites))
         colnms <- colnames(alldata)
-        included_cols <- colnms[colnms %in% c(sites,
-                                              paste0('P_', sites))]
+        included_cols <- streamsites_rainsites[streamsites_rainsites %in% colnms]
+        alldata <- select(alldata,
+                          datetime, any_of(streamsites_rainsites)) #preserve order
 
         if(show_uncert){
 
@@ -938,18 +939,13 @@ output$GRAPH_MAIN3a <- renderDygraph({
                                paste0(included_cols, '_errlo'))
         }
 
-        dydat <- xts(alldata[, included_cols],
+        dydat <- xts(select(alldata, -datetime),
                      order.by = alldata$datetime,
                      tzone = lubridate::tz(alldata$datetime[1]))
-
-        # dimnames(dydat) <- list(NULL, included_cols)
 
         is_inst <- ifelse(agg == 'Instantaneous',
                           TRUE,
                           FALSE)
-
-        # watermark_specs <- get_watermark_specs(dydat = dydat,
-        #                                        displabs = included_cols)
 
         dg <- dygraph(dydat,#[,1:2],
                       group = 'nSiteNVar') %>%
@@ -961,6 +957,7 @@ output$GRAPH_MAIN3a <- renderDygraph({
                       colors = selection_color_match( #pchem NAs required here
                           sites_selected = sites,
                           sites_all = included_cols,
+                          sites_missing = sites[! sites %in% colnms],
                           colorvec = linecolors),
                       strokeWidth = 2,
                       pointSize = 2,
@@ -1001,36 +998,35 @@ output$GRAPH_MAIN3a <- renderDygraph({
             #              series = watermark_specs$series,
             #              tooltip = '')
 
-        if(show_pchem){
+        rainsites <- paste0('P_', sites)
 
-            rainsite_names <- paste0('P_', sites)
+        if(show_pchem && any(rainsites %in% colnms)){
 
             rain_or_pchem_colors <- selection_color_match(
-                sites_selected = rainsite_names,
-                sites_all = paste0('P_', included_cols[included_cols %in% sites]),
-                sites_missing = rainsite_names[! rainsite_names %in% colnms],
+                sites_selected = rainsites,
+                sites_all = rainsites,
+                sites_missing = rainsites[! rainsites %in% colnms],
                 colorvec = pchemcolors
             )
 
-            # rain_or_pchem_colors <- rain_or_pchem_colors[! is.na(rainsites)]
-            rainsites <- rainsites[! is.na(rainsites)]
+            rainsites <- rainsites[rainsites %in% colnms]
 
             if(show_uncert){
 
-                rain_names <- lapply(rainsites,
-                                     function(x){
-                                         c(paste0(x, '_errlo'),
-                                           x,
-                                           paste0(x, '_errhi'))
-                                     })
+                rainsites <- lapply(rainsites,
+                                    function(x){
+                                        c(paste0(x, '_errlo'),
+                                          x,
+                                          paste0(x, '_errhi'))
+                                    })
             } else {
-                rain_names <- as.list(rainsites)
+                rainsites <- as.list(rainsites)
             }
 
             for(i in 1:length(rainsites)){
 
                 dg <- dySeries(dg,
-                               name = rain_names[[i]],
+                               name = rainsites[[i]],
                                color = rain_or_pchem_colors[i],
                                axis = 'y',
                                drawPoints = FALSE,
@@ -1041,6 +1037,8 @@ output$GRAPH_MAIN3a <- renderDygraph({
         }
 
         if(show_uncert){
+
+            sites <- sites[sites %in% colnms]
 
             stream_names <- lapply(sites,
                                    function(x){
@@ -1053,12 +1051,6 @@ output$GRAPH_MAIN3a <- renderDygraph({
 
                 dg <- dySeries(dg,
                                name = stream_names[[i]])
-                               # color = rain_or_pchem_colors[i],
-                               # axis = 'y',
-                               # drawPoints = FALSE,
-                               # strokeWidth = 2,
-                               # pointSize = 2,
-                               # strokePattern = 'dashed')
             }
         }
 
@@ -1108,21 +1100,10 @@ output$GRAPH_QC3a <- renderPlot({
 
     if(reactive_vals$facet3a == 0 || ! show_qc) return()
 
-    # datachem <- pad_widen_join(v = varA,
-    #                           sites = sites,
-    #                           dates = dates,
-    #                           streamdata = datachem)
-
     alldata <- datachem %>%
         select(c('datetime', 'site_name', ends_with(varA))) %>%
         inner_join(dataq,
                    by = c("datetime", "site_name"))
-        # rename(discharge = val_discharge)
-#
-#     ylabel <- get_ylab(v = varA,
-#                        conc_flux = conc_flux,
-#                        conc_unit = conc_unit,
-#                        flux_unit = flux_unit)
 
     n_val_cols <- sum(grepl('^val_', colnames(alldata)))
     if(n_val_cols < 2){
@@ -1133,8 +1114,6 @@ output$GRAPH_QC3a <- renderPlot({
 
         alldata <- alldata %>%
             mutate(across(starts_with('val_'),
-                          # .fns = list(~errors::drop_errors(.)),
-                          # .names = '{.col}'))
                           .fns = list(errhi = ~(errors::drop_errors(.) +
                                                     errors::errors(.))))) %>%
             mutate(across(starts_with('val_') &
@@ -1150,7 +1129,6 @@ output$GRAPH_QC3a <- renderPlot({
                  aes(x = val_discharge,
                      y = !!sym(paste0('val_', varA)),
                      colour = site_name)) +
-        # environment = environment()) +
         geom_point(na.rm = TRUE,
                    size = 1)
 
@@ -1158,7 +1136,6 @@ output$GRAPH_QC3a <- renderPlot({
 
         cq <- cq +
             geom_linerange(aes(ymin = !!sym(paste0('val_', varA, '_errlo')),
-            # geom_pointrange(aes(ymin = !!sym(paste0('val_', varA, '_errlo')),
                                ymax = !!sym(paste0('val_', varA, '_errhi')))) +
             geom_errorbarh(aes(xmin = val_discharge_errlo,
                                xmax = val_discharge_errhi))
@@ -1170,13 +1147,9 @@ output$GRAPH_QC3a <- renderPlot({
         ggthemes::theme_few() +
         scale_y_continuous(position = "right") +
         ylab(paste('Q', 'vs.', varA)) +
-        # ylab(paste('Q (L/s)',
-        #            'vs.',
-        #            ylabel)) +
         theme(legend.position = 'none',
               axis.title.x = element_blank(),
               axis.title.y = element_text(size=10),
-              # axis.title.y.right = element_text('C v. Q'),
               axis.text.y = element_blank(),
               axis.ticks.y = element_blank(),
               panel.background = element_rect(fill = '#f5f5f5',
@@ -1234,86 +1207,69 @@ output$GRAPH_MAIN3b <- renderDygraph({
     # raindata <<- raindata
     # print(head(streamdata))
 
-    alldata <- pad_widen_join(v = varB,#
+    alldata <- pad_widen_join(v = varB,
                               sites = sites,
                               dates = dates,
                               streamdata = streamdata,
                               raindata = raindata,
                               show_input_concentration = show_pchem)
 
-    rainsites <- get_rainsites(alldata = alldata,
-                               streamsites = sites,
-                               show_input_concentration = show_pchem)
-
-    ylabel <- get_ylab(v = varB,#
+    ylabel <- get_ylab(v = varB,
                        conc_flux = conc_flux,
                        conc_unit = conc_unit,
                        flux_unit = flux_unit)
 
     if(nrow(alldata)){
 
+        streamsites_rainsites <- c(sites, paste0('P_', sites))
         colnms <- colnames(alldata)
-        included_cols <- colnms[colnms %in% c(sites,
-                                              paste0('P_', sites))]
+        included_cols <- streamsites_rainsites[streamsites_rainsites %in% colnms]
+        alldata <- select(alldata,
+                          datetime, any_of(streamsites_rainsites)) #preserve order
 
         if(show_uncert){
 
             alldata <- alldata %>%
                 mutate(across(any_of(included_cols),
-                       .fns = list(errhi = ~(errors::drop_errors(.) +
-                                                 errors::errors(.))))) %>%
+                              .fns = list(errhi = ~(errors::drop_errors(.) +
+                                                        errors::errors(.))))) %>%
                 mutate(across(any_of(included_cols),
-                       .fns = list(errlo = ~(errors::drop_errors(.) -
-                                                 errors::errors(.)))))
+                              .fns = list(errlo = ~(errors::drop_errors(.) -
+                                                        errors::errors(.)))))
 
             included_cols <- c(included_cols,
                                paste0(included_cols, '_errhi'),
                                paste0(included_cols, '_errlo'))
         }
 
-        dydat <- xts(alldata[, included_cols],
+        dydat <- xts(select(alldata, -datetime),
                      order.by = alldata$datetime,
                      tzone = lubridate::tz(alldata$datetime[1]))
-
-        # dimnames(dydat) <- list(NULL, included_cols)
 
         is_inst <- ifelse(agg == 'Instantaneous',
                           TRUE,
                           FALSE)
 
-        dg <- dygraph(dydat,#[,1:2],
+        dg <- dygraph(dydat,,
                       group = 'nSiteNVar') %>%
             dyOptions(useDataTimezone = FALSE,
                       retainDateWindow = TRUE,
 
-                      #if not showing all points, use these specifications.
                       drawPoints = FALSE,
                       colors = selection_color_match( #pchem NAs required here
                           sites_selected = sites,
                           sites_all = included_cols,
+                          sites_missing = sites[! sites %in% colnms],
                           colorvec = linecolors),
                       strokeWidth = 2,
                       pointSize = 2,
                       drawGapEdgePoints = TRUE,
                       labelsKMB = TRUE,
 
-                      # #if showing points, use these
-                      # drawPoints = TRUE,
-                      # strokeWidth = 0.01,
-                      # pointSize = 1,
-                      # strokeBorderWidth = 1,
-                      # colors = 'white',
-                      # strokeBorderColor = selection_color_match(
-                      #     sites_selected = sites,
-                      #     sites_all = included_cols,
-                      #     colorvec = linecolors
-                      # ),
-
-
                       connectSeparatedPoints = is_inst) %>%
             dyLegend(show = 'always',
                      labelsSeparateLines = FALSE,
-                     labelsDiv = 'main3b') %>%#
+                     labelsDiv = 'main3b') %>%
             dyAxis('y',
                    label = ylabel,
                    labelWidth = 16,
@@ -1321,35 +1277,35 @@ output$GRAPH_MAIN3b <- renderDygraph({
                    pixelsPerLabel = 20,
                    rangePad = 10)
 
-        if(show_pchem){
+        rainsites <- paste0('P_', sites)
 
-            rainsite_names <- paste0('P_', sites)
+        if(show_pchem && any(rainsites %in% colnms)){
 
             rain_or_pchem_colors <- selection_color_match(
-                sites_selected = rainsite_names,
-                sites_all = paste0('P_', included_cols[included_cols %in% sites]),
-                sites_missing = rainsite_names[! rainsite_names %in% colnms],
+                sites_selected = rainsites,
+                sites_all = rainsites,
+                sites_missing = rainsites[! rainsites %in% colnms],
                 colorvec = pchemcolors
             )
 
-            rainsites <- rainsites[! is.na(rainsites)]
+            rainsites <- rainsites[rainsites %in% colnms]
 
             if(show_uncert){
 
-                rain_names <- lapply(rainsites,
-                                     function(x){
-                                         c(paste0(x, '_errlo'),
-                                           x,
-                                           paste0(x, '_errhi'))
-                                     })
+                rainsites <- lapply(rainsites,
+                                    function(x){
+                                        c(paste0(x, '_errlo'),
+                                          x,
+                                          paste0(x, '_errhi'))
+                                    })
             } else {
-                rain_names <- as.list(rainsites)
+                rainsites <- as.list(rainsites)
             }
 
             for(i in 1:length(rainsites)){
 
                 dg <- dySeries(dg,
-                               name = rain_names[[i]],
+                               name = rainsites[[i]],
                                color = rain_or_pchem_colors[i],
                                axis = 'y',
                                drawPoints = FALSE,
@@ -1361,6 +1317,8 @@ output$GRAPH_MAIN3b <- renderDygraph({
 
         if(show_uncert){
 
+            sites <- sites[sites %in% colnms]
+
             stream_names <- lapply(sites,
                                    function(x){
                                        c(paste0(x, '_errlo'),
@@ -1369,15 +1327,8 @@ output$GRAPH_MAIN3b <- renderDygraph({
                                    })
 
             for(i in 1:length(sites)){
-
                 dg <- dySeries(dg,
                                name = stream_names[[i]])
-                               # color = rain_or_pchem_colors[i],
-                               # axis = 'y',
-                               # drawPoints = FALSE,
-                               # strokeWidth = 2,
-                               # pointSize = 2,
-                               # strokePattern = 'dashed')
             }
         }
 
@@ -1385,7 +1336,7 @@ output$GRAPH_MAIN3b <- renderDygraph({
 
         dg <- plot_empty_dygraph(dates,
                                  mainlab = colnames(alldata)[-1],
-                                 maindiv = 'main3b',#
+                                 maindiv = 'main3b',
                                  plotgroup = 'nSiteNVar',
                                  ylab = ylabel,
                                  px_per_lab = 20)
@@ -1534,85 +1485,69 @@ output$GRAPH_MAIN3c <- renderDygraph({
     # raindata <<- raindata
     # print(head(streamdata))
 
-    alldata <- pad_widen_join(v = varC,#
+    alldata <- pad_widen_join(v = varC,
                               sites = sites,
                               dates = dates,
                               streamdata = streamdata,
                               raindata = raindata,
                               show_input_concentration = show_pchem)
 
-    rainsites <- get_rainsites(alldata = alldata,
-                               streamsites = sites,
-                               show_input_concentration = show_pchem)
-
-    ylabel <- get_ylab(v = varC,#
+    ylabel <- get_ylab(v = varC,
                        conc_flux = conc_flux,
                        conc_unit = conc_unit,
                        flux_unit = flux_unit)
 
     if(nrow(alldata)){
 
+        streamsites_rainsites <- c(sites, paste0('P_', sites))
         colnms <- colnames(alldata)
-        included_cols <- colnms[colnms %in% c(sites,
-                                              paste0('P_', sites))]
+        included_cols <- streamsites_rainsites[streamsites_rainsites %in% colnms]
+        alldata <- select(alldata,
+                          datetime, any_of(streamsites_rainsites)) #preserve order
 
         if(show_uncert){
 
             alldata <- alldata %>%
                 mutate(across(any_of(included_cols),
-                       .fns = list(errhi = ~(errors::drop_errors(.) +
-                                                 errors::errors(.))))) %>%
+                              .fns = list(errhi = ~(errors::drop_errors(.) +
+                                                        errors::errors(.))))) %>%
                 mutate(across(any_of(included_cols),
-                       .fns = list(errlo = ~(errors::drop_errors(.) -
-                                                 errors::errors(.)))))
+                              .fns = list(errlo = ~(errors::drop_errors(.) -
+                                                        errors::errors(.)))))
 
             included_cols <- c(included_cols,
                                paste0(included_cols, '_errhi'),
                                paste0(included_cols, '_errlo'))
         }
 
-        dydat <- xts(alldata[, included_cols],
+        dydat <- xts(select(alldata, -datetime),
                      order.by = alldata$datetime,
                      tzone = lubridate::tz(alldata$datetime[1]))
-
-        # dimnames(dydat) <- list(NULL, included_cols)
 
         is_inst <- ifelse(agg == 'Instantaneous',
                           TRUE,
                           FALSE)
 
-        dg <- dygraph(dydat,#[,1:2],
+        dg <- dygraph(dydat,,
                       group = 'nSiteNVar') %>%
             dyOptions(useDataTimezone = FALSE,
                       retainDateWindow = TRUE,
 
-                      #if not showing all points, use these specifications.
                       drawPoints = FALSE,
                       colors = selection_color_match( #pchem NAs required here
                           sites_selected = sites,
                           sites_all = included_cols,
+                          sites_missing = sites[! sites %in% colnms],
                           colorvec = linecolors),
                       strokeWidth = 2,
                       pointSize = 2,
                       drawGapEdgePoints = TRUE,
                       labelsKMB = TRUE,
 
-                      # #if showing points, use these
-                      # drawPoints = TRUE,
-                      # strokeWidth = 0.01,
-                      # pointSize = 1,
-                      # strokeBorderWidth = 1,
-                      # colors = 'white',
-                      # strokeBorderColor = selection_color_match(
-                      #     sites_selected = sites,
-                      #     sites_all = included_cols,
-                      #     colorvec = linecolors
-                      # ),
-
                       connectSeparatedPoints = is_inst) %>%
             dyLegend(show = 'always',
                      labelsSeparateLines = FALSE,
-                     labelsDiv = 'main3c') %>%#
+                     labelsDiv = 'main3c') %>%
             dyAxis('y',
                    label = ylabel,
                    labelWidth = 16,
@@ -1620,35 +1555,35 @@ output$GRAPH_MAIN3c <- renderDygraph({
                    pixelsPerLabel = 20,
                    rangePad = 10)
 
-        if(show_pchem){
+        rainsites <- paste0('P_', sites)
 
-            rainsite_names <- paste0('P_', sites)
+        if(show_pchem && any(rainsites %in% colnms)){
 
             rain_or_pchem_colors <- selection_color_match(
-                sites_selected = rainsite_names,
-                sites_all = paste0('P_', included_cols[included_cols %in% sites]),
-                sites_missing = rainsite_names[! rainsite_names %in% colnms],
+                sites_selected = rainsites,
+                sites_all = rainsites,
+                sites_missing = rainsites[! rainsites %in% colnms],
                 colorvec = pchemcolors
             )
 
-            rainsites <- rainsites[! is.na(rainsites)]
+            rainsites <- rainsites[rainsites %in% colnms]
 
             if(show_uncert){
 
-                rain_names <- lapply(rainsites,
-                                     function(x){
-                                         c(paste0(x, '_errlo'),
-                                           x,
-                                           paste0(x, '_errhi'))
-                                     })
+                rainsites <- lapply(rainsites,
+                                    function(x){
+                                        c(paste0(x, '_errlo'),
+                                          x,
+                                          paste0(x, '_errhi'))
+                                    })
             } else {
-                rain_names <- as.list(rainsites)
+                rainsites <- as.list(rainsites)
             }
 
             for(i in 1:length(rainsites)){
 
                 dg <- dySeries(dg,
-                               name = rain_names[[i]],
+                               name = rainsites[[i]],
                                color = rain_or_pchem_colors[i],
                                axis = 'y',
                                drawPoints = FALSE,
@@ -1660,6 +1595,8 @@ output$GRAPH_MAIN3c <- renderDygraph({
 
         if(show_uncert){
 
+            sites <- sites[sites %in% colnms]
+
             stream_names <- lapply(sites,
                                    function(x){
                                        c(paste0(x, '_errlo'),
@@ -1668,15 +1605,8 @@ output$GRAPH_MAIN3c <- renderDygraph({
                                    })
 
             for(i in 1:length(sites)){
-
                 dg <- dySeries(dg,
                                name = stream_names[[i]])
-                               # color = rain_or_pchem_colors[i],
-                               # axis = 'y',
-                               # drawPoints = FALSE,
-                               # strokeWidth = 2,
-                               # pointSize = 2,
-                               # strokePattern = 'dashed')
             }
         }
 
@@ -1684,7 +1614,7 @@ output$GRAPH_MAIN3c <- renderDygraph({
 
         dg <- plot_empty_dygraph(dates,
                                  mainlab = colnames(alldata)[-1],
-                                 maindiv = 'main3c',#
+                                 maindiv = 'main3c',
                                  plotgroup = 'nSiteNVar',
                                  ylab = ylabel,
                                  px_per_lab = 20)
@@ -1819,8 +1749,11 @@ output$GRAPH_Q3 <- renderDygraph({
         # d2 = filter(dataq, datetime >= as.POSIXct('2002-07-10', tz='UTC'))
         # dataq = rbind(d0, d1, d2)
 
+        dataq <- select(dataq,
+                        datetime, any_of(sites)) #preserve order
+
         colnms <- colnames(dataq)
-        displabs <- colnms[colnms %in% sites]
+        displabs <- colnms[! colnms == 'datetime']
 
         dydat <- xts(dataq[, displabs],
                      order.by = dataq$datetime,

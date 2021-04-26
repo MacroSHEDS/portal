@@ -12,6 +12,7 @@ suppressPackageStartupMessages({
     library(ggthemes)
     # library(ggplot2)
     # library(colorspace)
+    # library(shinythemes)
     library(jsonlite)
     library(lubridate)
     library(xts)
@@ -80,11 +81,11 @@ site_data <- filter(site_data,
 ## 1. nSiteNVar page setup ####
 
 #establish color scheme for nSiteNVar plots
-raincolors <- c('#8ab5de', '#36486b', '#618685') #blues
-linecolors <- c('#36486b', '#008040', '#800080') #blue, green, purple
-pchemcolors <- c('#4a6292', '#1bff8c', '#ff1bff') #lighter shades of linecolors (Blu, G, P)
-# linecolors <- c('#323232', '#008040', '#800080') #black, green, purple
-# pchemcolors <- c('#585858', '#1bff8c', '#ff1bff') #lighter shades of linecolors (Blk, G, P)
+# raincolors <- c('#8ab5de', '#36486b', '#618685') #blues
+# linecolors <- c('#36486b', '#008040', '#800080') #blue, green, purple
+# pchemcolors <- c('#4a6292', '#1bff8c', '#ff1bff') #lighter shades of linecolors (Blu, G, P)
+linecolors <- c('#1f49c7', '#006600', '#4d0099') #from royalblue (4169e1), green, purple
+pchemcolors <- c('#7b97ea', '#00b300', '#8000ff') #lighter shades of linecolors
 
 ## 2. populate nSiteNVar defaults, which determine data shown when user lands ####
 

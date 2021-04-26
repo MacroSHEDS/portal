@@ -64,7 +64,9 @@ nSiteNVar_tab <- tabPanel("Time-series",
                 ),
                 div(id = 'qc3-tooltip',
                     style = "display: inline-block; vertical-align: middle",
-                    title = paste('The y-axis reflects all selections made in',
+                    title = paste('Discharge vs. concentration or flux, (precip',
+                                  'and precip chem excluded); the y-axis',
+                                  'reflects all selections made in',
                                   'the Unit section below.'),
                     enc2native('\U2753')
                 )
