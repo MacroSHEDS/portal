@@ -344,13 +344,14 @@ shinyjs.init = function() {
         var shinymodal = tgt.children('#shiny-modal-wrapper');
         if(shinymodal.length > 0){
 
-            //make modal fullscreen
-            shinymodal.children('.modal').css({'width': '100%', 'height': '100%', 'margin': '0px'})
-                .children('.modal-dialog').css({'width': '100%', 'height': '100%', 'margin': '0px'})
-                .children('.modal-content').css({'width': '100%', 'height': '100%'});
-
             var modal_id = shinymodal.find('.modal-body').attr('id');
-            if(modal_id === 'landing'){
+            if(modal_id != 'landing'){
+
+                //make modal fullscreen
+                shinymodal.children('.modal').css({'width': '100%', 'height': '100%', 'margin': '0px'})
+                    .children('.modal-dialog').css({'width': '100%', 'height': '100%', 'margin': '0px'})
+                    .children('.modal-content').css({'width': '100%', 'height': '100%'});
+            } else {
                 return;
             }
 
@@ -373,6 +374,11 @@ shinyjs.init = function() {
             //    $("a[class^='paginate_button']").click(listener_recurse(i, v));
             //});
         };
+    });
+
+    $(window).on('load', function() {
+        $('.loading-container').hide();
+        $('#landing #DISMISS_MODAL').show();
     });
 
     //configure and register mutation observer for modals

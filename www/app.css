@@ -112,6 +112,54 @@ APP TEXT FORMATTING
     top: -0.2em;
 }
 
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loading {
+  display: flex;
+  flex-direction: row;
+}
+
+@keyframes bounce {
+  0% {
+    transform: translateY(0px);
+  }
+  40% {
+    transform: translateY(-20px);
+  }
+  80%,
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.loading-letter {
+  animation-name: bounce;
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
+}
+
+.loading-letter:nth-child(2) {
+  animation-delay: 0.1s;
+}
+.loading-letter:nth-child(3) {
+  animation-delay: 0.2s;
+}
+.loading-letter:nth-child(4) {
+  animation-delay: 0.3s;
+}
+.loading-letter:nth-child(5) {
+  animation-delay: 0.4s;
+}
+.loading-letter:nth-child(6) {
+  animation-delay: 0.5s;
+}
+.loading-letter:nth-child(7) {
+  animation-delay: 0.6s;
+}
 
 /*
 SELECTIZE MODIFICATIONS
@@ -164,13 +212,15 @@ input {
     background-color: #E6E6E6;
 }
 
-input[type='radio'] {
+div.shiny-options-group input[type='radio'] {
+    visibility: hidden;
+/*input[type='radio'] {
     appearance: none;
     background: transparent;
-    position: relative;
+    position: relative;*/
 }
 
-input[type='radio'] + span::before {
+.shiny-options-group input[type='radio'] + span::before {
     background-color: #fff;
     width: 18px;
     height: 18px;
@@ -188,7 +238,7 @@ input[type='radio'] + span::before {
     border: 1px solid #d1d3d1;
 }
 
-input[type='radio']:checked + span::before {
+.shiny-options-group input[type='radio']:checked + span::before {
     background-color: #fff;
     background: var(--slate);
     box-shadow: inset 0px 0px 0px 4px #fff;
