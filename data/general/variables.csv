@@ -31,9 +31,8 @@ spCond,Specific Conductivity,uS/cm,UNKNOWN,chem_mix,Other,expression(UNKNOWN),NA
 theoryCond,Theoretical Conductivity,uS/cm,UNKNOWN,chem_mix,Other,expression(UNKNOWN),NA,0,NA,NA
 temp,Water Temperature,degrees C,UNKNOWN,phys,Other,expression(UNKNOWN),NA,0,NA,NA
 ionBalance,Ion Balance,ueq/L,UNKNOWN,chem_mix,Other,expression(UNKNOWN),NA,0,NA,NA
-precipitation_ns,Basin Precip (nonstandard),mm,UNKNOWN,phys,Other,expression(UNKNOWN),NA,0,NA,NA
-discharge_ns,Discharge (nonstandard),L/s,UNKNOWN,phys,Other,expression(UNKNOWN),NA,0,NA,NA
-precipitation,Basin Precip,mm,UNKNOWN,phys,Other,expression(UNKNOWN),NA,0,NA,NA
+CUSTOMprecipitation,Basin Precipitation (determined by source),mm,UNKNOWN,phys,Other,expression(UNKNOWN),NA,0,NA,NA
+precipitation,Precipitation at gauge,mm,UNKNOWN,phys,Other,expression(UNKNOWN),NA,0,NA,NA
 discharge,Discharge,L/s,UNKNOWN,phys,Other,expression(UNKNOWN),NA,0,NA,NA
 alk,Alkalinity,mg/L,electrometric titration to pH 4.5,chem_mix,Other,expression(UNKNOWN),NA,1,NA,NA
 suspSed,Suspended Sediment,mg/L,gravimetric,phys,Other,expression(UNKNOWN),NA,1,NA,NA
@@ -70,6 +69,7 @@ abs280,UV Absorbance at 280nm,unitless,UNKNOWN,phys,Other,expression(UNKNOWN),NA
 abs254,UV Absorbance at 254nm,unitless,UNKNOWN,phys,Other,expression(UNKNOWN),NA,0,NA,NA
 PAR,Photosynthetically Active Radiation,uM/m^2/s,UNKNOWN,phys,Other,expression(UNKNOWN),NA,0,NA,NA
 DO,Dissolved Oxygen,mg/L,UNKNOWN,gas,Other,expression(UNKNOWN),NA,0,O,NA
+DO_sat,Dissolved Oxygen Percent Saturation,%,UNKNOWN,gas,Other,expression(UNKNOWN),NA,0,O,NA
 CHL,Chlorophyll,mg/L,UNKNOWN,bio,Other,expression(UNKNOWN),NA,0,NA,NA
 turbid,Turbidity,FNU,UNKNOWN,phys,Other,expression(UNKNOWN),NA,0,NA,NA
 FDOM,Fluorescent Dissolved Organic Matter,QSU,UNKNOWN,chem_mix,Other,expression(UNKNOWN),NA,0,NA,NA
@@ -86,7 +86,8 @@ H,Hydrogen,mg/L,UNKNOWN,chem_discrete,Cations,expression(H^'+'),1,1,NA,NA
 POC,Particulate Organic Carbon,mg/L,UNKNOWN,chem_discrete,Other,expression(UNKNOWN),NA,1,C,NA
 acidity,Acidity,ueq/L,UNKNOWN,chem_mix,Other,expression(UNKNOWN),NA,0,NA,NA
 TIN,Total Inorganic Nitrogen,mg/L,UNKNOWN,chem_discrete,Other,expression(UNKNOWN),1,1,N,NA
-d18O,Delta 18 Oxygen,ppt,UNKNOWN,phys,Other,expression(UNKNOWN),NA,0,O,NA
+d18O,Delta 18 Oxygen,ppt,UNKNOWN,phys,Other,expression(UNKNOWN),NA,0,O,parts per thousand
+deuterium,Deuterium,unitless,UNKNOWN,phys,Other,expression(UNKNOWN),NA,0,H,ALso called H-2 or delta h2
 Ecoli,Escherichia coli,#/mL,UNKNOWN,bio,Other,expression(UNKNOWN),NA,0,NA,Ecoli is generally measured in CFU/ml and PNC/ml but they are roughly comparable so we can use #/ml
 Li,Lithium,mg/L,UNKNOWN,chem_discrete,Cations,expression(UNKNOWN),1,1,Li,NA
 SRP,Soluble Reactive Phosphorus,mg/L,UNKNOWN,chem_discrete,Anions,expression(UNKNOWN),3,1,PO4,NA
@@ -104,14 +105,17 @@ Zn,Zinc,mg/L,Absorption/Emission Spectrophotometer,chem_discrete,Other,expressio
 Sr,Strontium,mg/L,Absorption/Emission Spectrophotometer,chem_discrete,Other,expression(Sr^'+2'),2,1,Sr,NA
 S,Sulfer,mg/L,Absorption/Emission Spectrophotometer,chem_discrete,Other,expression(UNKNOWN),6,1,S,NA
 Be,Beryllium,mg/L,UNKNOWN,chem_discrete,Cations,expression(Be^'+2'),2,1,Be,NA
+Ti,Titanium,mg/L,UNKNOWN,chem_discrete,Cations,expression(UNKNOWN),2.5,1,Ti,NA
 Ti49,Titanium-49,mg/L,UNKNOWN,chem_discrete,Cations,expression(UNKNOWN),2.5,1,Ti,NA
 V,Vanadium,mg/L,UNKNOWN,chem_discrete,Cations,expression(UNKNOWN),NA,1,V,Not sure what valence to use
 Co,Cobalt,mg/L,UNKNOWN,chem_discrete,Cations,expression(UNKNOWN),2.5,1,Co,Check valence
 As,Arsenic,mg/L,UNKNOWN,chem_discrete,Cations,expression(As^'+3'),3,1,As,Check valence
-Se78,Selenium-78,mg/L,UNKNOWN,chem_discrete,Anions,expression(As^'-2'),2,1,Se,NA
+Se,Selenium,mg/L,UNKNOWN,chem_discrete,Anions,expression(Se^'-2'),2,1,Se,NA
+Se78,Selenium-78,mg/L,UNKNOWN,chem_discrete,Anions,expression(Se^'-2'),2,1,Se,NA
 Y,Yttrium,mg/L,UNKNOWN,chem_discrete,Cations,expression(Y^'+3'),3,1,Y,NA
 Mo,Molybdenum,mg/L,UNKNOWN,chem_discrete,Cations,expression(UNKNOWN),NA,1,Mo,Not sure what valence to use
 Ag,Silver,mg/L,UNKNOWN,chem_discrete,Cations,expression(UNKNOWN),NA,1,Ag,Not sure what valence to use
+Sn,Tin,mg/L,UNKNOWN,chem_discrete,Cations,expression(UNKNOWN),3,1,Sn,"Tin looks like it has both 2+ and 4+, using 3 as mean"
 Sn118,Tin-118,mg/L,UNKNOWN,chem_discrete,Cations,expression(UNKNOWN),3,1,Sn,"Tin looks like it has both 2+ and 4+, using 3 as mean"
 Sb,Antimony,mg/L,UNKNOWN,chem_discrete,Cations,expression(UNKNOWN),4,1,Sb,"Antimony looks like it has both 3+ and 5+, using 4 as mean"
 Ba,Barium,mg/L,UNKNOWN,chem_discrete,Cations,expression(Ba^'+2'),2,1,Ba,NA
@@ -131,6 +135,11 @@ Yb,Ytterbium,mg/L,UNKNOWN,chem_discrete,Cations,expression(UNKNOWN),NA,1,Yb,Not 
 Lu,Lutetium,mg/L,UNKNOWN,chem_discrete,Cations,expression(UNKNOWN),NA,1,Lu,Not sure what valence to use
 U,Uranium,mg/L,UNKNOWN,chem_discrete,Cations,expression(UNKNOWN),NA,1,U,Not sure what valence to use
 Tl,Thallium,mg/L,UNKNOWN,chem_discrete,Cations,expression(UNKNOWN),NA,1,Tl,Not sure what valence to use
+Cs,Caesium,mg/L,UNKNOWN,chem_discrete,Cations,expression(UNKNOWN),NA,1,Cs,Not sure what valence to use
+Ge,Germanium,mg/L,UNKNOWN,chem_discrete,Cations,expression(UNKNOWN),NA,1,Ge,Not sure what valence to use
+Rb,Rubidium,mg/L,UNKNOWN,chem_discrete,Cations,expression(UNKNOWN),NA,1,Rb,Not sure what valence to use
+Th,Thorium,mg/L,UNKNOWN,chem_discrete,Cations,expression(UNKNOWN),NA,1,Th,Not sure what valence to use
+Zr,Zirconium,mg/L,UNKNOWN,chem_discrete,Cations,expression(UNKNOWN),NA,1,Zr,Not sure what valence to use
 pheophy,Sestonic Phaeophytin,mg/l,Acetone TurnerDesigns 10AU Fluorometer,bio,Other,expression(UNKNOWN),NA,0,NA,Not sure what valence to use
 TCHL,Sestonic Total Chlorophyll,mg/l,Acetone TurnerDesigns 10AU Fluorometer,bio,Other,expression(UNKNOWN),NA,0,NA,Not sure what valence to use
 BPC,Benthic Particulate Carbon,mg/cm2,"Epilithic - Whole Rock, PE2400 CHN Combustion Method",chem_discrete,Other,expression(mg/cm^'2'),NA,0,NA,NA
@@ -139,43 +148,174 @@ BPP,Benthic Particulate Phosphorus,mg/cm2,"Epilithic - Whole Rock, PE2400 CHN Co
 ECHL_A,Epilithic Chlorophyll a,mg/cm2,"Epilithic - Whole Rock, PE2400 CHN Combustion Method",bio,Other,expression(mg/cm^'2'),NA,0,NA,NA
 E_pheophy,Epilithic Phaeophytin,mg/cm2,"Epilithic - Whole Rock, PE2400 CHN Combustion Method",bio,Other,expression(mg/cm^'2'),NA,0,NA,NA
 T_ECHL,Epilithic Total Chlorophyll,mg/cm2,"Epilithic - Whole Rock, Acetone TurnerDesigns 10AU Fluorometer",bio,Other,expression(mg/cm^'2'),NA,0,NA,NA
-prism_cumulative_precip,Watershed Annual,mm,UNKNOWN,ws_char,Prism Precipitation,NA,NA,0,NA,NA
-prism_precip_sd_year,Annual Standard Deviation,NA,UNKNOWN,ws_char,Prism Precipitation,NA,NA,0,NA,NA
-prism_precip_sd,Watershed Standard Deviation,NA,UNKNOWN,ws_char,Prism Precipitation,NA,NA,0,NA,NA
-prism_temp_mean,Watershed Mean,C,UNKNOWN,ws_char,Prism Temperature,NA,NA,0,NA,NA
-prism_temp_sd_year,Annual Standard Deviation,NA,UNKNOWN,ws_char,Prism Temperature,NA,NA,0,NA,NA
-prism_temp_sd_space,Watershed Standard Deviation,NA,UNKNOWN,ws_char,Prism Temperature,NA,NA,0,NA,NA
-bare_cover_median,Watershed Median,%,UNKNOWN,ws_char,Bare Ground Cover,NA,NA,0,NA,NA
-bare_cover_sd,Watershed Standard Deviation,NA,UNKNOWN,ws_char,Bare Ground Cover,NA,NA,0,NA,NA
-tree_cover_median,Watershed Median,%,UNKNOWN,ws_char,Tree Cover,NA,NA,0,NA,NA
-tree_cover_sd,Watershed Standard Deviation,NA,UNKNOWN,ws_char,Tree Cover,NA,NA,0,NA,NA
-veg_cover_median,Watershed Median,%,UNKNOWN,ws_char,Non-Tree Cover,NA,NA,0,NA,NA
-veg_cover_sd,Watershed Standard Deviation,NA,UNKNOWN,ws_char,Non-Tree Cover,NA,NA,0,NA,NA
-sos_mean,Watershed Mean,DOY,UNKNOWN,ws_char,Start of Growing Season,NA,NA,0,NA,NA
-sos_sd,Watershed Standard Deviation,NA,UNKNOWN,ws_char,Start of Growing Season,NA,NA,0,NA,NA
-eos_mean,Watershed Mean,DOY,UNKNOWN,ws_char,End of Growing Season,NA,NA,0,NA,NA
-eos_sd,Watershed Standard Deviation,NA,UNKNOWN,ws_char,End of Growing Season,NA,NA,0,NA,NA
-season_length_mean,Watershed Mean,Days,UNKNOWN,ws_char,Length of Growing Season,NA,NA,0,NA,NA
-season_length_sd,Watershed Standard Deviation,NA,UNKNOWN,ws_char,Length of Growing Season,NA,NA,0,NA,NA
-mos_mean,Watershed Mean,DOY,UNKNOWN,ws_char,Max Day in Growing Season,NA,NA,0,NA,NA
-mos_sd,Watershed Standard Deviation,NA,UNKNOWN,ws_char,Max Day in Growing Season,NA,NA,0,NA,NA
-lai_max,Annual Maximum,m2/m2,UNKNOWN,ws_char,Leaf Area Index,NA,NA,0,NA,NA
-lai_mean,Annual Mean,m2/m2,UNKNOWN,ws_char,Leaf Area Index,NA,NA,0,NA,NA
-lai_min,Annual Minimum,m2/m2,UNKNOWN,ws_char,Leaf Area Index,NA,NA,0,NA,NA
-lai_sd_year,Annual Standard Deviation,NA,UNKNOWN,ws_char,Leaf Area Index,NA,NA,0,NA,NA
-lai_sd_space,Watershed Standard Deviation,NA,UNKNOWN,ws_char,Leaf Area Index,NA,NA,0,NA,NA
-fpar_max,Annual Maximum,%,UNKNOWN,ws_char,Fraction of Absorbed Photosynthetically Active Radiation,NA,NA,0,NA,NA
-fpar_mean,Annual Mean,%,UNKNOWN,ws_char,Fraction of Absorbed Photosynthetically Active Radiation,NA,NA,0,NA,NA
-fpar_min,Annual Minimum,%,UNKNOWN,ws_char,Fraction of Absorbed Photosynthetically Active Radiation,NA,NA,0,NA,NA
-fpar_sd_year,Annual Standard Deviation,NA,UNKNOWN,ws_char,Fraction of Absorbed Photosynthetically Active Radiation,NA,NA,0,NA,NA
-fpar_sd_space,Watershed Standard Deviation,NA,UNKNOWN,ws_char,Fraction of Absorbed Photosynthetically Active Radiation,NA,NA,0,NA,NA
-gpp_sum,Annual Sum,kg*C/m^2,UNKNOWN,ws_char,Gross Primary Production,NA,NA,0,NA,NA
-gpp_sd_year,Annual Standard Deviation,NA,UNKNOWN,ws_char,Gross Primary Production,NA,NA,0,NA,NA
-gpp_sd_space,Watershed Standard Deviation,NA,UNKNOWN,ws_char,Gross Primary Production,NA,NA,0,NA,NA
-npp_median,Annual Sum,kg*C/m^2,UNKNOWN,ws_char,Net Primary Production,NA,NA,0,NA,NA
-npp_sd,Watershed Standard Deviation,NA,UNKNOWN,ws_char,Net Primary Production,NA,NA,0,NA,NA
-slope_mean,Mean Slope,%,UNKNOWN,ws_char,Terrain,NA,NA,0,NA,NA
+cc_cumulative_precip,Watershed Annual Precipitation,mm,UNKNOWN,ws_char,Prism Precipitation,NA,NA,0,NA,NA
+cc_precip_sd_year,Annual Standard Deviation,NA,UNKNOWN,ws_char,Prism Precipitation,NA,NA,0,NA,NA
+cc_precip_sd_space,Watershed Standard Deviation,NA,UNKNOWN,ws_char,Prism Precipitation,NA,NA,0,NA,NA
+cc_precip_sd,Daily Standard Deviation,NA,UNKNOWN,ws_char,Prism Precipitation,NA,NA,0,NA,NA
+cc_precip_median,Daily Median,mm,UNKNOWN,ws_char,Prism Precipitation,NA,NA,0,NA,NA
+cc_temp_mean,Watershed Mean Temperature,C,UNKNOWN,ws_char,Prism Temperature,NA,NA,0,NA,NA
+cc_temp_sd_year,Annual Standard Deviation,NA,UNKNOWN,ws_char,Prism Temperature,NA,NA,0,NA,NA
+cc_temp_sd_space,Watershed Standard Deviation,NA,UNKNOWN,ws_char,Prism Temperature,NA,NA,0,NA,NA
+cc_temp_mean_sd,Daily Standard Deviation,NA,UNKNOWN,ws_char,Prism Temperature,NA,NA,0,NA,NA
+cc_temp_mean_median,Daily Median,NA,UNKNOWN,ws_char,Prism Temperature,NA,NA,0,NA,NA
+vb_bare_cover_median,Watershed Median Bare Cover,%,UNKNOWN,ws_char,MODIS Land Cover,NA,NA,0,NA,NA
+vb_bare_cover_sd,Watershed Standard Deviation Bare Cover,NA,UNKNOWN,ws_char,MODIS Land Cover,NA,NA,0,NA,NA
+vb_tree_cover_median,Watershed Median Tree Cover,%,UNKNOWN,ws_char,MODIS Land Cover,NA,NA,0,NA,NA
+vb_tree_cover_sd,Watershed Standard Deviation Tree Cover,NA,UNKNOWN,ws_char,MODIS Land Cover,NA,NA,0,NA,NA
+vb_veg_cover_median,Watershed Median Non-Tree Vegetation,%,UNKNOWN,ws_char,MODIS Land Cover,NA,NA,0,NA,NA
+vb_veg_cover_sd,Watershed Standard Deviation Non-Tree Vegetation,NA,UNKNOWN,ws_char,MODIS Land Cover,NA,NA,0,NA,NA
+vd_sos_mean,Start of Growing Season Watershed Mean,DOY,UNKNOWN,ws_char,Phenology,NA,NA,0,NA,NA
+vd_sos_sd,Start of Growing Season Standard Deviation,NA,UNKNOWN,ws_char,Phenology,NA,NA,0,NA,NA
+vd_eos_mean,End of Growing Season Watershed Mean,DOY,UNKNOWN,ws_char,Phenology,NA,NA,0,NA,NA
+vd_eos_sd,End of Growing Season Standard Deviation,NA,UNKNOWN,ws_char,Phenology,NA,NA,0,NA,NA
+vd_los_mean,Length of Growing Season Watershed Mean,Days,UNKNOWN,ws_char,Phenology,NA,NA,0,NA,NA
+vd_los_sd,Length of Growing Season Watershed Standard Deviation,NA,UNKNOWN,ws_char,Phenology,NA,NA,0,NA,NA
+vd_mos_mean,Max Day in Growing Season Watershed Mean,DOY,UNKNOWN,ws_char,Phenology,NA,NA,0,NA,NA
+vd_mos_sd,Max Day in Growing Season Watershed Standard Deviation,NA,UNKNOWN,ws_char,Phenology,NA,NA,0,NA,NA
+vb_lai_max,Annual Maximum LAI,m2/m2,UNKNOWN,ws_char,Leaf Area Index,NA,NA,0,NA,NA
+vb_lai_mean,Annual Mean LAI,m2/m2,UNKNOWN,ws_char,Leaf Area Index,NA,NA,0,NA,NA
+vb_lai_min,Annual Minimum LAI,m2/m2,UNKNOWN,ws_char,Leaf Area Index,NA,NA,0,NA,NA
+vb_lai_sd_year,Annual Standard Deviation LAI,NA,UNKNOWN,ws_char,Leaf Area Index,NA,NA,0,NA,NA
+vb_lai_sd_space,Watershed Standard Deviation LAI,NA,UNKNOWN,ws_char,Leaf Area Index,NA,NA,0,NA,NA
+vb_lai_median,Daily Median,m2/m2,UNKNOWN,ws_char,Leaf Area Index,NA,NA,0,NA,NA
+vb_lai_sd,Daily Standard Deviation,NA,UNKNOWN,ws_char,Leaf Area Index,NA,NA,0,NA,NA
+vb_fpar_max,Annual Maximum FPAR,%,UNKNOWN,ws_char,Fraction of Absorbed Photosynthetically Active Radiation,NA,NA,0,NA,NA
+vb_fpar_mean,Annual Mean FPAR,%,UNKNOWN,ws_char,Fraction of Absorbed Photosynthetically Active Radiation,NA,NA,0,NA,NA
+vb_fpar_min,Annual Minimum FPAR,%,UNKNOWN,ws_char,Fraction of Absorbed Photosynthetically Active Radiation,NA,NA,0,NA,NA
+vb_fpar_sd_year,Annual Standard Deviation FPAR,NA,UNKNOWN,ws_char,Fraction of Absorbed Photosynthetically Active Radiation,NA,NA,0,NA,NA
+vb_fpar_sd_space,Watershed Standard Deviation FPAR,NA,UNKNOWN,ws_char,Fraction of Absorbed Photosynthetically Active Radiation,NA,NA,0,NA,NA
+vb_fpar_median,Daily Median,%,UNKNOWN,ws_char,Fraction of Absorbed Photosynthetically Active Radiation,NA,NA,0,NA,NA
+vb_fpar_sd,Daily Standard Deviation,NA,UNKNOWN,ws_char,Fraction of Absorbed Photosynthetically Active Radiation,NA,NA,0,NA,NA
+va_gpp_sum,Annual GPP,kg*C/m^2,UNKNOWN,ws_char,Gross Primary Production,NA,NA,0,NA,NA
+va_gpp_sd_year,Annual Standard Deviation GPP,NA,UNKNOWN,ws_char,Gross Primary Production,NA,NA,0,NA,NA
+va_gpp_sd_space,Watershed Standard Deviation GPP,NA,UNKNOWN,ws_char,Gross Primary Production,NA,NA,0,NA,NA
+va_gpp_median,Daily Median,kg*C/m^2,UNKNOWN,ws_char,Gross Primary Production,NA,NA,0,NA,NA
+va_gpp_sd,Daily Standard Deviation,NA,UNKNOWN,ws_char,Gross Primary Production,NA,NA,0,NA,NA
+va_npp_median,Annual NPP,kg*C/m^2,UNKNOWN,ws_char,Net Primary Production,NA,NA,0,NA,NA
+va_npp_sd,Watershed Standard Deviation NPP,NA,UNKNOWN,ws_char,Net Primary Production,NA,NA,0,NA,NA
+te_slope_mean,Mean Slope,%,UNKNOWN,ws_char,Terrain,NA,NA,0,NA,NA
+te_slope_sd,Slope Standard Deviation,NA,UNKNOWN,ws_char,Terrain,NA,NA,0,NA,NA
 area,Area,ha,UNKNOWN,ws_char,Terrain,NA,NA,0,NA,NA
+te_elev_mean,Mean Elevation,m,UNKNOWN,ws_char,Terrain,NA,NA,0,NA,NA
+te_elev_sd,Elevation Standard Deviation,NA,UNKNOWN,ws_char,Terrain,NA,NA,0,NA,NA
+te_elev_min,Minimum Elevation,m,UNKNOWN,ws_char,Terrain,NA,NA,0,NA,NA
+te_elev_max,Maximum Elevation,m,UNKNOWN,ws_char,Terrain,NA,NA,0,NA,NA
+te_aspect_mean,Mean Aspect,NA,UNKNOWN,ws_char,Terrain,NA,NA,0,NA,NA
+te_aspect_sd,Aspect Standard Deviation,NA,UNKNOWN,ws_char,Terrain,NA,NA,0,NA,NA
+hd_bfi_mean,Mean Baseflow Index,%,UNKNOWN,ws_char,Hydrology,NA,NA,0,NA,NA
+hd_bfi_sd,Baseflow Index Standard Deviation,%,UNKNOWN,ws_char,Hydrology,NA,NA,0,NA,NA
+pd_geo_Al2O3_mean,Lithological aluminum oxide Mean,%,UNKNOWN,ws_char,Geochemistry,NA,NA,0,NA,NA
+pd_geo_Al2O3_sd,Lithological aluminum oxide Standard Deviation,NA,UNKNOWN,ws_char,Geochemistry,NA,NA,0,NA,NA
+pd_geo_CaO_mean,Lithological calcium oxide Mean,%,UNKNOWN,ws_char,Geochemistry,NA,NA,0,NA,NA
+pd_geo_CaO_sd,Lithological calcium oxide Standard Deviation,NA,UNKNOWN,ws_char,Geochemistry,NA,NA,0,NA,NA
+pd_geo_CompressStrength_mean,Lithological uniaxial compressive strength Mean,MPa,UNKNOWN,ws_char,Geochemistry,NA,NA,0,NA,NA
+pd_geo_CompressStrength_sd,Lithological uniaxial compressive strength Standard Deviation,NA,UNKNOWN,ws_char,Geochemistry,NA,NA,0,NA,NA
+pd_geo_Fe2O3_mean,Lithological ferric oxide Mean,%,UNKNOWN,ws_char,Geochemistry,NA,NA,0,NA,NA
+pd_geo_Fe2O3_sd,Lithological ferric oxide Standard Deviation,NA,UNKNOWN,ws_char,Geochemistry,NA,NA,0,NA,NA
+pd_geo_HydaulicCond_mean,Lithological hydraulic conductivity Mean,um/s,UNKNOWN,ws_char,Geochemistry,NA,NA,0,NA,NA
+pd_geo_HydaulicCond_sd,Lithological hydraulic conductivity Standard Deviation,NA,UNKNOWN,ws_char,Geochemistry,NA,NA,0,NA,NA
+pd_geo_K2O_mean,Lithological potassium oxide Mean,%,UNKNOWN,ws_char,Geochemistry,NA,NA,0,NA,NA
+pd_geo_K2O_sd,Lithological potassium oxide Standard Deviation,NA,UNKNOWN,ws_char,Geochemistry,NA,NA,0,NA,NA
+pd_geo_MgO_mean,Lithological magnesium oxide Mean,%,UNKNOWN,ws_char,Geochemistry,NA,NA,0,NA,NA
+pd_geo_MgO_sd,Lithological magnesium oxide Standard Deviation,NA,UNKNOWN,ws_char,Geochemistry,NA,NA,0,NA,NA
+pd_geo_N_mean,Lithological nitrogen Mean,%,UNKNOWN,ws_char,Geochemistry,NA,NA,0,NA,NA
+pd_geo_N_sd,Lithological nitrogen Standard Deviation,NA,UNKNOWN,ws_char,Geochemistry,NA,NA,0,NA,NA
+pd_geo_Na2O_mean,Lithological sodium oxide Mean,%,UNKNOWN,ws_char,Geochemistry,NA,NA,0,NA,NA
+pd_geo_Na2O_sd,Lithological sodium oxide Standard Deviation,NA,UNKNOWN,ws_char,Geochemistry,NA,NA,0,NA,NA
+pd_geo_P2O5_mean,Lithological phosphorus pentoxide Mean,%,UNKNOWN,ws_char,Geochemistry,NA,NA,0,NA,NA
+pd_geo_P2O5_sd,Lithological phosphorus pentoxide Standard Deviation,NA,UNKNOWN,ws_char,Geochemistry,NA,NA,0,NA,NA
+pd_geo_S_mean,Lithological sulfur Mean,%,UNKNOWN,ws_char,Geochemistry,NA,NA,0,NA,NA
+pd_geo_S_sd,Lithological sulfur Standard Deviation,NA,UNKNOWN,ws_char,Geochemistry,NA,NA,0,NA,NA
+pd_geo_SiO2_mean,Lithological silicon dioxide Mean,%,UNKNOWN,ws_char,Geochemistry,NA,NA,0,NA,NA
+pd_geo_SiO2_sd,Lithological silicon dioxide Standard Deviation,NA,UNKNOWN,ws_char,Geochemistry,NA,NA,0,NA,NA
+ch_annual_Ca_flux_mean,Mean Annual Calcium Flux,kg/ha,UNKNOWN,ws_char,NADP,NA,NA,0,NA,NA
+ch_annual_Ca_flux_sd_space,Annual Calcium Flux Standard Deviation,NA,UNKNOWN,ws_char,NADP,NA,NA,0,NA,NA
+ch_annual_Cl_flux_mean,Mean Annual Chlorine Flux,kg/ha,UNKNOWN,ws_char,NADP,NA,NA,0,NA,NA
+ch_annual_Cl_flux_sd_space,Annual Chlorine Flux Standard Deviation,NA,UNKNOWN,ws_char,NADP,NA,NA,0,NA,NA
+ch_annual_H_flux_mean,Mean Annual Hydrogen ion Flux,kg/ha,UNKNOWN,ws_char,NADP,NA,NA,0,NA,NA
+ch_annual_H_flux_sd_space,Annual Hydrogen ion Flux Standard Deviation,NA,UNKNOWN,ws_char,NADP,NA,NA,0,NA,NA
+ch_annual_K_flux_mean,Mean Annual Potassium Flux,kg/ha,UNKNOWN,ws_char,NADP,NA,NA,0,NA,NA
+ch_annual_K_flux_sd_space,Annual Potassium Flux Standard Deviation,NA,UNKNOWN,ws_char,NADP,NA,NA,0,NA,NA
+ch_annual_Mg_flux_mean,Mean Annual Magnesium Flux,kg/ha,UNKNOWN,ws_char,NADP,NA,NA,0,NA,NA
+ch_annual_Mg_flux_sd_space,Annual Magnesium Flux Standard Deviation,NA,UNKNOWN,ws_char,NADP,NA,NA,0,NA,NA
+ch_annual_Na_flux_mean,Mean Annual Sodium Flux,kg/ha,UNKNOWN,ws_char,NADP,NA,NA,0,NA,NA
+ch_annual_Na_flux_sd_space,Annual Sodium Flux Standard Deviation,NA,UNKNOWN,ws_char,NADP,NA,NA,0,NA,NA
+ch_annual_NH4_flux_mean,Mean Annual Ammonium Flux,kg/ha,UNKNOWN,ws_char,NADP,NA,NA,0,NA,NA
+ch_annual_NH4_flux_sd_space,Annual Ammonium Flux Standard Deviation,NA,UNKNOWN,ws_char,NADP,NA,NA,0,NA,NA
+ch_annual_NO3_flux_mean,Mean Annual nitrate flux,kg/ha,UNKNOWN,ws_char,NADP,NA,NA,0,NA,NA
+ch_annual_NO3_flux_sd_space,Annual Nitrate Flux Standard Deviation,NA,UNKNOWN,ws_char,NADP,NA,NA,0,NA,NA
+ch_annual_SO4_flux_mean,Mean Annual Sulfate Flux,kg/ha,UNKNOWN,ws_char,NADP,NA,NA,0,NA,NA
+ch_annual_SO4_flux_sd_space,Annual Sulfate Flux Standard Deviation,NA,UNKNOWN,ws_char,NADP,NA,NA,0,NA,NA
+ch_annual_S_N_flux_mean,Mean Annual Nitrogen+Sulfur Flux,eq/ha,UNKNOWN,ws_char,NADP,NA,NA,0,NA,NA
+ch_annual_S_N_flux_sd_space,Annual Nitrogen+Dulfur Flux Standard Deviation,NA,UNKNOWN,ws_char,NADP,NA,NA,0,NA,NA
+ch_annual_N_flux_mean,Mean Annual Inorganic Nitrogen Flux,kg/ha,UNKNOWN,ws_char,NADP,NA,NA,0,NA,NA
+ch_annual_N_flux_sd_space,Annual Inorganic Nitrogen Flux Standard Deviation,NA,UNKNOWN,ws_char,NADP,NA,NA,0,NA,NA
+vb_ndvi_median,Daily Median NDVI,NA,UNKNOWN,ws_char,NDVI,NA,NA,0,NA,NA
+vb_ndvi_sd,Daily NDVI Standard Deviation,NA,UNKNOWN,ws_char,NDVI,NA,NA,0,NA,NA
+vb_ndvi_max,Annual Maximum NDVI,NA,UNKNOWN,ws_char,NDVI,NA,NA,0,NA,NA
+vb_ndvi_min,Annual NDVI Minimum,NA,UNKNOWN,ws_char,NDVI,NA,NA,0,NA,NA
+vb_ndvi_mean,Annual NDVI Mean,NA,UNKNOWN,ws_char,NDVI,NA,NA,0,NA,NA
+vb_ndvi_sd_year,Annual NDVI Standard Deviation,NA,UNKNOWN,ws_char,NDVI,NA,NA,0,NA,NA
+vb_ndvi_sd_space,Annual Mean spatial Standard Deviation,NA,UNKNOWN,ws_char,NDVI,NA,NA,0,NA,NA
+vg_nlcd_1992_water,Open Water (1992),%,UNKNOWN,ws_char,NLCD,NA,NA,0,NA,NA
+vg_nlcd_1992_ice_snow,Perennial Ice/Snow (1992),%,UNKNOWN,ws_char,NLCD,NA,NA,0,NA,NA
+vg_nlcd_1992_res_low,Low intensity Residential (1992),%,UNKNOWN,ws_char,NLCD,NA,NA,0,NA,NA
+vg_nlcd_1992_res_hi,High Intensity Residential (1992),%,UNKNOWN,ws_char,NLCD,NA,NA,0,NA,NA
+vg_nlcd_1992_commercial,Commercial/Industrial/Transportation (1992),%,UNKNOWN,ws_char,NLCD,NA,NA,0,NA,NA
+vg_nlcd_1992_barren,Bare Rock/Sand/Clay (1992),%,UNKNOWN,ws_char,NLCD,NA,NA,0,NA,NA
+vg_nlcd_1992_mines,Quarries/Strip Minds/Gravel Pits (1992),%,UNKNOWN,ws_char,NLCD,NA,NA,0,NA,NA
+vg_nlcd_1992_barren_tran,Transitional Barren (1992),%,UNKNOWN,ws_char,NLCD,NA,NA,0,NA,NA
+vg_nlcd_1992_forest_dec,Deciduous Forest (1992),%,UNKNOWN,ws_char,NLCD,NA,NA,0,NA,NA
+vg_nlcd_1992_forest_evr,Evergreen Forest (1992),%,UNKNOWN,ws_char,NLCD,NA,NA,0,NA,NA
+vg_nlcd_1992_forest_mix,Mixed Forest (1992),%,UNKNOWN,ws_char,NLCD,NA,NA,0,NA,NA
+vg_nlcd_1992_shrub,Shrubland (1992),%,UNKNOWN,ws_char,NLCD,NA,NA,0,NA,NA
+vg_nlcd_1992_orchards,Orchards/Vineyards/Other (1992),%,UNKNOWN,ws_char,NLCD,NA,NA,0,NA,NA
+vg_nlcd_1992_grass,Grasswland/Herbaceous (1992),%,UNKNOWN,ws_char,NLCD,NA,NA,0,NA,NA
+vg_nlcd_1992_pasture,Pasture/Hay (1992),%,UNKNOWN,ws_char,NLCD,NA,NA,0,NA,NA
+vg_nlcd_1992_row_crop,Row Crops (1992),%,UNKNOWN,ws_char,NLCD,NA,NA,0,NA,NA
+vg_nlcd_1992_small_grains,Small Grains (1992),%,UNKNOWN,ws_char,NLCD,NA,NA,0,NA,NA
+vg_nlcd_1992_fallow,Fallow (1992),%,UNKNOWN,ws_char,NLCD,NA,NA,0,NA,NA
+vg_nlcd_1992_urban_grass,Urban/Recreational Grasses (1992),%,UNKNOWN,ws_char,NLCD,NA,NA,0,NA,NA
+vg_nlcd_1992_wetland_wood,Woody Wetland (1992),%,UNKNOWN,ws_char,NLCD,NA,NA,0,NA,NA
+vg_nlcd_1992_wetland_herb,Emergent Herbaceous Wetland (1992),%,UNKNOWN,ws_char,NLCD,NA,NA,0,NA,NA
+vg_nlcd_barren,Barren Land,%,UNKNOWN,ws_char,NLCD,NA,NA,0,NA,NA
+vg_nlcd_crop,Cultivated Crops,%,UNKNOWN,ws_char,NLCD,NA,NA,0,NA,NA
+vg_nlcd_dev_hi,"Developed, High Intensity",%,UNKNOWN,ws_char,NLCD,NA,NA,0,NA,NA
+vg_nlcd_dev_low,"Developed, Low Intensity",%,UNKNOWN,ws_char,NLCD,NA,NA,0,NA,NA
+vg_nlcd_dev_med,"Developed, Medium Intensity",%,UNKNOWN,ws_char,NLCD,NA,NA,0,NA,NA
+vg_nlcd_dev_open,"Developed, Open Space",%,UNKNOWN,ws_char,NLCD,NA,NA,0,NA,NA
+vg_nlcd_forest_dec,Deciduous Forest,%,UNKNOWN,ws_char,NLCD,NA,NA,0,NA,NA
+vg_nlcd_forest_evr,Evergreen Forest,%,UNKNOWN,ws_char,NLCD,NA,NA,0,NA,NA
+vg_nlcd_forest_mix,Mixed Forest,%,UNKNOWN,ws_char,NLCD,NA,NA,0,NA,NA
+vg_nlcd_grass,Grasswland/Herbaceous,%,UNKNOWN,ws_char,NLCD,NA,NA,0,NA,NA
+vg_nlcd_ice_snow,Perennial Ice/Snow,%,UNKNOWN,ws_char,NLCD,NA,NA,0,NA,NA
+vg_nlcd_pasture,Pasture/Hay,%,UNKNOWN,ws_char,NLCD,NA,NA,0,NA,NA
+vg_nlcd_shrub,Shrub/Scrub,%,UNKNOWN,ws_char,NLCD,NA,NA,0,NA,NA
+vg_nlcd_water,Open Water,%,UNKNOWN,ws_char,NLCD,NA,NA,0,NA,NA
+vg_nlcd_wetland_herb,Emergent Herbaceous Wetland,%,UNKNOWN,ws_char,NLCD,NA,NA,0,NA,NA
+vg_nlcd_wetland_wood,Woody Wetland,%,UNKNOWN,ws_char,NLCD,NA,NA,0,NA,NA
+vg_nlcd_shrub_dwr,Dwarf Scrub,%,UNKNOWN,ws_char,NLCD,NA,NA,0,NA,NA
+vg_nlcd_sedge,Sedge/Herbaceous,%,UNKNOWN,ws_char,NLCD,NA,NA,0,NA,NA
+vg_lncd_lichens,Lichens,%,UNKNOWN,ws_char,NLCD,NA,NA,0,NA,NA
+vg_nlcd_moss,Moss,%,UNKNOWN,ws_char,NLCD,NA,NA,0,NA,NA
+pf_soil_org,Soil Organic Matter,%,UNKNOWN,ws_char,Soil,NA,NA,0,NA,NA
+pf_soil_sand,Soil Sand Content,%,UNKNOWN,ws_char,Soil,NA,NA,0,NA,NA
+pf_soil_silt,Soil Silt Content,%,UNKNOWN,ws_char,Soil,NA,NA,0,NA,NA
+pf_soil_clay,Soil Clay Content,%,UNKNOWN,ws_char,Soil,NA,NA,0,NA,NA
+pf_soil_awc,Mean Soil Available Water Content,cm/cm,UNKNOWN,ws_char,Soil,NA,NA,0,NA,NA
+pf_soil_water_0.1bar,Water Content at 1/10 bar,%,UNKNOWN,ws_char,Soil,NA,NA,0,NA,NA
+pf_soil_water_0.33bar,Water Content at 1/3 bar,%,UNKNOWN,ws_char,Soil,NA,NA,0,NA,NA
+pf_soil_water_15bar,Water Content at 15 bar,%,UNKNOWN,ws_char,Soil,NA,NA,0,NA,NA
+pf_soil_water_0bar,Water Content at 0 bar,%,UNKNOWN,ws_char,Soil,NA,NA,0,NA,NA
+pf_soil_cat_exchange_7,Mean Cation-exchange capacity,meq,UNKNOWN,ws_char,Soil,NA,NA,0,NA,NA
+pf_soil_ph,Mean pH,NA,UNKNOWN,ws_char,Soil,NA,NA,0,NA,NA
+pi_soil_thickness,Mean Soil Thinkness,m,UNKNOWN,ws_char,Soil,NA,NA,0,NA,NA
+vh_tcw_sd,Tasseled Cap Wetness Standard Deviation,NA,UNKNOWN,ws_char,Tasseled Cap Wetness,NA,NA,0,NA,NA
+vh_tcw_median,Tasseled Cap Wetness Median,NA,UNKNOWN,ws_char,Tasseled Cap Wetness,NA,NA,0,NA,NA
+vh_tcw_max,Tasseled Cap Wetness Annual Maximum,NA,UNKNOWN,ws_char,Tasseled Cap Wetness,NA,NA,0,NA,NA
+vh_tcw_min,Tasseled Cap Wetness Annual Minimum,NA,UNKNOWN,ws_char,Tasseled Cap Wetness,NA,NA,0,NA,NA
+vh_tcw_mean,Tasseled Cap Wetness Mean Annual,NA,UNKNOWN,ws_char,Tasseled Cap Wetness,NA,NA,0,NA,NA
+vh_tcw_sd_year,Tasseled Cap Wetness Annual Standard Deviation,NA,UNKNOWN,ws_char,Tasseled Cap Wetness,NA,NA,0,NA,NA
 MH_Al,Moss: Hygrohypnum: Aluminum,%,Dry weight before and after 550C muffle,bio,Other,expression(UNKNOWN),NA,0,NA,From Arctic LTER
 MH_B,Moss: Hygrohypnum: Boron,%,Dry weight before and after 550C muffle,bio,Other,expression(UNKNOWN),NA,0,NA,From Arctic LTER
 MH_Ca,Moss: Hygrohypnum: Calcium,%,Dry weight before and after 550C muffle,bio,Other,expression(UNKNOWN),NA,0,NA,From Arctic LTER

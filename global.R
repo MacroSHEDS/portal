@@ -194,12 +194,18 @@ biplot_data_types <- c('Stream Concentration', 'Stream Flux', 'Discharge',
                        'Precipitation Chemistry', 'Precipitation Chemistry Flux')
 
 flux_units_bi <- c('Mg/ha/d', 'kg/ha/d', 'g/ha/d', 'mg/ha/d',
-                   'Mg/ha/year', 'kg/ha/year','g/ha/year', 'mg/ha/year',
-                   'Mg/year', 'kg/year', 'g/year', 'mg/year')
+                   'Mg/ha/year', 'kg/ha/year','g/ha/year', 'mg/ha/year'
+                   #'Mg/year', 'kg/year', 'g/year', 'mg/year'
+                   )
 
 conc_units_bi <- c('ng/L', 'ug/L', 'mg/L', 'g/L')
 
 discharge_units_bi <- c('m^3', 'mm/year', 'mm/d')
+
+ws_trait_types <- variables %>%
+    filter(variable_type == 'ws_char') %>%
+    pull(variable_subtype) %>%
+    unique()
 
 ws_traits <- generate_dropdown_varlist_ws(variables)
 
