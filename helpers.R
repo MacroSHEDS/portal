@@ -850,7 +850,7 @@ convert_conc_units_bi = function(df, col, input_unit='mg/L', desired_unit){
     return(df)
 }
 
-convert_flux_units_bi = function(df, col, input_unit='kg/year', desired_unit, summary_file){
+convert_flux_units_bi = function(df, col, input_unit='kg/ha/year', desired_unit, summary_file){
 
     #df is a data frame or tibble of numeric flux data
     #input_unit is the unit of flux (must be 'kg/ha/d')
@@ -859,12 +859,12 @@ convert_flux_units_bi = function(df, col, input_unit='kg/year', desired_unit, su
     col_name <- col
     flux_cols = col_name
 
-    if(grepl('/ha', desired_unit)) {
+    if(! grepl('/ha', desired_unit)) {
 
         if('area' %in% colnames(df)){
 
             df <- df %>%
-                mutate(!!flux_cols := .data[[flux_cols]]/area)
+                mutate(!!flux_cols := .data[[flux_cols]]*area)
 
         } else{
 
@@ -882,7 +882,7 @@ convert_flux_units_bi = function(df, col, input_unit='kg/year', desired_unit, su
 
             df <- df %>%
                 left_join(., areas, by = 'site_name') %>%
-                mutate(!!flux_cols := .data[[flux_cols]]/area) %>%
+                mutate(!!flux_cols := .data[[flux_cols]]*area) %>%
                 select(-area)
         }
     }
@@ -970,7 +970,7 @@ load_portal_config <- function(from_where){
         site_data <- sm(googlesheets4::read_sheet(
             conf$site_data_gsheet,
             na = c('', 'NA'),
-            col_types = 'ccccccccnnnnncc'
+            col_types = 'ccccccccnnnnnccn'
         ))
 
     } else if(from_where == 'local'){
@@ -995,6 +995,12 @@ generate_dropdown_varlist_ws = function(variables){
 
     ws_vars <- variables %>%
         filter(variable_type == 'ws_char') %>%
+        filter(! variable_code %in% c('cc_precip_sd', 'cc_precip_median', 
+                                      'cc_temp_mean_sd', 'cc_temp_mean_median',
+                                      'vb_lai_median', 'vb_lai_sd', 'vb_fpar_median',
+                                      'vb_fpar_sd', 'va_gpp_median', 'va_gpp_sd',
+                                      'vb_ndvi_median', 'vb_ndvi_sd', 'vh_tcw_sd',
+                                      'vh_tcw_median')) %>%
         mutate(displayname=ifelse(!is.na(unit), paste0(variable_name, ' (', unit, ')'), variable_name)) %>%
         select(displayname, variable_code, variable_subtype) %>%
         plyr::dlply(plyr::.(variable_subtype), function(x){
@@ -1004,6 +1010,15 @@ generate_dropdown_varlist_ws = function(variables){
         })
 
     return(ws_vars)
+}
+
+subset_ws_traits <- function(selection, ws_traits = ws_traits){
+    
+    ws_code <- unname(selection)
+    
+    ws_subest <- unlist(ws_traits[[ws_code]])
+    
+    return(ws_subest)
 }
 
 filter_dropdown_varlist_bi = function(filter_set, vartype = 'conc'){
@@ -1149,7 +1164,7 @@ biplot_selection_to_name <- function(chem, unit, var){
                       chem == 'Discharge' & unit %in% c('mm/year', 'mm/d') ~ 'discharge_a',
                       chem == 'Stream Concentration' ~ paste0(var, '_conc'),
                       chem == 'Stream Flux' ~ paste0(var, '_flux'),
-                      chem == 'Watershed Characteristics' ~ var,
+                      chem == 'Watershed Characteristics' ~ unit,
                       chem == 'Year' ~ 'Year',
                       chem == 'Precipitation' ~ 'precip',
                       chem == 'Precipitation Chemistry' ~ paste0(var, '_precip_conc'),
