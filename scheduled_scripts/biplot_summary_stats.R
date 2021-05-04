@@ -1,6 +1,6 @@
 df <- network_domain_default_sites
-#
-#
+
+
 # Currently viewing monthly summaries is disabled on biplot, primarilay becuase
 # general products are only saved as calendar year summaries. This should be changed
 # in the future
@@ -177,7 +177,7 @@ compute_yearly_summary <- function(df) {
                                d = dom,
                                s = stream_sites[p])
 
-                path_flux <- glue("data/{d}/stream_flux_inst/{s}.feather",
+                path_flux <- glue("data/{d}/stream_flux_inst_scaled/{s}.feather",
                                   d = dom,
                                   s = stream_sites[p])
 
@@ -189,7 +189,7 @@ compute_yearly_summary <- function(df) {
                                          d = dom,
                                          s = stream_sites[p])
 
-                path_precip_flux <- glue("data/{d}/precip_flux_inst/{s}.feather",
+                path_precip_flux <- glue("data/{d}/precip_flux_inst_scaled/{s}.feather",
                                          d = dom,
                                          s = stream_sites[p])
 
@@ -279,7 +279,7 @@ compute_yearly_summary <- function(df) {
 
                     site_flux <- site_flux %>%
                         group_by(site_name, Year, Month, Day, var) %>%
-                        summarise(val = mean(val, na.rm = T)) %>%
+                        summarise(val = sum(val, na.rm = T)) %>%
                         ungroup() %>%
                         group_by(site_name, Year, var) %>%
                         mutate(Date = ymd(paste(Year, 1, 1, sep = '-'))) %>%
@@ -312,7 +312,7 @@ compute_yearly_summary <- function(df) {
 
                     site_precip <- site_precip %>%
                         group_by(site_name, Year, Month, Day) %>%
-                        summarise(val = mean(val, na.rm = T)) %>%
+                        summarise(val = sum(val, na.rm = T)) %>%
                         ungroup() %>%
                         mutate(Date = ymd(paste(Year, 1, 1, sep = '-'))) %>%
                         group_by(site_name, Date, Year) %>%
@@ -372,7 +372,7 @@ compute_yearly_summary <- function(df) {
 
                     site_precip_flux <- site_precip_flux %>%
                         group_by(site_name, Year, Month, Day, var) %>%
-                        summarise(val = mean(val, na.rm = T)) %>%
+                        summarise(val = sum(val, na.rm = T)) %>%
                         ungroup() %>%
                         group_by(site_name, Year, var) %>%
                         mutate(Date = ymd(paste(Year, 1, 1, sep = '-'))) %>%
@@ -397,7 +397,8 @@ compute_yearly_summary <- function(df) {
 
     all_domain <- all_domain %>%
         mutate(missing = missing*100) %>%
-        mutate(missing = as.numeric(substr(missing, 1, 2)))
+        mutate(missing = as.numeric(substr(missing, 1, 2))) %>%
+        mutate(val = round(val, 4))
 
     dir.create('data/general/biplot')
     write_feather(all_domain, 'data/general/biplot/year.feather')
@@ -415,6 +416,8 @@ compute_yearly_summary_ws <- function(df) {
         dom_path <- glue('data/{d}/ws_traits', d = dom)
 
         prod_files <- list.files(dom_path, full.names = T, recursive = T)
+        
+        prod_files <- prod_files[! grepl('raw_', prod_files)]
 
         all_prods <- tibble()
 
@@ -422,85 +425,13 @@ compute_yearly_summary_ws <- function(df) {
 
             for(p in 1:length(prod_files)) {
 
-                if(str_split_fixed(prod_files[p], '/', n = Inf)[1,4] %in% c('prism_precip',
-                                                                            'prism_temp_mean',
-                                                                            'npp',
-                                                                            'terrain')){
-
-                    if(str_split_fixed(prod_files[p], '/', n = Inf)[1,4] == 'prism_precip'){
-
-                        precip <- read_feather(prod_files[p]) %>%
-                            filter(var == 'prism_precip_median') %>%
-                            mutate(year = year(date)) %>%
-                            group_by(site_name, year) %>%
-                            summarise(prism_cumulative_precip = sum(val, na.rm = TRUE),
-                                      prism_precip_sd_year = sd(val, na.rm = TRUE)) %>%
-                            pivot_longer(cols = c('prism_cumulative_precip', 'prism_precip_sd_year'),
-                                         names_to = 'var',
-                                         values_to = 'val') %>%
-                            filter(val > 0)
-
-                        precip_sd <- read_feather(prod_files[p]) %>%
-                            filter(var == 'prism_precip_sd') %>%
-                            mutate(year = year(date)) %>%
-                            group_by(site_name, year) %>%
-                            summarise(val = mean(val, na.rm = TRUE)) %>%
-                            mutate(var = 'prism_precip_sd_space')
-
-                        prod_tib <- rbind(precip, precip_sd)
-
-                    }
-
-                    if(str_split_fixed(prod_files[p], '/', n = Inf)[1,4] == 'prism_temp_mean'){
-
-                        temp <- read_feather(prod_files[p]) %>%
-                            filter(var == 'prism_temp_mean_median') %>%
-                            mutate(year = year(date)) %>%
-                            group_by(site_name, year) %>%
-                            summarise(prism_temp_mean = mean(val, na.rm = TRUE),
-                                      prism_temp_sd_year = sd(val, na.rm = TRUE)) %>%
-                            pivot_longer(cols = c('prism_temp_mean', 'prism_temp_sd_year'),
-                                         names_to = 'var',
-                                         values_to = 'val')
-
-                        temp_sd <- read_feather(prod_files[p]) %>%
-                            filter(var == 'prism_temp_mean_sd') %>%
-                            mutate(year = year(date)) %>%
-                            group_by(site_name, year) %>%
-                            summarise(val = mean(val, na.rm = TRUE)) %>%
-                            mutate(var = 'prism_temp_sd_space')
-
-                        prod_tib <- rbind(temp, temp_sd)
-
-                    }
-
-                    if(str_split_fixed(prod_files[p], '/', n = Inf)[1,4] == 'terrain'){
-
-                        prod_tib <- read_feather(prod_files[p]) %>%
-                            filter(var != 'area') %>%
-                            select(-domain)
-
-                    }
-
-                    #Mistake in genral kernal that is now fixed, remove before push
-
-                    if(str_split_fixed(prod_files[p], '/', n = Inf)[1,4] == 'npp'){
-
-                        prod_tib <- read_feather(prod_files[p]) %>%
-                            filter(!is.na(year)) %>%
-                            mutate(year = as.character(year))
-
-                        if('npp_median' %in% colnames(prod_tib)){
-                            prod_tib <- prod_tib %>%
-                                pivot_longer(cols = c('npp_median', 'npp_sd'),
-                                             names_to = 'var',
-                                             values_to = 'val') %>%
-                                mutate(year = as.character(year))
-                        }
-                    }
-
-                } else {
-                    prod_tib <- read_feather(prod_files[p])
+                prod_tib <- read_feather(prod_files[p])
+                
+                prod_names <- names(prod_tib)
+                
+                if(! 'pctCellErr' %in% prod_names){
+                    prod_tib <- prod_tib %>%
+                        mutate(pctCellErr = NA)
                 }
 
                 all_prods <- rbind(all_prods, prod_tib)
@@ -516,7 +447,8 @@ compute_yearly_summary_ws <- function(df) {
         }
     }
 
-    conc_sum <- read_feather('data/general/biplot/year.feather')
+    conc_sum <- read_feather('data/general/biplot/year.feather') %>%
+        mutate(pctCellErr = NA)
 
     all_domain <- all_domain %>%
         mutate(missing = 0)
@@ -530,7 +462,8 @@ compute_yearly_summary_ws <- function(df) {
                Year = NA,
                var = 'area') %>%
         filter(!is.na(val)) %>%
-        mutate(missing = 0)
+        mutate(missing = 0) %>%
+        mutate(pctCellErr = NA)
 
     #calc area normalized q
     area_q <- areas %>%
@@ -541,7 +474,7 @@ compute_yearly_summary_ws <- function(df) {
         filter(!is.na(discharge_a)) %>%
         mutate(var = 'discharge_a') %>%
         select(-val, -area) %>%
-        rename(val = discharge_a)
+        rename(val = discharge_a) 
 
     final <- rbind(final, areas, area_q) %>%
         filter(Year < year(Sys.Date()) | is.na(Year))

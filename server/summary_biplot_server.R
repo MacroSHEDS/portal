@@ -99,9 +99,9 @@ filtered_bi <- reactive({
     x_unit <- input$X_UNIT2
     y_unit <- input$Y_UNIT2
     size_unit <- input$SIZE_UNIT2
-    chem_x <- input$X_TYPE2
-    chem_y <- input$Y_TYPE2
-    chem_size <- input$SIZE_TYPE2
+    chem_x <- isolate(input$X_TYPE2)
+    chem_y <- isolate(input$Y_TYPE2)
+    chem_size <- isolate(input$SIZE_TYPE2)
     agg <- isolate(input$AGG2)
     domains <- isolate(input$DOMAINS2)
     sites <- isolate(input$SITES2)
@@ -157,34 +157,33 @@ filtered_bi <- reactive({
     }
 
 
-
-    # For varibles that are not associated with a year (constant through time),
-    # they need to be added this way becuase their year column is NA
-    if(x_var_ %in% c('area', 'slope_mean')){
+    # For variables that are not associated with a year (constant through time),
+    # they need to be added this way because their year column is NA
+    if(x_var %in% c('Terrain', 'Hydrology', 'Geochemistry', 'Soil')){
         terrain <- raw %>%
             filter(var == !!x_var_) %>%
             rename(!!x_var_ := val) %>%
-            select(-Year, -var, -Date)
+            select(-Year, -var, -Date, -pctCellErr, -missing)
 
         final <- final %>%
             left_join(., terrain, by = c('site_name', 'domain'))
     }
 
-    if(y_var_ %in% c('area', 'slope_mean')){
+    if(y_var %in% c('Terrain', 'Hydrology', 'Geochemistry', 'Soil')){
         terrain <- raw %>%
             filter(var == !!y_var_) %>%
             rename(!!y_var_ := val) %>%
-            select(-Year, -var, -Date)
+            select(-Year, -var, -Date, -pctCellErr, -missing)
 
         final <- final %>%
             left_join(., terrain, by = c('site_name', 'domain'))
     }
 
-    if(size_var_ %in% c('area', 'slope_mean')){
+    if(size_var %in% c('Terrain', 'Hydrology', 'Geochemistry', 'Soil')){
         terrain <- raw %>%
             filter(var == !!size_var_) %>%
             rename(!!size_var_ := val) %>%
-            select(-Year, -var, -Date)
+            select(-Year, -var, -Date, -pctCellErr, -missing)
 
         final <- final %>%
             left_join(., terrain, by = c('site_name', 'domain'))
@@ -209,7 +208,11 @@ filtered_bi <- reactive({
         final <- convert_conc_units_bi(final, x_var_, x_unit_start, x_unit)
     }
     if(chem_x %in% c('Stream Flux', 'Precipitation Chemistry Flux')) {
-        final <- convert_flux_units_bi(final, x_var_, 'kg/year', x_unit, summary_file = raw)
+        final <- convert_flux_units_bi(df = final, 
+                                       col = x_var_, 
+                                       input_unit = 'kg/ha/year', 
+                                       desired_unit = x_unit, 
+                                       summary_file = raw)
     }
     if(chem_x == 'Discharge' && x_unit == 'mm/d'){
         final <- final %>%
@@ -224,8 +227,12 @@ filtered_bi <- reactive({
         final <- convert_conc_units_bi(final, y_var_, y_unit_start, y_unit)
     }
     if(chem_y %in% c('Stream Flux', 'Precipitation Chemistry Flux')) {
-        final <- convert_flux_units_bi(final, y_var_, 'kg/year', y_unit, summary_file = raw)
-    }
+        final <- convert_flux_units_bi(df = final,
+                                       col = y_var_, 
+                                       input_unit = 'kg/ha/year', 
+                                       desired_unit = y_unit,
+                                       summary_file = raw)
+        }
     if(chem_y == 'Discharge' && y_unit == 'mm/d'){
         final <- final %>%
             mutate(discharge_a = discharge_a/365)
@@ -242,8 +249,12 @@ filtered_bi <- reactive({
             final <- convert_conc_units_bi(final, size_var_, size_unit_start, size_unit)
         }
         if(chem_size %in% c('Stream Flux', 'Precipitation Chemistry Flux')) {
-            final <- convert_flux_units_bi(final, size_var_, 'kg/year', size_unit, summary_file = raw)
-        }
+            final <- convert_flux_units_bi(df = final, 
+                                           col = size_var_, 
+                                           input_unit = 'kg/ha/year', 
+                                           desired_unit = size_unit, 
+                                           summary_file = raw)
+            }
         if(chem_size == 'Discharge' && size_unit == 'mm/d'){
             final <- final %>%
                 mutate(discharge_a = discharge_a/365)
@@ -260,12 +271,9 @@ filtered_bi <- reactive({
 
     return(final)
 })
-#
-# filtered_bi_d <- filtered_bi %>%
-#     debounce(100)
 
 # Update axis options ####
-#remove year as an axis option when aggrigation the whole records
+#remove year as an axis option when aggregation the whole records
 observe({
     agg <- input$AGG2
     yearly <- 'Year'
@@ -291,7 +299,7 @@ observeEvent(input$X_VAR2,{
     current_selection$old_x <- input$X_VAR2})
 
 
-#update individual options for varibles based on varible type
+#update individual options for variables based on variable type
 observe({
     data <- isolate(pre_filtered_bi())
     data_type <- input$X_TYPE2
@@ -314,7 +322,7 @@ observe({
     if(data_type %in% c('Stream Flux', 'Precipitation Chemistry Flux')) {
         select <- filter_dropdown_varlist_bi(data, vartype = 'flux')
         units <- flux_units_bi
-        choose <- 'kg/year'}
+        choose <- 'kg/ha/year'}
 
     if(data_type == 'Discharge') {
         select <- 'Q'
@@ -322,8 +330,8 @@ observe({
         choose <- 'm^3'}
 
     if(data_type == 'Watershed Characteristics') {
-        select <- ws_traits
-        units <- ''
+        select <- ws_trait_types
+        units <- subset_ws_traits(ws_trait_types[1], ws_traits)
         choose <- ''}
 
     if(data_type == 'Year') {
@@ -366,7 +374,7 @@ observe({
     if(data_type %in% c('Stream Flux', 'Precipitation Chemistry Flux')) {
         select <- filter_dropdown_varlist_bi(data, vartype = 'flux')
         units <- flux_units_bi
-        choose <- 'kg/year'
+        choose <- 'kg/ha/year'
         }
 
     if(data_type == 'Discharge') {
@@ -377,9 +385,8 @@ observe({
         }
 
     if(data_type == 'Watershed Characteristics') {
-        select <- ws_traits
-        var <- ws_traits[1]
-        units <- ''
+        select <- ws_trait_types
+        units <- subset_ws_traits(ws_trait_types[1], ws_traits)
         choose <- ''
     }
 
@@ -420,7 +427,7 @@ observe({
     if(data_type %in% c('Stream Flux', 'Precipitation Chemistry Flux')) {
         select <- filter_dropdown_varlist_bi(data, vartype = 'flux')
         units <- flux_units_bi
-        choose <- 'kg/year'}
+        choose <- 'kg/ha/year'}
 
     if(data_type == 'Discharge') {
         select <- 'Q'
@@ -428,8 +435,8 @@ observe({
         choose <- 'm^3'}
 
     if(data_type == 'Watershed Characteristics') {
-        select <- ws_traits
-        units <- ''
+        select <- ws_trait_types
+        units <- subset_ws_traits(ws_trait_types[1], ws_traits)
         choose <- ''}
 
     if(data_type == 'Precipitation') {
@@ -497,6 +504,19 @@ observe({
     if(convertible(size_var) && chem_size %in% c('Stream Concentration', 'Precipitation Chemistry')){
         updateSelectInput(session, 'SIZE_UNIT2', choices = conc_units_bi, selected = conc_units_bi[3])
     }
+    
+    # ws traits 
+    if(chem_x == 'Watershed Characteristics'){
+        updateSelectInput(session, 'X_UNIT2', choices = subset_ws_traits(x_var, ws_traits))
+    }
+    
+    if(chem_y == 'Watershed Characteristics'){
+        updateSelectInput(session, 'Y_UNIT2', choices = subset_ws_traits(y_var, ws_traits))
+    }
+    
+    if(chem_size == 'Watershed Characteristics'){
+        updateSelectInput(session, 'SIZE_UNIT2', choices = subset_ws_traits(size_var, ws_traits))
+    }
 
 })
 
@@ -523,43 +543,43 @@ n_sites <- reactive({
 
 output$SUMMARY_BIPLOT <- renderPlotly({
 
-    # bi_table <<- filtered_bi()
-    # domains <<- isolate(input$DOMAINS2)
-    # sites <<- isolate(input$SITES2)
-    # x_var <<- isolate(input$X_VAR2)
-    # y_var <<- isolate(input$Y_VAR2)
-    # include_size <<- isolate(input$ADD_SIZE2)
-    # size_var <<- isolate(input$SIZE_VAR2)
-    # x_unit <<- isolate(input$X_UNIT2)
-    # y_unit <<- isolate(input$Y_UNIT2)
-    # size_unit <<- isolate(input$SIZE_UNIT2)
-    # agg <<- switch(isolate(input$AGG2),
-    #               'YEARLY2' = 'year',
-    #               'MONTHLY2' = 'm',
-    #               'WHOLE2' = 'year ')
-    # chem_x <<- isolate(input$X_TYPE2)
-    # chem_y <<- isolate(input$Y_TYPE2)
-    # chem_size <<- isolate(input$SIZE_TYPE2)
-    # num_sites <<- isolate(n_sites())
-
-    bi_table <- filtered_bi()
-    domains <- isolate(input$DOMAINS2)
-    sites <- isolate(input$SITES2)
-    x_var <- isolate(input$X_VAR2)
-    y_var <- isolate(input$Y_VAR2)
-    include_size <- isolate(input$ADD_SIZE2)
-    size_var <- isolate(input$SIZE_VAR2)
-    x_unit <- isolate(input$X_UNIT2)
-    y_unit <- isolate(input$Y_UNIT2)
-    size_unit <- isolate(input$SIZE_UNIT2)
-    agg <- switch(isolate(input$AGG2),
-                  'MONTHLY2' = 'm',
+    bi_table <<- filtered_bi()
+    domains <<- isolate(input$DOMAINS2)
+    sites <<- isolate(input$SITES2)
+    x_var <<- isolate(input$X_VAR2)
+    y_var <<- isolate(input$Y_VAR2)
+    include_size <<- isolate(input$ADD_SIZE2)
+    size_var <<- isolate(input$SIZE_VAR2)
+    x_unit <<- isolate(input$X_UNIT2)
+    y_unit <<- isolate(input$Y_UNIT2)
+    size_unit <<- isolate(input$SIZE_UNIT2)
+    agg <<- switch(isolate(input$AGG2),
                   'YEARLY2' = 'year',
+                  'MONTHLY2' = 'm',
                   'WHOLE2' = 'year ')
-    chem_x <- isolate(input$X_TYPE2)
-    chem_y <- isolate(input$Y_TYPE2)
-    chem_size <- isolate(input$SIZE_TYPE2)
-    num_sites <- isolate(n_sites())
+    chem_x <<- isolate(input$X_TYPE2)
+    chem_y <<- isolate(input$Y_TYPE2)
+    chem_size <<- isolate(input$SIZE_TYPE2)
+    num_sites <<- isolate(n_sites())
+
+    # bi_table <- filtered_bi()
+    # domains <- isolate(input$DOMAINS2)
+    # sites <- isolate(input$SITES2)
+    # x_var <- isolate(input$X_VAR2)
+    # y_var <- isolate(input$Y_VAR2)
+    # include_size <- isolate(input$ADD_SIZE2)
+    # size_var <- isolate(input$SIZE_VAR2)
+    # x_unit <- isolate(input$X_UNIT2)
+    # y_unit <- isolate(input$Y_UNIT2)
+    # size_unit <- isolate(input$SIZE_UNIT2)
+    # agg <- switch(isolate(input$AGG2),
+    #               'MONTHLY2' = 'm',
+    #               'YEARLY2' = 'year',
+    #               'WHOLE2' = 'year ')
+    # chem_x <- isolate(input$X_TYPE2)
+    # chem_y <- isolate(input$Y_TYPE2)
+    # chem_size <- isolate(input$SIZE_TYPE2)
+    # num_sites <- isolate(n_sites())
 
     empty_plot <- plotly::plot_ly() %>%
         plotly::layout(annotations = list(text="No data available for \nthe selected variables",
@@ -616,30 +636,21 @@ output$SUMMARY_BIPLOT <- renderPlotly({
     # }
 
     if(chem_x == 'Watershed Characteristics') {
-        if(x_var %in% c('area', 'slope_mean')){
-            x_var <- case_when(x_var == 'area' ~ 'Area',
-                               x_var == 'slope_mean' ~ 'Slope')
-        } else{
-            x_var <- str_split_fixed(names(ws_traits_names[ws_traits_names==x_var]), '[.]', n = Inf)[1,1]
-        }
+        display_names <- subset_ws_traits(x_var, ws_traits)
+        x_unit <- names(display_names[x_unit == display_names])
+        x_var <- ''
     }
 
     if(chem_y == 'Watershed Characteristics') {
-        if(y_var %in% c('area', 'slope_mean')){
-            y_var <- case_when(y_var == 'area' ~ 'Area',
-                               y_var == 'slope_mean' ~ 'Slope')
-        } else{
-        y_var <- str_split_fixed(names(ws_traits_names[ws_traits_names==y_var]), '[.]', n = Inf)[1,1]
-        }
+        display_names <- subset_ws_traits(y_var, ws_traits)
+        y_unit <- names(display_names[y_unit == display_names])
+        y_var <- ''
     }
 
     if(chem_size == 'Watershed Characteristics') {
-        if(size_var %in% c('area', 'slope_mean')){
-            size_var <- case_when(size_var == 'area' ~ 'Area',
-                                  size_var == 'slope_mean' ~ 'Slope')
-        } else{
-        size_var <- str_split_fixed(names(ws_traits_names[ws_traits_names==size_var]), '[.]', n = Inf)[1,1]
-        }
+        display_names <- subset_ws_traits(size_var, ws_traits)
+        size_unit <- names(display_names[size_unit == display_names])
+        size_var <- ''
     }
 
     if(num_sites > 12){
