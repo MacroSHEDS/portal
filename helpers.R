@@ -501,7 +501,7 @@ ms_aggregate <- function(d, agg_selection){#, conc_flux_selection = NULL){
     #agg_selection is a user input object, e.g. input$AGG3
     #OBSOLETE conc_flux_selection is a user input object, e.g. input$CONC_FLUX3
 
-    if(nrow(d) == 0) return(d)
+    if(nrow(d) <= 1) return(d)
     if(agg_selection == 'Instantaneous') return(d)
 
     agg_period <- switch(agg_selection,
@@ -753,13 +753,23 @@ manufacture_empty_plotdata = function(sites){
 
 generate_dropdown_sitelist = function(domain_vec){
 
-    sitelist = list()
-    for(i in 1:length(domain_vec)){
+    if(is.null(domain_vec)) return(NULL)
+
+    sitelist <- list()
+    for(i in seq_along(domain_vec)){
+
         domain_sites <- get_sitelist(domain = domain_vec[i],
                                      type = c('stream_gauge', 'stream_sampling_point'))
-        sitelist[[i]] = domain_sites
+
+        if(length(domain_sites) == 1){
+            #domains with only 1 site will not render properly unless they are given names
+            names(domain_sites) <- domain_sites
+        }
+
+        sitelist[[i]] <- domain_sites
     }
-    names(sitelist) = names(domains_pretty[match(domain_vec, domains_pretty)])
+
+    names(sitelist) <- names(domains_pretty[match(domain_vec, domains_pretty)])
 
     return(sitelist)
 }

@@ -124,17 +124,27 @@ observeEvent({
 ## reactivity flow control ####
 
 #when domain(s) change, site options and basedata change, but not site selections
-get_domains3 <- eventReactive(input$DOMAINS3, {
+get_domains3 <- eventReactive(eventExpr = input$DOMAINS3,
+                              ignoreNULL = FALSE,
+                              valueExpr = {
 
     domains <- input$DOMAINS3
+    sites <- input$SITES3
+
+    # domains <<- input$DOMAINS3
+    # sites <<- input$SITES3
 
     reactive_vals$update_basedata <- reactive_vals$update_basedata + 1
 
+    site_opts <- generate_dropdown_sitelist(domains)
+    selection <- if(is.null(site_opts)) '' else sites
+
     updateSelectizeInput(session,
                          'SITES3',
-                         choices = generate_dropdown_sitelist(domains),
-                         selected = input$SITES3,
+                         choices = site_opts,
+                         selected = selection,
                          options = list(maxItems = 3))
+
 
     return(domains)
 })
@@ -228,12 +238,16 @@ observe({
 
     print('basedata change')
     # basedata <<- load_basedata()
+    # agg <<- input$AGG3
     # vars_ <<- isolate(input$VARS3)
     # dates <<- isolate(input$DATES3)
+    # sites <<- isolate(input$SITES3)
 
     basedata <- load_basedata()
+    agg <- input$AGG3
     vars_ <- isolate(input$VARS3)
     dates <- isolate(input$DATES3)
+    sites <- isolate(input$SITES3)
 
     chemvars_display_subset <- filter_dropdown_varlist(basedata$chem)
 
@@ -242,13 +256,26 @@ observe({
                          choices = chemvars_display_subset,
                          selected = vars_)
 
-    dtrng = get_timeslider_extent(basedata, dates)
+    dtrng <- get_timeslider_extent(basedata, dates)
+
+    if(length(sites) == 1){
+
+        if(agg == 'Yearly'){
+            selected_dtrng <- dtrng
+        } else {
+            vardates <- filter(basedata$chem, drop_var_prefix(var) %in% vars_)$datetime
+            selected_dtrng <- as.Date(most_recent_year(range(vardates)))
+        }
+
+    } else {
+        selected_dtrng <- dates
+    }
 
     updateSliderInput(session = session,
                       inputId = 'DATES3',
                       min = dtrng[1],
                       max = dtrng[2],
-                      value = dates,
+                      value = selected_dtrng,
                       timeFormat = '%b %Y')
 })
 
@@ -290,6 +317,7 @@ dataChem <- reactive({
     conc_unit <- input$CONC_UNIT3
     flux_unit <- input$FLUX_UNIT3
     agg <- input$AGG3
+    # agg <- isolate(input$AGG3)
     # sites <- input$SITES3
     #time_scheme <- input$TIME_SCHEME3
     igsn <- c(input$INSTALLED_V_GRAB3, input$SENSOR_V_NONSENSOR3)
@@ -350,6 +378,7 @@ dataVWC <- reactive({
     conc_unit <- input$CONC_UNIT3
     flux_unit <- input$FLUX_UNIT3
     agg <- input$AGG3
+    # agg <- isolate(input$AGG3)
     igsn <- c(input$INSTALLED_V_GRAB3, input$SENSOR_V_NONSENSOR3)
     show_uncert <- input$SHOW_UNCERT3
     show_flagged <- input$FLAGS3
@@ -484,6 +513,7 @@ dataPchem <- reactive({
     conc_unit <- input$CONC_UNIT3
     flux_unit <- input$FLUX_UNIT3
     agg <- input$AGG3
+    # agg <- isolate(input$AGG3)
     # sites <- input$SITES3
     #time_scheme <- input$TIME_SCHEME3
     igsn <- c(input$INSTALLED_V_GRAB3, input$SENSOR_V_NONSENSOR3)
@@ -545,6 +575,7 @@ dataPVWC <- reactive({
     conc_unit <- input$CONC_UNIT3
     flux_unit <- input$FLUX_UNIT3
     agg <- input$AGG3
+    # agg <- isolate(input$AGG3)
     igsn <- c(input$INSTALLED_V_GRAB3, input$SENSOR_V_NONSENSOR3)
     show_uncert <- input$SHOW_UNCERT3
     show_flagged <- input$FLAGS3
@@ -650,6 +681,7 @@ dataPrecip <- reactive({
     dates <- isolate(input$DATES3)
     timeSliderUpdate()
     agg <- input$AGG3
+    # agg <- isolate(input$AGG3)
     conc_flux <- input$CONC_FLUX3
     igsn <- c(input$INSTALLED_V_GRAB3, input$SENSOR_V_NONSENSOR3)
     show_uncert <- input$SHOW_UNCERT3
@@ -694,6 +726,7 @@ dataQ <- reactive({
     dates <- isolate(input$DATES3)
     timeSliderUpdate()
     agg <- input$AGG3
+    # agg <- isolate(input$AGG3)
     igsn <- c(input$INSTALLED_V_GRAB3, input$SENSOR_V_NONSENSOR3)
     show_uncert <- input$SHOW_UNCERT3
     show_flagged <- input$FLAGS3
@@ -847,7 +880,10 @@ output$GRAPH_PRECIP3 <- renderDygraph({
         dg <- plot_empty_dygraph(dates,
                                  plotgroup = 'nSiteNVar',
                                  ylab = 'P (mm)',
-                                 px_per_lab = 10)
+                                 px_per_lab = 10) %>%
+            dyLegend(show = 'always',
+                     labelsSeparateLines = FALSE,
+                     labelsDiv = 'P3')
     }
 
     return(dg)
@@ -949,7 +985,7 @@ output$GRAPH_MAIN3a <- renderDygraph({
 
         dg <- dygraph(dydat,#[,1:2],
                       group = 'nSiteNVar') %>%
-            dyOptions(useDataTimezone = FALSE,
+            dyOptions(useDataTimezone = TRUE,
                       retainDateWindow = TRUE,
 
                       #if not showing all points, use these specifications.
@@ -1061,7 +1097,10 @@ output$GRAPH_MAIN3a <- renderDygraph({
                                  maindiv = 'main3a',#
                                  plotgroup = 'nSiteNVar',
                                  ylab = ylabel,
-                                 px_per_lab = 20)
+                                 px_per_lab = 20) %>%
+            dyLegend(show = 'always',
+                     labelsSeparateLines = FALSE,
+                     labelsDiv = 'main3a')
     }
 
     return(dg)
@@ -1252,7 +1291,7 @@ output$GRAPH_MAIN3b <- renderDygraph({
 
         dg <- dygraph(dydat,,
                       group = 'nSiteNVar') %>%
-            dyOptions(useDataTimezone = FALSE,
+            dyOptions(useDataTimezone = TRUE,
                       retainDateWindow = TRUE,
 
                       drawPoints = FALSE,
@@ -1339,7 +1378,10 @@ output$GRAPH_MAIN3b <- renderDygraph({
                                  maindiv = 'main3b',
                                  plotgroup = 'nSiteNVar',
                                  ylab = ylabel,
-                                 px_per_lab = 20)
+                                 px_per_lab = 20) %>%
+            dyLegend(show = 'always',
+                     labelsSeparateLines = FALSE,
+                     labelsDiv = 'main3b')
     }
 
     return(dg)
@@ -1530,7 +1572,7 @@ output$GRAPH_MAIN3c <- renderDygraph({
 
         dg <- dygraph(dydat,,
                       group = 'nSiteNVar') %>%
-            dyOptions(useDataTimezone = FALSE,
+            dyOptions(useDataTimezone = TRUE,
                       retainDateWindow = TRUE,
 
                       drawPoints = FALSE,
@@ -1617,7 +1659,10 @@ output$GRAPH_MAIN3c <- renderDygraph({
                                  maindiv = 'main3c',
                                  plotgroup = 'nSiteNVar',
                                  ylab = ylabel,
-                                 px_per_lab = 20)
+                                 px_per_lab = 20) %>%
+            dyLegend(show = 'always',
+                     labelsSeparateLines = FALSE,
+                     labelsDiv = 'main3c')
     }
 
     return(dg)
@@ -1791,7 +1836,10 @@ output$GRAPH_Q3 <- renderDygraph({
         dg <- plot_empty_dygraph(dates,
                                  plotgroup = 'nSiteNVar',
                                  ylab = 'Q (L/s)',
-                                 px_per_lab = 10)
+                                 px_per_lab = 10) %>%
+            dyLegend(show = 'always',
+                     labelsSeparateLines = FALSE,
+                     labelsDiv = 'Q3')
     }
 
     return(dg)

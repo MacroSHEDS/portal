@@ -352,6 +352,20 @@ shinyjs.init = function() {
                     .children('.modal-dialog').css({'width': '100%', 'height': '100%', 'margin': '0px'})
                     .children('.modal-content').css({'width': '100%', 'height': '100%'});
             } else {
+
+                window.setTimeout(function(){
+                    $('.loading-container').hide();
+                    $('#landing #DISMISS_MODAL').show();
+                }, 1000);
+                window.setTimeout(function(){
+                    $('.loading-container').hide();
+                    $('#landing #DISMISS_MODAL').show();
+                }, 3000);
+                window.setTimeout(function(){
+                    $('.loading-container').hide();
+                    $('#landing #DISMISS_MODAL').show();
+                }, 8000);
+
                 return;
             }
 
@@ -374,11 +388,6 @@ shinyjs.init = function() {
             //    $("a[class^='paginate_button']").click(listener_recurse(i, v));
             //});
         };
-    });
-
-    $(window).on('load', function() {
-        $('.loading-container').hide();
-        $('#landing #DISMISS_MODAL').show();
     });
 
     //configure and register mutation observer for modals
@@ -451,6 +460,8 @@ shinyjs.init = function() {
                 $this.children('[class^="ms-attribution"]').remove()
                 if($this.attr('id') === 'GRAPH_Q3'){
                     $this.css('position', 'relative').append($('<p class="ms-attribution-high">macrosheds.org</p>'));
+                } else if(/GRAPH_QC3./.test( $this.attr('id') )){
+                    console.log($this.attr('id'));
                 } else {
                     $this.css('position', 'relative').append($('<p class="ms-attribution-low">macrosheds.org</p>'));
                 };
