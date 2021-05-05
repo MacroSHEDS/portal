@@ -33,8 +33,9 @@ landing_page = quote({
                     br(),
                     br(),
                     p(HTML(paste('This portal is under heavy development, and',
-                            'we\'re still working out <strong>plenty of bugs</strong>.',
-                            'Features and data may change.'))),
+                                 'we\'re still working out some bugs.',
+                                 'Features and data may change.'))),
+                    p(HTML(paste('Be sure to check out the "<strong>Notes/Caveats</strong>" tab.')))
                 )
             ),
             fluidRow(class='text-center',
@@ -43,7 +44,20 @@ landing_page = quote({
                     br(),
                     br(),
                     br(),
-                    actionButton('DISMISS_MODAL', label='Continue')
+
+                    div(class = 'loading-container',
+                        div(class = 'loading',
+                            div(class = 'loading-letter', 'L'),
+                            div(class = 'loading-letter', 'O'),
+                            div(class = 'loading-letter', 'A'),
+                            div(class = 'loading-letter', 'D'),
+                            div(class = 'loading-letter', 'I'),
+                            div(class = 'loading-letter', 'N'),
+                            div(class = 'loading-letter', 'G')
+                        ),
+                    ),
+                    #p(id='landing_loading', 'Loading...'),
+                    actionButton('DISMISS_MODAL', label='Continue', style='display: none')
                 )
             )
         )

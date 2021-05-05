@@ -127,7 +127,7 @@ filtered_bi <- reactive({
                                           unit = size_unit,
                                           var = size_var)
 
-    if(include_size == 'SIZE_YES2') {
+    if(include_size) {
         filter_vars <- c(x_var_, y_var_, size_var_)
     } else {
         filter_vars <- c(x_var_, y_var_)
@@ -200,18 +200,18 @@ filtered_bi <- reactive({
         filter(variable_code == x_var)
 
     #Unit conversions. Could be improved for sure
-    if(chem_x %in% c('Stream Concentration', 'Precipitation Chemistry')) {
+    if(chem_x %in% c('Stream Chemistry', 'Precipitation Chemistry')) {
         x_unit_start <- pull(variables %>%
                                  filter(variable_code == x_var) %>%
                                  select(unit))
 
         final <- convert_conc_units_bi(final, x_var_, x_unit_start, x_unit)
     }
-    if(chem_x %in% c('Stream Flux', 'Precipitation Chemistry Flux')) {
-        final <- convert_flux_units_bi(df = final, 
-                                       col = x_var_, 
-                                       input_unit = 'kg/ha/year', 
-                                       desired_unit = x_unit, 
+    if(chem_x %in% c('Stream Chemistry Flux', 'Precipitation Chemistry Flux')) {
+        final <- convert_flux_units_bi(df = final,
+                                       col = x_var_,
+                                       input_unit = 'kg/ha/year',
+                                       desired_unit = x_unit,
                                        summary_file = raw)
     }
     if(chem_x == 'Discharge' && x_unit == 'mm/d'){
@@ -219,17 +219,17 @@ filtered_bi <- reactive({
             mutate(discharge_a = discharge_a/365)
     }
 
-    if(chem_y %in% c('Stream Concentration', 'Precipitation Chemistry')) {
+    if(chem_y %in% c('Stream Chemistry', 'Precipitation Chemistry')) {
         y_unit_start <- pull(variables %>%
                                  filter(variable_code == y_var) %>%
                                  select(unit))
 
         final <- convert_conc_units_bi(final, y_var_, y_unit_start, y_unit)
     }
-    if(chem_y %in% c('Stream Flux', 'Precipitation Chemistry Flux')) {
+    if(chem_y %in% c('Stream Chemistry Flux', 'Precipitation Chemistry Flux')) {
         final <- convert_flux_units_bi(df = final,
-                                       col = y_var_, 
-                                       input_unit = 'kg/ha/year', 
+                                       col = y_var_,
+                                       input_unit = 'kg/ha/year',
                                        desired_unit = y_unit,
                                        summary_file = raw)
         }
@@ -239,20 +239,20 @@ filtered_bi <- reactive({
     }
 
 
-    if(include_size == 'SIZE_YES2'){
+    if(include_size){
 
-        if(chem_size %in% c('Stream Concentration', 'Precipitation Chemistry')) {
+        if(chem_size %in% c('Stream Chemistry', 'Precipitation Chemistry')) {
             size_unit_start <- pull(variables %>%
                                         filter(variable_code == size_var) %>%
                                         select(unit))
 
             final <- convert_conc_units_bi(final, size_var_, size_unit_start, size_unit)
         }
-        if(chem_size %in% c('Stream Flux', 'Precipitation Chemistry Flux')) {
-            final <- convert_flux_units_bi(df = final, 
-                                           col = size_var_, 
-                                           input_unit = 'kg/ha/year', 
-                                           desired_unit = size_unit, 
+        if(chem_size %in% c('Stream Chemistry Flux', 'Precipitation Chemistry Flux')) {
+            final <- convert_flux_units_bi(df = final,
+                                           col = size_var_,
+                                           input_unit = 'kg/ha/year',
+                                           desired_unit = size_unit,
                                            summary_file = raw)
             }
         if(chem_size == 'Discharge' && size_unit == 'mm/d'){
@@ -309,7 +309,7 @@ observe({
     site_select <- input$SITE_SELECTION2
     old_selection <- isolate(current_selection$old_x)
 
-    if(data_type == 'Stream Concentration') {
+    if(data_type == 'Stream Chemistry') {
         select <- filter_dropdown_varlist_bi(data, vartype = 'conc')
         units <- conc_units_bi
         choose <- 'mg/L'}
@@ -319,7 +319,7 @@ observe({
         units <- conc_units_bi
         choose <- 'mg/L'}
 
-    if(data_type %in% c('Stream Flux', 'Precipitation Chemistry Flux')) {
+    if(data_type %in% c('Stream Chemistry Flux', 'Precipitation Chemistry Flux')) {
         select <- filter_dropdown_varlist_bi(data, vartype = 'flux')
         units <- flux_units_bi
         choose <- 'kg/ha/year'}
@@ -365,13 +365,13 @@ observe({
     site_select <- input$SITE_SELECTION2
     old_selection <- isolate(current_selection$old_y)
 
-    if(data_type %in% c('Stream Concentration', 'Precipitation Chemistry')) {
+    if(data_type %in% c('Stream Chemistry', 'Precipitation Chemistry')) {
         select <- filter_dropdown_varlist_bi(data, vartype = 'conc')
         units <- conc_units_bi
         choose <- 'mg/L'
         }
 
-    if(data_type %in% c('Stream Flux', 'Precipitation Chemistry Flux')) {
+    if(data_type %in% c('Stream Chemistry Flux', 'Precipitation Chemistry Flux')) {
         select <- filter_dropdown_varlist_bi(data, vartype = 'flux')
         units <- flux_units_bi
         choose <- 'kg/ha/year'
@@ -419,12 +419,12 @@ observe({
     x_var <- isolate(input$X_VAR2)
     y_var <- isolate(input$Y_VAR2)
 
-    if(data_type %in% c('Stream Concentration', 'Precipitation Chemistry')) {
+    if(data_type %in% c('Stream Chemistry', 'Precipitation Chemistry')) {
         select <- filter_dropdown_varlist_bi(data, vartype = 'conc')
         units <- conc_units_bi
         choose <- 'mg/L'}
 
-    if(data_type %in% c('Stream Flux', 'Precipitation Chemistry Flux')) {
+    if(data_type %in% c('Stream Chemistry Flux', 'Precipitation Chemistry Flux')) {
         select <- filter_dropdown_varlist_bi(data, vartype = 'flux')
         units <- flux_units_bi
         choose <- 'kg/ha/year'}
@@ -481,39 +481,39 @@ observe({
     chem_y <- isolate(input$Y_TYPE2)
     chem_size <- isolate(input$SIZE_TYPE2)
 
-    if(!convertible(x_var) && chem_x %in% c('Stream Concentration', 'Precipitation Chemistry')){
+    if(!convertible(x_var) && chem_x %in% c('Stream Chemistry', 'Precipitation Chemistry')){
         updateSelectInput(session, 'X_UNIT2', choices = '')
     }
 
-    if(convertible(x_var) && chem_x %in% c('Stream Concentration', 'Precipitation Chemistry')){
+    if(convertible(x_var) && chem_x %in% c('Stream Chemistry', 'Precipitation Chemistry')){
         updateSelectInput(session, 'X_UNIT2', choices = conc_units_bi, selected = conc_units_bi[3])
     }
 
-    if(!convertible(y_var) && chem_y %in% c('Stream Concentration', 'Precipitation Chemistry')){
+    if(!convertible(y_var) && chem_y %in% c('Stream Chemistry', 'Precipitation Chemistry')){
         updateSelectInput(session, 'Y_UNIT2', choices = '')
     }
 
-    if(convertible(y_var) && chem_y %in% c('Stream Concentration', 'Precipitation Chemistry')){
+    if(convertible(y_var) && chem_y %in% c('Stream Chemistry', 'Precipitation Chemistry')){
         updateSelectInput(session, 'Y_UNIT2', choices = conc_units_bi, selected = conc_units_bi[3])
     }
 
-    if(!convertible(size_var) && chem_size %in% c('Stream Concentration', 'Precipitation Chemistry')){
+    if(!convertible(size_var) && chem_size %in% c('Stream Chemistry', 'Precipitation Chemistry')){
         updateSelectInput(session, 'SIZE_UNIT2', choices = '')
     }
 
-    if(convertible(size_var) && chem_size %in% c('Stream Concentration', 'Precipitation Chemistry')){
+    if(convertible(size_var) && chem_size %in% c('Stream Chemistry', 'Precipitation Chemistry')){
         updateSelectInput(session, 'SIZE_UNIT2', choices = conc_units_bi, selected = conc_units_bi[3])
     }
-    
-    # ws traits 
+
+    # ws traits
     if(chem_x == 'Watershed Characteristics'){
         updateSelectInput(session, 'X_UNIT2', choices = subset_ws_traits(x_var, ws_traits))
     }
-    
+
     if(chem_y == 'Watershed Characteristics'){
         updateSelectInput(session, 'Y_UNIT2', choices = subset_ws_traits(y_var, ws_traits))
     }
-    
+
     if(chem_size == 'Watershed Characteristics'){
         updateSelectInput(session, 'SIZE_UNIT2', choices = subset_ws_traits(size_var, ws_traits))
     }
@@ -543,46 +543,52 @@ n_sites <- reactive({
 
 output$SUMMARY_BIPLOT <- renderPlotly({
 
-    bi_table <<- filtered_bi()
-    domains <<- isolate(input$DOMAINS2)
-    sites <<- isolate(input$SITES2)
-    x_var <<- isolate(input$X_VAR2)
-    y_var <<- isolate(input$Y_VAR2)
-    include_size <<- isolate(input$ADD_SIZE2)
-    size_var <<- isolate(input$SIZE_VAR2)
-    x_unit <<- isolate(input$X_UNIT2)
-    y_unit <<- isolate(input$Y_UNIT2)
-    size_unit <<- isolate(input$SIZE_UNIT2)
-    agg <<- switch(isolate(input$AGG2),
-                  'YEARLY2' = 'year',
-                  'MONTHLY2' = 'm',
-                  'WHOLE2' = 'year ')
-    chem_x <<- isolate(input$X_TYPE2)
-    chem_y <<- isolate(input$Y_TYPE2)
-    chem_size <<- isolate(input$SIZE_TYPE2)
-    num_sites <<- isolate(n_sites())
-
-    # bi_table <- filtered_bi()
-    # domains <- isolate(input$DOMAINS2)
-    # sites <- isolate(input$SITES2)
-    # x_var <- isolate(input$X_VAR2)
-    # y_var <- isolate(input$Y_VAR2)
-    # include_size <- isolate(input$ADD_SIZE2)
-    # size_var <- isolate(input$SIZE_VAR2)
-    # x_unit <- isolate(input$X_UNIT2)
-    # y_unit <- isolate(input$Y_UNIT2)
-    # size_unit <- isolate(input$SIZE_UNIT2)
-    # agg <- switch(isolate(input$AGG2),
-    #               'MONTHLY2' = 'm',
+    # bi_table <<- filtered_bi()
+    # domains <<- isolate(input$DOMAINS2)
+    # sites <<- isolate(input$SITES2)
+    # x_var <<- isolate(input$X_VAR2)
+    # y_var <<- isolate(input$Y_VAR2)
+    # include_size <<- isolate(input$ADD_SIZE2)
+    # size_var <<- isolate(input$SIZE_VAR2)
+    # x_unit <<- isolate(input$X_UNIT2)
+    # y_unit <<- isolate(input$Y_UNIT2)
+    # size_unit <<- isolate(input$SIZE_UNIT2)
+    # agg <<- switch(isolate(input$AGG2),
     #               'YEARLY2' = 'year',
+    #               'MONTHLY2' = 'm',
     #               'WHOLE2' = 'year ')
-    # chem_x <- isolate(input$X_TYPE2)
-    # chem_y <- isolate(input$Y_TYPE2)
-    # chem_size <- isolate(input$SIZE_TYPE2)
-    # num_sites <- isolate(n_sites())
+    # chem_x <<- isolate(input$X_TYPE2)
+    # chem_y <<- isolate(input$Y_TYPE2)
+    # chem_size <<- isolate(input$SIZE_TYPE2)
+    # num_sites <<- isolate(n_sites())
+
+    bi_table <- filtered_bi()
+    domains <- isolate(input$DOMAINS2)
+    sites <- isolate(input$SITES2)
+    x_var <- isolate(input$X_VAR2)
+    y_var <- isolate(input$Y_VAR2)
+    include_size <- isolate(input$ADD_SIZE2)
+    size_var <- isolate(input$SIZE_VAR2)
+    x_unit <- isolate(input$X_UNIT2)
+    y_unit <- isolate(input$Y_UNIT2)
+    size_unit <- isolate(input$SIZE_UNIT2)
+    agg <- switch(isolate(input$AGG2),
+                  'MONTHLY2' = 'm',
+                  'YEARLY2' = 'year',
+                  'WHOLE2' = 'year ')
+    chem_x <- isolate(input$X_TYPE2)
+    chem_y <- isolate(input$Y_TYPE2)
+    chem_size <- isolate(input$SIZE_TYPE2)
+    num_sites <- isolate(n_sites())
+
+    empty_msg <- if(! length(sites)){
+        'No sites selected'
+    } else {
+        "No data available for \nthe selected variables"
+    }
 
     empty_plot <- plotly::plot_ly() %>%
-        plotly::layout(annotations = list(text="No data available for \nthe selected variables",
+        plotly::layout(annotations = list(text = empty_msg,
                                           xref = "paper",
                                           yref = "paper",
                                           opacity = 0.4,
@@ -590,7 +596,6 @@ output$SUMMARY_BIPLOT <- renderPlotly({
                                           font=list(size = 30)))
 
     if(nrow(bi_table) == 0 || x_var == '' || y_var == '' || size_var == '') {
-
         return(empty_plot)
     }
 
@@ -613,7 +618,7 @@ output$SUMMARY_BIPLOT <- renderPlotly({
     emplty_blank <- plotly::plot_ly() %>%
         plotly::layout()
 
-    if(include_size == 'SIZE_NO2') {
+    if(! include_size) {
         if(any(!c(x_tvar, y_tvar) %in% names(bi_table))){
             return(emplty_blank)
         }
@@ -623,15 +628,15 @@ output$SUMMARY_BIPLOT <- renderPlotly({
         }
     }
 
-    # if(chem_x %in% c('Stream Flux', 'Precipitation Chemistry Flux')) {
+    # if(chem_x %in% c('Stream Chemistry Flux', 'Precipitation Chemistry Flux')) {
     #     x_unit <- paste0(x_unit, '/', agg)
     # }
     #
-    # if(chem_y %in% c('Stream Flux', 'Precipitation Chemistry Flux')) {
+    # if(chem_y %in% c('Stream Chemistry Flux', 'Precipitation Chemistry Flux')) {
     #     y_unit <- paste0(y_unit, '/', agg)
     # }
     #
-    # if(chem_size %in% c('Stream Flux', 'Precipitation Chemistry Flux')) {
+    # if(chem_size %in% c('Stream Chemistry Flux', 'Precipitation Chemistry Flux')) {
     #     size_unit <- paste0(size_unit, '/', agg)
     # }
 
@@ -710,7 +715,7 @@ output$SUMMARY_BIPLOT <- renderPlotly({
             tick_vals <- all_years
         }
 
-        if(include_size == 'SIZE_YES2') {
+        if(include_size) {
 
             plot <- bi_table %>%
                 plotly::plot_ly(x = ~get(x_tvar),
@@ -799,7 +804,7 @@ output$SUMMARY_BIPLOT <- renderPlotly({
 
     if(agg == 'year ') {
 
-        if(include_size == 'SIZE_YES2') {
+        if(include_size) {
             plot <- bi_table %>%
                 plotly::plot_ly(x = ~get(x_tvar),
                                 y = ~get(y_tvar),

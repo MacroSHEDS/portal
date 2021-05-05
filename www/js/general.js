@@ -62,51 +62,111 @@ shinyjs.init = function() {
     });
 
     //tooltips and some styling
-    $('input[name^="CONC_FLUX"][value="Flux"]').parent()
-        .attr('title', 'Interpolated flux: mean concentration times mean discharge over the aggregation period (below), linearly interpolated. NOTE: only available when "Show precip chemistry" is off.')
-    $('input[name^="CONC_FLUX"][value="VWC"]').parent()
-        .attr('title', 'Volume-weighted concentration: summation of instantaneous concentration and Q (or precipitation) volume divided by total volume over the aggregation period (below). NOTE: only available when aggregation > daily.')
-    //    .css('color', 'blue')
-    $('#SHOW_PCHEM3').parent().parent().attr('title', 'Enabled only when unit is concentration or VWC and aggregation > daily.');
+    //$('input[name^="CONC_FLUX"][value="Flux"]').parent()
+    //    .attr('title', 'Interpolated flux: mean concentration times mean discharge over the aggregation period (below), linearly interpolated. NOTE: only available when "Show precip chemistry" is off.')
+    //$('input[name^="CONC_FLUX"][value="VWC"]').parent()
+    //    .attr('title', 'Mean flux rate divided by mean discharge rate, over the aggregation period. NOTE: only available when aggregation > daily.');
+    //    .attr('title', 'Volume-weighted concentration: summation of instantaneous concentration and Q (or precipitation) volume divided by total volume over the aggregation period (below). NOTE: only available when aggregation > daily.')
+    //$('#flags3-tooltip').attr('title', 'Points flagged as erroneous (bad data) have been removed from the dataset. Points flagged as questionable can be toggled here.');
+    //$('#interp3-tooltip').attr('title', 'We linearly interpolate data gaps of up to 3 days for discharge and precip, and up to 15 days for chemistry.');
+    //$('#SHOW_PCHEM3').parent().parent().attr('title', 'Enabled only when unit is concentration or VWC and aggregation > daily.');
+    $('input[name="CONC_FLUX3"][value="VWC"]').parent('label').replaceWith(
+        '<div style = "white-space: nowrap">' +
+        '<label style = "display: inline-block; vertical-align: middle; white-space: normal">' +
+        '<input type="radio" name="CONC_FLUX3" value="VWC">' +
+        '<span>Volume-Weighted Concentration</span>' +
+        '</label>' +
+        '<div id = "vwc-tooltip" style = "display: inline-block; vertical-align: middle"' +
+        'title = "Total flux divided by total discharge (or precip), over the aggregation period. Only available when aggregation > daily. See Notes/Caveats tab for more.">&#x2753;</div>' +
+        '</div>'
+    );
+    
+    //if somebody clicks a question mark, tell them to hover on it instead
+    $(document).ready(function(){
+        $('#flags3-tooltip').click(function(){
+            $(this).addClass('instruct-hover').delay(800).queue(function(){
+                $(this).removeClass('instruct-hover').dequeue();
+            });
+        });
+        $('#interp3-tooltip').click(function(){
+            $(this).addClass('instruct-hover').delay(800).queue(function(){
+                $(this).removeClass('instruct-hover').dequeue();
+            });
+        });
+        $('#vwc-tooltip').click(function(){
+            $(this).addClass('instruct-hover').delay(800).queue(function(){
+                $(this).removeClass('instruct-hover').dequeue();
+            });
+        });
+        $('#agg3-tooltip').click(function(){
+            $(this).addClass('instruct-hover').delay(800).queue(function(){
+                $(this).removeClass('instruct-hover').dequeue();
+            });
+        });
+        $('#qc3-tooltip').click(function(){
+            $(this).addClass('instruct-hover').delay(800).queue(function(){
+                $(this).removeClass('instruct-hover').dequeue();
+            });
+        });
+    });
 
-    //disable input conc checkbox unless monthly or annual conc or VWC selected; manage aggregation options too
-    function govern_showpchem3(){
 
-        var datatype = $('input[name=CONC_FLUX3]:checked').val()
+   // //disable input conc checkbox unless monthly or annual conc or VWC selected; manage aggregation options too (REPLACED BY govern_agg3)
+   // function govern_showpchem3(){
 
-        if( ['Concentration', 'VWC'].includes(datatype) &&
-                ['Monthly', 'Yearly'].includes($('input[name=AGG3]:checked').val()) ){
-            $('#SHOW_PCHEM3').removeAttr('disabled').siblings().css('color', '#485580');
+   //     var datatype = $('input[name=CONC_FLUX3]:checked').val()
 
-            if(datatype == 'VWC'){
-                $('input[name=AGG3][value=Daily]').attr('disabled','disabled').siblings().css('color', 'gray');
-                $('input[name=AGG3][value=Instantaneous]').attr('disabled','disabled').siblings().css('color', 'gray');
-            }
+   //     if( ['Concentration', 'VWC'].includes(datatype) &&
+   //             ['Monthly', 'Yearly'].includes($('input[name=AGG3]:checked').val()) ){
+   //         $('#SHOW_PCHEM3').removeAttr('disabled').siblings().css('color', '#485580');
 
+   //         if(datatype == 'VWC'){
+   //             $('input[name=AGG3][value=Daily]').attr('disabled','disabled').siblings().css('color', 'gray');
+   //             $('input[name=AGG3][value=Instantaneous]').attr('disabled','disabled').siblings().css('color', 'gray');
+   //         }
+
+   //     } else {
+
+   //         $('#SHOW_PCHEM3').attr('disabled','disabled').siblings().css('color', 'gray');
+
+   //         if(datatype == 'VWC'){
+   //             $('input[name=AGG3][value=Daily]').removeAttr('disabled').siblings().css('color', '#485580');
+   //             $('input[name=AGG3][value=Instantaneous]').removeAttr('disabled').siblings().css('color', '#485580');
+   //         }
+   //     }
+
+
+   //     if( datatype !== 'VWC' && ! $('#SHOW_PCHEM3').is(':checked') ){
+   //         $('input[name=AGG3][value=Daily]').removeAttr('disabled').siblings().css('color', '#485580');
+   //         $('input[name=AGG3][value=Instantaneous]').removeAttr('disabled').siblings().css('color', '#485580');
+   //     }
+
+   // };
+
+   // $('body').ready(function(){
+   //     $('#CONC_FLUX3').change(govern_showpchem3);
+   // });
+
+   // $('body').ready(function(){
+   //     $('#AGG3').change(govern_showpchem3);
+   // });
+
+    //disable instantaneous and daily agg if VWC selected
+    function govern_agg3(){
+
+        var datatype = $('input[name=CONC_FLUX3]:checked').val();
+
+        if(datatype == 'VWC'){
+            $('input[name=AGG3][value=Daily]').attr('disabled','disabled').siblings().css('color', 'gray');
+            $('input[name=AGG3][value=Instantaneous]').attr('disabled','disabled').siblings().css('color', 'gray');
         } else {
-
-            $('#SHOW_PCHEM3').attr('disabled','disabled').siblings().css('color', 'gray');
-
-            if(datatype == 'VWC'){
-                $('input[name=AGG3][value=Daily]').removeAttr('disabled').siblings().css('color', '#485580');
-                $('input[name=AGG3][value=Instantaneous]').removeAttr('disabled').siblings().css('color', '#485580');
-            }
-        }
-
-
-        if( datatype !== 'VWC' && ! $('#SHOW_PCHEM3').is(':checked') ){
             $('input[name=AGG3][value=Daily]').removeAttr('disabled').siblings().css('color', '#485580');
             $('input[name=AGG3][value=Instantaneous]').removeAttr('disabled').siblings().css('color', '#485580');
-        }
-
+        };
     };
 
     $('body').ready(function(){
-        $('#CONC_FLUX3').change(govern_showpchem3);
-    });
-
-    $('body').ready(function(){
-        $('#AGG3').change(govern_showpchem3);
+        $('#CONC_FLUX3').change(govern_agg3);
     });
 
     //disable VWC unless monthly or annual aggregation selected
@@ -122,25 +182,25 @@ shinyjs.init = function() {
         $('input[name=AGG3]').change(govern_VWC3);
     });
 
-    //disable interp flux if precip viz selected
-    function govern_flux3(){
-        if( $('#SHOW_PCHEM3').is(':checked') ){
-            $('input[name=CONC_FLUX3][value=Flux]').attr('disabled', 'disabled').siblings().css('color', 'gray');
-            $('input[name=AGG3][value=Instantaneous]').attr('disabled', 'disabled').siblings().css('color', 'gray');
-            $('input[name=AGG3][value=Daily]').attr('disabled', 'disabled').siblings().css('color', 'gray');
-        } else {
-            $('input[name=CONC_FLUX3][value=Flux]').removeAttr('disabled').siblings().css('color', '#485580');
+   // //disable flux if precip viz selected (why??)
+   // function govern_flux3(){
+   //     if( $('#SHOW_PCHEM3').is(':checked') ){
+   //         $('input[name=CONC_FLUX3][value=Flux]').attr('disabled', 'disabled').siblings().css('color', 'gray');
+   //         $('input[name=AGG3][value=Instantaneous]').attr('disabled', 'disabled').siblings().css('color', 'gray');
+   //         $('input[name=AGG3][value=Daily]').attr('disabled', 'disabled').siblings().css('color', 'gray');
+   //     } else {
+   //         $('input[name=CONC_FLUX3][value=Flux]').removeAttr('disabled').siblings().css('color', '#485580');
 
-            if( $('input[name=CONC_FLUX3]:checked').val() !== 'VWC' ){
-                $('input[name=AGG3][value=Instantaneous]').removeAttr('disabled').siblings().css('color', '#485580');
-                $('input[name=AGG3][value=Daily]').removeAttr('disabled').siblings().css('color', '#485580');
-            }
-        }
-    };
+   //         if( $('input[name=CONC_FLUX3]:checked').val() !== 'VWC' ){
+   //             $('input[name=AGG3][value=Instantaneous]').removeAttr('disabled').siblings().css('color', '#485580');
+   //             $('input[name=AGG3][value=Daily]').removeAttr('disabled').siblings().css('color', '#485580');
+   //         }
+   //     }
+   // };
 
-    $('body').ready(function(){
-        $('#SHOW_PCHEM3').click(govern_flux3);
-    });
+   // $('body').ready(function(){
+   //     $('#SHOW_PCHEM3').click(govern_flux3);
+   // });
 
     //only show QC plots when their box is checked
     function govern_qc3(){
@@ -176,6 +236,118 @@ shinyjs.init = function() {
 
     $('body').ready(function(){
         $('#SHOW_QC3').click(govern_qc3);
+    });
+
+    //BIPLOT: disable X-axis selection when aggregation == 'Yearly'
+    function govern_xvar_section(){
+        if( ['MONTHLY2', 'YEARLY2'].includes($('input[name=AGG2]:checked').val()) ){
+            $('#X_TYPE2').selectize()[0].selectize.disable();
+            //hiding/showing of VAR and UNIT now governed by govern_tier2_dropdown() and govern_tier3_dropdown
+            //$('#X_VAR2').parent().hide();
+            //$('#X_UNIT2').parent().hide();
+            $('#LOG_X2').hide();
+        } else {
+            $('#X_TYPE2').selectize()[0].selectize.enable();
+            //$('#X_VAR2').parent().show();
+            //$('#X_UNIT2').parent().show();
+            $('#LOG_X2').show();
+        }
+    };
+
+    $(document).one('shiny:sessioninitialized', function(event){
+        govern_xvar_section();
+    });
+
+    $('body').ready(function(){
+        $('input[name=AGG2]').change(govern_xvar_section);
+    });
+
+    //hide selectors with no options; freeze selectors with one option
+    function govern_tier3_dropdown(key){
+
+        var unit_obj = $('#' + key + '_UNIT2')
+        var unit_val = unit_obj.val()
+        var unit_sel = unit_obj.selectize()[0].selectize;
+
+        if( ! unit_val ){
+            unit_obj.parent().hide();
+        } else {
+            unit_obj.parent().show();
+        };
+
+        if( Object.keys(unit_sel.options).length == 1 && unit_val !== '' ){
+            unit_sel.disable();
+        } else {
+            unit_sel.enable();
+        };
+    };
+
+    function govern_tier2_dropdown(key){
+
+        var unit_obj = $('#' + key + '_UNIT2')
+        var var_obj = $('#' + key + '_VAR2')
+        var var_val = var_obj.val()
+        var var_sel = var_obj.selectize()[0].selectize;
+        var redundant_options = ['% of record missing', 'Year', 'Month', 'P', 'Q']
+
+        if( ! var_val ){
+            var_obj.parent().hide();
+            unit_obj.parent().hide();
+        } else {
+            var_obj.parent().show();
+            unit_obj.parent().show();
+        };
+
+        if( Object.keys(var_sel.options).length == 1 && redundant_options.includes(var_val) ){
+            var_obj.parent().hide();
+        } else if( Object.keys(var_sel.options).length == 1 && var_val !== '' ){
+            var_obj.parent().show();
+            var_sel.disable();
+        } else {
+            if(var_val){
+                var_obj.parent().show();
+                var_sel.enable();
+            };
+        };
+    };
+
+    $('body').ready(function(){
+
+        $('#X_TYPE2').change(function(){
+            govern_tier2_dropdown('X');
+            govern_tier3_dropdown('X');
+        });
+        $('#X_VAR2').change(function(){
+            govern_tier2_dropdown('X');
+            govern_tier3_dropdown('X');
+        });
+        $('#X_UNIT2').change(function(){
+            govern_tier3_dropdown('X');
+        });
+
+        $('#Y_TYPE2').change(function(){
+            govern_tier2_dropdown('Y');
+            govern_tier3_dropdown('Y');
+        });
+        $('#Y_VAR2').change(function(){
+            govern_tier2_dropdown('Y');
+            govern_tier3_dropdown('Y');
+        });
+        $('#Y_UNIT2').change(function(){
+            govern_tier3_dropdown('Y');
+        });
+
+        $('#SIZE_TYPE2').change(function(){
+            govern_tier2_dropdown('SIZE');
+            govern_tier3_dropdown('SIZE');
+        });
+        $('#SIZE_VAR2').change(function(){
+            govern_tier2_dropdown('SIZE');
+            govern_tier3_dropdown('SIZE');
+        });
+        $('#SIZE_UNIT2').change(function(){
+            govern_tier3_dropdown('SIZE');
+        });
     });
 
     //for grab/installed, ensure that at least one box is checked
@@ -284,13 +456,28 @@ shinyjs.init = function() {
         var shinymodal = tgt.children('#shiny-modal-wrapper');
         if(shinymodal.length > 0){
 
-            //make modal fullscreen
-            shinymodal.children('.modal').css({'width': '100%', 'height': '100%', 'margin': '0px'})
-                .children('.modal-dialog').css({'width': '100%', 'height': '100%', 'margin': '0px'})
-                .children('.modal-content').css({'width': '100%', 'height': '100%'});
-
             var modal_id = shinymodal.find('.modal-body').attr('id');
-            if(modal_id === 'landing'){
+            if(modal_id != 'landing'){
+
+                //make modal fullscreen
+                shinymodal.children('.modal').css({'width': '100%', 'height': '100%', 'margin': '0px'})
+                    .children('.modal-dialog').css({'width': '100%', 'height': '100%', 'margin': '0px'})
+                    .children('.modal-content').css({'width': '100%', 'height': '100%'});
+            } else {
+
+                window.setTimeout(function(){
+                    $('.loading-container').hide();
+                    $('#landing #DISMISS_MODAL').show();
+                }, 1000);
+                window.setTimeout(function(){
+                    $('.loading-container').hide();
+                    $('#landing #DISMISS_MODAL').show();
+                }, 3000);
+                window.setTimeout(function(){
+                    $('.loading-container').hide();
+                    $('#landing #DISMISS_MODAL').show();
+                }, 8000);
+
                 return;
             }
 
@@ -385,6 +572,8 @@ shinyjs.init = function() {
                 $this.children('[class^="ms-attribution"]').remove()
                 if($this.attr('id') === 'GRAPH_Q3'){
                     $this.css('position', 'relative').append($('<p class="ms-attribution-high">macrosheds.org</p>'));
+                } else if(/GRAPH_QC3./.test( $this.attr('id') )){
+                    console.log($this.attr('id'));
                 } else {
                     $this.css('position', 'relative').append($('<p class="ms-attribution-low">macrosheds.org</p>'));
                 };

@@ -12,6 +12,7 @@ suppressPackageStartupMessages({
     library(ggthemes)
     # library(ggplot2)
     # library(colorspace)
+    # library(shinythemes)
     library(jsonlite)
     library(lubridate)
     library(xts)
@@ -21,6 +22,7 @@ suppressPackageStartupMessages({
     library(shinyjs)
     library(googlesheets4)
     library(DT)
+    library(errors)
     # library(rhandsontable)
     # library(shiny.router)
 })
@@ -34,7 +36,7 @@ suppressPackageStartupMessages({
 
 conf <- jsonlite::fromJSON('config.json')
 
-# #uncomment and run this (without saving script) to allow pushing of app to our shinyapps account
+# #uncomment and run this (without saving script) to create initial connection to our shinyapps account
 # rsconnect::setAccountInfo(name = 'cuahsi',
 #                           token = conf$shinyapps_cuahsi_token,
 #                           secret = conf$shinyapps_cuahsi_secret)
@@ -44,7 +46,7 @@ conf <- jsonlite::fromJSON('config.json')
 #                      appName = 'macrosheds',
 #                      account = 'cuahsi')
 
-#options(dplyr.summarise.inform = FALSE)
+# options(dplyr.summarise.inform = FALSE)
 
 #for local testing (comment all before pushing live)
 # setwd('~/git/macrosheds/portal')
@@ -52,7 +54,7 @@ conf <- jsonlite::fromJSON('config.json')
 # options(shiny.trace = TRUE) #see every communication between ui and server
 # options(shiny.reactlog = TRUE) #see map of reactivity by running reactlogShow()
 # options(shiny.error='recover') #enter debugger when error occurs
-options(shiny.fullstacktrace=TRUE) #see stack traces for all errors (incl. dplyr)
+# options(shiny.fullstacktrace=TRUE) #see stack traces for all errors (incl. dplyr)
 # options(shiny.sanitize.errors = TRUE) #hide errors in the app
 
 source('helpers.R') #maybe package these or put them in a namespace called "ms"
@@ -63,7 +65,7 @@ source('function_aliases.R')
 #                         use_oob = TRUE)
 load_portal_config(from_where = 'local')
 
-sites_with_Q <- sm(read_csv('../portal/data/general/sites_with_discharge.csv')) %>%
+sites_with_Q <- sm(read_csv('data/general/sites_with_discharge.csv')) %>%
     select(-network) %>%
     tidyr::unite(col = 'nds',
                  domain, site_name,
@@ -79,11 +81,11 @@ site_data <- filter(site_data,
 ## 1. nSiteNVar page setup ####
 
 #establish color scheme for nSiteNVar plots
-raincolors <- c('#8ab5de', '#36486b', '#618685') #blues
-linecolors <- c('#36486b', '#008040', '#800080') #blue, green, purple
-pchemcolors <- c('#4a6292', '#1bff8c', '#ff1bff') #lighter shades of linecolors (Blu, G, P)
-# linecolors <- c('#323232', '#008040', '#800080') #black, green, purple
-# pchemcolors <- c('#585858', '#1bff8c', '#ff1bff') #lighter shades of linecolors (Blk, G, P)
+# raincolors <- c('#8ab5de', '#36486b', '#618685') #blues
+# linecolors <- c('#36486b', '#008040', '#800080') #blue, green, purple
+# pchemcolors <- c('#4a6292', '#1bff8c', '#ff1bff') #lighter shades of linecolors (Blu, G, P)
+linecolors <- c('#1f49c7', '#006600', '#4d0099') #from royalblue (4169e1), green, purple
+pchemcolors <- c('#7b97ea', '#00b300', '#8000ff') #lighter shades of linecolors
 
 ## 2. populate nSiteNVar defaults, which determine data shown when user lands ####
 
@@ -112,15 +114,15 @@ basedata <- list(
     chem = ms_read_portalsite(domain = default_domain,
                               site_name = default_site,
                               prodname = 'stream_chemistry'),
-    flux = ms_read_portalsite(domain = default_domain,
-                              site_name = default_site,
-                              prodname = 'stream_flux_inst_scaled'),
+    # flux = ms_read_portalsite(domain = default_domain,
+    #                           site_name = default_site,
+    #                           prodname = 'stream_flux_inst_scaled'),
     P = ms_read_portalsite(domain = default_domain,
                            site_name = default_site,
-                           prodname = 'precipitation'),
-    pchem = ms_read_portalsite(domain = default_domain,
-                               site_name = default_site,
-                               prodname = 'precip_chemistry')
+                           prodname = 'precipitation')
+    # pchem = ms_read_portalsite(domain = default_domain,
+    #                            site_name = default_site,
+    #                            prodname = 'precip_chemistry')
     # pflux = ms_read_portalsite(domain = default_domain,
     #                            site_name = default_site,
     #                            prodname = 'precip_flux_inst_scaled')
@@ -164,19 +166,22 @@ conc_vars <- variables %>%
     pull(variable_code)
 
 #these are the available selections for the unit conversion menus
-conc_units <- c('ng/L', 'ug/L', 'mg/L', 'g/L', 'nM', 'uM', 'mM', 'M',
-                'neq/L', 'ueq/L', 'meq/L', 'eq/L') #TODO: add ppt, ppm, ppb to this list (see TODO above)
+conc_units <- c('ng/L', '\u03BCg/L'='ug/L', 'mg/L', 'g/L', 'nM', '\u03BCM'='uM', 'mM', 'M',
+                'neq/L', '\u03BCeq/L'='ueq/L', 'meq/L', 'eq/L') #TODO: add ppt, ppm, ppb to this list (see TODO above)
 flux_units <- c('Mg/ha/d', 'kg/ha/d', 'g/ha/d', 'mg/ha/d')
 
 #map conc/flux display options to internal IDs for conc/flux metrics
 conc_flux_names <- c('Concentration' = 'Concentration',
-                     '_x' = 'Flux',
-                     '_y' = 'VWC')
+                     # '_x' = 'Flux',
+                     'Flux' = 'Flux',
+                     'VWC' = 'VWC')
+                     # '_y' = 'VWC')
 
-names(conc_flux_names)[2] <- paste('Flux (interpolated)',
-                                   enc2native('\U2753'))
-names(conc_flux_names)[3] <- paste('Flux (VWC)',
-                                   enc2native('\U2753'))
+# names(conc_flux_names)[2] <- paste('Flux (interpolated)',
+#                                    enc2native('\U2753'))
+# names(conc_flux_names)[3] <- paste('Flux (VWC)',
+# names(conc_flux_names)[3] <- paste('Volume-Weighted Concentration',
+#                                    enc2native('\U2753'))
 
 # sites_with_P <- sites_by_var('precipitation')
 # sites_with_Q <- sites_by_var('discharge')
@@ -189,7 +194,7 @@ chemvars_display_subset <- filter_dropdown_varlist(basedata$chem)
 
 biplot_options <- chemvars_display_subset
 
-biplot_data_types <- c('Stream Concentration', 'Stream Flux', 'Discharge',
+biplot_data_types <- c('Stream Chemistry', 'Stream Chemistry Flux', 'Discharge',
                        'Watershed Characteristics', 'Precipitation',
                        'Precipitation Chemistry', 'Precipitation Chemistry Flux')
 
