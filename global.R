@@ -70,9 +70,12 @@ sites_with_Q <- sm(read_csv('../portal/data/general/sites_with_discharge.csv')) 
                  remove = TRUE) %>%
     pull(nds)
 
+# site_data <- filter(site_data,
+#                     as.logical(in_workflow),
+#                     paste(domain, site_name, sep = '_') %in% sites_with_Q)
+
 site_data <- filter(site_data,
-                    as.logical(in_workflow),
-                    paste(domain, site_name, sep = '_') %in% sites_with_Q)
+                    as.logical(in_workflow))
 
 #TODO: allow duplicate site_names
 # if(any(duplicated(site_data$site_name))) stop('site_names must be unique, even across domains')
