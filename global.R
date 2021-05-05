@@ -46,7 +46,7 @@ conf <- jsonlite::fromJSON('config.json')
 #                      appName = 'macrosheds',
 #                      account = 'cuahsi')
 
-options(dplyr.summarise.inform = FALSE)
+# options(dplyr.summarise.inform = FALSE)
 
 #for local testing (comment all before pushing live)
 # setwd('~/git/macrosheds/portal')
@@ -194,7 +194,7 @@ chemvars_display_subset <- filter_dropdown_varlist(basedata$chem)
 
 biplot_options <- chemvars_display_subset
 
-biplot_data_types <- c('Stream Concentration', 'Stream Flux', 'Discharge',
+biplot_data_types <- c('Stream Chemistry', 'Stream Chemistry Flux', 'Discharge',
                        'Watershed Characteristics', 'Precipitation',
                        'Precipitation Chemistry', 'Precipitation Chemistry Flux')
 

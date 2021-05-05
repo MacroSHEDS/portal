@@ -238,6 +238,118 @@ shinyjs.init = function() {
         $('#SHOW_QC3').click(govern_qc3);
     });
 
+    //BIPLOT: disable X-axis selection when aggregation == 'Yearly'
+    function govern_xvar_section(){
+        if( ['MONTHLY2', 'YEARLY2'].includes($('input[name=AGG2]:checked').val()) ){
+            $('#X_TYPE2').selectize()[0].selectize.disable();
+            //hiding/showing of VAR and UNIT now governed by govern_tier2_dropdown() and govern_tier3_dropdown
+            //$('#X_VAR2').parent().hide();
+            //$('#X_UNIT2').parent().hide();
+            $('#LOG_X2').hide();
+        } else {
+            $('#X_TYPE2').selectize()[0].selectize.enable();
+            //$('#X_VAR2').parent().show();
+            //$('#X_UNIT2').parent().show();
+            $('#LOG_X2').show();
+        }
+    };
+
+    $(document).one('shiny:sessioninitialized', function(event){
+        govern_xvar_section();
+    });
+
+    $('body').ready(function(){
+        $('input[name=AGG2]').change(govern_xvar_section);
+    });
+
+    //hide selectors with no options; freeze selectors with one option
+    function govern_tier3_dropdown(key){
+
+        var unit_obj = $('#' + key + '_UNIT2')
+        var unit_val = unit_obj.val()
+        var unit_sel = unit_obj.selectize()[0].selectize;
+
+        if( ! unit_val ){
+            unit_obj.parent().hide();
+        } else {
+            unit_obj.parent().show();
+        };
+
+        if( Object.keys(unit_sel.options).length == 1 && unit_val !== '' ){
+            unit_sel.disable();
+        } else {
+            unit_sel.enable();
+        };
+    };
+
+    function govern_tier2_dropdown(key){
+
+        var unit_obj = $('#' + key + '_UNIT2')
+        var var_obj = $('#' + key + '_VAR2')
+        var var_val = var_obj.val()
+        var var_sel = var_obj.selectize()[0].selectize;
+        var redundant_options = ['% of record missing', 'Year', 'Month', 'P', 'Q']
+
+        if( ! var_val ){
+            var_obj.parent().hide();
+            unit_obj.parent().hide();
+        } else {
+            var_obj.parent().show();
+            unit_obj.parent().show();
+        };
+
+        if( Object.keys(var_sel.options).length == 1 && redundant_options.includes(var_val) ){
+            var_obj.parent().hide();
+        } else if( Object.keys(var_sel.options).length == 1 && var_val !== '' ){
+            var_obj.parent().show();
+            var_sel.disable();
+        } else {
+            if(var_val){
+                var_obj.parent().show();
+                var_sel.enable();
+            };
+        };
+    };
+
+    $('body').ready(function(){
+
+        $('#X_TYPE2').change(function(){
+            govern_tier2_dropdown('X');
+            govern_tier3_dropdown('X');
+        });
+        $('#X_VAR2').change(function(){
+            govern_tier2_dropdown('X');
+            govern_tier3_dropdown('X');
+        });
+        $('#X_UNIT2').change(function(){
+            govern_tier3_dropdown('X');
+        });
+
+        $('#Y_TYPE2').change(function(){
+            govern_tier2_dropdown('Y');
+            govern_tier3_dropdown('Y');
+        });
+        $('#Y_VAR2').change(function(){
+            govern_tier2_dropdown('Y');
+            govern_tier3_dropdown('Y');
+        });
+        $('#Y_UNIT2').change(function(){
+            govern_tier3_dropdown('Y');
+        });
+
+        $('#SIZE_TYPE2').change(function(){
+            govern_tier2_dropdown('SIZE');
+            govern_tier3_dropdown('SIZE');
+        });
+        $('#SIZE_VAR2').change(function(){
+            govern_tier2_dropdown('SIZE');
+            govern_tier3_dropdown('SIZE');
+        });
+        $('#SIZE_UNIT2').change(function(){
+            govern_tier3_dropdown('SIZE');
+        });
+    });
+
     //for grab/installed, ensure that at least one box is checked
     function govern_gi3(){
 

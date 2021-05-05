@@ -1043,7 +1043,7 @@ generate_dropdown_varlist_ws = function(variables){
 
     ws_vars <- variables %>%
         filter(variable_type == 'ws_char') %>%
-        filter(! variable_code %in% c('cc_precip_sd', 'cc_precip_median', 
+        filter(! variable_code %in% c('cc_precip_sd', 'cc_precip_median',
                                       'cc_temp_mean_sd', 'cc_temp_mean_median',
                                       'vb_lai_median', 'vb_lai_sd', 'vb_fpar_median',
                                       'vb_fpar_sd', 'va_gpp_median', 'va_gpp_sd',
@@ -1061,11 +1061,11 @@ generate_dropdown_varlist_ws = function(variables){
 }
 
 subset_ws_traits <- function(selection, ws_traits = ws_traits){
-    
+
     ws_code <- unname(selection)
-    
+
     ws_subest <- unlist(ws_traits[[ws_code]])
-    
+
     return(ws_subest)
 }
 
@@ -1196,8 +1196,8 @@ biplot_selection_to_name <- function(chem, unit, var){
 
     var_ <- case_when(chem == 'Discharge' & unit == 'm^3' ~ 'discharge',
                       chem == 'Discharge' & unit %in% c('mm/year', 'mm/d') ~ 'discharge_a',
-                      chem == 'Stream Concentration' ~ paste0(var, '_conc'),
-                      chem == 'Stream Flux' ~ paste0(var, '_flux'),
+                      chem == 'Stream Chemistry' ~ paste0(var, '_conc'),
+                      chem == 'Stream Chemistry Flux' ~ paste0(var, '_flux'),
                       chem == 'Watershed Characteristics' ~ unit,
                       chem == 'Year' ~ 'Year',
                       chem == 'Precipitation' ~ 'precip',
