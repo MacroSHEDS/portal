@@ -76,6 +76,7 @@ site_data <- filter(site_data,
                     as.logical(in_workflow),
                     paste(domain, site_name, sep = '_') %in% sites_with_Q)
 
+
 #TODO: allow duplicate site_names
 # if(any(duplicated(site_data$site_name))) stop('site_names must be unique, even across domains')
 ## 1. nSiteNVar page setup ####
