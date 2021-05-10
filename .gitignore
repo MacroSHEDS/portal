@@ -18,3 +18,5 @@ server/.DS_Store
 *.Rapp.history 
 config.json
 googlesheet_service_accnt.json
+data.bak
+js/
