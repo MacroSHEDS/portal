@@ -19,3 +19,4 @@ server/.DS_Store
 config.json
 googlesheet_service_accnt.json
 data.bak
+js/
