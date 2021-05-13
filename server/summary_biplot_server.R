@@ -24,17 +24,17 @@ sum <- read_feather('data/general/biplot/year.feather')
 #at that site
 pre_filtered_bi <- reactive({
 
-    # date1 <<- input$DATES2_INTER[1]
-    # date2 <<- input$DATES2_INTER[2]
-    # domains <<- input$DOMAINS2
-    # domains_s <<- input$DOMAINS2_S
-    # sites <<- input$SITES2
-    # type <<- switch(input$SITE_SELECTION2,
-    #                 ALL_SITES2 = 'all',
-    #                 DOMINE_NETWORK2 = 'dom',
-    #                 BY_SITE2 = 'site')
-    # raw <- summary()
-    #raw <- sum
+#     date1 <<- input$DATES2_INTER[1]
+#     date2 <<- input$DATES2_INTER[2]
+#     domains <<- input$DOMAINS2
+#     domains_s <<- input$DOMAINS2_S
+#     sites <<- input$SITES2
+#     type <<- switch(input$SITE_SELECTION2,
+#                     ALL_SITES2 = 'all',
+#                     DOMINE_NETWORK2 = 'dom',
+#                     BY_SITE2 = 'site')
+#     # raw <- summary()
+#     raw <- sum
 
     date1 <- year(input$DATES2_INTER[1])
     date2 <- year(input$DATES2_INTER[2])
@@ -88,6 +88,8 @@ filtered_bi <- reactive({
     # agg <<- isolate(input$AGG2)
     # domains <<- isolate(input$DOMAINS2)
     # sites <<- isolate(input$SITES2)
+    # year1 <<- year(isolate(input$DATES2_INTER[1]))
+    # year2 <<- year(isolate(input$DATES2_INTER[2]))
     # fill <- pre_filtered_bi()
     # #raw <- isolate(summary())
     # raw <- sum
@@ -105,6 +107,8 @@ filtered_bi <- reactive({
     agg <- isolate(input$AGG2)
     domains <- isolate(input$DOMAINS2)
     sites <- isolate(input$SITES2)
+    year1 <- year(isolate(input$DATES2_INTER[1]))
+    year2 <- year(isolate(input$DATES2_INTER[2]))
     fill <- pre_filtered_bi()
     #raw <- isolate(summary())
     raw <- sum
@@ -128,12 +132,16 @@ filtered_bi <- reactive({
                                           var = size_var)
 
     if(include_size) {
-        filter_vars <- c(x_var_, y_var_, size_var_)
+        if(size_var_ == 'missing' && agg == 'WHOLE2'){
+            filter_vars <- c(x_var_, y_var_)
+        } else{
+            filter_vars <- c(x_var_, y_var_, size_var_)
+        }
     } else {
         filter_vars <- c(x_var_, y_var_)
     }
 
-    if('missing' %in% filter_vars){
+    if('missing' %in% filter_vars && agg == 'YEARLY2'){
         #Filter summary table for needed vars and spread to wide format
         final <- fill %>%
             filter(!is.na(Year)) %>%
@@ -263,10 +271,23 @@ filtered_bi <- reactive({
 
     #If the whole record summary is selected, so that here
     if(agg == 'WHOLE2') {
-        final <- final %>%
-            select(-Year) %>%
-            group_by(site_name, domain) %>%
-            summarise(across(where(is.numeric), ~mean(.x, na.rm = TRUE)))
+
+        if(include_size && size_var_ == 'missing'){
+    
+            year_dif <- (year2 - year1 ) + 1
+            final <- final %>%
+                #select(-Year) %>%
+                group_by(site_name, domain) %>%
+                summarise(across(where(is.numeric), ~mean(.x, na.rm = TRUE)),
+                          n = n()) %>%
+                mutate(missing = round((((year_dif-n)/year_dif)*100), 1)) %>%
+                select(-Year, -n)
+        } else{
+            final <- final %>%
+                select(-Year) %>%
+                group_by(site_name, domain) %>%
+                summarise(across(where(is.numeric), ~mean(.x, na.rm = TRUE))) 
+        }
     }
 
     return(final)
@@ -277,6 +298,7 @@ filtered_bi <- reactive({
 observe({
     agg <- input$AGG2
     yearly <- 'Year'
+    data <- isolate(pre_filtered_bi())
 
     if(agg == 'YEARLY2'){
         updateSelectInput(session, 'X_TYPE2', choices = yearly)
@@ -285,8 +307,9 @@ observe({
         updateSelectInput(session, 'SIZE_TYPE2', choices = biplot_data_types_size)
         updateRadioButtons(session, inputId = 'LOG_X2', selected = 'XAXIS_sta2')
     } else{
-        updateSelectInput(session, 'X_TYPE2', choices = biplot_data_types)
-        updateSelectInput(session, 'SIZE_TYPE2', choices = biplot_data_types)
+        updateSelectInput(session, 'X_TYPE2', choices = biplot_data_types, selected = 'Discharge')
+        updateSelectInput(session, 'X_VAR2', choices = 'Q', selected = 'Q')
+        updateSelectInput(session, 'SIZE_TYPE2', choices = biplot_data_types_size)
     }
 })
 
@@ -297,7 +320,6 @@ current_selection <- reactiveValues(old_x = 'old',
                                     old_size = 'old')
 observeEvent(input$X_VAR2,{
     current_selection$old_x <- input$X_VAR2})
-
 
 #update individual options for variables based on variable type
 observe({
@@ -327,7 +349,8 @@ observe({
     if(data_type == 'Discharge') {
         select <- 'Q'
         units <- discharge_units_bi
-        choose <- 'm^3'}
+        choose <- 'mm/year'
+        }
 
     if(data_type == 'Watershed Characteristics') {
         select <- ws_trait_types
@@ -381,7 +404,7 @@ observe({
         select <- 'Q'
         var <- 'Q'
         units <- discharge_units_bi
-        choose <- 'm^3'
+        choose <- 'mm/year'
         }
 
     if(data_type == 'Watershed Characteristics') {
@@ -432,7 +455,7 @@ observe({
     if(data_type == 'Discharge') {
         select <- 'Q'
         units <- discharge_units_bi
-        choose <- 'm^3'}
+        choose <- 'mm/year'}
 
     if(data_type == 'Watershed Characteristics') {
         select <- ws_trait_types
@@ -698,7 +721,8 @@ output$SUMMARY_BIPLOT <- renderPlotly({
     
     if(col_by == 'legend_name'){
         bi_table <- bi_table %>%
-            mutate(legend_name = pretty_domain)
+            mutate(legend_name = paste0(pretty_domain, ' - ', site_name))
+
     } else{
         bi_table <- bi_table %>%
             mutate(legend_name = site_name)
@@ -741,31 +765,56 @@ output$SUMMARY_BIPLOT <- renderPlotly({
         }
 
         if(include_size) {
-
-            plot <- bi_table %>%
-                plotly::plot_ly(x = ~get(x_tvar),
-                                y = ~get(y_tvar),
-                                type = 'scatter',
-                                mode = 'lines+markers',
-                                alpha = 0.8,
-                                size = ~get(size_tvar),
-                                color = ~get(col_by),
-                                colors = safe_cols,
-                                split = ~site_name,
-                                line = list(width = 2, color = ~get(col_by)),
-                                text = ~paste0(size_var, ' ', size_unit, ':', round(get(size_tvar), digits = 2), '\nSite:', site_name, ', \nDomain:', pretty_domain),
-                                legendgroup = ~get(col_by)
-
-                ) %>%
-                plotly::layout(xaxis = list(title = paste0(x_var, ' ', x_unit),
-                                            range = c(min_year, max_year),
-                                            tickvals = tick_vals),
-                               yaxis = list(title = paste0(y_var, ' ', y_unit)),
-                               paper_bgcolor = 'rgba(0,0,0,0)',
-                               plot_bgcolor = 'rgba(0,0,0,0)',
-                               legend = list(itemsizing='constant',
-                                             traceorder = 'grouped'))
-
+            
+            if(col_by == 'pretty_domain'){
+                plot <- bi_table %>%
+                    plotly::plot_ly(x = ~get(x_tvar),
+                                    y = ~get(y_tvar),
+                                    type = 'scatter',
+                                    mode = 'lines+markers',
+                                    alpha = 0.8,
+                                    size = ~get(size_tvar),
+                                    color = ~get(col_by),
+                                    colors = safe_cols,
+                                    split = ~site_name,
+                                    line = list(width = 2, color = ~get(col_by)),
+                                    text = ~paste0(size_var, ' ', size_unit, ':', round(get(size_tvar), digits = 2), '\nSite:', site_name, ', \nDomain:', pretty_domain),
+                                    legendgroup = ~get(col_by)
+                                    
+                    ) %>%
+                    plotly::layout(xaxis = list(title = paste0(x_var, ' ', x_unit),
+                                                range = c(min_year, max_year),
+                                                tickvals = tick_vals),
+                                   yaxis = list(title = paste0(y_var, ' ', y_unit)),
+                                   paper_bgcolor = 'rgba(0,0,0,0)',
+                                   plot_bgcolor = 'rgba(0,0,0,0)',
+                                   legend = list(itemsizing='constant',
+                                                 traceorder = 'grouped'))
+            } else{
+                plot <- bi_table %>%
+                    plotly::plot_ly(x = ~get(x_tvar),
+                                    y = ~get(y_tvar),
+                                    type = 'scatter',
+                                    mode = 'lines+markers',
+                                    alpha = 0.8,
+                                    size = ~get(size_tvar),
+                                    color = ~get(col_by),
+                                    colors = safe_cols,
+                                    line = list(width = 2, color = ~get(col_by)),
+                                    text = ~paste0(size_var, ' ', size_unit, ':', round(get(size_tvar), digits = 2), '\nSite:', site_name, ', \nDomain:', pretty_domain),
+                                    legendgroup = ~get(col_by)
+                                    
+                    ) %>%
+                    plotly::layout(xaxis = list(title = paste0(x_var, ' ', x_unit),
+                                                range = c(min_year, max_year),
+                                                tickvals = tick_vals),
+                                   yaxis = list(title = paste0(y_var, ' ', y_unit)),
+                                   paper_bgcolor = 'rgba(0,0,0,0)',
+                                   plot_bgcolor = 'rgba(0,0,0,0)',
+                                   legend = list(itemsizing='constant',
+                                                 traceorder = 'grouped'))
+                
+            }
         } else {
 
             # site_to_domain <- bi_table %>%
@@ -883,28 +932,53 @@ output$SUMMARY_BIPLOT <- renderPlotly({
             #                    plot_bgcolor = 'rgba(0,0,0,0)'
             #     )
 
-            plot <- bi_table %>%
-                plotly::plot_ly(x = ~get(x_tvar),
-                                y = ~get(y_tvar),
-                                type = 'scatter',
-                                mode = 'lines',
-                                alpha = 0.8,
-                                color = ~get(col_by),
-                                colors = safe_cols,
-                                split = ~site_name,
-                                connectgaps = F,
-                                line = list(width = 2, color = ~get(col_by)),
-                                text = ~paste0('Site:', site_name, ', \nDomain:', pretty_domain),
-                                legendgroup = ~get(col_by)
-                                #name = paste0(~pretty_domain, '>', ~site_name)
-                ) %>%
-                plotly::layout(xaxis = list(title = paste0(x_var, ' ', x_unit),
-                                            range = c(min_year, max_year),
-                                            tickvals = tick_vals),
-                               yaxis = list(title = paste0(y_var, ' ', y_unit)),
-                               paper_bgcolor = 'rgba(0,0,0,0)',
-                               plot_bgcolor = 'rgba(0,0,0,0)'
-                            )
+            if(col_by == 'pretty_domain'){
+
+                plot <- bi_table %>%
+                    plotly::plot_ly(x = ~get(x_tvar),
+                                    y = ~get(y_tvar),
+                                    type = 'scatter',
+                                    mode = 'lines',
+                                    alpha = 0.8,
+                                    color = ~get(col_by),
+                                    colors = safe_cols,
+                                    split = ~site_name,
+                                    connectgaps = F,
+                                    line = list(width = 2, color = ~get(col_by)),
+                                    text = ~paste0('Site:', site_name, ', \nDomain:', pretty_domain),
+                                    legendgroup = ~get(col_by)
+                                    #name = paste0(~pretty_domain, '>', ~site_name)
+                    ) %>%
+                    plotly::layout(xaxis = list(title = paste0(x_var, ' ', x_unit),
+                                                range = c(min_year, max_year),
+                                                tickvals = tick_vals),
+                                   yaxis = list(title = paste0(y_var, ' ', y_unit)),
+                                   paper_bgcolor = 'rgba(0,0,0,0)',
+                                   plot_bgcolor = 'rgba(0,0,0,0)'
+                    )
+            } else{
+                plot <- bi_table %>%
+                    plotly::plot_ly(x = ~get(x_tvar),
+                                    y = ~get(y_tvar),
+                                    type = 'scatter',
+                                    mode = 'lines',
+                                    alpha = 0.8,
+                                    color = ~get(col_by),
+                                    colors = safe_cols,
+                                    connectgaps = F,
+                                    line = list(width = 2, color = ~get(col_by)),
+                                    text = ~paste0('Site:', site_name, ', \nDomain:', pretty_domain),
+                                    legendgroup = ~get(col_by)
+                                    #name = paste0(~pretty_domain, '>', ~site_name)
+                    ) %>%
+                    plotly::layout(xaxis = list(title = paste0(x_var, ' ', x_unit),
+                                                range = c(min_year, max_year),
+                                                tickvals = tick_vals),
+                                   yaxis = list(title = paste0(y_var, ' ', y_unit)),
+                                   paper_bgcolor = 'rgba(0,0,0,0)',
+                                   plot_bgcolor = 'rgba(0,0,0,0)'
+                    )
+            }
         }
     }
 

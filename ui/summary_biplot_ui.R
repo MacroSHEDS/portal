@@ -1,5 +1,6 @@
 
 biplot_data_types_x <- append(biplot_data_types, 'Year', after = 0)
+biplot_data_types_size <- append(biplot_data_types, 'Proportion of Record Missing', after = 0)
 #biplot_data_types_size <- biplot_data_types
 
 summary_biplot_tab = tabPanel('Biplot', value='biplot',
@@ -76,7 +77,7 @@ summary_biplot_tab = tabPanel('Biplot', value='biplot',
                       label = paste('Vary point size')),
         conditionalPanel('input.ADD_SIZE2 == true',
             selectizeInput('SIZE_TYPE2', label=NULL,
-                           multiple=FALSE, choices=biplot_data_types, selected = 'Stream Concentration'),
+                           multiple=FALSE, choices=biplot_data_types_size, selected = 'Stream Concentration'),
             selectizeInput('SIZE_VAR2', label=NULL,
                            selected=biplot_options[[1]][[3]],
                            multiple=FALSE, choices=biplot_options),
