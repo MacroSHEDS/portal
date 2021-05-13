@@ -206,7 +206,7 @@ flux_units_bi <- c('Mg/ha/d', 'kg/ha/d', 'g/ha/d', 'mg/ha/d',
 
 conc_units_bi <- c('ng/L', 'ug/L', 'mg/L', 'g/L')
 
-discharge_units_bi <- c('m^3', 'mm/year', 'mm/d')
+discharge_units_bi <- c('mm/year', 'm^3', 'mm/d')
 
 ws_trait_types <- variables %>%
     filter(variable_type == 'ws_char') %>%
