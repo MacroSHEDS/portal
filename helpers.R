@@ -145,6 +145,10 @@ convert_conc_units <- function(d,
     #input_unit is the unit of concs (must be 'mg/L')
     #desired unit is one of the keys in the call to `switch` below
 
+    if(input_unit != 'mg/L'){
+        stop('convert_conc_units is not equipped yet to handle input_unit != "mg/L"')
+    }
+
     cnms <- colnames(d)
 
     varnames <- str_match(string = cnms[grepl('val_', cnms)],
@@ -164,33 +168,31 @@ convert_conc_units <- function(d,
                               'mg/L' = 1,
                               'g/L' = 0.001)
 
+        conv_factors <- rep(conv_factor, length(varnames))
+
     } else {
 
         constituents <- parse_molecular_formulae(varnames)
         molar_masses <- sapply(constituents, combine_atomic_masses)
 
         conv_factors <- switch(substr(desired_unit, 0, 1),
-            'n' = molar_masses * 1000000, #desired unit could be nM or neq/L
-            'u' = molar_masses * 1000, #and so on...
-            'm' = molar_masses,
-            'M' = molar_masses / 1000, #desired unit must be 'M'
-            'e' = molar_masses / 1000) #desired unit must be 'eq/L'
+            'n' = 1 / molar_masses * 1000000, #desired unit could be nM or neq/L
+            'u' = 1 / molar_masses * 1000, #and so on...
+            'm' = 1 / molar_masses,
+            'M' = 1 / molar_masses / 1000, #desired unit must be 'M'
+            'e' = 1 / molar_masses / 1000) #desired unit must be 'eq/L'
 
         if(grepl('q', desired_unit)){
             valences <- variables$valence[variables$variable_code %in% varnames]
             conv_factors <- conv_factors * valences
         }
-
-        # converted = data.frame(mapply(`*`, conc_df, mm_scaled, SIMPLIFY=FALSE))
     }
 
-    for(vn in varnames){
+    for(i in seq_along(varnames)){
 
-        vn <- paste0('val_', vn)
+        vn <- paste0('val_', varnames[i])
         d <- mutate(d,
-                    !!vn := !!sym(vn) * conv_factor)
-                    # across(! starts_with('ms_') & ! matches('datetime'),
-                    #       ~(. * conv_factor)))
+                    !!vn := !!sym(vn) * conv_factors[i])
     }
 
     return(d)
@@ -468,12 +470,38 @@ numeric_any <- function(num_vec){
     return(as.numeric(any(as.logical(num_vec))))
 }
 
-ms_aggregate <- function(d, agg_selection, conc_flux_selection = NULL){
+numeric_any_v <- function(...){
+
+    #...: numeric vectors of equal length. should be just 0s and 1s, but
+    #   integers other than 1 are also considered TRUE by as.logical()
+
+    #the vectorized version of numeric_any. good for stuff like:
+    #    mutate(ms_status = numeric_any(c(ms_status_x, ms_status_flow)))
+
+    #returns a single vector of the same length as arguments
+
+    #this func could be useful in global situations
+    numeric_any_positional <- function(...) numeric_any(c(...))
+
+    numeric_any_elementwise <- function(...){
+        Map(function(...) numeric_any_positional(...), ...)
+    }
+
+    out <- do.call(numeric_any_elementwise,
+                   args = list(...)) %>%
+        unlist()
+
+    if(is.null(out)) out <- numeric()
+
+    return(out)
+}
+
+ms_aggregate <- function(d, agg_selection){#, conc_flux_selection = NULL){
 
     #agg_selection is a user input object, e.g. input$AGG3
-    #conc_flux_selection is a user input object, e.g. input$CONC_FLUX3
+    #OBSOLETE conc_flux_selection is a user input object, e.g. input$CONC_FLUX3
 
-    if(nrow(d) == 0) return(d)
+    if(nrow(d) <= 1) return(d)
     if(agg_selection == 'Instantaneous') return(d)
 
     agg_period <- switch(agg_selection,
@@ -484,58 +512,85 @@ ms_aggregate <- function(d, agg_selection, conc_flux_selection = NULL){
     var_is_p <- d$var[1] == 'precipitation'
     # var_is_q <- d$var[1] == 'discharge'
 
-    #round to desired_interval and summarize
-    d <- sw(d %>%
-        mutate(datetime = lubridate::round_date(datetime,
-                                                agg_period)) %>%
-        group_by(site_name, var, datetime) %>%
-        summarize(
-            across(any_of(c('ms_status', 'ms_interp')), numeric_any),
-            val = if(n() > 1){
-                if(var_is_p){
-                    sum(val, na.rm = TRUE)
+    # #round to desired_interval and summarize
+    # d <- sw(d %>%
+    #     mutate(datetime = lubridate::floor_date(datetime,
+    #                                             agg_period)) %>%
+    #     group_by(site_name, var, datetime) %>%
+    #     summarize(
+    #         val = if(n() > 1){
+    #             if(var_is_p){
+    #                 sum(val, na.rm = TRUE)
+    #             } else {
+    #                 mean(val, na.rm = TRUE)
+    #             }
+    #         } else {
+    #             first(val) #needed for uncertainty propagation to work
+    #         },
+    #         ms_status = numeric_any(ms_status),
+    #         ms_interp = numeric_any(ms_interp),
+    #         .groups = 'drop'))
+
+    if(agg_period %in% c('month', 'year')){
+
+        period_complete_n <- ifelse(agg_period == 'month', 30, 365)
+
+        #round to desired_interval and summarize
+        d <- sw(d %>%
+            mutate(datetime = lubridate::floor_date(datetime,
+                                                    agg_period)) %>%
+            group_by(site_name, var, datetime) %>%
+            summarize(
+                nday = sum(! is.na(val)),
+                val = if(n() > 1){
+                    if(var_is_p){
+                        sum(val, na.rm = TRUE)
+                    } else {
+                        mean(val, na.rm = TRUE)
+                    }
                 } else {
-                    mean(val, na.rm = TRUE)
-                }
-            } else {
-                first(val) #needed for uncertainty propagation to work
-            }) %>%
-        ungroup() %>%
-        select(datetime, site_name, var, val, one_of('ms_status', 'ms_interp')))
+                    first(val) #needed for uncertainty propagation to work
+                },
+                ms_status = numeric_any(ms_status),
+                ms_interp = numeric_any(ms_interp),
+                .groups = 'drop') %>%
+            filter(nday > period_complete_n * 0.1) %>%
+            group_by(site_name, var) %>%
+            tidyr::complete(datetime = seq(min(datetime),
+                                           max(datetime),
+                                           by = agg_period)))
+    } else {
 
-    # d <- mutate(d,
-    #              datetime = lubridate::floor_date(datetime,
-    #                                               agg_period))
-    #
-    # # if('site_name' %in% colnames(d)){
-    # d <- group_by(d,
-    #                datetime, site_name, var)
-    # # } else if('domain' %in% colnames(d)){
-    # #     d = group_by(d, datetime, domain)
-    # # } else {
-    # #     d = group_by(d, datetime)
-    # # }
-    #
-    # # if(which_dataset %in% c('chem', 'pchem')){
-    # if(drop_var_prefix(d$var[1]) %in% c('precipitation', 'discharge')){
-    #     d <- summarize_all(d,
-    #                         list(~max(., na.rm=TRUE)))
-    # } else if(conc_flux_selection == 'VWC'){
-    #     d <- summarize_all(d,
-    #                         list(~sum(., na.rm=TRUE)))
-    # } else {
-    #     d <- summarize_all(d,
-    #                         list(~mean(., na.rm=TRUE)))
-    # }
+        #round to desired_interval and summarize
+        d <- sw(d %>%
+            mutate(datetime = lubridate::floor_date(datetime,
+                                                    agg_period)) %>%
+            group_by(site_name, var, datetime) %>%
+            summarize(
+                val = if(n() > 1){
+                    if(var_is_p){
+                        sum(val, na.rm = TRUE)
+                    } else {
+                        mean(val, na.rm = TRUE)
+                    }
+                } else {
+                    first(val) #needed for uncertainty propagation to work
+                },
+                ms_status = numeric_any(ms_status),
+                ms_interp = numeric_any(ms_interp),
+                .groups = 'drop'))
+    }
 
-    # d <- inject_timeseries_NAs(d = ungroup(d),
-    #                             fill_by = agg_period)
+    d <- select(d,
+                datetime, site_name, var, val, one_of('ms_status', 'ms_interp'))
 
     return(d)
 }
 
 # df=ungroup(df); fill_by=agg_period
 inject_timeseries_NAs = function(df, fill_by){
+
+    #replaced by tidyr::complete
 
     dt_fill = seq.POSIXt(df$datetime[1], df$datetime[nrow(df)], by=fill_by)
     ndates = length(dt_fill)
@@ -696,49 +751,42 @@ manufacture_empty_plotdata = function(sites){
     return(outdata)
 }
 
-get_rainsites <- function(alldata,
-                          streamsites,
-                          show_input_concentration){
-
-    #streamsites needed in order to correctly order rainsites
-
-    if(show_input_concentration && nrow(alldata)){
-
-        # if(conc_flux_selection == 'VWC'){
-        cnms <- colnames(alldata)
-        rainsites <- cnms[grep('^P_(?!ms_)',
-                               cnms,
-                               perl = TRUE)]
-        siteorder <- order(streamsites)
-        rainsites <- sort(rainsites)[siteorder]
-
-    } else {
-        rainsites <- vector(length = 0,
-                            mode = 'character')
-    }
-
-    return(rainsites)
-}
-
 generate_dropdown_sitelist = function(domain_vec){
 
-    sitelist = list()
-    for(i in 1:length(domain_vec)){
+    if(is.null(domain_vec)) return(NULL)
+
+    sitelist <- list()
+    for(i in seq_along(domain_vec)){
+
         domain_sites <- get_sitelist(domain = domain_vec[i],
                                      type = c('stream_gauge', 'stream_sampling_point'))
-        sitelist[[i]] = domain_sites
+
+        if(length(domain_sites) == 1){
+            #domains with only 1 site will not render properly unless they are given names
+            names(domain_sites) <- domain_sites
+        }
+
+        sitelist[[i]] <- domain_sites
     }
-    names(sitelist) = names(domains_pretty[match(domain_vec, domains_pretty)])
+
+    names(sitelist) <- names(domains_pretty[match(domain_vec, domains_pretty)])
 
     return(sitelist)
 }
 
-# sites_selected=sites; sites_all=displabs
-# colorvec=linecolors; pad_length=length(displabs)
-selection_color_match = function(sites_selected, sites_all, colorvec){
+selection_color_match <- function(sites_selected,
+                                  sites_all,
+                                  sites_missing = NULL,
+                                  colorvec){
 
-    as.character(factor(sites_all, levels=sites_selected))
-    matched_colors = colorvec[match(sites_all, sites_selected)]
+    # matched_colors <- colorvec[match(sites_all, sites_selected)]
+    color_order <- match(sites_all, sites_selected)
+
+    if(! is.null(sites_missing)){
+        color_order <- color_order[! sites_all %in% sites_missing]
+    }
+
+    matched_colors <- colorvec[color_order]
 
     return(matched_colors)
 }
@@ -850,7 +898,7 @@ convert_conc_units_bi = function(df, col, input_unit='mg/L', desired_unit){
     return(df)
 }
 
-convert_flux_units_bi = function(df, col, input_unit='kg/year', desired_unit, summary_file){
+convert_flux_units_bi = function(df, col, input_unit='kg/ha/year', desired_unit, summary_file){
 
     #df is a data frame or tibble of numeric flux data
     #input_unit is the unit of flux (must be 'kg/ha/d')
@@ -859,12 +907,12 @@ convert_flux_units_bi = function(df, col, input_unit='kg/year', desired_unit, su
     col_name <- col
     flux_cols = col_name
 
-    if(grepl('/ha', desired_unit)) {
+    if(! grepl('/ha', desired_unit)) {
 
         if('area' %in% colnames(df)){
 
             df <- df %>%
-                mutate(!!flux_cols := .data[[flux_cols]]/area)
+                mutate(!!flux_cols := .data[[flux_cols]]*area)
 
         } else{
 
@@ -882,7 +930,7 @@ convert_flux_units_bi = function(df, col, input_unit='kg/year', desired_unit, su
 
             df <- df %>%
                 left_join(., areas, by = 'site_name') %>%
-                mutate(!!flux_cols := .data[[flux_cols]]/area) %>%
+                mutate(!!flux_cols := .data[[flux_cols]]*area) %>%
                 select(-area)
         }
     }
@@ -964,13 +1012,13 @@ load_portal_config <- function(from_where){
         variables <- sm(googlesheets4::read_sheet(
             conf$variables_gsheet,
             na = c('', 'NA'),
-            col_types = 'cccccccnncc'
+            col_types = 'cccccccnnccnn'
         ))
 
         site_data <- sm(googlesheets4::read_sheet(
             conf$site_data_gsheet,
             na = c('', 'NA'),
-            col_types = 'ccccccccnnnnncc'
+            col_types = 'ccccccccnnnnnccn'
         ))
 
     } else if(from_where == 'local'){
@@ -995,6 +1043,12 @@ generate_dropdown_varlist_ws = function(variables){
 
     ws_vars <- variables %>%
         filter(variable_type == 'ws_char') %>%
+        filter(! variable_code %in% c('cc_precip_sd', 'cc_precip_median',
+                                      'cc_temp_mean_sd', 'cc_temp_mean_median',
+                                      'vb_lai_median', 'vb_lai_sd', 'vb_fpar_median',
+                                      'vb_fpar_sd', 'va_gpp_median', 'va_gpp_sd',
+                                      'vb_ndvi_median', 'vb_ndvi_sd', 'vh_tcw_sd',
+                                      'vh_tcw_median')) %>%
         mutate(displayname=ifelse(!is.na(unit), paste0(variable_name, ' (', unit, ')'), variable_name)) %>%
         select(displayname, variable_code, variable_subtype) %>%
         plyr::dlply(plyr::.(variable_subtype), function(x){
@@ -1004,6 +1058,15 @@ generate_dropdown_varlist_ws = function(variables){
         })
 
     return(ws_vars)
+}
+
+subset_ws_traits <- function(selection, ws_traits = ws_traits){
+
+    ws_code <- unname(selection)
+
+    ws_subest <- unlist(ws_traits[[ws_code]])
+
+    return(ws_subest)
 }
 
 filter_dropdown_varlist_bi = function(filter_set, vartype = 'conc'){
@@ -1078,15 +1141,15 @@ ms_read_portalsite <- function(domain,
     return(d)
 }
 
-filter_agg_widen_unprefix <- function(d,
-                                      selected_vars,
-                                      selected_datebounds,
-                                      selected_agg,
-                                      selected_prefixes,
-                                      show_uncert,
-                                      show_flagged,
-                                      show_imputed,
-                                      conc_or_flux){
+filter_and_unprefix <- function(d,
+                                selected_vars,
+                                selected_datebounds,
+                                # selected_agg,
+                                selected_prefixes,
+                                show_uncert,
+                                show_flagged,
+                                show_imputed){
+                                # conc_or_flux){
 
     if(nrow(d) == 0) return(d)
 
@@ -1118,27 +1181,13 @@ filter_agg_widen_unprefix <- function(d,
 
     if(nrow(d) == 0) return(d)
 
-    # d = pad_ts(d, vars=selected_vars, datebounds=selected_datebounds)
-    d <- ms_aggregate(d = d,
-                      agg_selection = selected_agg,
-                      conc_flux_selection = conc_or_flux)
-
-    d <-  pivot_wider(d,
-                      names_from = var,
-                      values_from = c('val', 'ms_status', 'ms_interp'))
-
-    # if(init_vals$enable_unitconvert){
+    # d <- ms_aggregate(d = d,
+    #                   agg_selection = selected_agg,
+    #                   #conc_flux_selection = conc_or_flux)
     #
-    #     if(conc_flux %in% c('Concentration', 'VWC')){
-    #
-    #         datachem <- convert_conc_units(datachem,
-    #                                        desired_unit = conc_unit)
-    #     } else if(conc_flux == 'Flux'){
-    #
-    #         datachem <- convert_flux_units(datachem,
-    #                                        desired_unit = flux_unit)
-    #     }
-    # }
+    # d <-  pivot_wider(d,
+    #                   names_from = var,
+    #                   values_from = c('val', 'ms_status', 'ms_interp'))
 
     return(d)
 }
@@ -1147,9 +1196,9 @@ biplot_selection_to_name <- function(chem, unit, var){
 
     var_ <- case_when(chem == 'Discharge' & unit == 'm^3' ~ 'discharge',
                       chem == 'Discharge' & unit %in% c('mm/year', 'mm/d') ~ 'discharge_a',
-                      chem == 'Stream Concentration' ~ paste0(var, '_conc'),
-                      chem == 'Stream Flux' ~ paste0(var, '_flux'),
-                      chem == 'Watershed Characteristics' ~ var,
+                      chem == 'Stream Chemistry' ~ paste0(var, '_conc'),
+                      chem == 'Stream Chemistry Flux' ~ paste0(var, '_flux'),
+                      chem == 'Watershed Characteristics' ~ unit,
                       chem == 'Year' ~ 'Year',
                       chem == 'Precipitation' ~ 'precip',
                       chem == 'Precipitation Chemistry' ~ paste0(var, '_precip_conc'),

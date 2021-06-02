@@ -29,7 +29,7 @@ output$MAP = renderLeaflet({
             group = 'Catchments'
         ) %>%
         addCircleMarkers(lng=rg$longitude, lat=rg$latitude, color='#0000FF',
-                         fillColor='#0000FF', stroke = T, opacity=0.5, radius=4,
+                         fillColor='#0000FF', stroke = TRUE, opacity=0.5, radius=4,
                          weight=10, fillOpacity=1,
                          popup=glue(rain_gauge_buttons, domain=rg$domain,
                                     pretty_domain=rg$pretty_domain, site_type=rg$site_type,
@@ -41,7 +41,7 @@ output$MAP = renderLeaflet({
                          ),
                          data=rg) %>%
         addCircleMarkers(lng=sg$longitude, lat=sg$latitude, color='#228B22',
-                         layerId=sg$site_name, stroke = T, opacity=0.5, radius=4,
+                         layerId=sg$site_name, stroke = TRUE, opacity=0.5, radius=4,
                          weight=10, fillOpacity=1, fillColor='#228B22',
                     popup=glue(stream_gauge_buttons, domain=sg$domain,
                          pretty_domain=sg$pretty_domain, stream=sg$stream,
@@ -67,7 +67,7 @@ output$MAP = renderLeaflet({
         options=layersControlOptions(collapsed=FALSE, autoZIndex=TRUE)) %>%
     # setView(lng=mean(site_data$longitude, na.rm=TRUE),
     #     lat=mean(site_data$latitude, na.rm=TRUE), zoom=3)
-    setView(lng=-97.380979, lat=42.877742, zoom=3)  #center of lower 48
+    setView(lng=-97.380979, lat=42.877742, zoom=2)  #center of lower 48
     #flyTo() #temporary: improve ux with this and marker groupings
 })
 

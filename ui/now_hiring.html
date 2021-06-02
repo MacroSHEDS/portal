@@ -1,17 +1,121 @@
-<div id="doc" class="markdown-body container-fluid comment-enabled" data-hard-breaks="true" style="position: relative;"><h2 id="Data-scientist-wanted">Data scientist wanted</h2><p>We are hiring a data scientist or data-savvy environmental scientist to join <strong>macrosheds</strong>, a study of comparative ecosystem biogeochemistry at continental scales.</p><h2 id="NSF-Public-abstract">NSF Public abstract</h2><p>This project will enable anyone with internet access to compare the flow and the chemistry of hundreds of streams throughout the United States and to explore their watersheds. It will combine data sets from many separate research projects into an attractive website that makes the data available. This will make it easy for scientists and students to generate questions about water quality and river flow patterns across the continent. Researchers will use these data to study what types of watersheds are best at retaining nutrients, are recovering most rapidly from decades of acid rain, have the highest erosion rates, and have flow patterns that are least sensitive to floods and droughts. The lessons we learn from studying many watersheds and streams will contribute to more effective management of our nation’s water and forest resources.</p><p>Much of the literature of watershed ecosystem science over the last decade has focused on gaining ever finer detail of spatial heterogeneity within watersheds. This fine-scale focus has identified many idiosyncrasies of individual watersheds but has not helped us develop general theories about watershed dynamics. Most watershed ecosystem studies remain rather parochial, involving detailed studies of individual or paired watersheds, or surveys of a small set of attributes across multiple watersheds. Macrosystem watershed science, or the search for general principles that describe the functional capacity and behavior across watersheds, has been limited. A major reason for this lack of large-scale focus is the challenge of data access and integration across sites. Our goal in this proposal is to compile a dataset that merges all US watershed ecosystem studies into a common platform (<strong>macrosheds</strong>) and to enable and train a new generation of watershed ecosystem scientists in the art and practice of macroscale watershed ecosystem science.</p><h2 id="Candidate-description">Candidate description</h2><p>The central informatics goals of this project are to centralize and harmonize data (sensor time series, geographic data, metadata) from diverse sources, develop a cloud-based open data management and exploration platform, and allow users to access, clean, analyze, and visualize the data sets housed within it. The successful candidate will have interest and experience in one or more of the following disciplines: data engineering, analytics, data visualization, software development, GIS.  A graduate degree in either data or computer science or in an environmental science is desired but not required. The position includes support for the candidate to attend professional meetings and professional training workshops and the opportunity to interface with collaborators at the National Ecological Observatory Network (NEON), Colorado State University, and Duke University.</p><p><strong>Key tasks will include some subset of the following, depending on applicant’s skillset and interests:</strong></p><ul>
-<li>Development of interactive web visualizations (Using one or more of: Shiny, D3, Dygraphs, Bokeh, Highcharts).</li>
-<li>Development and scheduled execution of scripts to pull data from web APIs and FTP servers.</li>
-<li>Data munging, cleaning, harmonization, and database I/O.</li>
-<li>Programmatic collection and summarizing of geographic data.</li>
-<li>Python web development (Flask).</li>
-<li>Web scraping.</li>
-</ul><p><strong>Ideal candidates will have experience with three or more of the following:</strong></p><ul>
-<li>R</li>
-<li>Python</li>
-<li>any database query language</li>
-<li>Mac/Linux shell commands (Bash), especially executed remotely</li>
-<li>Git</li>
-<li>HTML, CSS, JavaScript</li>
-<li>Google Earth Engine (JS or Python versions)</li>
-<li>Watershed terrain analysis</li>
-</ul><h2 id="Who-we-are">To apply</h2><p>The successful applicant will work closely with the project’s full-time data scientist, who will provide regular support and guidance.<p>To apply, submit cover letter (including statement of interest and qualifications), Curriculum Vitae, and contact information for 2 references to <a href="mailto:michael.vlah@duke.edu" target="_blank" rel="noopener">michael.vlah@duke.edu</a>. Review of applications will begin immediately and will continue until the position is filled.</p></div>
+<div id="doc" class="markdown-body container-fluid comment-enabled" data-hard-breaks="true" style="position: relative;">
+    <h1 id="macrosheds-now-hiring">MacroSheds is now hiring postdocs and research associates!</h1>
+    <p>
+        MacroSheds is dedicated to unlocking the scientific insights within watershed data. Our team (Duke, Colorado State) has been harmonizing data from land and waterways in the US and beyond, and now we're ready to do BIG watershed science!
+    </p>
+    <p>
+        This project has at least four more years of funding and ample room to grow, so we're looking for up to three new team members. We want you if you excel in one or more of these domains:
+    </p>
+
+    <div style='background-color: #FDC168; color: #222D32'>
+        <h3>Data Science/Programming/Visualization</h3>
+        <p>
+            Our platform consists of a <a href="https://github.com/MacroSHEDS/data_processing" style="color: blue" target="_blank" rel="noopener">processing pipeline</a>
+            and a <a href="https://github.com/MacroSHEDS/portal" style="color: blue" target="_blank" rel="noopener">data portal</a>.
+            The pipeline is an automated system for acquiring and munging time-series and spatial data from a growing list of sources:
+            <a href="https://lternet.edu/" style="color: blue" target="_blank" rel="noopener">LTER</a>,
+            <a href="https://criticalzone.org/" style="color: blue" target="_blank" rel="noopener">CZO/CZ Net</a>,
+            <a href="https://data.neonscience.org" style="color: blue" target="_blank" rel="noopener">NEON</a>,
+            <a href="https://www.fs.usda.gov/rds/archive/catalog" style="color: blue" target="_blank" rel="noopener">USFS</a>,
+            DOE. Raw precipitation, discharge, and chemistry go in, and derived products (solute flux, basin-average precip, etc.) come out. We then connect these data streams to our portal, where anyone can explore watershed biogeochemistry through interactive visualization.
+        </p>
+        <u>Roles may include</u>:
+        <ul>
+            <li>
+                Development of our core architecture (R, Bash)
+            </li>
+            <li>
+                Development of our web portal (R, Shiny, JavaScript, HTML, CSS)
+            </li>
+            <li>
+                Development of ancillary modules and features (Python, JavaScript, Julia, Scala, Rust, etc.)
+            </li>
+            <li>
+                Cloud architecture (Docker, Kubernetes, AWS/Azure/etc., CI/CD)
+            </li>
+        </ul>
+    </div>
+
+    <div style='background-color: #94D466; color: #222D32'>
+        <h3>Science/Analysis</h3>
+        <p>
+            This project is motivated by several core questions, including:
+            <ol>
+                <li>
+                    How and why do watersheds vary in the magnitude, timing and form of nitrogen exports?
+                </li>
+                <li>
+                    How does a history of watershed acidification affect the magnitude, timing and composition of ecosystem element exports?
+                </li>
+                <li>
+                    What attributes of watershed ecosystems determine their sensitivity to climate change?
+                </li>
+            </ol>
+            It is also a doorway to vast wildernesses of further inquiry.
+        </p>
+        <u>Role includes</u>:
+        <ul>
+            <li>
+                Independent investigation
+            </li>
+            <li>
+                Data analysis
+            </li>
+            <li>
+                Publication of results
+            </li>
+        </ul>
+    </div>
+
+    <div style='background-color: #FFEEAD; color: #222D32'>
+        <h3>Science Communication/Outreach/Team Management</h3>
+        <p>
+            Our portal and dataset are complex! But we want them to be useful to everyone with an interest in watershed ecology or biogeochemistry, so we need a set of friendly informational resources to guide users along. We'll also be hosting data camps, where early-career scientists and engineers will design interactive "data stories" to convey our findings.
+        </p>
+        <u>Roles may include</u>:
+        <ul>
+            <li>
+                Thorough communication with other team members to understand and distill technical detail
+            </li>
+            <li>
+                Management of small technical design teams; storytelling and aesthetic direction
+            </li>
+            <li>
+                Development of text/video/multimedia tutorials and diverse instructional resources
+            </li>
+            <li>
+                Social media outreach
+            </li>
+            <li>
+                Communication with news media
+            </li>
+        </ul>
+    </div>
+
+    <h3>Title</h3>
+    Research Associate or Postdoctoral Scholar
+
+    <h3>Location</h3>
+    Opportunities available at both Duke and Colorado State University
+
+    <h3>Salary</h3>
+    $35,000-60,000
+
+    <h2>NSF Public abstract</h2>
+    <p>
+        This project enables anyone with internet access to compare the flow and the chemistry of hundreds of streams throughout the United States and to explore their watersheds. It combines data sets from many separate research projects into an attractive website that makes the data available. This makes it easy for scientists and students to generate questions about water quality and river flow patterns across the continent. Researchers will use these data to study what types of watersheds are best at retaining nutrients, are recovering most rapidly from decades of acid rain, have the highest erosion rates, and have flow patterns that are least sensitive to floods and droughts. The lessons we learn from studying many watersheds and streams will contribute to more effective management of our nation’s water and forest resources.
+    </p>
+    <p>
+        Much of the literature of watershed ecosystem science over the last decade has focused on gaining ever finer detail of spatial heterogeneity within watersheds. This fine-scale focus has identified many idiosyncrasies of individual watersheds but has not helped us develop general theories about watershed dynamics. Most watershed ecosystem studies remain rather parochial, involving detailed studies of individual or paired watersheds, or surveys of a small set of attributes across multiple watersheds. Macrosystem watershed science, or the search for general principles that describe the functional capacity and behavior across watersheds, has been limited. A major reason for this lack of large-scale focus has been the challenge of data access and integration across sites. Our goal is to compile a dataset that merges all US watershed ecosystem studies into a common platform (MacroSheds) and to enable and train a new generation of watershed ecosystem scientists in the art and practice of macroscale watershed ecosystem science.
+    </p>
+
+    <h2>To apply</h2>
+    <p>
+        Submit cover letter (including statement of interest and qualifications), resume/CV, and contact information for 2 references to
+        <a href="mailto:michael.vlah@duke.edu" target="_blank" rel="noopener">michael.vlah@duke.edu</a>.
+        Review of applications will begin immediately and will continue until the position is filled.
+    </p>
+</div>
+
+
+
