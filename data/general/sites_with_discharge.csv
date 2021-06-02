@@ -4,6 +4,18 @@ czo,boulder,BC_SW_4
 czo,boulder,GGL
 czo,boulder,GGU
 czo,calhoun,weir_4
+czo,catalina_jemez,Bigelow
+czo,catalina_jemez,FLUME_MCZOB
+czo,catalina_jemez,HistoryGrove
+czo,catalina_jemez,LowerJaramillo
+czo,catalina_jemez,LowerLaJara
+czo,catalina_jemez,LowerRedondo
+czo,catalina_jemez,MarshallGulch
+czo,catalina_jemez,OracleRidge
+czo,catalina_jemez,RedondoMeadow
+czo,catalina_jemez,UpperJaramillo
+czo,catalina_jemez,UpperLaJara
+czo,catalina_jemez,UpperRedondo
 doe,east_river,Avery
 doe,east_river,Bradley
 doe,east_river,Copper
@@ -110,7 +122,6 @@ lter,mcmurdo,vguerard_f6
 lter,niwot,ALBION
 lter,niwot,GREEN4
 lter,niwot,MARTINELLI
-lter,niwot,SADDLE
 lter,plum,bear_meadow
 lter,plum,cart_creek
 lter,plum,saw_mill_brook
@@ -153,3 +164,4 @@ usfs,fernow,WS-4
 usfs,fernow,WS-5
 usfs,fernow,WS-6
 usfs,fernow,WS-7
+usgs,usgs,black_earth_creek

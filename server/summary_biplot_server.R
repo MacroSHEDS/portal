@@ -273,7 +273,7 @@ filtered_bi <- reactive({
     if(agg == 'WHOLE2') {
 
         if(include_size && size_var_ == 'missing'){
-    
+
             year_dif <- (year2 - year1 ) + 1
             final <- final %>%
                 #select(-Year) %>%
@@ -286,7 +286,7 @@ filtered_bi <- reactive({
             final <- final %>%
                 select(-Year) %>%
                 group_by(site_name, domain) %>%
-                summarise(across(where(is.numeric), ~mean(.x, na.rm = TRUE))) 
+                summarise(across(where(is.numeric), ~mean(.x, na.rm = TRUE)))
         }
     }
 
@@ -331,6 +331,14 @@ observe({
     site_select <- input$SITE_SELECTION2
     old_selection <- isolate(current_selection$old_x)
 
+    # data <- isolate(pre_filtered_bi())
+    # data_type <<- input$X_TYPE2
+    # doms <<- input$DOMAINS2_S
+    # input$DOMAINS2
+    # sites <<- input$SITES2
+    # site_select <<- input$SITE_SELECTION2
+    # old_selection <<- isolate(current_selection$old_x)
+
     if(data_type == 'Stream Chemistry') {
         select <- filter_dropdown_varlist_bi(data, vartype = 'conc')
         units <- conc_units_bi
@@ -367,13 +375,19 @@ observe({
         units <- 'mm'
         choose <- 'mm'}
 
-    if(old_selection %in% unlist(select)){
-        updateSelectInput(session, 'X_VAR2', choices = select, selected = old_selection)
-    } else{
-        updateSelectInput(session, 'X_VAR2', choices = select)
-    }
+    if(data_type == ''){
 
-    updateSelectInput(session, 'X_UNIT2', choices = units, selected = choose)
+    } else{
+
+        if(old_selection %in% unlist(select)){
+            updateSelectInput(session, 'X_VAR2', choices = select, selected = old_selection)
+        } else{
+            updateSelectInput(session, 'X_VAR2', choices = select)
+        }
+
+        updateSelectInput(session, 'X_UNIT2', choices = units, selected = choose)
+
+    }
 })
 
 observeEvent(input$Y_VAR2,{
@@ -418,14 +432,18 @@ observe({
         units <- 'mm'
         choose <- 'mm'}
 
-    if(old_selection %in% unlist(select)){
-        updateSelectInput(session, 'Y_VAR2', choices = select, selected = old_selection)
-    } else{
-        updateSelectInput(session, 'Y_VAR2', choices = select)
+    if(data_type == ''){
+
+    } else {
+        if(old_selection %in% unlist(select)){
+            updateSelectInput(session, 'Y_VAR2', choices = select, selected = old_selection)
+        } else{
+            updateSelectInput(session, 'Y_VAR2', choices = select)
+        }
+
+        updateSelectInput(session, 'Y_UNIT2', choices = units, selected = choose)
+
     }
-
-    updateSelectInput(session, 'Y_UNIT2', choices = units, selected = choose)
-
 })
 
 observeEvent(input$SIZE_VAR2,{
@@ -473,13 +491,18 @@ observe({
         choose <- '% of record missing'
     }
 
-    if(old_selection %in% unlist(select)){
-        updateSelectInput(session, 'SIZE_VAR2', choices = select, selected = old_selection)
-    } else{
-        updateSelectInput(session, 'SIZE_VAR2', choices = select)
-    }
+    if(data_type == ''){
 
-    updateSelectInput(session, 'SIZE_UNIT2', choices = units, selected = choose)
+    } else{
+        if(old_selection %in% unlist(select)){
+            updateSelectInput(session, 'SIZE_VAR2', choices = select, selected = old_selection)
+        } else{
+            updateSelectInput(session, 'SIZE_VAR2', choices = select)
+        }
+
+        updateSelectInput(session, 'SIZE_UNIT2', choices = units, selected = choose)
+
+    }
 })
 
 #update sites based on domains selected
@@ -496,13 +519,13 @@ observe({
                domain %in% !!data_type) %>%
         pull(domain) %>%
         unique()
-    
+
     domain_site_list <- generate_dropdown_sitelist(domain_vec = domain_choices)
-    
+
     sites_in_domains <- site_data %>%
         filter(domain %in% domain_choices) %>%
         pull(site_name)
-    
+
     new_sites <- current_sites[current_sites %in% sites_in_domains]
 
     updateSelectInput(session, 'SITES2', choices = domain_site_list, selected = new_sites)
@@ -578,6 +601,16 @@ n_sites <- reactive({
     return(num)
 })
 
+# Biplot updates when the underlying data changes, the data change based on
+# Interacting selection so sometimes this cause a cascade of reactivity that
+# updates data many times, this delay allows all those changes to happen before
+# updating the graph, eliminating blank graph
+biplot_trigger <- reactive({
+    filtered_bi()
+    return()
+}) %>%
+    debounce(250)
+
 output$SUMMARY_BIPLOT <- renderPlotly({
 
     # bi_table <<- filtered_bi()
@@ -599,7 +632,8 @@ output$SUMMARY_BIPLOT <- renderPlotly({
     # chem_size <<- isolate(input$SIZE_TYPE2)
     # num_sites <<- isolate(n_sites())
 
-    bi_table <- filtered_bi()
+    biplot_trigger()
+    bi_table <- isolate(filtered_bi())
     domains <- isolate(input$DOMAINS2)
     sites <- isolate(input$SITES2)
     x_var <- isolate(input$X_VAR2)
@@ -633,6 +667,7 @@ output$SUMMARY_BIPLOT <- renderPlotly({
                                           font=list(size = 30)),
                        paper_bgcolor = 'rgba(0,0,0,0)',
                        plot_bgcolor = 'rgba(0,0,0,0)')
+
 
     if(nrow(bi_table) == 0 || x_var == '' || y_var == '' || size_var == '') {
         return(empty_plot)
@@ -718,7 +753,7 @@ output$SUMMARY_BIPLOT <- renderPlotly({
     bi_table <- network_domain_default_sites %>%
         select(domain, pretty_domain) %>%
         right_join(.,bi_table, by = 'domain')
-    
+
     if(col_by == 'legend_name'){
         bi_table <- bi_table %>%
             mutate(legend_name = paste0(pretty_domain, ' - ', site_name))
@@ -726,7 +761,7 @@ output$SUMMARY_BIPLOT <- renderPlotly({
     } else{
         bi_table <- bi_table %>%
             mutate(legend_name = site_name)
-        
+
     }
 
     #Currently disabled
@@ -765,7 +800,7 @@ output$SUMMARY_BIPLOT <- renderPlotly({
         }
 
         if(include_size) {
-            
+
             if(col_by == 'pretty_domain'){
                 plot <- bi_table %>%
                     plotly::plot_ly(x = ~get(x_tvar),
@@ -780,7 +815,7 @@ output$SUMMARY_BIPLOT <- renderPlotly({
                                     line = list(width = 2, color = ~get(col_by)),
                                     text = ~paste0(size_var, ' ', size_unit, ':', round(get(size_tvar), digits = 2), '\nSite:', site_name, ', \nDomain:', pretty_domain),
                                     legendgroup = ~get(col_by)
-                                    
+
                     ) %>%
                     plotly::layout(xaxis = list(title = paste0(x_var, ' ', x_unit),
                                                 range = c(min_year, max_year),
@@ -803,7 +838,7 @@ output$SUMMARY_BIPLOT <- renderPlotly({
                                     line = list(width = 2, color = ~get(col_by)),
                                     text = ~paste0(size_var, ' ', size_unit, ':', round(get(size_tvar), digits = 2), '\nSite:', site_name, ', \nDomain:', pretty_domain),
                                     legendgroup = ~get(col_by)
-                                    
+
                     ) %>%
                     plotly::layout(xaxis = list(title = paste0(x_var, ' ', x_unit),
                                                 range = c(min_year, max_year),
@@ -813,38 +848,38 @@ output$SUMMARY_BIPLOT <- renderPlotly({
                                    plot_bgcolor = 'rgba(0,0,0,0)',
                                    legend = list(itemsizing='constant',
                                                  traceorder = 'grouped'))
-                
+
             }
         } else {
 
             # site_to_domain <- bi_table %>%
             #     select(site_name, pretty_domain) %>%
             #     distinct(site_name, .keep_all = TRUE)
-            # 
+            #
             # one_site <- bi_table %>%
             #     #filter(domain %in% c('boulder', 'hbef')) %>%
             #     pivot_wider(names_from = 'site_name', values_from = 'SO4_S_conc',
             #                 id_cols = 'Year') %>%
             #     arrange(Year)
-            # 
+            #
             # site_cols <- one_site %>%
             #     select(-Year) %>%
             #     colnames()
-            # 
+            #
             # fin_test <- plotly::plot_ly()
-            # 
+            #
             # all_doms <- unique(site_to_domain$pretty_domain)
-            # 
+            #
             # for(s in 1:length(site_cols)){
-            # 
+            #
             #     this_site <- site_cols[s]
-            # 
+            #
             #     this_pretty_domain <- site_to_domain %>%
             #         filter(site_name == !!this_site) %>%
             #         pull(pretty_domain)
-            # 
+            #
             #     colo_pos  <- grep(this_pretty_domain, all_doms)
-            # 
+            #
             #     fin_test <- plotly::add_trace(p = fin_test,
             #                                   x = one_site[['Year']],
             #                                   y = one_site[[this_site]],
@@ -1039,6 +1074,7 @@ output$SUMMARY_BIPLOT <- renderPlotly({
             font = list(size = 28)))
 
     return(plot)
+
 })
 
 # Old code, will be usful for map selections ####
