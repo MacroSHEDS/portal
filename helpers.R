@@ -1012,7 +1012,7 @@ load_portal_config <- function(from_where){
         variables <- sm(googlesheets4::read_sheet(
             conf$variables_gsheet,
             na = c('', 'NA'),
-            col_types = 'cccccccnncc'
+            col_types = 'cccccccnnccnn'
         ))
 
         site_data <- sm(googlesheets4::read_sheet(

@@ -1,13 +1,13 @@
 domain,pretty_domain,network,pretty_network,stream,site_name,full_name,site_type,latitude,longitude,CRS,ws_area_ha,in_workflow,notes,local_time_zone,includes_snow
-hbef,Hubbard Brook,lter,LTER,Stream 1,w1,Watershed 1,stream_gauge,43.952034,-71.726501,4326,14.089739768101,1,NA,America/New_York,NA
-hbef,Hubbard Brook,lter,LTER,Stream 2,w2,Watershed 2,stream_gauge,43.953358,-71.724174,4326,17.9266090230241,1,NA,America/New_York,NA
-hbef,Hubbard Brook,lter,LTER,Stream 3,w3,Watershed 3,stream_gauge,43.954875,-71.722816,4326,40.2449543795603,1,NA,America/New_York,NA
-hbef,Hubbard Brook,lter,LTER,Stream 4,w4,Watershed 4,stream_gauge,43.950176,-71.725792,4326,38.8277892737352,1,NA,America/New_York,NA
-hbef,Hubbard Brook,lter,LTER,Stream 5,w5,Watershed 5,stream_gauge,43.948845,-71.731918,4326,20.7826040685029,1,NA,America/New_York,NA
-hbef,Hubbard Brook,lter,LTER,Stream 6,w6,Watershed 6,stream_gauge,43.94994,-71.735641,4326,14.9645183211027,1,NA,America/New_York,NA
-hbef,Hubbard Brook,lter,LTER,Stream 7,w7,Watershed 7,stream_gauge,43.927509,-71.767075,4326,76.5978880071327,1,NA,America/New_York,NA
-hbef,Hubbard Brook,lter,LTER,Stream 8,w8,Watershed 8,stream_gauge,43.929436,-71.759521,4326,61.043420283247,1,NA,America/New_York,NA
-hbef,Hubbard Brook,lter,LTER,Stream 9,w9,Watershed 9,stream_gauge,43.926014,-71.747195,4326,70.2630617552412,1,NA,America/New_York,NA
+hbef,Hubbard Brook,lter,LTER,Stream 1,w1,Watershed 1,stream_gauge,43.952034,-71.726501,4326,14.0897397738246,1,NA,America/New_York,NA
+hbef,Hubbard Brook,lter,LTER,Stream 2,w2,Watershed 2,stream_gauge,43.953358,-71.724174,4326,17.9266090308577,1,NA,America/New_York,NA
+hbef,Hubbard Brook,lter,LTER,Stream 3,w3,Watershed 3,stream_gauge,43.954875,-71.722816,4326,40.2449543953631,1,NA,America/New_York,NA
+hbef,Hubbard Brook,lter,LTER,Stream 4,w4,Watershed 4,stream_gauge,43.950176,-71.725792,4326,38.8277892677509,1,NA,America/New_York,NA
+hbef,Hubbard Brook,lter,LTER,Stream 5,w5,Watershed 5,stream_gauge,43.948845,-71.731918,4326,20.782604069009,1,NA,America/New_York,NA
+hbef,Hubbard Brook,lter,LTER,Stream 6,w6,Watershed 6,stream_gauge,43.94994,-71.735641,4326,14.964518331546,1,NA,America/New_York,NA
+hbef,Hubbard Brook,lter,LTER,Stream 7,w7,Watershed 7,stream_gauge,43.927509,-71.767075,4326,76.5978880057436,1,NA,America/New_York,NA
+hbef,Hubbard Brook,lter,LTER,Stream 8,w8,Watershed 8,stream_gauge,43.929436,-71.759521,4326,61.0434202787758,1,NA,America/New_York,NA
+hbef,Hubbard Brook,lter,LTER,Stream 9,w9,Watershed 9,stream_gauge,43.926014,-71.747195,4326,70.2630617622768,1,NA,America/New_York,NA
 hbef,Hubbard Brook,lter,LTER,NA,RG1,Rain Gauge 1,rain_gauge,43.952120788912,-71.7248377271807,4326,NA,1,converted shapefile from lter using st_transform,America/New_York,1
 hbef,Hubbard Brook,lter,LTER,NA,RG11,Rain Gauge 11,rain_gauge,43.9502266292999,-71.7346124400276,4326,NA,1,converted shapefile from lter using st_transform,America/New_York,1
 hbef,Hubbard Brook,lter,LTER,NA,RG23,Rain Gauge 23,rain_gauge,43.9272011309167,-71.746926195465,4326,NA,1,converted shapefile from lter using st_transform,America/New_York,1
@@ -64,6 +64,15 @@ hjandrews,H. J. Andrews,lter,LTER,NA,VANMET,Vanilla Leaf Met Station Recording R
 hjandrews,H. J. Andrews,lter,LTER,NA,VARMET,Vanilla Leaf Met Meadow Recording RG,rain_gauge,44.273329,-122.149663,4326,NA,1,NA,America/Los_Angeles,1
 hjandrews,H. J. Andrews,lter,LTER,NA,WS10RG,Top of WS#10 Storage RG,rain_gauge,44.219956,-122.25684,4326,NA,1,NA,America/Los_Angeles,1
 hjandrews,H. J. Andrews,lter,LTER,NA,WS09RG,Top of WS#9 Storage RG,rain_gauge,44.203214,-122.254851,4326,NA,1,NA,America/Los_Angeles,1
+hjandrews,H. J. Andrews,lter,LTER,Grasshopper Creek,TSGRAS,Grasshopper Creek (S. Fork McKenzie) thermograph site,stream_sampling_point,NA,NA,4326,NA,0,NA,America/Los_Angeles,NA
+hjandrews,H. J. Andrews,lter,LTER,Lookout Creek,TSLOOK,Lookout Creek upper thermograph site,stream_sampling_point,44.22478329,-122.1216289,4326,483.018193077372,1,NA,America/Los_Angeles,NA
+hjandrews,H. J. Andrews,lter,LTER,Mack Creek,TSMACK,Mack Creek old-growth thermograph site,stream_sampling_point,44.21664907,-122.16547369,4326,512.953552778539,1,NA,America/Los_Angeles,NA
+hjandrews,H. J. Andrews,lter,LTER,McRae Creek,TSMCRA,McRae Creek upper thermograph site,stream_sampling_point,44.25638612,-122.16757303,4326,598.034328577294,1,NA,America/Los_Angeles,NA
+hjandrews,H. J. Andrews,lter,LTER,Quartz Creek,TSQRTZ,Quartz Creek (Blue River tributary) thermograph site,stream_sampling_point,44.198319,-122.301997,4326,NA,1,NA,America/Los_Angeles,NA
+hjandrews,H. J. Andrews,lter,LTER,NA,TSLOMA,Lookout and Mack Creek confluence thermograph site,stream_sampling_point,44.22756413,-122.16802024,4326,2599.45750415965,1,NA,America/Los_Angeles,NA
+hjandrews,H. J. Andrews,lter,LTER,NA,TSLOMC,Lookout and McRae Creek confluence thermograph site,stream_sampling_point,44.23298992,-122.20863436,4326,5066.89163604921,1,NA,America/Los_Angeles,NA
+hjandrews,H. J. Andrews,lter,LTER,Cold Creek,TSCOLD,Cold Creek thermograph site,stream_sampling_point,NA,NA,4326,NA,0,NA,America/Los_Angeles,NA
+hjandrews,H. J. Andrews,lter,LTER,NA,TSMCBR,McRae Bridge thermograph site,stream_sampling_point,NA,NA,4326,NA,0,NA,America/Los_Angeles,NA
 neon,NEON,neon,NEON,Little Rock Lake,LIRO,Little Rock Lake,lake_gauge,45.998269,-89.704767,4326,NA,0,NA,America/Chicago,NA
 neon,NEON,neon,NEON,Toolik Lake,TOOK,Toolik Lake,lake_gauge,68.64181,-149.59366,4326,NA,0,NA,America/Anchorage,NA
 neon,NEON,neon,NEON,Ordway-Swisher Biological Station - Suggs Lake,SUGG,Ordway-Swisher Biological Station - Suggs Lake,lake_gauge,29.68705,-82.01617,4326,NA,0,NA,America/New_York,NA
@@ -403,6 +412,8 @@ catalina_jemez,Santa Catalina Mountains and Jemez River Basin,czo,CZO,NA,MG_Doub
 catalina_jemez,Santa Catalina Mountains and Jemez River Basin,czo,CZO,NA,MG_Schist_Winter,Marchall Gluch; Schist Winter,rain_gauge,32.426226,-110.761255,4326,NA,1,NA,America/Denver,NA
 catalina_jemez,Santa Catalina Mountains and Jemez River Basin,czo,CZO,NA,MG_Weir,Marchall Gluch; Weir,rain_gauge,32.42725,-110.757598,4326,NA,1,NA,America/Denver,NA
 catalina_jemez,Santa Catalina Mountains and Jemez River Basin,czo,CZO,NA,MG_Lemmon,Marchall Gluch; Mt. Lemmon,rain_gauge,32.441553999999996,-110.790975,4326,NA,1,NA,America/Denver,NA
+catalina_jemez,Santa Catalina Mountains and Jemez River Basin,czo,CZO,NA,MC_flux_tower,Mixed Conifer Flux Tower,rain_gauge,35.8892,-106.5322,4326,NA,1,NA,America/Denver,NA
+catalina_jemez,Santa Catalina Mountains and Jemez River Basin,czo,CZO,NA,Ponderosa_flux_tower,Ponderosa Pine flux tower,rain_gauge,35.8641,-106.5965,4326,NA,1,NA,America/Denver,NA
 calhoun,Calhoun,czo,CZO,NA,reasearch_area_1,NA,rain_gauge,34.6071,-81.7238,4326,NA,1,NA,US/Eastern,0
 calhoun,Calhoun,czo,CZO,NA,Tyger_River_hwy49,Tyger River at Hwy 49,stream_sampling_point,34.66616,-81.7393,4326,NA,1,NA,US/Eastern,NA
 calhoun,Calhoun,czo,CZO,NA,Isaacs_Creek_Bombing_Rang,Isaacs Creek at Bombing Range Rd,stream_sampling_point,34.65018,-81.7376,4326,NA,1,NA,US/Eastern,NA
@@ -465,3 +476,4 @@ east_river,East River,doe,DOE,NA,billy_barr_spring,NA,stream_sampling_point,38.9
 east_river,East River,doe,DOE,Coal Creek,coal_11,NA,stream_sampling_point,38.86368333,-107.0336,4326,NA,1,possibly coloacted with USGS gauge 09111000,America/Denver,NA
 east_river,East River,doe,DOE,NA,east_above_quigley,NA,stream_sampling_point,38.99518558,-107.0145513,4326,NA,1,NA,America/Denver,NA
 east_river,East River,doe,DOE,NA,tuttle_spring,NA,stream_sampling_point,38.94548333,-106.9901972,4326,NA,1,NA,America/Denver,NA
+usgs,USGS,usgs,USGS,Black Earth Creek,black_earth_creek,"BLACK EARTH CREEK NR BREWERY RD AT CROSS PLAINS,WI",stream_gauge,43.109722,-89.640833,4326,3289.52532809393,1,USGS 05406457,America/Chicago,NA
