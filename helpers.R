@@ -1259,3 +1259,16 @@ get_watermark_specs <- function(dydat = dydat,
     return(list(dt = max_dt,
                 series = max_dt_series))
 }
+
+dt_ranges_overlap <- function(range1, range2){
+
+    #converts range1 and range2 to POSIXct, converts them to ranges if they're
+    #vectors of length > 2, then determines if they overlap
+
+    range1 <- with_tz(as.POSIXct(range(range1, na.rm = TRUE)), tz='UTC')
+    range2 <- with_tz(as.POSIXct(range(range2, na.rm = TRUE)), tz='UTC')
+
+    ranges_overlap <- min(c(range1[2], range2[2])) - max(c(range1[1], range2[1])) > 0
+
+    return(ranges_overlap)
+}

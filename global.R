@@ -74,7 +74,8 @@ sites_with_Q <- sm(read_csv('data/general/sites_with_discharge.csv')) %>%
 
 site_data <- filter(site_data,
                     as.logical(in_workflow),
-                    paste(domain, site_name, sep = '_') %in% sites_with_Q)
+                    paste(domain, site_name, sep = '_') %in% sites_with_Q |
+                        site_type == 'rain_gauge')
 
 
 #TODO: allow duplicate site_names

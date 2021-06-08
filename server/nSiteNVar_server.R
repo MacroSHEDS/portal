@@ -258,12 +258,13 @@ observe({
 
     dtrng <- get_timeslider_extent(basedata, dates)
 
-    if(length(sites) == 1){
+    vardates <- filter(basedata$chem, drop_var_prefix(var) %in% vars_)$datetime
+
+    if(length(sites) == 1 && ! dt_ranges_overlap(vardates, dates)){
 
         if(agg == 'Yearly'){
             selected_dtrng <- dtrng
         } else {
-            vardates <- filter(basedata$chem, drop_var_prefix(var) %in% vars_)$datetime
             selected_dtrng <- as.Date(most_recent_year(range(vardates)))
         }
 
