@@ -48,20 +48,59 @@ output$SITE_SUBCATALOG <- DT::renderDataTable({
     DT::datatable(d, options = list(scrollX = 'true'))
 })
 
-# output$SITE_CATALOG <- renderUI(tagList(
-#     fluidPage(
-#         fluidRow(
-#             column(12,
-#                    # HTML("<h3><a href='?home'>Home</a> | ",
-#                    #      "<a href='?old-faithful'>Old Faithful</a> |",
-#                    #      "<a href='?page3'>Nothing</a>",
-#                    #      "</h3>")
-#
-#             )
-#         ),
-#         uiOutput('TEST')
-#     )
-# ))
+output$DL_CHECKBOX_TREE <- renderUI({
+
+    dlcheck_template_network <- read_file('ui/dlcheck_template_network.html')
+    dlcheck_template_domain <- read_file('ui/dlcheck_template_domain.html')
+    dlcheck_template_site <- read_file('ui/dlcheck_template_site.html')
+
+    networks <- network_domain_default_sites %>%
+        select(network, pretty_network) %>%
+        distinct()
+
+    checkboxlist <- list()
+    checkboxlist_counter <- 0
+    for(i in 1:nrow(networks)){
+
+        checkboxlist_counter <- checkboxlist_counter + 1
+        checkboxlist[[checkboxlist_counter]] <- HTML(glue(
+            dlcheck_template_network,
+            nn = networks$network[i],
+            N = networks$pretty_network[i]))
+
+        domains <- network_domain_default_sites %>%
+            filter(network == networks$network[i]) %>%
+            select(domain, pretty_domain)
+
+        for(j in 1:nrow(domains)){
+
+            checkboxlist_counter <- checkboxlist_counter + 1
+            checkboxlist[[checkboxlist_counter]] <- HTML(glue(
+                dlcheck_template_domain,
+                nn = networks$network[i],
+                dd = domains$domain[j],
+                D = domains$pretty_domain[j]))
+
+            sites <- site_data %>%
+                filter(network == networks$network[i],
+                       domain == domains$domain[j]) %>%
+                select(site_name, full_name)
+
+            for(k in 1:nrow(sites)){
+
+                checkboxlist_counter <- checkboxlist_counter + 1
+                checkboxlist[[checkboxlist_counter]] <- HTML(glue(
+                    dlcheck_template_site,
+                    nn = networks$network[i],
+                    dd = domains$domain[j],
+                    ss = sites$site_name[k],
+                    S = paste0(sites$full_name[k], ' (', sites$site_name[k], ')')))
+            }
+        }
+    }
+
+    return(checkboxlist)
+})
 
 # fname <- isolate(session$clientData$url_search)
 # print(fname)
@@ -115,4 +154,13 @@ observeEvent(
     autoDestroy = FALSE,
     eventExpr = input$SITE_SUBCATALOG_BUTTON_LISTENER,
     handlerExpr = site_subcatalog
+)
+
+observeEvent(
+    ignoreNULL = TRUE,
+    ignoreInit = TRUE,
+    handler.quoted = TRUE,
+    autoDestroy = FALSE,
+    eventExpr = input$TIMESERIES_DL_BUTTON,
+    handlerExpr = timeseries_dl
 )

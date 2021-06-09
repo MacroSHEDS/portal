@@ -26,20 +26,20 @@ shinyjs.init = function() {
    //     });
    // }
    
-   //function debounce(func, wait, immediate){
-   //    var timeout;
-   //    return function(){
-   //        var context = this, args = arguments;
-   //        var later = function(){
-   //                        timeout = null;
-   //                        if(!immediate) func.apply(context, args);
-   //                    };
-   //        var callNow = immediate && ! timeout;
-   //        clearTimeout(timeout);
-   //        timeout = setTimeout(later, wait);
-   //        if(callNow) func.apply(context, args);
-   //    };
-   //};
+   function debounce(func, wait, immediate){
+       var timeout;
+       return function(){
+           var context = this, args = arguments;
+           var later = function(){
+                           timeout = null;
+                           if(!immediate) func.apply(context, args);
+                       };
+           var callNow = immediate && ! timeout;
+           clearTimeout(timeout);
+           timeout = setTimeout(later, wait);
+           if(callNow) func.apply(context, args);
+       };
+   };
 
     //connect map buttons to app tabs
     $('body').ready(function(){
@@ -395,6 +395,7 @@ shinyjs.init = function() {
     });
 
 
+    //control data catalog interactions
     $('body').ready(function(){
         $('#dataTable').on('focus', function(i){
             $('#site_catalog td').each(function(i){
@@ -454,16 +455,12 @@ shinyjs.init = function() {
 
         var tgt = $(target);
         var shinymodal = tgt.children('#shiny-modal-wrapper');
+
         if(shinymodal.length > 0){
 
             var modal_id = shinymodal.find('.modal-body').attr('id');
-            if(modal_id != 'landing'){
 
-                //make modal fullscreen
-                shinymodal.children('.modal').css({'width': '100%', 'height': '100%', 'margin': '0px'})
-                    .children('.modal-dialog').css({'width': '100%', 'height': '100%', 'margin': '0px'})
-                    .children('.modal-content').css({'width': '100%', 'height': '100%'});
-            } else {
+            if(modal_id == 'landing'){
 
                 window.setTimeout(function(){
                     $('.loading-container').hide();
@@ -479,26 +476,87 @@ shinyjs.init = function() {
                 }, 8000);
 
                 return;
-            }
+            };
 
-            await new Promise(r => setTimeout(r, 1000)); //wait a second for the modal and its table to load
+            //make all non-landing modals fullscreen
+            shinymodal.children('.modal').css({'width': '100%', 'height': '100%', 'margin': '0px'})
+                .children('.modal-dialog').css({'width': '100%', 'height': '100%', 'margin': '0px'})
+                .children('.modal-content').css({'width': '100%', 'height': 'auto', 'min-height': '100%'});
 
-            shinymodal.find('td').each(set_td_titles);
+            //for catalog modals
+            if(/catalog$/.test(modal_id)){
 
-            //set up listeners for all button elements inside table cells (uses partial application)
-            shinymodal.find('td button').each(partial(function(index, value){
-                set_tablebutton_listener(btn = arguments[2], modal_id_ = arguments[0]);
-            }, modal_id));
+                await new Promise(r => setTimeout(r, 1000)); //wait a second for the modal and its table to load
 
-            ////set up listeners that update td titles and button events when paginate buttons are clicked
-            //shinymodal.find("a[class^='paginate_button']").click(function listener_recurse(i, v){
-            //    console.log('a');
-            //    window.setTimeout(function(){
-            //        console.log('gg');
-            //    }, 500);
-            //    $('td').each(set_td_titles);
-            //    $("a[class^='paginate_button']").click(listener_recurse(i, v));
-            //});
+                shinymodal.find('td').each(set_td_titles);
+
+                //set up listeners for all button elements inside table cells (uses partial application)
+                shinymodal.find('td button').each(partial(function(index, value){
+                    set_tablebutton_listener(btn = arguments[2], modal_id_ = arguments[0]);
+                }, modal_id));
+            };
+
+            //for timeseries download modal
+            if(modal_id == 'timeseries_dl'){
+
+                await new Promise(r => setTimeout(r, 3000)); //wait a few seconds for the modal and its contents to load
+
+                //$('#DL_ALLSITES').click(function(){
+                //    if(this.checked == true){
+                //        $('#DL_CHECKBOX_TREE_DIV').css('display', 'none');
+                //    } else {
+                //        $('#DL_CHECKBOX_TREE_DIV').css('display', '');
+                //    };
+                //});
+
+                $('button[id^="DL_NETWORK_BUTTON"]').click(function(){
+                    
+                    let network = this.id.match('^DL_NETWORK_BUTTON_(.+)')[1]
+                    let = is_shown = $(this).attr('display') == 'none'
+
+                    $('.dl-checkbox-domain[id^="DL_DOMAIN_DIV' + network + '"]').each(function(){
+
+                        if(is_shown){
+                            $(this).css('display', 'none')
+                        } else {
+                            $(this).css('display', '')
+                        };
+                    });
+                });
+
+                //manage domain tier
+                $('.dl-checkbox-network').change(function(){
+
+                    let network = this.id.match('^DL_NETWORK_(.+)')[1]
+                    let network_is_checked = this.checked
+
+                    $('.dl-checkbox-domain[id^="DL_DOMAIN_' + network + '"]').each(function(){
+
+                        if(network_is_checked){
+                            this.checked = true
+                        } else {
+                            this.checked = false
+                        };
+                    });
+                });
+
+                //manage site tier
+                $('.dl-checkbox-domain').change(function(){
+
+                    let ntw_dmn = this.id.match('^DL_DOMAIN_(.+)?\\|\\|(.+)').slice(1, 3)
+                    let domain_is_checked = this.checked
+
+                    $('.dl-checkbox-site[id^="DL_SITE_' + ntw_dmn[0] + '\\|\\|' + ntw_dmn[1] + '"]').each(function(){
+
+                        if(domain_is_checked){
+                            this.checked = true
+                        } else {
+                            this.checked = false
+                        };
+                    });
+                });
+
+            };
         };
     });
 
@@ -523,6 +581,42 @@ shinyjs.init = function() {
 
         }, 200);
     });
+
+    //each time number of shown records changes, remake the cell titles and button events
+    $('body').on('change', "select[name^='DataTables_Table_']", function(i, v){
+
+        window.setTimeout(function(){
+
+            var modl = $('.modal-body');
+            var modal_id = modl.attr('id');
+
+            modl.find('td').each(set_td_titles);
+            
+            //set up listeners for all button elements inside table cells (uses partial application)
+            modl.find('td button').each(partial(function(index, value){
+                set_tablebutton_listener(btn = arguments[2], modal_id_ = arguments[0]);
+            }, modal_id));
+
+        }, 200);
+    });
+
+    //each time a search is made, remake the cell titles and button events (debounce until last keystroke)
+    $('body').on('input', "input[type='search'][aria-controls^='DataTables_Table_']", debounce(function(i, v){
+
+        window.setTimeout(function(){
+
+            var modl = $('.modal-body');
+            var modal_id = modl.attr('id');
+
+            modl.find('td').each(set_td_titles);
+            
+            //set up listeners for all button elements inside table cells (uses partial application)
+            modl.find('td button').each(partial(function(index, value){
+                set_tablebutton_listener(btn = arguments[2], modal_id_ = arguments[0]);
+            }, modal_id));
+
+        }, 400);
+    }, 1000));
 
     //all this crap (and associated CSS) is necessary just to make "macrosheds.org"
     //appear (and STAY appeared) in the bottom of each dygraph as an annotation

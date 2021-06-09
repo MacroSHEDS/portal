@@ -1,3 +1,5 @@
+#modal popup contents. for the data tab itself, see data_tab_ui.R
+
 site_catalog <- quote({
     print('SITE CATALOG')
     showModal(
@@ -111,7 +113,8 @@ site_subcatalog <- quote({
     })
 
     showModal(
-        modalDialog(title = NULL,
+        modalDialog(
+            title = NULL,
             footer = NULL,
             easyClose = TRUE,
             id = 'site_subcatalog',
@@ -134,6 +137,42 @@ site_subcatalog <- quote({
                 column(12,
                     br(),
                     DT::dataTableOutput('SITE_SUBCATALOG')
+                )
+            )
+        )
+    )
+})
+
+timeseries_dl <- quote({
+    showModal(
+        modalDialog(
+            title = NULL,
+            footer = NULL,
+            easyClose = TRUE,
+            id = 'timeseries_dl',
+            size = 'l',
+            fluidRow(class = 'text-left',
+                column(10,
+                    h2('Time-series Download', style = 'margin-top: 0px'),
+                ),
+                column(2, class = 'text-right',
+                    actionButton(inputId = 'DISMISS_MODAL',
+                                 label = 'Close (Esc)'),
+                ),
+            ),
+            fluidRow(class = 'text-left',
+                column(12,
+                    br(),
+                    checkboxInput(inputId = 'DL_ALLSITES',
+                                  label = 'Include all sites from all data networks',
+                                  value = TRUE),
+                    hr(),
+                    conditionalPanel('input.DL_ALLSITES == false',
+                    # div(id = 'DL_CHECKBOX_TREE_DIV',
+                    #     style = 'display: none',
+                        h3('Networks'),
+                        uiOutput('DL_CHECKBOX_TREE')
+                    )
                 )
             )
         )
