@@ -258,7 +258,11 @@ observe({
 
     dtrng <- get_timeslider_extent(basedata, dates)
 
-    vardates <- filter(basedata$chem, drop_var_prefix(var) %in% vars_)$datetime
+    if(nrow(basedata$chem)){
+        vardates <- filter(basedata$chem, drop_var_prefix(var) %in% vars_)$datetime
+    } else {
+        vardates <- dtrng
+    }
 
     if(length(sites) == 1 && ! dt_ranges_overlap(vardates, dates)){
 

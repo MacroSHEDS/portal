@@ -753,7 +753,7 @@ manufacture_empty_plotdata = function(sites){
 
 generate_dropdown_sitelist = function(domain_vec){
 
-    if(is.null(domain_vec)) return(NULL)
+    if(is.null(domain_vec)) return(list())
 
     sitelist <- list()
     for(i in seq_along(domain_vec)){
