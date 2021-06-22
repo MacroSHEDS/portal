@@ -153,7 +153,7 @@ timeseries_dl <- quote({
             size = 'l',
             fluidRow(class = 'text-left',
                 column(10,
-                    h2('Time-series Download', style = 'margin-top: 0px'),
+                    h2('Time-series Data Download', style = 'margin-top: 0px'),
                 ),
                 column(2, class = 'text-right',
                     actionButton(inputId = 'DISMISS_MODAL',
@@ -163,16 +163,24 @@ timeseries_dl <- quote({
             fluidRow(class = 'text-left',
                 column(12,
                     br(),
-                    checkboxInput(inputId = 'DL_ALLSITES',
-                                  label = 'Include all sites from all data networks',
-                                  value = TRUE),
-                    hr(),
-                    conditionalPanel('input.DL_ALLSITES == false',
+                    # checkboxInput(inputId = 'DL_ALLSITES',
+                    #               label = 'Include all sites from all data domains',
+                    #               value = TRUE),
+                    # hr(),
+                    # conditionalPanel('input.DL_ALLSITES == false',
                     # div(id = 'DL_CHECKBOX_TREE_DIV',
                     #     style = 'display: none',
-                        h3('Networks'),
-                        uiOutput('DL_CHECKBOX_TREE')
-                    )
+                    div(style = 'position: relative; height: 4em',
+                        h4('Network', style = 'position: absolute; font-color: gray; bottom: 0; margin-top: 0'),
+                        h4('Domain', style = 'font-color: gray; margin-left: 150px; position: absolute; margin-top: 0; bottom: 0'),
+                        h4('Watersheds', style = 'font-color: gray; margin-left: 31em; position: absolute; margin-top: 0; bottom: 0'),
+                        h4('Areas (ha)', style = 'font-color: gray; margin-left: 39em; position: absolute; margin-top: 0; bottom: 0'),
+                        h4('Centroid (WGS84)', style = 'font-color: gray; margin-left: 45em; position: absolute; margin-top: 0; bottom: 0'),
+                        h4('Zip size (MB)', style = 'font-color: gray; margin-left: 53em; position: absolute; margin-top: 0; bottom: 0')
+                    ),
+                    uiOutput('DL_CHECKBOX_TREE')
+                    # )
+                    downloadButton('DL_SUBMIT_TS')
                 )
             )
         )

@@ -499,7 +499,7 @@ shinyjs.init = function() {
             //for timeseries download modal
             if(modal_id == 'timeseries_dl'){
 
-                await new Promise(r => setTimeout(r, 3000)); //wait a few seconds for the modal and its contents to load
+                await new Promise(r => setTimeout(r, 1000)); //wait a second for the modal and its contents to load
 
                 //$('#DL_ALLSITES').click(function(){
                 //    if(this.checked == true){
@@ -512,14 +512,14 @@ shinyjs.init = function() {
                 $('button[id^="DL_NETWORK_BUTTON"]').click(function(){
                     
                     let network = this.id.match('^DL_NETWORK_BUTTON_(.+)')[1]
-                    let = is_shown = $(this).attr('display') == 'none'
+                    let domains_hidden = $(this).parents().eq(4).next('div[id^="DL_DOMAIN_DIV"]').css('display') == 'none'
 
-                    $('.dl-checkbox-domain[id^="DL_DOMAIN_DIV' + network + '"]').each(function(){
+                    $('div[id^="DL_DOMAIN_DIV_' + network + '"]').each(function(){
 
-                        if(is_shown){
-                            $(this).css('display', 'none')
+                        if(domains_hidden){
+                            $(this).show();
                         } else {
-                            $(this).css('display', '')
+                            $(this).hide();
                         };
                     });
                 });

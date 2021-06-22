@@ -58,6 +58,38 @@ output$DL_CHECKBOX_TREE <- renderUI({
         select(network, pretty_network) %>%
         distinct()
 
+    # firstRecord <- sm(readr::read_csv('data/general/catalog_files/all_sites.csv')) %>%
+    #     select(Network, Domain, SiteCode, FirstRecordUTC)
+
+    dom_summ <- site_data %>%
+        filter(site_type == 'stream_gauge') %>%
+        group_by(network, domain) %>%
+        summarize(pretty_domain = first(pretty_domain),
+                  nsites = length(site_name),
+                  areamin = round(min(ws_area_ha, na.rm = TRUE), 0),
+                  areamax = round(max(ws_area_ha, na.rm = TRUE), 0),
+                  latmean = round(mean(latitude, na.rm = TRUE), 1),
+                  lonmean = round(mean(longitude, na.rm = TRUE), 1),
+                  .groups = 'drop') %>%
+        left_join(read_csv('data/general/download_sizes/timeseries.csv'),
+                  by = 'domain') %>%
+        # mutate(summstring = glue('[watersheds: {ns}; area range (ha): {amin}-{amax};',
+        #                          ' centroid (WGS84): {latm}, {lonm}]',
+        mutate(summstring = glue('{d} {ns}&nbsp;&nbsp;&nbsp;{amin} - {amax}',
+                                 '&nbsp;&nbsp;&nbsp;({latm}, {lonm})&nbsp;&nbsp;&nbsp;{dl}',
+                                 d = str_trunc(pretty_domain, 50, side = 'right',
+                                               ellipsis = '...^') %>%
+                                     str_pad(50, side = 'right', pad = '^'),
+                                 ns = str_pad(nsites, 4, side = 'left', pad = '^'),
+                                 amin = str_pad(areamin, 6, side = 'left', pad = '^'),
+                                 amax = str_pad(areamax, 6, side = 'right', pad = '^'),
+                                 latm = str_pad(latmean, 5, side = 'left', pad = '^'),
+                                 lonm = str_pad(lonmean, 6, side = 'right', pad = '^'),
+                                 dl = str_pad(dl_size_MB, 10, side = 'left', pad = '^')),
+               summstring = str_replace_all(summstring, '\\^', '&nbsp;')) %>%
+               # summstring = str_replace_all(summstring, '\\^', '&#x2800;')) %>%
+        select(network, domain, summstring)
+
     checkboxlist <- list()
     checkboxlist_counter <- 0
     for(i in 1:nrow(networks)){
@@ -68,9 +100,12 @@ output$DL_CHECKBOX_TREE <- renderUI({
             nn = networks$network[i],
             N = networks$pretty_network[i]))
 
-        domains <- network_domain_default_sites %>%
-            filter(network == networks$network[i]) %>%
-            select(domain, pretty_domain)
+        # domains <- network_domain_default_sites %>%
+        #     filter(network == networks$network[i]) %>%
+        #     select(domain, pretty_domain) %>%
+
+        domains <- dom_summ %>%
+            filter(network == networks$network[i])
 
         for(j in 1:nrow(domains)){
 
@@ -79,7 +114,7 @@ output$DL_CHECKBOX_TREE <- renderUI({
                 dlcheck_template_domain,
                 nn = networks$network[i],
                 dd = domains$domain[j],
-                D = domains$pretty_domain[j]))
+                D = domains$summstring[j]))
 
             sites <- site_data %>%
                 filter(network == networks$network[i],
@@ -101,6 +136,8 @@ output$DL_CHECKBOX_TREE <- renderUI({
 
     return(checkboxlist)
 })
+
+output$DL_SUBMIT_TS <- downloadHandler(filename = 'timeseries_') #HERE
 
 # fname <- isolate(session$clientData$url_search)
 # print(fname)
