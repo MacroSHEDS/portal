@@ -82,6 +82,7 @@ shinyjs.init = function() {
     );
     
     //if somebody clicks a question mark, tell them to hover on it instead
+    //(this is done separately for tooltips within modals)
     $(document).ready(function(){
         $('#flags3-tooltip').click(function(){
             $(this).addClass('instruct-hover').delay(800).queue(function(){
@@ -499,6 +500,14 @@ shinyjs.init = function() {
             //for timeseries download modal
             if(modal_id == 'timeseries_dl'){
 
+                await new Promise(r => setTimeout(r, 100)); //wait 0.1 sec for tooltip to appear
+
+                $('#filetype-tooltip').click(function(){
+                    $(this).addClass('instruct-hover').delay(800).queue(function(){
+                        $(this).removeClass('instruct-hover').dequeue();
+                    });
+                });
+
                 await new Promise(r => setTimeout(r, 1000)); //wait a second for the modal and its contents to load
 
                 //$('#DL_ALLSITES').click(function(){
@@ -540,21 +549,33 @@ shinyjs.init = function() {
                     });
                 });
 
-                //manage site tier
-                $('.dl-checkbox-domain').change(function(){
+                //send array of selected domains to R when download button is clicked; or flash warning if no selections
+                $('#DL_SUBMIT_TS').click(function(){
 
-                    let ntw_dmn = this.id.match('^DL_DOMAIN_(.+)?\\|\\|(.+)').slice(1, 3)
-                    let domain_is_checked = this.checked
+                    let selected_domains = [];
+                    $('#DL_CHECKBOX_TREE input[type="checkbox"][id^="DL_DOMAIN"]:checked')
+                        .each( (i, x) => selected_domains.push( x.id.match('\\|\\|(.+)$')[1] ));
 
-                    $('.dl-checkbox-site[id^="DL_SITE_' + ntw_dmn[0] + '\\|\\|' + ntw_dmn[1] + '"]').each(function(){
+                    selected_domains = selected_domains.length === 0 ? [Math.random()] : selected_domains;
+                    Shiny.setInputValue('DL_TS_SELECTIONS', selected_domains);
 
-                        if(domain_is_checked){
-                            this.checked = true
-                        } else {
-                            this.checked = false
-                        };
-                    });
                 });
+
+              //  //manage site tier
+              //  $('.dl-checkbox-domain').change(function(){
+
+              //      let ntw_dmn = this.id.match('^DL_DOMAIN_(.+)?\\|\\|(.+)').slice(1, 3)
+              //      let domain_is_checked = this.checked
+
+              //      $('.dl-checkbox-site[id^="DL_SITE_' + ntw_dmn[0] + '\\|\\|' + ntw_dmn[1] + '"]').each(function(){
+
+              //          if(domain_is_checked){
+              //              this.checked = true
+              //          } else {
+              //              this.checked = false
+              //          };
+              //      });
+              //  });
 
             };
         };

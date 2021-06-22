@@ -163,23 +163,36 @@ timeseries_dl <- quote({
             fluidRow(class = 'text-left',
                 column(12,
                     br(),
-                    # checkboxInput(inputId = 'DL_ALLSITES',
-                    #               label = 'Include all sites from all data domains',
-                    #               value = TRUE),
-                    # hr(),
-                    # conditionalPanel('input.DL_ALLSITES == false',
-                    # div(id = 'DL_CHECKBOX_TREE_DIV',
-                    #     style = 'display: none',
+                    div(style = "white-space: nowrap",
+                        div('Choose filetype:',
+                            style = "display: inline-block; vertical-align: middle; white-space: normal; padding-bottom: 4px",
+                            class = 'widget-title text-left'
+                        ),
+                        div(id = 'filetype-tooltip',
+                            style = "display: inline-block; vertical-align: top",
+                            title = paste('Choose "Feather" if you will be working',
+                                          'with these data in R, Python, Julia, etc.',
+                                          'Otherwise choose "CSV", but note that your',
+                                          'download may be significantly delayed while',
+                                          'we reformat the data.'),
+                            enc2native('\U2753')
+                        ),
+                        radioButtons('DL_FORMAT_TS',
+                                     label = NULL,
+                                     choices = c('Feather', 'CSV'),
+                                     selected = 'Feather',
+                                     inline = TRUE),
+                    ),
                     div(style = 'position: relative; height: 4em',
                         h4('Network', style = 'position: absolute; font-color: gray; bottom: 0; margin-top: 0'),
                         h4('Domain', style = 'font-color: gray; margin-left: 150px; position: absolute; margin-top: 0; bottom: 0'),
                         h4('Watersheds', style = 'font-color: gray; margin-left: 31em; position: absolute; margin-top: 0; bottom: 0'),
                         h4('Areas (ha)', style = 'font-color: gray; margin-left: 39em; position: absolute; margin-top: 0; bottom: 0'),
                         h4('Centroid (WGS84)', style = 'font-color: gray; margin-left: 45em; position: absolute; margin-top: 0; bottom: 0'),
-                        h4('Zip size (MB)', style = 'font-color: gray; margin-left: 53em; position: absolute; margin-top: 0; bottom: 0')
+                        h4('Zip size (~MB)', style = 'font-color: gray; margin-left: 53em; position: absolute; margin-top: 0; bottom: 0')
                     ),
-                    uiOutput('DL_CHECKBOX_TREE')
-                    # )
+                    uiOutput('DL_CHECKBOX_TREE'),
+                    hr(),
                     downloadButton('DL_SUBMIT_TS')
                 )
             )

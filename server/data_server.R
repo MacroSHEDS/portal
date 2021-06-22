@@ -116,28 +116,110 @@ output$DL_CHECKBOX_TREE <- renderUI({
                 dd = domains$domain[j],
                 D = domains$summstring[j]))
 
-            sites <- site_data %>%
-                filter(network == networks$network[i],
-                       domain == domains$domain[j]) %>%
-                select(site_name, full_name)
-
-            for(k in 1:nrow(sites)){
-
-                checkboxlist_counter <- checkboxlist_counter + 1
-                checkboxlist[[checkboxlist_counter]] <- HTML(glue(
-                    dlcheck_template_site,
-                    nn = networks$network[i],
-                    dd = domains$domain[j],
-                    ss = sites$site_name[k],
-                    S = paste0(sites$full_name[k], ' (', sites$site_name[k], ')')))
-            }
+            # sites <- site_data %>%
+            #     filter(network == networks$network[i],
+            #            domain == domains$domain[j]) %>%
+            #     select(site_name, full_name)
+            #
+            # for(k in 1:nrow(sites)){
+            #
+            #     checkboxlist_counter <- checkboxlist_counter + 1
+            #     checkboxlist[[checkboxlist_counter]] <- HTML(glue(
+            #         dlcheck_template_site,
+            #         nn = networks$network[i],
+            #         dd = domains$domain[j],
+            #         ss = sites$site_name[k],
+            #         S = paste0(sites$full_name[k], ' (', sites$site_name[k], ')')))
+            # }
         }
     }
 
     return(checkboxlist)
 })
 
-output$DL_SUBMIT_TS <- downloadHandler(filename = 'timeseries_') #HERE
+# download_clicks <- reactiveValues(ts_download = 0)
+
+# observeEvent(input$NO_SELECTIONS_WARNING, {
+# # observeEvent(input$DL_TS_SELECTIONS, {
+#
+#     # if(length(input$DL_TS_SELECTIONS) == 1 && is.numeric(input$DL_TS_SELECTIONS)){
+#     showNotification(input$NO_SELECTIONS_WARNING[2],
+#                      duration = 0.75,
+#                      closeButton = FALSE,
+#                      type = 'warning')
+#     # } else {
+#     #     # download_clicks$ts_download <- download_clicks$ts_download + 1
+#     #     print(download_clicks$ts_download)
+#     # }
+# })
+
+output$DL_SUBMIT_TS <- downloadHandler(
+    filename = 'macrosheds_timeseries.zip',
+    content = function(file){
+
+        selected_domains <- input$DL_TS_SELECTIONS
+
+        if(length(selected_domains) == 1 && is.numeric(selected_domains)){
+            showNotification('No domains selected',
+                             duration = 0.75,
+                             closeButton = FALSE,
+                             type = 'warning')
+
+            #this still initiates an http request, but it doesn't seem to cause
+            #any trouble. i couldn't get downloadHandler to fire without
+            #directly clicking a corresponding downloadButton, which seems to leave no choice.
+            return()
+        }
+
+        newpaths <- list()
+        for(i in seq_along(selected_domains)){
+
+            dmndata <- list.files(paste0('data/', selected_domains[i]),
+                                  full.names = TRUE,
+                                  recursive = TRUE,
+                                  include.dirs = FALSE,
+                                  pattern = '(?:\\.feather$|documentation_)')
+
+            dmndata_newpaths <- sub(pattern = '^data/',
+                                    replacement = 'macrosheds_timeseries/',
+                                    x = dmndata)
+
+            for(j in seq_along(dmndata)){
+
+                dir.create(dirname(dmndata_newpaths[j]),
+                           recursive = TRUE,
+                           showWarnings = FALSE)
+
+                sw(file.copy(from = dmndata[j],
+                             to = dmndata_newpaths[j],
+                             recursive = TRUE))
+            }
+
+            newpaths[[i]] <- dmndata_newpaths
+        }
+
+        newpaths <- unlist(newpaths)
+
+        if(input$DL_FORMAT_TS == 'CSV'){
+
+            for(i in seq_along(newpaths)){
+
+                if(! grepl('*.feather$', newpaths[i])) next
+                d <- feather::read_feather(newpaths[i])
+                unlink(newpaths[i])
+                newpaths[i] <- sub('\\.feather', '.csv', newpaths[i])
+                readr::write_csv(d, newpaths[i])
+            }
+        }
+
+        zip(zipfile = file,
+            flags = '-r6Xq',
+            files = newpaths)
+
+        unlink('macrosheds_timeseries',
+               recursive = TRUE)
+    },
+    contentType = 'application/zip')
 
 # fname <- isolate(session$clientData$url_search)
 # print(fname)
