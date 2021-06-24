@@ -73,6 +73,7 @@ sites_with_Q <- sm(read_csv('data/general/sites_with_discharge.csv')) %>%
                  remove = TRUE) %>%
     pull(nds)
 
+site_data_copy <- site_data
 site_data <- filter(site_data,
                     as.logical(in_workflow),
                     paste(domain, site_name, sep = '_') %in% sites_with_Q |

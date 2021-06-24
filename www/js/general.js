@@ -76,7 +76,7 @@ shinyjs.init = function() {
         '<input type="radio" name="CONC_FLUX3" value="VWC">' +
         '<span>Volume-Weighted Concentration</span>' +
         '</label>' +
-        '<div id = "vwc-tooltip" style = "display: inline-block; vertical-align: middle"' +
+        '<div class = "ms-tooltip" style = "display: inline-block; vertical-align: middle"' +
         'title = "Total flux divided by total discharge (or precip), over the aggregation period. Only available when aggregation > daily. See Notes/Caveats tab for more.">&#x2753;</div>' +
         '</div>'
     );
@@ -84,27 +84,7 @@ shinyjs.init = function() {
     //if somebody clicks a question mark, tell them to hover on it instead
     //(this is done separately for tooltips within modals)
     $(document).ready(function(){
-        $('#flags3-tooltip').click(function(){
-            $(this).addClass('instruct-hover').delay(800).queue(function(){
-                $(this).removeClass('instruct-hover').dequeue();
-            });
-        });
-        $('#interp3-tooltip').click(function(){
-            $(this).addClass('instruct-hover').delay(800).queue(function(){
-                $(this).removeClass('instruct-hover').dequeue();
-            });
-        });
-        $('#vwc-tooltip').click(function(){
-            $(this).addClass('instruct-hover').delay(800).queue(function(){
-                $(this).removeClass('instruct-hover').dequeue();
-            });
-        });
-        $('#agg3-tooltip').click(function(){
-            $(this).addClass('instruct-hover').delay(800).queue(function(){
-                $(this).removeClass('instruct-hover').dequeue();
-            });
-        });
-        $('#qc3-tooltip').click(function(){
+        $('.ms-tooltip').click(function(){
             $(this).addClass('instruct-hover').delay(800).queue(function(){
                 $(this).removeClass('instruct-hover').dequeue();
             });
@@ -498,11 +478,11 @@ shinyjs.init = function() {
             };
 
             //for timeseries download modal
-            if(modal_id == 'timeseries_dl'){
+            if(['timeseries_dl', 'spatial_dl'].includes(modal_id)){
 
-                await new Promise(r => setTimeout(r, 100)); //wait 0.1 sec for tooltip to appear
+                await new Promise(r => setTimeout(r, 100)); //wait 0.1 sec for tooltips to appear
 
-                $('#filetype-tooltip').click(function(){
+                $('.ms-tooltip').click(function(){
                     $(this).addClass('instruct-hover').delay(800).queue(function(){
                         $(this).removeClass('instruct-hover').dequeue();
                     });
@@ -549,7 +529,7 @@ shinyjs.init = function() {
                     });
                 });
 
-                //send array of selected domains to R when download button is clicked; or flash warning if no selections
+                //send array of selected domains to R when download button is clicked; or flash warning (via R) if no selections
                 $('#DL_SUBMIT_TS').click(function(){
 
                     let selected_domains = [];
@@ -558,6 +538,17 @@ shinyjs.init = function() {
 
                     selected_domains = selected_domains.length === 0 ? [Math.random()] : selected_domains;
                     Shiny.setInputValue('DL_TS_SELECTIONS', selected_domains);
+
+                });
+
+                $('#DL_SUBMIT_GIS').click(function(){
+
+                    let selected_domains = [];
+                    $('#DL_CHECKBOX_TREE2 input[type="checkbox"][id^="DL_DOMAIN"]:checked')
+                        .each( (i, x) => selected_domains.push( x.id.match('\\|\\|(.+)$')[1] ));
+
+                    selected_domains = selected_domains.length === 0 ? [Math.random()] : selected_domains;
+                    Shiny.setInputValue('DL_GIS_SELECTIONS', selected_domains);
 
                 });
 
@@ -578,6 +569,7 @@ shinyjs.init = function() {
               //  });
 
             };
+
         };
     });
 
