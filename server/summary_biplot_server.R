@@ -613,6 +613,7 @@ biplot_trigger <- reactive({
 
 output$SUMMARY_BIPLOT <- renderPlotly({
 
+    # biplot_trigger()
     # bi_table <<- filtered_bi()
     # domains <<- isolate(input$DOMAINS2)
     # sites <<- isolate(input$SITES2)

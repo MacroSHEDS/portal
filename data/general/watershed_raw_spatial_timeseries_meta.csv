@@ -1,0 +1,142 @@
+variable_code,variable_name,unit,variable_type,variable_subtype,data_class,data_source
+cc_precip_sd,Daily Standard Deviation,NA,ws_char,Prism Precipitation,climate,PRISM
+cc_precip_median,Daily Median,mm,ws_char,Prism Precipitation,climate,PRISM
+cc_temp_mean_sd,Daily Standard Deviation,NA,ws_char,Prism Temperature,climate,PRISM
+cc_temp_mean_median,Daily Median,NA,ws_char,Prism Temperature,climate,PRISM
+vb_bare_cover_median,Watershed Median Bare Cover,%,ws_char,MODIS Land Cover,vegetation,MODIS
+vb_bare_cover_sd,Watershed Standard Deviation Bare Cover,NA,ws_char,MODIS Land Cover,vegetation,MODIS
+vb_tree_cover_median,Watershed Median Tree Cover,%,ws_char,MODIS Land Cover,vegetation,MODIS
+vb_tree_cover_sd,Watershed Standard Deviation Tree Cover,NA,ws_char,MODIS Land Cover,vegetation,MODIS
+vb_veg_cover_median,Watershed Median Non-Tree Vegetation,%,ws_char,MODIS Land Cover,vegetation,MODIS
+vb_veg_cover_sd,Watershed Standard Deviation Non-Tree Vegetation,NA,ws_char,MODIS Land Cover,vegetation,MODIS
+vd_sos_mean,Start of Growing Season Watershed Mean,DOY,ws_char,Phenology,vegetation,USGS
+vd_sos_sd,Start of Growing Season Standard Deviation,NA,ws_char,Phenology,vegetation,USGS
+vd_eos_mean,End of Growing Season Watershed Mean,DOY,ws_char,Phenology,vegetation,USGS
+vd_eos_sd,End of Growing Season Standard Deviation,NA,ws_char,Phenology,vegetation,USGS
+vd_los_mean,Length of Growing Season Watershed Mean,Days,ws_char,Phenology,vegetation,USGS
+vd_los_sd,Length of Growing Season Watershed Standard Deviation,NA,ws_char,Phenology,vegetation,USGS
+vd_mos_mean,Max Day in Growing Season Watershed Mean,DOY,ws_char,Phenology,vegetation,USGS
+vd_mos_sd,Max Day in Growing Season Watershed Standard Deviation,NA,ws_char,Phenology,vegetation,USGS
+vb_lai_median,Daily Median,m2/m2,ws_char,Leaf Area Index,vegetation,MODIS
+vb_lai_sd,Daily Standard Deviation,NA,ws_char,Leaf Area Index,vegetation,MODIS
+vb_fpar_median,Daily Median,%,ws_char,Fraction of Absorbed Photosynthetically Active Radiation,vegetation,MODIS
+vb_fpar_sd,Daily Standard Deviation,NA,ws_char,Fraction of Absorbed Photosynthetically Active Radiation,vegetation,MODIS
+va_gpp_median,Daily Median,kg*C/m^2,ws_char,Gross Primary Production,vegetation,University of Montana Numerical Terradynamic Simulation Group (NTSG)
+va_gpp_sd,Daily Standard Deviation,NA,ws_char,Gross Primary Production,vegetation,University of Montana Numerical Terradynamic Simulation Group (NTSG)
+va_npp_median,Annual NPP,kg*C/m^2,ws_char,Net Primary Production,vegetation,University of Montana Numerical Terradynamic Simulation Group (NTSG)
+va_npp_sd,Watershed Standard Deviation NPP,NA,ws_char,Net Primary Production,vegetation,University of Montana Numerical Terradynamic Simulation Group (NTSG)
+te_slope_mean,Mean Slope,%,ws_char,Terrain,terrain,Amazon Web Services Terrian Tiles
+te_slope_sd,Slope Standard Deviation,NA,ws_char,Terrain,terrain,Amazon Web Services Terrian Tiles
+te_elev_mean,Mean Elevation,m,ws_char,Terrain,terrain,Amazon Web Services Terrian Tiles
+te_elev_sd,Elevation Standard Deviation,NA,ws_char,Terrain,terrain,Amazon Web Services Terrian Tiles
+te_elev_min,Minimum Elevation,m,ws_char,Terrain,terrain,Amazon Web Services Terrian Tiles
+te_elev_max,Maximum Elevation,m,ws_char,Terrain,terrain,Amazon Web Services Terrian Tiles
+te_aspect_mean,Mean Aspect,degrees,ws_char,Terrain,terrain,Amazon Web Services Terrian Tiles
+te_aspect_sd,Aspect Standard Deviation,NA,ws_char,Terrain,terrain,Amazon Web Services Terrian Tiles
+hd_bfi_mean,Mean Baseflow Index,%,ws_char,Hydrology,hydrology,USGS
+hd_bfi_sd,Baseflow Index Standard Deviation,%,ws_char,Hydrology,hydrology,USGS
+pd_geo_Al2O3_mean,Lithological aluminum oxide Mean,%,ws_char,Geochemistry,parent material,USGS
+pd_geo_Al2O3_sd,Lithological aluminum oxide Standard Deviation,NA,ws_char,Geochemistry,parent material,USGS
+pd_geo_CaO_mean,Lithological calcium oxide Mean,%,ws_char,Geochemistry,parent material,USGS
+pd_geo_CaO_sd,Lithological calcium oxide Standard Deviation,NA,ws_char,Geochemistry,parent material,USGS
+pd_geo_CompressStrength_mean,Lithological uniaxial compressive strength Mean,MPa,ws_char,Geochemistry,parent material,USGS
+pd_geo_CompressStrength_sd,Lithological uniaxial compressive strength Standard Deviation,NA,ws_char,Geochemistry,parent material,USGS
+pd_geo_Fe2O3_mean,Lithological ferric oxide Mean,%,ws_char,Geochemistry,parent material,USGS
+pd_geo_Fe2O3_sd,Lithological ferric oxide Standard Deviation,NA,ws_char,Geochemistry,parent material,USGS
+pd_geo_HydaulicCond_mean,Lithological hydraulic conductivity Mean,um/s,ws_char,Geochemistry,parent material,USGS
+pd_geo_HydaulicCond_sd,Lithological hydraulic conductivity Standard Deviation,NA,ws_char,Geochemistry,parent material,USGS
+pd_geo_K2O_mean,Lithological potassium oxide Mean,%,ws_char,Geochemistry,parent material,USGS
+pd_geo_K2O_sd,Lithological potassium oxide Standard Deviation,NA,ws_char,Geochemistry,parent material,USGS
+pd_geo_MgO_mean,Lithological magnesium oxide Mean,%,ws_char,Geochemistry,parent material,USGS
+pd_geo_MgO_sd,Lithological magnesium oxide Standard Deviation,NA,ws_char,Geochemistry,parent material,USGS
+pd_geo_N_mean,Lithological nitrogen Mean,%,ws_char,Geochemistry,parent material,USGS
+pd_geo_N_sd,Lithological nitrogen Standard Deviation,NA,ws_char,Geochemistry,parent material,USGS
+pd_geo_Na2O_mean,Lithological sodium oxide Mean,%,ws_char,Geochemistry,parent material,USGS
+pd_geo_Na2O_sd,Lithological sodium oxide Standard Deviation,NA,ws_char,Geochemistry,parent material,USGS
+pd_geo_P2O5_mean,Lithological phosphorus pentoxide Mean,%,ws_char,Geochemistry,parent material,USGS
+pd_geo_P2O5_sd,Lithological phosphorus pentoxide Standard Deviation,NA,ws_char,Geochemistry,parent material,USGS
+pd_geo_S_mean,Lithological sulfur Mean,%,ws_char,Geochemistry,parent material,USGS
+pd_geo_S_sd,Lithological sulfur Standard Deviation,NA,ws_char,Geochemistry,parent material,USGS
+pd_geo_SiO2_mean,Lithological silicon dioxide Mean,%,ws_char,Geochemistry,parent material,USGS
+pd_geo_SiO2_sd,Lithological silicon dioxide Standard Deviation,NA,ws_char,Geochemistry,parent material,USGS
+ch_annual_Ca_flux_mean,Mean Annual Calcium Flux,kg/ha,ws_char,NADP,climate,National Atmospheric Deposition Program (NADP)
+ch_annual_Ca_flux_sd_space,Annual Calcium Flux Standard Deviation,NA,ws_char,NADP,climate,National Atmospheric Deposition Program (NADP)
+ch_annual_Cl_flux_mean,Mean Annual Chlorine Flux,kg/ha,ws_char,NADP,climate,National Atmospheric Deposition Program (NADP)
+ch_annual_Cl_flux_sd_space,Annual Chlorine Flux Standard Deviation,NA,ws_char,NADP,climate,National Atmospheric Deposition Program (NADP)
+ch_annual_H_flux_mean,Mean Annual Hydrogen ion Flux,kg/ha,ws_char,NADP,climate,National Atmospheric Deposition Program (NADP)
+ch_annual_H_flux_sd_space,Annual Hydrogen ion Flux Standard Deviation,NA,ws_char,NADP,climate,National Atmospheric Deposition Program (NADP)
+ch_annual_K_flux_mean,Mean Annual Potassium Flux,kg/ha,ws_char,NADP,climate,National Atmospheric Deposition Program (NADP)
+ch_annual_K_flux_sd_space,Annual Potassium Flux Standard Deviation,NA,ws_char,NADP,climate,National Atmospheric Deposition Program (NADP)
+ch_annual_Mg_flux_mean,Mean Annual Magnesium Flux,kg/ha,ws_char,NADP,climate,National Atmospheric Deposition Program (NADP)
+ch_annual_Mg_flux_sd_space,Annual Magnesium Flux Standard Deviation,NA,ws_char,NADP,climate,National Atmospheric Deposition Program (NADP)
+ch_annual_Na_flux_mean,Mean Annual Sodium Flux,kg/ha,ws_char,NADP,climate,National Atmospheric Deposition Program (NADP)
+ch_annual_Na_flux_sd_space,Annual Sodium Flux Standard Deviation,NA,ws_char,NADP,climate,National Atmospheric Deposition Program (NADP)
+ch_annual_NH4_flux_mean,Mean Annual Ammonium Flux,kg/ha,ws_char,NADP,climate,National Atmospheric Deposition Program (NADP)
+ch_annual_NH4_flux_sd_space,Annual Ammonium Flux Standard Deviation,NA,ws_char,NADP,climate,National Atmospheric Deposition Program (NADP)
+ch_annual_NO3_flux_mean,Mean Annual nitrate flux,kg/ha,ws_char,NADP,climate,National Atmospheric Deposition Program (NADP)
+ch_annual_NO3_flux_sd_space,Annual Nitrate Flux Standard Deviation,NA,ws_char,NADP,climate,National Atmospheric Deposition Program (NADP)
+ch_annual_SO4_flux_mean,Mean Annual Sulfate Flux,kg/ha,ws_char,NADP,climate,National Atmospheric Deposition Program (NADP)
+ch_annual_SO4_flux_sd_space,Annual Sulfate Flux Standard Deviation,NA,ws_char,NADP,climate,National Atmospheric Deposition Program (NADP)
+ch_annual_S_N_flux_mean,Mean Annual Nitrogen+Sulfur Flux,eq/ha,ws_char,NADP,climate,National Atmospheric Deposition Program (NADP)
+ch_annual_S_N_flux_sd_space,Annual Nitrogen+Dulfur Flux Standard Deviation,NA,ws_char,NADP,climate,National Atmospheric Deposition Program (NADP)
+ch_annual_N_flux_mean,Mean Annual Inorganic Nitrogen Flux,kg/ha,ws_char,NADP,climate,National Atmospheric Deposition Program (NADP)
+ch_annual_N_flux_sd_space,Annual Inorganic Nitrogen Flux Standard Deviation,NA,ws_char,NADP,climate,National Atmospheric Deposition Program (NADP)
+vb_ndvi_median,Daily Median NDVI,NA,ws_char,NDVI,vegetation,MODIS
+vb_ndvi_sd,Daily NDVI Standard Deviation,NA,ws_char,NDVI,vegetation,MODIS
+vg_nlcd_1992_water,Open Water (1992),%,ws_char,NLCD,vegetation,Multi-Resolution Land Characteristics Consortium (MRLC)
+vg_nlcd_1992_ice_snow,Perennial Ice/Snow (1992),%,ws_char,NLCD,vegetation,Multi-Resolution Land Characteristics Consortium (MRLC)
+vg_nlcd_1992_res_low,Low intensity Residential (1992),%,ws_char,NLCD,vegetation,Multi-Resolution Land Characteristics Consortium (MRLC)
+vg_nlcd_1992_res_hi,High Intensity Residential (1992),%,ws_char,NLCD,vegetation,Multi-Resolution Land Characteristics Consortium (MRLC)
+vg_nlcd_1992_commercial,Commercial/Industrial/Transportation (1992),%,ws_char,NLCD,vegetation,Multi-Resolution Land Characteristics Consortium (MRLC)
+vg_nlcd_1992_barren,Bare Rock/Sand/Clay (1992),%,ws_char,NLCD,vegetation,Multi-Resolution Land Characteristics Consortium (MRLC)
+vg_nlcd_1992_mines,Quarries/Strip Minds/Gravel Pits (1992),%,ws_char,NLCD,vegetation,Multi-Resolution Land Characteristics Consortium (MRLC)
+vg_nlcd_1992_barren_tran,Transitional Barren (1992),%,ws_char,NLCD,vegetation,Multi-Resolution Land Characteristics Consortium (MRLC)
+vg_nlcd_1992_forest_dec,Deciduous Forest (1992),%,ws_char,NLCD,vegetation,Multi-Resolution Land Characteristics Consortium (MRLC)
+vg_nlcd_1992_forest_evr,Evergreen Forest (1992),%,ws_char,NLCD,vegetation,Multi-Resolution Land Characteristics Consortium (MRLC)
+vg_nlcd_1992_forest_mix,Mixed Forest (1992),%,ws_char,NLCD,vegetation,Multi-Resolution Land Characteristics Consortium (MRLC)
+vg_nlcd_1992_shrub,Shrubland (1992),%,ws_char,NLCD,vegetation,Multi-Resolution Land Characteristics Consortium (MRLC)
+vg_nlcd_1992_orchards,Orchards/Vineyards/Other (1992),%,ws_char,NLCD,vegetation,Multi-Resolution Land Characteristics Consortium (MRLC)
+vg_nlcd_1992_grass,Grasswland/Herbaceous (1992),%,ws_char,NLCD,vegetation,Multi-Resolution Land Characteristics Consortium (MRLC)
+vg_nlcd_1992_pasture,Pasture/Hay (1992),%,ws_char,NLCD,vegetation,Multi-Resolution Land Characteristics Consortium (MRLC)
+vg_nlcd_1992_row_crop,Row Crops (1992),%,ws_char,NLCD,vegetation,Multi-Resolution Land Characteristics Consortium (MRLC)
+vg_nlcd_1992_small_grains,Small Grains (1992),%,ws_char,NLCD,vegetation,Multi-Resolution Land Characteristics Consortium (MRLC)
+vg_nlcd_1992_fallow,Fallow (1992),%,ws_char,NLCD,vegetation,Multi-Resolution Land Characteristics Consortium (MRLC)
+vg_nlcd_1992_urban_grass,Urban/Recreational Grasses (1992),%,ws_char,NLCD,vegetation,Multi-Resolution Land Characteristics Consortium (MRLC)
+vg_nlcd_1992_wetland_wood,Woody Wetland (1992),%,ws_char,NLCD,vegetation,Multi-Resolution Land Characteristics Consortium (MRLC)
+vg_nlcd_1992_wetland_herb,Emergent Herbaceous Wetland (1992),%,ws_char,NLCD,vegetation,Multi-Resolution Land Characteristics Consortium (MRLC)
+vg_nlcd_barren,Barren Land,%,ws_char,NLCD,vegetation,Multi-Resolution Land Characteristics Consortium (MRLC)
+vg_nlcd_crop,Cultivated Crops,%,ws_char,NLCD,vegetation,Multi-Resolution Land Characteristics Consortium (MRLC)
+vg_nlcd_dev_hi,"Developed, High Intensity",%,ws_char,NLCD,vegetation,Multi-Resolution Land Characteristics Consortium (MRLC)
+vg_nlcd_dev_low,"Developed, Low Intensity",%,ws_char,NLCD,vegetation,Multi-Resolution Land Characteristics Consortium (MRLC)
+vg_nlcd_dev_med,"Developed, Medium Intensity",%,ws_char,NLCD,vegetation,Multi-Resolution Land Characteristics Consortium (MRLC)
+vg_nlcd_dev_open,"Developed, Open Space",%,ws_char,NLCD,vegetation,Multi-Resolution Land Characteristics Consortium (MRLC)
+vg_nlcd_forest_dec,Deciduous Forest,%,ws_char,NLCD,vegetation,Multi-Resolution Land Characteristics Consortium (MRLC)
+vg_nlcd_forest_evr,Evergreen Forest,%,ws_char,NLCD,vegetation,Multi-Resolution Land Characteristics Consortium (MRLC)
+vg_nlcd_forest_mix,Mixed Forest,%,ws_char,NLCD,vegetation,Multi-Resolution Land Characteristics Consortium (MRLC)
+vg_nlcd_grass,Grasswland/Herbaceous,%,ws_char,NLCD,vegetation,Multi-Resolution Land Characteristics Consortium (MRLC)
+vg_nlcd_ice_snow,Perennial Ice/Snow,%,ws_char,NLCD,vegetation,Multi-Resolution Land Characteristics Consortium (MRLC)
+vg_nlcd_pasture,Pasture/Hay,%,ws_char,NLCD,vegetation,Multi-Resolution Land Characteristics Consortium (MRLC)
+vg_nlcd_shrub,Shrub/Scrub,%,ws_char,NLCD,vegetation,Multi-Resolution Land Characteristics Consortium (MRLC)
+vg_nlcd_water,Open Water,%,ws_char,NLCD,vegetation,Multi-Resolution Land Characteristics Consortium (MRLC)
+vg_nlcd_wetland_herb,Emergent Herbaceous Wetland,%,ws_char,NLCD,vegetation,Multi-Resolution Land Characteristics Consortium (MRLC)
+vg_nlcd_wetland_wood,Woody Wetland,%,ws_char,NLCD,vegetation,Multi-Resolution Land Characteristics Consortium (MRLC)
+vg_nlcd_shrub_dwr,Dwarf Scrub,%,ws_char,NLCD,vegetation,Multi-Resolution Land Characteristics Consortium (MRLC)
+vg_nlcd_sedge,Sedge/Herbaceous,%,ws_char,NLCD,vegetation,Multi-Resolution Land Characteristics Consortium (MRLC)
+vg_lncd_lichens,Lichens,%,ws_char,NLCD,vegetation,Multi-Resolution Land Characteristics Consortium (MRLC)
+vg_nlcd_moss,Moss,%,ws_char,NLCD,vegetation,Multi-Resolution Land Characteristics Consortium (MRLC)
+pf_soil_org,Soil Organic Matter,%,ws_char,Soil,parent material,NRCS-gSSURGO
+pf_soil_sand,Soil Sand Content,%,ws_char,Soil,parent material,NRCS-gSSURGO
+pf_soil_silt,Soil Silt Content,%,ws_char,Soil,parent material,NRCS-gSSURGO
+pf_soil_clay,Soil Clay Content,%,ws_char,Soil,parent material,NRCS-gSSURGO
+pf_soil_awc,Mean Soil Available Water Content,cm/cm,ws_char,Soil,parent material,NRCS-gSSURGO
+pf_soil_water_0.1bar,Water Content at 1/10 bar,%,ws_char,Soil,parent material,NRCS-gSSURGO
+pf_soil_water_0.33bar,Water Content at 1/3 bar,%,ws_char,Soil,parent material,NRCS-gSSURGO
+pf_soil_water_15bar,Water Content at 15 bar,%,ws_char,Soil,parent material,NRCS-gSSURGO
+pf_soil_water_0bar,Water Content at 0 bar,%,ws_char,Soil,parent material,NRCS-gSSURGO
+pf_soil_cat_exchange_7,Mean Cation-exchange capacity,meq,ws_char,Soil,parent material,NRCS-gSSURGO
+pf_soil_ph,Mean pH,NA,ws_char,Soil,parent material,NRCS-gSSURGO
+pi_soil_thickness,Mean Soil Thinkness,m,ws_char,Soil,parent material,Pelletier et al. 2016
+vh_tcw_sd,Tasseled Cap Wetness Standard Deviation,NA,ws_char,Tasseled Cap Wetness,vegetation,Oxford MAP TCW
+vh_tcw_median,Tasseled Cap Wetness Median,NA,ws_char,Tasseled Cap Wetness,vegetation,Oxford MAP TCW
+ci_et_ref_sd,Daily Reference Evapotranspiration (grass) Standard Deviation,NA,ws_char,GRIDMET,climate,GRIDMET
+ci_et_ref_median,Daily Reference Evapotranspiration (grass),mm,ws_char,GRIDMET,climate,GRIDMET
