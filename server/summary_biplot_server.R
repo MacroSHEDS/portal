@@ -565,19 +565,34 @@ observe({
         updateSelectInput(session, 'SIZE_UNIT2', choices = conc_units_bi, selected = conc_units_bi[3])
     }
 
-    # ws traits
+})
+
+# Update ws_chars options if the category is changed 
+observe({
+    x_var <<- input$X_VAR2
+    chem_x <<- isolate(input$X_TYPE2)
+    
     if(chem_x == 'Watershed Characteristics'){
         updateSelectInput(session, 'X_UNIT2', choices = subset_ws_traits(x_var, ws_traits))
     }
+})
 
+observe({
+    y_var <- input$Y_VAR2
+    chem_y <- isolate(input$Y_TYPE2)
+    
     if(chem_y == 'Watershed Characteristics'){
         updateSelectInput(session, 'Y_UNIT2', choices = subset_ws_traits(y_var, ws_traits))
     }
+})
 
+observe({
+    size_var <- input$SIZE_VAR2
+    chem_size <- isolate(input$SIZE_TYPE2)
+    
     if(chem_size == 'Watershed Characteristics'){
         updateSelectInput(session, 'SIZE_UNIT2', choices = subset_ws_traits(size_var, ws_traits))
     }
-
 })
 
 # Plot data ####
