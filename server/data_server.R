@@ -284,7 +284,7 @@ output$DL_SUBMIT_TS <- downloadHandler(
                          closeButton = FALSE,
                          type = 'message')
 
-        unlink('macrosheds_timeseries',
+        unlink('macrosheds_timeseries_temp',
                recursive = TRUE)
 
         newpaths <- list()
@@ -302,7 +302,7 @@ output$DL_SUBMIT_TS <- downloadHandler(
                             value = TRUE)
 
             dmndata_newpaths <- sub(pattern = '^data/',
-                                    replacement = 'macrosheds_timeseries/',
+                                    replacement = 'macrosheds_timeseries_temp/',
                                     x = dmndata)
 
             for(j in seq_along(dmndata)){
@@ -337,7 +337,7 @@ output$DL_SUBMIT_TS <- downloadHandler(
             flags = '-r6Xq',
             files = newpaths)
 
-        unlink('macrosheds_timeseries',
+        unlink('macrosheds_timeseries_temp',
                recursive = TRUE)
 
         removeNotification('TS_LOADING_POPUP')
@@ -350,18 +350,18 @@ output$DL_SUBMIT_SITE <- downloadHandler(
 
         dlset <- site_data_copy %>%
             filter(in_workflow == 1) %>%
-            select(network_id = network,
+            select(network,
                    network_fullname = pretty_network,
-                   domain_id = domain,
+                   domain,
                    domain_fullname = pretty_domain,
-                   site_id = site_name,
+                   site_name,
                    site_fullname = full_name,
                    stream_name = stream,
                    site_type,
                    latitude,
                    longitude,
                    EPSG_code = CRS,
-                   ws_area_ha,
+                   # ws_area_ha,
                    timezone_olson = local_time_zone) %>%
             mutate(Q_data_available = paste(domain_id, site_id, sep = '_') %in%
                        sites_with_Q)
@@ -376,7 +376,7 @@ output$DL_SUBMIT_VAR <- downloadHandler(
 
         dlset <- variables %>%
             mutate(method = 'pending') %>%
-            select(variable_id = variable_code,
+            select(variable_code,
                    variable_name,
                    unit,
                    method, #TODO: we don't really have this figured out yet
@@ -388,21 +388,74 @@ output$DL_SUBMIT_VAR <- downloadHandler(
     contentType = 'text/csv')
 
 output$DL_SUBMIT_SPATIALSUMM <- downloadHandler(
-    filename = 'macrosheds_watershed_spatial_summaries.csv',
+    filename = 'macrosheds_watershed_summaries.zip',
     content = function(file){
 
-        dlset <- variables %>%
-            mutate(method = 'pending') %>%
-            select(variable_id = variable_code,
-                   variable_name,
-                   unit,
-                   method, #TODO: we don't really have this figured out yet
-                   type = variable_type,
-                   subtype = variable_subtype)
-
-        write_csv(dlset, file)
+        zip(zipfile = file,
+            flags = '-r6Xqj',
+            files = c('data/general/spatial_downloadables/watershed_summaries.csv',
+                      'data/general/spatial_downloadables/watershed_summaries_metadata.csv'))
     },
-    contentType = 'text/csv')
+    contentType = 'application/zip')
+
+output$DL_SUBMIT_SPATIALTS <- downloadHandler(
+    filename = 'macrosheds_watershed_summary_timeseries.zip',
+    content = function(file){
+
+        selected_components <- input$DL_SPATIALTS_SELECTIONS
+
+        unlink('macrosheds_spatial_ts_temp')
+
+        if(length(selected_components) == 1 && is.numeric(selected_components)){
+            showNotification('No components selected',
+                             duration = 0.75,
+                             closeButton = FALSE,
+                             type = 'warning')
+
+            return()
+        }
+
+        showNotification(HTML(paste0('<div>Please wait while we prepare your data</div>',
+                                     '<div class="lds-ellipsis">',
+                                     '<div></div><div></div><div></div><div></div>',
+                                     '</div>')),
+                         id = 'SPATIALTS_LOADING_POPUP',
+                         duration = NULL,
+                         closeButton = FALSE,
+                         type = 'message')
+
+        dir.create('macrosheds_spatial_ts_temp')
+
+        d <- fst::read_fst('data/general/spatial_downloadables/watershed_raw_spatial_timeseries.fst')
+
+        #HERE: parse codes and serve file
+        # d <- d %>%
+        #     # as_tibble() %>%
+        #     mutate(code1 =
+
+        readr::write_file(x = paste("Each watershed summary variable is prefixed",
+                                    "with a two-letter code. The first letter",
+                                    "designates the variable's category (variable_category_code), and the",
+                                    "second indicates its source (data_source_code). We use these codes",
+                                    "internally as a compact way to store variable",
+                                    "metadata that is used to filter this dataset.",
+                                    "You may do the same, using the included",
+                                    "variable_category_codes.csv and data_source_codes.csv. For more",
+                                    "information about these variables, download",
+                                    "the Variable table from the Data tab."),
+                          file = 'macrosheds_spatial_ts_temp/README.txt')
+
+        zip(zipfile = file,
+            flags = '-r9Xqj',
+            files = c('data/general/spatial_downloadables/variable_category_codes.csv',
+                      'data/general/spatial_downloadables/data_source_codes.csv'
+                      'macrosheds_spatial_ts_temp/README.txt',
+                      'macrosheds_spatial_ts_temp/macrosheds_watershed_summary_timeseries.csv'))
+
+        unlink('macrosheds_spatial_ts_temp')
+        removeNotification('SPATIALTS_LOADING_POPUP')
+    },
+    contentType = 'application/zip')
 
 output$DL_SUBMIT_GIS <- downloadHandler(
     filename = 'macrosheds_GIS_files.zip',
@@ -411,8 +464,6 @@ output$DL_SUBMIT_GIS <- downloadHandler(
         # datasets <- isolate(input$DL_SETS_GIS)
         file_format <- isolate(input$DL_FORMAT_GIS)
         selected_domains <- input$DL_GIS_SELECTIONS
-        print(file_format)
-        print(selected_domains)
 
         if(length(selected_domains) == 1 && is.numeric(selected_domains)){
             showNotification('No domains selected',
@@ -432,7 +483,7 @@ output$DL_SUBMIT_GIS <- downloadHandler(
                          closeButton = FALSE,
                          type = 'message')
 
-        unlink('macrosheds_GIS_files',
+        unlink('macrosheds_GIS_files_temp',
                recursive = TRUE)
 
         newpaths <- list()
@@ -448,7 +499,7 @@ output$DL_SUBMIT_GIS <- downloadHandler(
                             value = TRUE)
 
             dmndata_newpaths <- sub(pattern = '^data/',
-                                    replacement = 'macrosheds_GIS_files/',
+                                    replacement = 'macrosheds_GIS_files_temp/',
                                     x = dmndata)
 
             for(j in seq_along(dmndata)){
@@ -499,13 +550,11 @@ output$DL_SUBMIT_GIS <- downloadHandler(
                              invert = TRUE)
         }
 
-        print(file)
-        print(newpaths)
         zip(zipfile = file,
             flags = '-r6Xq',
             files = newpaths)
 
-        unlink('macrosheds_GIS_files',
+        unlink('macrosheds_GIS_files_temp',
                recursive = TRUE)
 
         removeNotification('GIS_LOADING_POPUP')
