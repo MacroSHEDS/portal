@@ -856,7 +856,7 @@ convert_conc_units_bi = function(df, col, input_unit='mg/L', desired_unit){
     #desired unit is one of the keys in the call to `switch` below
 
     require(PeriodicTable)
-    if(!input_unit == 'mg/L' || length(input_unit) == 0) {
+    if(!input_unit == 'mg/L' || length(input_unit) == 0 || desired_unit == '') {
         return(df)
     }
 
@@ -1021,10 +1021,17 @@ load_portal_config <- function(from_where){
             col_types = 'ccccccccnnnnnccn'
         ))
 
+        universal_products <- sm(googlesheets4::read_sheet(
+            conf$univ_prods_gsheet,
+            na = c('', 'NA'),
+            col_types = 'ccccccccc'
+        ))
+
     } else if(from_where == 'local'){
 
         variables <- sm(read_csv('data/general/variables.csv'))
         site_data <- sm(read_csv('data/general/site_data.csv'))
+        universal_products <- sm(read_csv('data/general/universal_products.csv'))
 
     } else {
         stop('from_where must be either "local" or "remote"')
@@ -1041,7 +1048,11 @@ load_portal_config <- function(from_where){
 
 generate_dropdown_varlist_ws = function(variables){
 
-    ws_vars <- variables %>%
+    bipolt_summary_file <- read_feather('data/general/biplot/year.feather') %>%
+        pull(var) %>%
+        unique()
+
+    ws_vars_table <- variables %>%
         filter(variable_type == 'ws_char') %>%
         filter(! variable_code %in% c('cc_precip_sd', 'cc_precip_median',
                                       'cc_temp_mean_sd', 'cc_temp_mean_median',
@@ -1049,14 +1060,30 @@ generate_dropdown_varlist_ws = function(variables){
                                       'vb_fpar_sd', 'va_gpp_median', 'va_gpp_sd',
                                       'vb_ndvi_median', 'vb_ndvi_sd', 'vh_tcw_sd',
                                       'vh_tcw_median')) %>%
+        filter(variable_code %in% bipolt_summary_file) %>%
         mutate(displayname=ifelse(!is.na(unit), paste0(variable_name, ' (', unit, ')'), variable_name)) %>%
-        select(displayname, variable_code, variable_subtype) %>%
+        select(displayname, variable_code, variable_subtype) 
+        
+    ws_vars <- ws_vars_table %>%
         plyr::dlply(plyr::.(variable_subtype), function(x){
             plyr::daply(x, plyr::.(displayname), function(y){
                 y['variable_code']
             })
         })
+    # variables with length one are not getting names, doing that here 
+    list_lengths <- lapply(ws_vars, length)
+    
+    legnth_1_vars <- names(list_lengths[list_lengths == 1])
 
+    for(i in 1:length(legnth_1_vars)){
+        var <- ws_vars[[legnth_1_vars[i]]]
+        var_name <- ws_vars_table %>%
+            filter(variable_code == !!var) %>%
+            pull(displayname) 
+        
+        names(ws_vars[[legnth_1_vars[i]]]) <- var_name
+    }
+    
     return(ws_vars)
 }
 
@@ -1081,6 +1108,14 @@ filter_dropdown_varlist_bi = function(filter_set, vartype = 'conc'){
 
     avail_vars <- str_remove_all(avail_vars, paste0('_', vartype))
 
+    avail_vars <- avail_vars[avail_vars %in% c('Al', 'NH4_N', 'Ca', 'Cl', 'F',
+                                               'Fe', 'Mg', 'Mn', 'NO3_N', 'Br',
+                                               'PO4_P', 'K', 'Na', 'SO4_S',
+                                               'pH', 'DOC', 'SiO2_Si', 'Si',
+                                               'spCond', 'temp', 'Br', 'NO2_N',
+                                               'NO3_NO2_N', 'TN', 'TP', 'TOC', 'DO',
+                                               'DIC', 'DON', 'TDN', 'TDP', 'TN',
+                                               'TPP', 'TPN', 'TPC', 'TSS')]
 
     vars_display_subset <- chemvars_display
 

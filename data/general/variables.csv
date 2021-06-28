@@ -2,7 +2,7 @@ variable_code,variable_name,unit,method,variable_type,variable_subtype,R_display
 Al_ICP,Aluminum ICP,mg/L,UNKNOWN,chem_discrete,Cations,expression(Al^'+3'),3,1,Al,NA,0,NA
 OMAl,Aluminum OM,mg/L,UNKNOWN,chem_discrete,Other,expression(UNKNOWN),3,1,Al,NA,0,NA
 TMAl,Aluminum TM,mg/L,UNKNOWN,chem_discrete,Other,expression(UNKNOWN),3,1,Al,NA,0,NA
-Al,Aluminum,mg/l,UNKNOWN,chem_discrete,Other,expression(UNKNOWN),3,1,Al,NA,0,NA
+Al,Aluminum,mg/L,UNKNOWN,chem_discrete,Other,expression(UNKNOWN),3,1,Al,NA,0,NA
 NH4,Ammonium,mg/L,UNKNOWN,chem_discrete,Cations,expression(NH^'+4'),1,1,NA,NA,0,NA
 Ca,Calcium,mg/L,flame atomic absorption spectroscopy,chem_discrete,Cations,expression(Ca^'+2'),2,1,NA,NA,0,NA
 Cl,Chloride,mg/L,ion chromatography,chem_discrete,Anions,expression(Cl^'-'),1,1,NA,NA,0,NA
@@ -23,8 +23,11 @@ DOC,Dissolved Organic Carbon,mg/L,combustion,chem_discrete,Other,expression(UNKN
 TDN,Total Dissolved Nitrogen,mg/L,persulfate digestion - calorimetric analysis,chem_discrete,Other,expression(UNKNOWN),1,1,N,NA,0,NA
 DON,Dissolved Organic Nitrogen,mg/L,derived,chem_discrete,Other,expression(UNKNOWN),1,1,N,NA,0,NA
 DIC,Dissolved Inorganic Carbon,mg/L,UNKNOWN,chem_discrete,Other,expression(UNKNOWN),1,1,C,NA,0,NA
+DIN,Dissolved Inorganic Nitrogen,mg/L,UNKNOWN,chem_discrete,Other,expression(UNKNOWN),1,1,N,NA,NA,NA
 SiO2,Silica,mg/L,molybdenum blue,chem_discrete,Other,expression(SiO[2]),1,1,NA,NA,0,NA
 SiO2_Si,Silica-Si,mg/L,UNKNOWN,chem_discrete,Other,expression(UNKNOWN),1,1,Si,NA,0,NA
+SiO3,Silicate,mg/L,UNKNOWN,chem_discrete,Other,expression(UNKNOWN),1,1,Si,NA,0,NA
+SiO3_Si,Silicate-Si,mg/L,UNKNOWN,chem_discrete,Other,expression(UNKNOWN),1,1,Si,NA,0,NA
 ANC960,Acid Neutralizing Capacity 960,ueq/L,UNKNOWN,chem_mix,Other,expression(UNKNOWN),NA,0,NA,standardize this to ANC (hbef?),NA,NA
 ANCMet,Acid Neutralizing Capacity Met,ueq/L,UNKNOWN,chem_mix,Other,expression(UNKNOWN),NA,0,NA,standardize this to ANC (hbef?),NA,NA
 spCond,Specific Conductivity,uS/cm,UNKNOWN,chem_mix,Other,expression(UNKNOWN),NA,0,NA,NA,0,100000
@@ -41,6 +44,7 @@ NH3_N,Ammonia-N,mg/L,phenate method,chem_discrete,Cations,expression(UNKNOWN),3,
 NH4_NH3_N,Ammonia-N and Ammonium-N,mg/L,UNKNOWN,chem_discrete,Cations,expression(UNKNOWN),NA,1,N,NA,0,NA
 NO3_N,Nitrate-N,mg/L,cadmium reduction,chem_discrete,Anions,expression(UNKNOWN),1,1,N,NA,0,NA
 PO4_P,Phosphate-P,mg/L,ascorbic acid,chem_discrete,Anions,expression(UNKNOWN),3,1,P,NA,0,NA
+P,Phosphorus,mg/L,UNKNOWN,chem_discrete,Other,expression(UNKNOWN),NA,1,P,NA,0,NA
 SO4_S,Sulfate-S,mg/L,ion chromatography,chem_discrete,Anions,expression(UNKNOWN),2,1,S,NA,0,NA
 TDP,Total Dissolved Phosphorus,mg/L,persulfate digestion - ascorbic acid finish,chem_discrete,Other,expression(UNKNOWN),1,1,P,NA,0,NA
 TKN,Total Kjeldahl Nitrogen,mg/L,Kjeldahl digestion - nessler finish,chem_discrete,Other,expression(UNKNOWN),1,1,N,NA,0,NA
@@ -75,7 +79,9 @@ CHL,Chlorophyll,mg/L,UNKNOWN,bio,Other,expression(UNKNOWN),NA,0,NA,NA,0,NA
 turbid,Turbidity,FNU,UNKNOWN,phys,Other,expression(UNKNOWN),NA,0,NA,NA,0,NA
 FDOM,Fluorescent Dissolved Organic Matter,QSU,UNKNOWN,chem_mix,Other,expression(UNKNOWN),NA,0,NA,NA,0,NA
 CO2,Carbon Dioxide,ppm,UNKNOWN,gas_PENDING,Other,expression(UNKNOWN),NA,0,NA,NA,0,100000
+CO2_C,Carbon Dioxide-C,mg/L,UNKNOWN,gas_PENDING,Other,expression(UNKNOWN),NA,0,NA,NA,NA,NA
 CH4,Methane,ppm,UNKNOWN,gas_PENDING,Other,expression(UNKNOWN),NA,0,NA,NA,0,NA
+CH4_C,Methane-C,mg/L,UNKNOWN,gas_PENDING,Other,expression(UNKNOWN),NA,0,NA,NA,NA,NA
 N2O,Nitrous Oxide,ppm,UNKNOWN,gas_PENDING,Other,expression(UNKNOWN),NA,0,NA,NA,0,NA
 ionError,Ion Error,%,UNKNOWN,chem_mix,Other,expression(UNKNOWN),NA,0,NA,NA,NA,NA
 AnCaR,Anion-Cation Ratio,unitless,UNKNOWN,chem_mix,Other,expression(UNKNOWN),NA,0,NA,NA,NA,NA
@@ -125,9 +131,12 @@ La,Lanthanum,mg/L,UNKNOWN,chem_discrete,Cations,expression(La^'+3'),3,1,La,NA,0,
 Ce,Cerium,mg/L,UNKNOWN,chem_discrete,Cations,expression(UNKNOWN),NA,1,Ce,Not sure what valence to use,0,NA
 Pr,Praseodymium,mg/L,UNKNOWN,chem_discrete,Cations,expression(Pr^'+3'),3,1,Pr,Check valence,0,NA
 Nd145,Neodymium-145,mg/L,UNKNOWN,chem_discrete,Cations,expression(UNKNOWN),NA,1,Nd,Not sure what valence to use,0,NA
+Nd,Neodymium,mg/L,UNKNOWN,chem_discrete,Cations,expression(UNKNOWN),NA,1,Nd,Not sure what valence to use,0,NA
 Sm147,Samarium-147,mg/L,UNKNOWN,chem_discrete,Cations,expression(UNKNOWN),NA,1,Sm,Not sure what valence to use,0,NA
+Sm,Samarium,mg/L,UNKNOWN,chem_discrete,Cations,expression(UNKNOWN),NA,1,Sm,Not sure what valence to use,0,NA
 Eu,Europium,mg/L,UNKNOWN,chem_discrete,Cations,expression(UNKNOWN),NA,1,Eu,Not sure what valence to use,0,NA
 Gd157,Gadolinium-157,mg/L,UNKNOWN,chem_discrete,Cations,expression(UNKNOWN),NA,1,Gd,Not sure what valence to use,0,NA
+Gd,Gadolinium,mg/L,UNKNOWN,chem_discrete,Cations,expression(UNKNOWN),NA,1,Gd,Not sure what valence to use,0,NA
 Tb,Terbium,mg/L,UNKNOWN,chem_discrete,Cations,expression(UNKNOWN),NA,1,Tb,Not sure what valence to use,0,NA
 Dy,Dysprosium,mg/L,UNKNOWN,chem_discrete,Cations,expression(UNKNOWN),NA,1,Dy,Not sure what valence to use,0,NA
 Ho,Holmium,mg/L,UNKNOWN,chem_discrete,Cations,expression(UNKNOWN),NA,1,Ho,Not sure what valence to use,0,NA
@@ -142,8 +151,26 @@ Ge,Germanium,mg/L,UNKNOWN,chem_discrete,Cations,expression(UNKNOWN),NA,1,Ge,Not 
 Rb,Rubidium,mg/L,UNKNOWN,chem_discrete,Cations,expression(UNKNOWN),NA,1,Rb,Not sure what valence to use,0,NA
 Th,Thorium,mg/L,UNKNOWN,chem_discrete,Cations,expression(UNKNOWN),NA,1,Th,Not sure what valence to use,0,NA
 Zr,Zirconium,mg/L,UNKNOWN,chem_discrete,Cations,expression(UNKNOWN),NA,1,Zr,Not sure what valence to use,0,NA
-pheophy,Sestonic Phaeophytin,mg/l,Acetone TurnerDesigns 10AU Fluorometer,bio,Other,expression(UNKNOWN),NA,0,NA,Not sure what valence to use,0,NA
-TCHL,Sestonic Total Chlorophyll,mg/l,Acetone TurnerDesigns 10AU Fluorometer,bio,Other,expression(UNKNOWN),NA,0,NA,Not sure what valence to use,0,NA
+Bi,Bismuth,mg/L,UNKNOWN,chem_discrete,Other,expression(UNKNOWN),NA,1,Bi,NA,0,NA
+Os,Osmium,mg/L,UNKNOWN,chem_discrete,Other,expression(UNKNOWN),NA,1,Os,NA,0,NA
+Ru,Ruthenium,mg/L,UNKNOWN,chem_discrete,Other,expression(UNKNOWN),NA,1,Ru,NA,0,NA
+Ga,Gallium,mg/L,UNKNOWN,chem_discrete,Other,expression(UNKNOWN),NA,1,Ga,NA,0,NA
+Nb,Niobium,mg/L,UNKNOWN,chem_discrete,Other,expression(UNKNOWN),NA,1,Nb,NA,0,NA
+Sc,Scandium,mg/L,UNKNOWN,chem_discrete,Other,expression(UNKNOWN),NA,1,Sc,NA,0,NA
+Te,Tellurium,mg/L,UNKNOWN,chem_discrete,Other,expression(UNKNOWN),NA,1,Te,NA,0,NA
+Ta,Tantalum,mg/L,UNKNOWN,chem_discrete,Other,expression(UNKNOWN),NA,1,Ta,NA,0,NA
+Pt,Platinum,mg/L,UNKNOWN,chem_discrete,Other,expression(UNKNOWN),NA,1,Pt,NA,0,NA
+Hg,Mercury,mg/L,UNKNOWN,chem_discrete,Other,expression(UNKNOWN),NA,1,Hg,NA,0,NA
+I,Iodine,mg/L,UNKNOWN,chem_discrete,Other,expression(UNKNOWN),NA,1,I,NA,0,NA
+Au,Gold,mg/L,UNKNOWN,chem_discrete,Other,expression(UNKNOWN),NA,1,Au,NA,0,NA
+Hf,Hafnium,mg/L,UNKNOWN,chem_discrete,Other,expression(UNKNOWN),NA,1,Hf,NA,0,NA
+Ir,Iridium,mg/L,UNKNOWN,chem_discrete,Other,expression(UNKNOWN),NA,1,Ir,NA,0,NA
+Pd,Palladium,mg/L,UNKNOWN,chem_discrete,Other,expression(UNKNOWN),NA,1,Pd,NA,0,NA
+Rh,Rhodium,mg/L,UNKNOWN,chem_discrete,Other,expression(UNKNOWN),NA,1,Rh,NA,0,NA
+W,Tungsten,mg/L,UNKNOWN,chem_discrete,Other,expression(UNKNOWN),NA,1,W,NA,0,NA
+Re,Rhenium,mg/L,UNKNOWN,chem_discrete,Other,expression(UNKNOWN),NA,1,Re,NA,0,NA
+pheophy,Sestonic Phaeophytin,mg/L,Acetone TurnerDesigns 10AU Fluorometer,bio,Other,expression(UNKNOWN),NA,0,NA,Not sure what valence to use,0,NA
+TCHL,Sestonic Total Chlorophyll,mg/L,Acetone TurnerDesigns 10AU Fluorometer,bio,Other,expression(UNKNOWN),NA,0,NA,Not sure what valence to use,0,NA
 BPC,Benthic Particulate Carbon,mg/cm2,"Epilithic - Whole Rock, PE2400 CHN Combustion Method",chem_discrete,Other,expression(mg/cm^'2'),NA,0,NA,NA,0,NA
 BPN,Benthic Particulate Nitrogen,mg/cm2,"Epilithic - Whole Rock, PE2400 CHN Combustion Method",chem_discrete,Other,expression(mg/cm^'2'),NA,0,NA,NA,0,NA
 BPP,Benthic Particulate Phosphorus,mg/cm2,"Epilithic - Whole Rock, PE2400 CHN Combustion Method",chem_discrete,Other,expression(mg/cm^'2'),NA,0,NA,NA,0,NA
@@ -202,7 +229,7 @@ te_elev_mean,Mean Elevation,m,UNKNOWN,ws_char,Terrain,NA,NA,0,NA,NA,NA,NA
 te_elev_sd,Elevation Standard Deviation,NA,UNKNOWN,ws_char,Terrain,NA,NA,0,NA,NA,NA,NA
 te_elev_min,Minimum Elevation,m,UNKNOWN,ws_char,Terrain,NA,NA,0,NA,NA,NA,NA
 te_elev_max,Maximum Elevation,m,UNKNOWN,ws_char,Terrain,NA,NA,0,NA,NA,NA,NA
-te_aspect_mean,Mean Aspect,NA,UNKNOWN,ws_char,Terrain,NA,NA,0,NA,NA,NA,NA
+te_aspect_mean,Mean Aspect,degrees,UNKNOWN,ws_char,Terrain,NA,NA,0,NA,NA,NA,NA
 te_aspect_sd,Aspect Standard Deviation,NA,UNKNOWN,ws_char,Terrain,NA,NA,0,NA,NA,NA,NA
 hd_bfi_mean,Mean Baseflow Index,%,UNKNOWN,ws_char,Hydrology,NA,NA,0,NA,NA,NA,NA
 hd_bfi_sd,Baseflow Index Standard Deviation,%,UNKNOWN,ws_char,Hydrology,NA,NA,0,NA,NA,NA,NA
@@ -318,6 +345,11 @@ vh_tcw_max,Tasseled Cap Wetness Annual Maximum,NA,UNKNOWN,ws_char,Tasseled Cap W
 vh_tcw_min,Tasseled Cap Wetness Annual Minimum,NA,UNKNOWN,ws_char,Tasseled Cap Wetness,NA,NA,0,NA,NA,NA,NA
 vh_tcw_mean,Tasseled Cap Wetness Mean Annual,NA,UNKNOWN,ws_char,Tasseled Cap Wetness,NA,NA,0,NA,NA,NA,NA
 vh_tcw_sd_year,Tasseled Cap Wetness Annual Standard Deviation,NA,UNKNOWN,ws_char,Tasseled Cap Wetness,NA,NA,0,NA,NA,NA,NA
+ci_et_ref_sd,Daily Reference Evapotranspiration (grass) Standard Deviation,NA,UNKNOWN,ws_char,GRIDMET,NA,NA,0,NA,NA,NA,NA
+ci_et_ref_median,Daily Reference Evapotranspiration (grass),mm,UNKNOWN,ws_char,GRIDMET,NA,NA,0,NA,NA,NA,NA
+ci_et_ref_mean,Mean Annual Reference Evapotranspiration (grass),mm,UNKNOWN,ws_char,GRIDMET,NA,NA,0,NA,NA,NA,NA
+ci_et_ref_sd_year,Annual Reference Evapotranspiration (grass) Standard Deviation,NA,UNKNOWN,ws_char,GRIDMET,NA,NA,0,NA,NA,NA,NA
+ci_et_ref_sd_space,Watershed Reference Evapotranspiration (grass) Standard Deviation,NA,UNKNOWN,ws_char,GRIDMET,NA,NA,0,NA,NA,NA,NA
 MH_Al,Moss: Hygrohypnum: Aluminum,%,Dry weight before and after 550C muffle,bio,Other,expression(UNKNOWN),NA,0,NA,From Arctic LTER,0,NA
 MH_B,Moss: Hygrohypnum: Boron,%,Dry weight before and after 550C muffle,bio,Other,expression(UNKNOWN),NA,0,NA,From Arctic LTER,0,NA
 MH_Ca,Moss: Hygrohypnum: Calcium,%,Dry weight before and after 550C muffle,bio,Other,expression(UNKNOWN),NA,0,NA,From Arctic LTER,0,NA

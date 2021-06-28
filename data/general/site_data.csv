@@ -81,32 +81,32 @@ neon,NEON,neon,NEON,Ordway-Swisher Biological Station - Barco Lake,BARC,Ordway-S
 neon,NEON,neon,NEON,Prairie Pothole,PRPO,Prairie Pothole,lake_gauge,47.12999,-99.25055,4326,NA,0,NA,America/Chicago,NA
 neon,NEON,neon,NEON,Prairie Lake at Dakota Coteau Field School,PRLA,Prairie Lake at Dakota Coteau Field School,lake_gauge,47.15909,-99.11388,4326,NA,0,NA,America/Chicago,NA
 neon,NEON,neon,NEON,Flint River,FLNT,Flint River,stream_gauge,31.18542,-84.4374,4326,1498666.08860273,1,NA,America/New_York,NA
-neon,NEON,neon,NEON,Lower Tombigbee River at Choctaw Refuge,TOMB,Lower Tombigbee River at Choctaw Refuge,stream_gauge,31.8521,-88.16107,4326,4710989.00396274,1,NA,America/Chicago,NA
+neon,NEON,neon,NEON,Lower Tombigbee River at Choctaw Refuge,TOMB,Lower Tombigbee River at Choctaw Refuge,stream_gauge,31.8521,-88.16107,4326,4710989.00396272,1,NA,America/Chicago,NA
 neon,NEON,neon,NEON,Black Warrior River near Dead Lake,BLWA,Black Warrior River near Dead Lake,stream_gauge,32.54153,-87.79815,4326,1617163.69940953,1,NA,America/Chicago,NA
-neon,NEON,neon,NEON,West St Louis Creek,WLOU,West St Louis Creek,stream_gauge,39.89137,-105.9154,4326,490.347775628463,1,NA,America/Denver,NA
-neon,NEON,neon,NEON,McDiffett Creek,MCDI,McDiffett Creek,stream_gauge,38.94428,-96.44197,4326,2257.95882477156,1,NA,America/Chicago,NA
-neon,NEON,neon,NEON,Lewis Run,LEWI,Lewis Run,stream_gauge,39.09564,-77.98322,4326,1190.85756655249,1,NA,America/New_York,NA
-neon,NEON,neon,NEON,Blue River,BLUE,Blue River,stream_gauge,34.44422,-96.6242,4326,32215.0462024718,1,NA,America/Chicago,NA
-neon,NEON,neon,NEON,Teakettle 2 Creek,TECR,Teakettle 2 Creek,stream_gauge,36.95528,-119.02699,4326,297.478021354327,1,NA,America/Los_Angeles,NA
-neon,NEON,neon,NEON,Lower Hop Brook,HOPB,Lower Hop Brook,stream_gauge,42.47179,-72.32963,4326,1188.20105665329,1,NA,America/New_York,NA
-neon,NEON,neon,NEON,Martha Creek,MART,Martha Creek,stream_gauge,45.79125,-121.93196,4326,634.773048931428,1,NA,America/Los_Angeles,NA
-neon,NEON,neon,NEON,Upper Big Creek,BIGC,Upper Big Creek,stream_gauge,37.058,-119.256,4326,1090.09223696008,1,NA,America/Los_Angeles,NA
-neon,NEON,neon,NEON,Red Butte Creek,REDB,Red Butte Creek,stream_gauge,40.78374,-111.79765,4326,1671.48265693958,1,NA,America/Denver,NA
-neon,NEON,neon,NEON,Sycamore Creek,SYCA,Sycamore Creek,stream_gauge,33.74906,-111.5069,4326,28047.5052642295,1,NA,America/Phoenix,NA
-neon,NEON,neon,NEON,Como Creek,COMO,Como Creek,stream_gauge,40.03496,-105.54487,4326,356.628618646366,1,NA,America/Denver,NA
-neon,NEON,neon,NEON,Blacktail Deer Creek,BLDE,Blacktail Deer Creek,stream_gauge,44.95011,-110.58715,4326,3783.90054300874,1,NA,America/Denver,NA
-neon,NEON,neon,NEON,Pringle Creek,PRIN,Pringle Creek,stream_gauge,33.37859,-97.78226,4326,4891.13869463183,1,NA,America/Chicago,NA
-neon,NEON,neon,NEON,McRae Creek,MCRA,McRae Creek,stream_gauge,44.2596,-122.16555,4326,393.221740962357,1,NA,America/Los_Angeles,NA
-neon,NEON,neon,NEON,"Caribou Creek, Caribou-Poker Creeks Research Watershed",CARI,"Caribou Creek, Caribou-Poker Creeks Research Watershed",stream_gauge,65.15306,-147.50246,4326,3104.73890138158,1,NA,America/Anchorage,NA
-neon,NEON,neon,NEON,Oksrukuyik Creek,OKSR,Oksrukuyik Creek,stream_gauge,68.66975,-149.14302,4326,5781.45676179809,1,NA,America/Anchorage,NA
-neon,NEON,neon,NEON,Arikaree River,ARIK,Arikaree River,stream_gauge,39.75825,-102.4471,4326,263229.722553433,1,NA,America/Denver,NA
-neon,NEON,neon,NEON,Rio Guilarte,GUIL,Rio Guilarte,stream_gauge,18.1741,-66.79851,4326,955.294868518445,1,NA,America/Puerto_Rico,NA
-neon,NEON,neon,NEON,Rio Cupeyes,CUPE,Rio Cupeyes,stream_gauge,18.11352,-66.98676,4326,425.806998936391,1,NA,America/Puerto_Rico,NA
-neon,NEON,neon,NEON,Posey Creek,POSE,Posey Creek,stream_gauge,38.89332,-78.14678,4326,202.731453574656,1,NA,America/New_York,NA
-neon,NEON,neon,NEON,Kings Creek,KING,Kings Creek,stream_gauge,39.10506,-96.60336,4326,1304.12533348503,1,NA,America/Chicago,NA
-neon,NEON,neon,NEON,Mayfield Creek,MAYF,Mayfield Creek,stream_gauge,32.95966,-87.40813,4326,1436.21156518419,1,NA,America/Chicago,NA
-neon,NEON,neon,NEON,Walker Branch,WALK,Walker Branch,stream_gauge,35.95947,-84.28041,4326,108.996108174732,1,NA,America/New_York,NA
-neon,NEON,neon,NEON,LeConte Creek,LECO,LeConte Creek,stream_gauge,35.69043,-83.50379,4326,912.099386545824,1,NA,America/New_York,NA
+neon,NEON,neon,NEON,West St Louis Creek,WLOU,West St Louis Creek,stream_gauge,39.89137,-105.9154,4326,490.347775627431,1,NA,America/Denver,NA
+neon,NEON,neon,NEON,McDiffett Creek,MCDI,McDiffett Creek,stream_gauge,38.94428,-96.44197,4326,2257.95882477408,1,NA,America/Chicago,NA
+neon,NEON,neon,NEON,Lewis Run,LEWI,Lewis Run,stream_gauge,39.09564,-77.98322,4326,1190.85756655091,1,NA,America/New_York,NA
+neon,NEON,neon,NEON,Blue River,BLUE,Blue River,stream_gauge,34.44422,-96.6242,4326,32215.0462024722,1,NA,America/Chicago,NA
+neon,NEON,neon,NEON,Teakettle 2 Creek,TECR,Teakettle 2 Creek,stream_gauge,36.95528,-119.02699,4326,297.478021358845,1,NA,America/Los_Angeles,NA
+neon,NEON,neon,NEON,Lower Hop Brook,HOPB,Lower Hop Brook,stream_gauge,42.47179,-72.32963,4326,1188.20105664874,1,NA,America/New_York,NA
+neon,NEON,neon,NEON,Martha Creek,MART,Martha Creek,stream_gauge,45.79125,-121.93196,4326,634.773048930957,1,NA,America/Los_Angeles,NA
+neon,NEON,neon,NEON,Upper Big Creek,BIGC,Upper Big Creek,stream_gauge,37.058,-119.256,4326,1090.09223695882,1,NA,America/Los_Angeles,NA
+neon,NEON,neon,NEON,Red Butte Creek,REDB,Red Butte Creek,stream_gauge,40.78374,-111.79765,4326,1671.48265693855,1,NA,America/Denver,NA
+neon,NEON,neon,NEON,Sycamore Creek,SYCA,Sycamore Creek,stream_gauge,33.74906,-111.5069,4326,28047.5052642293,1,NA,America/Phoenix,NA
+neon,NEON,neon,NEON,Como Creek,COMO,Como Creek,stream_gauge,40.03496,-105.54487,4326,356.628618647609,1,NA,America/Denver,NA
+neon,NEON,neon,NEON,Blacktail Deer Creek,BLDE,Blacktail Deer Creek,stream_gauge,44.95011,-110.58715,4326,3783.90054300736,1,NA,America/Denver,NA
+neon,NEON,neon,NEON,Pringle Creek,PRIN,Pringle Creek,stream_gauge,33.37859,-97.78226,4326,4891.13869462525,1,NA,America/Chicago,NA
+neon,NEON,neon,NEON,McRae Creek,MCRA,McRae Creek,stream_gauge,44.2596,-122.16555,4326,393.221740959929,1,NA,America/Los_Angeles,NA
+neon,NEON,neon,NEON,"Caribou Creek, Caribou-Poker Creeks Research Watershed",CARI,"Caribou Creek, Caribou-Poker Creeks Research Watershed",stream_gauge,65.15306,-147.50246,4326,3104.73890138105,1,NA,America/Anchorage,NA
+neon,NEON,neon,NEON,Oksrukuyik Creek,OKSR,Oksrukuyik Creek,stream_gauge,68.66975,-149.14302,4326,5781.45676179947,1,NA,America/Anchorage,NA
+neon,NEON,neon,NEON,Arikaree River,ARIK,Arikaree River,stream_gauge,39.75825,-102.4471,4326,263229.722553434,1,NA,America/Denver,NA
+neon,NEON,neon,NEON,Rio Guilarte,GUIL,Rio Guilarte,stream_gauge,18.1741,-66.79851,4326,955.29486851723,1,NA,America/Puerto_Rico,NA
+neon,NEON,neon,NEON,Rio Cupeyes,CUPE,Rio Cupeyes,stream_gauge,18.11352,-66.98676,4326,425.80699893888,1,NA,America/Puerto_Rico,NA
+neon,NEON,neon,NEON,Posey Creek,POSE,Posey Creek,stream_gauge,38.89332,-78.14678,4326,202.731453568926,1,NA,America/New_York,NA
+neon,NEON,neon,NEON,Kings Creek,KING,Kings Creek,stream_gauge,39.10506,-96.60336,4326,1304.12533348093,1,NA,America/Chicago,NA
+neon,NEON,neon,NEON,Mayfield Creek,MAYF,Mayfield Creek,stream_gauge,32.95966,-87.40813,4326,1436.21156518353,1,NA,America/Chicago,NA
+neon,NEON,neon,NEON,Walker Branch,WALK,Walker Branch,stream_gauge,35.95947,-84.28041,4326,108.996108168988,1,NA,America/New_York,NA
+neon,NEON,neon,NEON,LeConte Creek,LECO,LeConte Creek,stream_gauge,35.69043,-83.50379,4326,912.099386541036,1,NA,America/New_York,NA
 konza,Konza,lter,LTER,N04D,N04D,?,stream_gauge,39.0874,-96.5844,4326,126.444670122611,1,NA,America/Chicago,NA
 konza,Konza,lter,LTER,N20B,N20B,?,stream_gauge,39.08858,-96.57654,4326,200.667192650518,1,NA,America/Chicago,NA
 konza,Konza,lter,LTER,N01B,N01B,?,stream_gauge,39.08668,-96.577,4326,120.355803466656,1,NA,America/Chicago,NA
@@ -359,7 +359,7 @@ arctic,Arctic,lter,LTER,Toolik River,Toolik_River_REF,"Toolik River REF: North S
 arctic,Arctic,lter,LTER,Toolik River,Toolik_River_TK_Above,Toolik River TK Above: Toolik River TK Above,stream_sampling_point,68.6907,-149.208,4326,NA,1,NA,America/Anchorage,NA
 arctic,Arctic,lter,LTER,Toolik River,Toolik_River_TK_Low,Toolik River TK Low: Toolik River TK Low,stream_sampling_point,68.6938,-149.204,4326,NA,1,NA,America/Anchorage,NA
 arctic,Arctic,lter,LTER,Toolik River,Toolik_River_TK_Mid,Toolik River TK Mid: Toolik River TK Mid,stream_sampling_point,68.6922,-149.207,4326,NA,1,NA,America/Anchorage,NA
-arctic,Arctic,lter,LTER,Trevor Creek,Trevor_Creek_Main,"Trevor Creek Main: Trevor Creek, Brooks Range, Alaska, upstream of Dalton Highway crossing",stream_gauge,68.2821995,-149.3705461,4326,4274.87893705928,1,NA,America/Anchorage,NA
+arctic,Arctic,lter,LTER,Trevor Creek,Trevor_Creek_Main,"Trevor Creek Main: Trevor Creek, Brooks Range, Alaska, upstream of Dalton Highway crossing",stream_gauge,68.2824995,-149.3700461,4326,4310.74566837656,1,NA,America/Anchorage,NA
 arctic,Arctic,lter,LTER,NA,VTK_IMP_Main,"VTK IMP Main: Impacted Valley of the Thermokarst, North Slope of Alaska, Anaktuvuk River Fire and Thermokarst Impacted Site",stream_sampling_point,68.961,-150.701,4326,NA,1,NA,America/Anchorage,NA
 arctic,Arctic,lter,LTER,NA,VTK_REF_Main,"VTK REF Main: Impacted Valley of the Thermokarst, North Slope of Alaska, Anaktuvuk River Fire and Thermokarst Impacted Site",stream_sampling_point,68.9354,-150.678,4326,NA,1,NA,America/Anchorage,NA
 boulder,Boulder Creek,czo,CZO,Gordon Gulch,GGL,Gordon Gulch: Lower,stream_gauge,40.012989,-105.4585063,4326,272.70310649759,1,NA,America/Denver,NA
@@ -441,7 +441,7 @@ luquillo,Luquillo,lter,LTER,NA,QPB,Quebrada Prieta B,stream_sampling_point,NA,NA
 luquillo,Luquillo,lter,LTER,NA,QP,Quebrada Prieta,stream_gauge,18.2957,-65.8006,4326,2.63280746627962,0,this ws is listed as 30.77ha on czo site,Etc/GMT-4,NA
 luquillo,Luquillo,lter,LTER,NA,QS,Quebrada Sonadora,stream_gauge,18.322013,-65.817991,4326,164.795008459469,1,"usgs 50063440, czo site lists the ws area as 261.59 ha",Etc/GMT-4,NA
 luquillo,Luquillo,lter,LTER,NA,MG,Rio Mameyes,stream_sampling_point,18.3561,-65.7685,4326,NA,1,NA,Etc/GMT-4,NA
-luquillo,Luquillo,lter,LTER,NA,RI,Rio Icacos,stream_gauge,18.275091,-65.785529,4326,328.095619913542,1,usgs 50075000,Etc/GMT-4,NA
+luquillo,Luquillo,lter,LTER,NA,RI,Rio Icacos,stream_gauge,18.275091,-65.785529,4326,336.289938452396,1,usgs 50075000,Etc/GMT-4,NA
 luquillo,Luquillo,lter,LTER,NA,MPR,Puente Roto Mameyes,stream_gauge,18.326951,-65.750292,4326,1783.39089439801,1,usgs 50065500,Etc/GMT-4,NA
 luquillo,Luquillo,lter,LTER,NA,El_Verde,NA,rain_gauge,18.3212,-65.8199,4326,NA,1,NA,Etc/GMT-4,0
 luquillo,Luquillo,lter,LTER,NA,Bisley_Tower,NA,rain_gauge,18.3144,-65.7449,4326,NA,1,NA,Etc/GMT-4,0
@@ -477,3 +477,83 @@ east_river,East River,doe,DOE,Coal Creek,coal_11,NA,stream_sampling_point,38.863
 east_river,East River,doe,DOE,NA,east_above_quigley,NA,stream_sampling_point,38.99518558,-107.0145513,4326,NA,1,NA,America/Denver,NA
 east_river,East River,doe,DOE,NA,tuttle_spring,NA,stream_sampling_point,38.94548333,-106.9901972,4326,NA,1,NA,America/Denver,NA
 usgs,USGS,usgs,USGS,Black Earth Creek,black_earth_creek,"BLACK EARTH CREEK NR BREWERY RD AT CROSS PLAINS,WI",stream_gauge,43.109722,-89.640833,4326,3289.52532809393,1,USGS 05406457,America/Chicago,NA
+christina,Christina,czo,CZO,NA,BOULTON_PATH,Boulton's Trib at the path,stream_sampling_point,39.864087,-75.785841,4326,NA,0,NA,US/Eastern,NA
+christina,Christina,czo,CZO,White Clay Creek,WCC558,White Clay Creek at Transect A (pre-2012),stream_sampling_point,39.86234,-75.7833,4326,NA,0,NA,US/Eastern,NA
+christina,Christina,czo,CZO,White Clay Creek,WCCPH,White Clay Creek at SWRC Pumphouse,stream_sampling_point,39.86066,-75.7839,4326,NA,0,NA,US/Eastern,NA
+christina,Christina,czo,CZO,White Clay Creek,WCCLAB,White Clay Creek at Stroud Water Research Center,stream_gauge,39.8594,-75.7838,4326,722.011544859567,0,NA,US/Eastern,NA
+christina,Christina,czo,CZO,NA,WLYMOUTH,Willy trib at White Clay Creek,stream_sampling_point,39.8615,-75.7831,4326,NA,0,NA,US/Eastern,NA
+christina,Christina,czo,CZO,NA,WLYATSPENCER,Willy trib at Spencer Road,stream_sampling_point,39.86217,-75.7788,4326,NA,0,NA,US/Eastern,NA
+christina,Christina,czo,CZO,White Clay Creek,WCD478,White Clay Creek 478m below Spencer Road (Meadow Ltreb site),stream_sampling_point,39.85543,-75.784,4326,NA,0,NA,US/Eastern,NA
+christina,Christina,czo,CZO,White Clay Creek,WCCISCO_926,White Clay Creek west branch at Rt. 926 downstream side ISCO location,stream_sampling_point,39.8718,-75.7868,4326,NA,0,NA,US/Eastern,NA
+christina,Christina,czo,CZO,White Clay Creek,WCWISCO_926,White Clay Creek east branch at Rt. 926 downstream side ISCO location,stream_sampling_point,39.87132,-75.7843,4326,NA,0,NA,US/Eastern,NA
+christina,Christina,czo,CZO,White Clay Creek,USGSAVONDALE,USGS01478120 on East Branch White Clay Creek at Avondale PA,stream_sampling_point,39.82844,-75.7808,4326,NA,0,NA,US/Eastern,NA
+christina,Christina,czo,CZO,Doe Run,DOERUN_SBFUNK,Doe Run south branch at Funk Road (CZO Ag site),stream_sampling_point,39.87344,-75.8517,4326,NA,0,NA,US/Eastern,NA
+christina,Christina,czo,CZO,White Clay Creek,WCC_WFEBMOSQ,White Clay Creek west fork of east branch at Mosquito Lane (CZO Landfill site),stream_sampling_point,39.86378,-75.8353,4326,NA,0,NA,US/Eastern,NA
+christina,Christina,czo,CZO,White Clay Creek,USGSNRNEWARK,USGS01479000 on White Clay Creek near Newark DE,stream_sampling_point,39.69922,-75.675,4326,NA,0,NA,US/Eastern,NA
+christina,Christina,czo,CZO,NA,LAURELSSPR1,NA,stream_sampling_point,39.92187,-75.7896,4326,NA,0,NA,US/Eastern,NA
+christina,Christina,czo,CZO,NA,WCW_NRCM27,White Clay Creek east branch at Rt. 926 downstream side near monument 27,stream_sampling_point,39.87096,-75.7845,4326,NA,0,NA,US/Eastern,NA
+christina,Christina,czo,CZO,NA,SWRC_met,Stroud Water Research Center,rain_gauge,39.859272,-75.782889,4326,NA,0,NA,US/Eastern,NA
+krew,KREW,usfs,USFS,Providence Creek,P300,Providence Creek P300,stream_gauge,37.052,-119.203263,4326,460.988916655503,1,NA,America/Los_Angeles,NA
+krew,KREW,usfs,USFS,Providence Creek,P301,Providence Creek P301,stream_gauge,37.05945,-119.203626,4326,99.1564978051617,1,NA,America/Los_Angeles,NA
+krew,KREW,usfs,USFS,Providence Creek,P303,Providence Creek P303,stream_gauge,37.05404,-119.196253,4326,132.323125199859,1,NA,America/Los_Angeles,NA
+krew,KREW,usfs,USFS,Providence Creek,P304,Providence Creek P304,stream_gauge,37.05066,-119.195268,4326,48.7316788136687,1,NA,America/Los_Angeles,NA
+krew,KREW,usfs,USFS,Duff Creek,D102,Duff Creek D102,stream_gauge,37.0377,-119.202923,4326,120.759242835269,1,NA,America/Los_Angeles,NA
+krew,KREW,usfs,USFS,Bull Creek,B200,Bull Creek B200,stream_gauge,36.97719,-119.081964,4326,473.946851555431,1,NA,America/Los_Angeles,NA
+krew,KREW,usfs,USFS,Bull Creek,B201,Bull Creek B201,stream_gauge,36.97813,-119.079194,4326,52.9781882184007,1,NA,America/Los_Angeles,NA
+krew,KREW,usfs,USFS,Bull Creek,B203,Bull Creek B203,stream_gauge,36.97586,-119.073332,4326,138.355621905797,1,NA,America/Los_Angeles,NA
+krew,KREW,usfs,USFS,Bull Creek,B204,Bull Creek B204,stream_gauge,36.9748,-119.073078,4326,166.914751943175,1,NA,America/Los_Angeles,NA
+krew,KREW,usfs,USFS,Teakettle Creek,T003,Teakettle Creek T001,stream_gauge,36.95894,-119.026558,4326,227.72886063327,1,NA,America/Los_Angeles,NA
+krew,KREW,usfs,USFS,NA,lower_bull,Lower Bull Creek,rain_gauge,36.9781144234137,-119.074554462827,4326,NA,1,NA,America/Los_Angeles,NA
+krew,KREW,usfs,USFS,NA,lower_providence,Lower Providence Creek,rain_gauge,37.0581364641927,-119.203053708403,4326,NA,1,NA,America/Los_Angeles,NA
+krew,KREW,usfs,USFS,NA,upper_bull,Upper Bull Creek,rain_gauge,36.9669457952837,-119.056578504432,4326,NA,1,NA,America/Los_Angeles,NA
+krew,KREW,usfs,USFS,NA,upper_providence,Upper Providence Creek,rain_gauge,37.061122962341,-119.183226577378,4326,NA,1,NA,America/Los_Angeles,NA
+suef,SUEF,usfs,USFS,NA,CCRC__,Coyote Creek Watersheds Rain Collector,rain_gauge,43.017397,-122.715978,4326,NA,1,NA,America/Los_Angeles,NA
+suef,SUEF,usfs,USFS,NA,FCRC__,Fox Creek Watersheds Rain Collector,rain_gauge,45.433628,-122.043271,4326,NA,1,NA,America/Los_Angeles,NA
+suef,SUEF,usfs,USFS,NA,GSCC01,Coyote Creek Watershed 1 Gauging Station,stream_gauge,43.0174,-122.716,4326,79.1793892151177,1,NA,America/Los_Angeles,NA
+suef,SUEF,usfs,USFS,NA,GSCC02,Coyote Creek Watershed 2 Gauging Station,stream_gauge,43.01395,-122.717,4326,77.0094501613046,1,NA,America/Los_Angeles,NA
+suef,SUEF,usfs,USFS,NA,GSCC03,Coyote Creek Watershed 3 Gauging Station,stream_gauge,43.01378,-122.712,4326,47.1862713144562,1,NA,America/Los_Angeles,NA
+suef,SUEF,usfs,USFS,NA,GSCC04,Coyote Creek Watershed 4 Gauging Station,stream_gauge,43.01379,-122.711,4326,44.3525987934023,1,NA,America/Los_Angeles,NA
+suef,SUEF,usfs,USFS,NA,GSFC01,Fox Creek Watershed 1 Gauging Station,stream_sampling_point,45.43363,-122.043,4326,NA,1,NA,America/Los_Angeles,NA
+suef,SUEF,usfs,USFS,NA,GSFC02,Fox Creek Watershed 2 Gauging Station,stream_sampling_point,45.43413,-122.043,4326,NA,1,NA,America/Los_Angeles,NA
+suef,SUEF,usfs,USFS,NA,GSFC03,Fox Creek Watershed 3 Gauging Station,stream_sampling_point,45.43454,-122.043,4326,NA,1,NA,America/Los_Angeles,NA
+santee,Santee,usfs,USFS,NA,WS77,Weir 77,stream_gauge,33.141649,-79.779912,4326,209.296399883688,1,NA,US/Eastern,NA
+santee,Santee,usfs,USFS,NA,Met5,Met 5 weather station,rain_gauge,33.140537,-79.771937,4326,NA,1,NA,US/Eastern,NA
+krycklan,Krycklan,krycklan,Krycklan,NA,Site1,Risbäcken,stream_gauge,64.2485054693468,19.8080506416433,4326,47.8754445673265,1,NA,Etc/GMT+2,NA
+krycklan,Krycklan,krycklan,Krycklan,NA,Site2,Västrabäcken,stream_gauge,64.2514254759827,19.777804398224202,4326,11.8741294189847,1,NA,Etc/GMT+2,NA
+krycklan,Krycklan,krycklan,Krycklan,NA,Site4,Kallkälsmyren,stream_gauge,64.2594511474447,19.7737483329001,4326,17.7487720423859,1,NA,Etc/GMT+2,NA
+krycklan,Krycklan,krycklan,Krycklan,NA,Site5,Stortjärn outlet,stream_gauge,64.2602610826913,19.760338571586,4326,65.3106708305918,1,NA,Etc/GMT+2,NA
+krycklan,Krycklan,krycklan,Krycklan,NA,Site6,Stortjärnbäcken,stream_gauge,64.2509736643358,19.7731431669639,4326,109.682666613803,1,NA,Etc/GMT+2,NA
+krycklan,Krycklan,krycklan,Krycklan,NA,Site7,Kallkälsbäcken,stream_gauge,64.2513011962503,19.7779000580925,4326,46.6972284735543,1,NA,Etc/GMT+2,NA
+krycklan,Krycklan,krycklan,Krycklan,NA,Site9,Nyängesbäcken,stream_gauge,64.2375278452578,19.7915621692725,4326,287.798781675116,1,NA,Etc/GMT+2,NA
+krycklan,Krycklan,krycklan,Krycklan,NA,Site10,Stormyrbäcken,stream_gauge,64.2569994296571,19.7866430184375,4326,335.340134075001,1,NA,Etc/GMT+2,NA
+krycklan,Krycklan,krycklan,Krycklan,NA,Site12,Nymyrbäcken,stream_gauge,64.2411874792113,19.8143185691995,4326,543.436998085392,1,NA,Etc/GMT+2,NA
+krycklan,Krycklan,krycklan,Krycklan,NA,Site13,Långbäcken,stream_gauge,64.2328569897307,19.7871074196692,4326,411.545488612059,1,NA,Etc/GMT+2,NA
+krycklan,Krycklan,krycklan,Krycklan,NA,Site14,Åhedbäcken,stream_gauge,64.2261543208972,19.7707682829758,4326,1409.01155911083,1,NA,Etc/GMT+2,NA
+krycklan,Krycklan,krycklan,Krycklan,NA,Site15,Övre Krycklan,stream_gauge,64.2485848642973,19.8382111005231,4326,1910.73705488532,1,NA,Etc/GMT+2,NA
+krycklan,Krycklan,krycklan,Krycklan,NA,Site16,Krycklan,stream_gauge,64.198508,19.869488,4326,6783.68706433968,1,NA,Etc/GMT+2,NA
+krycklan,Krycklan,krycklan,Krycklan,NA,Site18,Vargstugbäcken,stream_gauge,NA,NA,4326,NA,0,NA,Etc/GMT+2,NA
+krycklan,Krycklan,krycklan,Krycklan,NA,Site20,NA,stream_gauge,64.2202602360509,19.7584056942889,4326,NA,0,NA,Etc/GMT+2,NA
+krycklan,Krycklan,krycklan,Krycklan,NA,Site53,NA,stream_sampling_point,NA,NA,4326,NA,0,NA,Etc/GMT+2,NA
+krycklan,Krycklan,krycklan,Krycklan,NA,Site54,Stormyrbäcken,stream_sampling_point,NA,NA,4326,NA,0,NA,Etc/GMT+2,NA
+krycklan,Krycklan,krycklan,Krycklan,NA,Site57,NA,stream_sampling_point,NA,NA,4326,NA,0,NA,Etc/GMT+2,NA
+krycklan,Krycklan,krycklan,Krycklan,NA,Site58,NA,stream_sampling_point,NA,NA,4326,NA,0,NA,Etc/GMT+2,NA
+krycklan,Krycklan,krycklan,Krycklan,NA,Site59,NA,stream_sampling_point,NA,NA,4326,NA,0,NA,Etc/GMT+2,NA
+krycklan,Krycklan,krycklan,Krycklan,NA,Site60,NA,stream_sampling_point,NA,NA,4326,NA,0,NA,Etc/GMT+2,NA
+krycklan,Krycklan,krycklan,Krycklan,NA,Site61,NA,stream_sampling_point,NA,NA,4326,NA,0,NA,Etc/GMT+2,NA
+krycklan,Krycklan,krycklan,Krycklan,NA,Site62,NA,stream_sampling_point,NA,NA,4326,NA,0,NA,Etc/GMT+2,NA
+krycklan,Krycklan,krycklan,Krycklan,NA,Site63,NA,stream_sampling_point,NA,NA,4326,NA,0,NA,Etc/GMT+2,NA
+krycklan,Krycklan,krycklan,Krycklan,NA,Site64,NA,stream_sampling_point,NA,NA,4326,NA,0,NA,Etc/GMT+2,NA
+krycklan,Krycklan,krycklan,Krycklan,NA,Site65,NA,stream_sampling_point,NA,NA,4326,NA,0,NA,Etc/GMT+2,NA
+krycklan,Krycklan,krycklan,Krycklan,NA,Site66,NA,stream_sampling_point,NA,NA,4326,NA,0,NA,Etc/GMT+2,NA
+krycklan,Krycklan,krycklan,Krycklan,NA,Svartberget,Svartberget,rain_gauge,64.243727,19.767454,4326,NA,1,NA,Etc/GMT+2,NA
+walker_branch,Walker Branch,walker_branch,Walker Branch,NA,east_fork,Walker Branch East Fork,stream_gauge,35.958918,-84.278736,4326,61.3716208600188,1,NA,US/Eastern,NA
+walker_branch,Walker Branch,walker_branch,Walker Branch,NA,west_fork,Walker Branch West Fork,stream_gauge,35.959094,-84.279934,4326,38.3678494883125,1,NA,US/Eastern,NA
+walker_branch,Walker Branch,walker_branch,Walker Branch,NA,combined_gauges,Combined rain gauges,rain_gauge,35.961723,-84.28647,4326,NA,1,NA,US/Eastern,NA
+shale_hills,Shale Hills,czo,CZO,NA,GRO,Garner Run Outlet,stream_gauge,40.6925,-77.9277,4326,136.728057900776,1,NA,US/Eastern,NA
+shale_hills,Shale Hills,czo,CZO,NA,SCAL,"Shaver's Creek, above Lake Perez",stream_gauge,40.673619,-77.902569,4326,1547.58937717436,1,NA,US/Eastern,NA
+shale_hills,Shale Hills,czo,CZO,NA,SCBL,"Shaver's Creek, below Lake Perez",stream_sampling_point,40.656772,-77.918722,4326,NA,1,NA,US/Eastern,NA
+shale_hills,Shale Hills,czo,CZO,NA,SCO,Shaver's Creek Outlet,stream_gauge,40.610686,-78.006689,4326,12347.5024590489,1,NA,US/Eastern,NA
+shale_hills,Shale Hills,czo,CZO,NA,SH_headwaters,"Shale Hills Critical Zone Observatory Stream, headwaters",stream_sampling_point,NA,NA,4326,NA,0,NA,US/Eastern,NA
+shale_hills,Shale Hills,czo,CZO,NA,SH_middle,"Shale Hills Critical Zone Observatory Stream, middle reach",stream_sampling_point,NA,NA,4326,NA,0,NA,US/Eastern,NA
+shale_hills,Shale Hills,czo,CZO,NA,SH_weir,"Shale Hills Critical Zone Observatory Stream, Weir",stream_gauge,40.666664,-77.902778,4326,6.94307712902109,1,NA,US/Eastern,NA
+shale_hills,Shale Hills,czo,CZO,NA,Shale_Hills_precip,Shale Hills Precipitation,rain_gauge,40.665742,-77.904036,4326,NA,1,"This appears to be a combination of gauges reported as one, the location is of one know gauge in the CZO",US/Eastern,NA
