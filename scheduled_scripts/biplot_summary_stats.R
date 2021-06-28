@@ -531,6 +531,14 @@ compute_yearly_summary_ws <- function(df) {
         }
     }
 
+    # Remove standard deviation
+    all_ws_vars <- unique(all_domain$var)
+    ws_vars_keep <- all_ws_vars[! grepl('sd', all_ws_vars)]
+    ws_vars_keep <- ws_vars_keep[! grepl('1992', ws_vars_keep)]
+
+    all_domain <- all_domain %>%
+        filter(var %in% !!ws_vars_keep)
+
     summary_file_paths <- grep('year', list.files('data/general/biplot',
                                                   full.names = TRUE), value = T)
 

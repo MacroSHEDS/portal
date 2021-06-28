@@ -1,0 +1,24 @@
+prodcode,prodname,type,status,notes,data_class,data_source,data_class_code,data_source_code
+ms805,npp,gee,ready,NA,vegetation,University of Montana Numerical Terradynamic Simulation Group (NTSG),v,a
+ms806,gpp,gee,ready,NA,vegetation,University of Montana Numerical Terradynamic Simulation Group (NTSG),v,a
+ms807,lai,gee,ready,NA,vegetation,MODIS,v,b
+ms807,fpar,gee,ready,NA,vegetation,MODIS,v,b
+ms808,tree_cover,gee,ready,NA,vegetation,MODIS,v,b
+ms808,veg_cover,gee,ready,NA,vegetation,MODIS,v,b
+ms808,bare_cover,gee,ready,NA,vegetation,MODIS,v,b
+ms809,prism_precip,gee,ready,NA,climate,PRISM,c,c
+ms809,prism_temp_mean,gee,ready,NA,climate,PRISM,c,c
+ms810,start_season,other,ready,NA,vegetation,USGS,v,d
+ms810,end_season,other,ready,NA,vegetation,USGS,v,d
+ms810,max_season,other,ready,NA,vegetation,USGS,v,d
+ms810,season_length,other,ready,NA,vegetation,USGS,v,d
+ms811,terrain,other,ready,NA,terrain,Amazon Web Services Terrian Tiles,t,e
+ms812,nrcs_soils,others,ready,NA,parent material,NRCS-gSSURGO,p,f
+ms813,nlcd,gee,ready,NA,vegetation,Multi-Resolution Land Characteristics Consortium (MRLC),v,g
+ms814,nadp,other,ready,NA,climate,National Atmospheric Deposition Program (NADP),c,h
+ms815,pelletier_soil_thickness,other,ready,https://daac.ornl.gov/cgi-bin/dsviewer.pl?ds_id=1304,parent material,Pelletier et al. 2016,p,i
+ms816,geochemical,other,ready,https://www.sciencebase.gov/catalog/item/53481333e4b06f6ce034aae7,parent material,USGS,p,d
+ms817,ndvi,gee,ready,NA,vegetation,MODIS,v,b
+ms818,bfi,other,ready,https://databasin.org/datasets/d8c2b299681c486e8d6daf98aac10cfe/,hydrology,USGS,h,d
+ms819,tcw,gee,ready,NA,vegetation,Oxford MAP TCW,v,h
+ms820,et_ref,gee,ready,NA,climate,GRIDMET,c,i
