@@ -402,11 +402,13 @@ output$DL_SUBMIT_SPATIALTS <- downloadHandler(
     filename = 'macrosheds_watershed_summary_timeseries.zip',
     content = function(file){
 
+        require(fst)
+
         selected_components <- input$DL_SPATIALTS_SELECTIONS
 
         unlink('macrosheds_spatial_ts_temp')
 
-        if(length(selected_components) == 1 && is.numeric(selected_components)){
+        if(is.null(selected_components)){
             showNotification('No components selected',
                              duration = 0.75,
                              closeButton = FALSE,
@@ -426,12 +428,10 @@ output$DL_SUBMIT_SPATIALTS <- downloadHandler(
 
         dir.create('macrosheds_spatial_ts_temp')
 
-        d <- fst::read_fst('data/general/spatial_downloadables/watershed_raw_spatial_timeseries.fst')
-
-        #HERE: parse codes and serve file
-        # d <- d %>%
-        #     # as_tibble() %>%
-        #     mutate(code1 =
+        fst::read_fst(paste0('data/general/spatial_downloadables/',
+                                  'watershed_raw_spatial_timeseries.fst')) %>%
+            filter(substr(var, 1, 1) %in% selected_components) %>%
+            write_csv('macrosheds_spatial_ts_temp/macrosheds_watershed_summary_timeseries.csv')
 
         readr::write_file(x = paste("Each watershed summary variable is prefixed",
                                     "with a two-letter code. The first letter",
@@ -445,14 +445,27 @@ output$DL_SUBMIT_SPATIALTS <- downloadHandler(
                                     "the Variable table from the Data tab."),
                           file = 'macrosheds_spatial_ts_temp/README.txt')
 
+        tribble(
+            ~column, ~description,
+            'network', "site's network",
+            'domain', "site's domain",
+            'site_name',
+            'var',
+            'date',
+            'val',
+            'pctCellErr',
+        )
+        write_csv(
+
         zip(zipfile = file,
             flags = '-r9Xqj',
             files = c('data/general/spatial_downloadables/variable_category_codes.csv',
-                      'data/general/spatial_downloadables/data_source_codes.csv'
+                      'data/general/spatial_downloadables/data_source_codes.csv',
                       'macrosheds_spatial_ts_temp/README.txt',
                       'macrosheds_spatial_ts_temp/macrosheds_watershed_summary_timeseries.csv'))
 
-        unlink('macrosheds_spatial_ts_temp')
+        unlink('macrosheds_spatial_ts_temp',
+               recursive = TRUE)
         removeNotification('SPATIALTS_LOADING_POPUP')
     },
     contentType = 'application/zip')
