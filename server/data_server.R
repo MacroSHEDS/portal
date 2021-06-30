@@ -445,17 +445,18 @@ output$DL_SUBMIT_SPATIALTS <- downloadHandler(
                                     "the Variable table from the Data tab."),
                           file = 'macrosheds_spatial_ts_temp/README.txt')
 
-        tribble(
-            ~column, ~description,
-            'network', "site's network",
-            'domain', "site's domain",
-            'site_code',
-            'var',
-            'date',
-            'val',
-            'pctCellErr',
-        )
-        write_csv(
+        #HERE
+        # tribble(
+        #     ~column, ~description,
+        #     'network', "site's network",
+        #     'domain', "site's domain",
+        #     'site_code',
+        #     'var',
+        #     'date',
+        #     'val',
+        #     'pctCellErr',
+        # )
+        # write_csv(
 
         zip(zipfile = file,
             flags = '-r9Xqj',

@@ -1,7 +1,7 @@
 column,description,units,details,category,data.source,data.source.link
 network,site's network,,,,,
 domain,site's domain,,,,,
-site_code,site name,,,,,
+site_code,short name of the site,,,,,
 ws_area_ha,watershed area,ha,watershed area is calculated using the R function sf::st_area() with inputs from either watershed boundary shapefiles provided by domains or watershed shapfiles delineated by macrosheds based on latitude and longitude of stream gauges,,,
 cc_mean_annual_precip,mean annual cumulative precipitation of the entire record ,mm,see data source for details,climate,PRISM via Google Earth Engine,https://prism.oregonstate.edu/
 cc_mean_annual_temp,mean annual temperature of the entire record ,C,see data source for details,climate,PRISM via Google Earth Engine,https://prism.oregonstate.edu/
