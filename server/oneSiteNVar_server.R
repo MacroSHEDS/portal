@@ -47,14 +47,14 @@ observeEvent({
 
 observeEvent(input$SITES4, {
 
-    grab_subset = filter(grab, site_name == input$SITES4)
+    grab_subset = filter(grab, site_code == input$SITES4)
     grabvars_display_subset = filter_dropdown_varlist(grab_subset)
 
     updateSelectizeInput(session, 'SOLUTES4',
         choices=grabvars_display_subset,
         selected=input$SOLUTES4)
 
-    # site_dtrng = as.Date(range(grab$datetime[grab$site_name == input$SITES4],
+    # site_dtrng = as.Date(range(grab$datetime[grab$site_code == input$SITES4],
     #     na.rm=TRUE))
     #
     # updateSliderInput(session, "DATE4",
@@ -68,10 +68,10 @@ data4 <- reactive({
 
     data4 = if(input$CONC_FLUX4 == 'Concentration') grab else flux
     data4 = data4 %>%
-        filter(site_name %in% input$SITES4) %>%
+        filter(site_code %in% input$SITES4) %>%
         filter(datetime >= input$DATE4[1]) %>%
         filter(datetime <= input$DATE4[2]) %>%
-        select(one_of("datetime", "site_name", input$SOLUTES4))
+        select(one_of("datetime", "site_code", input$SOLUTES4))
 
     if(init_vals$enable_unitconvert){
         if(input$CONC_FLUX4 == 'Concentration'){
@@ -89,8 +89,8 @@ dataPrecip4 <- reactive({
     dataPrecip4 = P %>%
         filter(datetime >= input$DATE4[1]) %>%
         filter(datetime <= input$DATE4[2]) %>%
-        filter(site_name %in% sites_with_P) %>%
-        select(one_of("datetime", "site_name", 'P')) %>%
+        filter(site_code %in% sites_with_P) %>%
+        select(one_of("datetime", "site_code", 'P')) %>%
         # group_by(lubridate::yday(datetime)) %>%
         group_by(datetime) %>%
         summarise(medianPrecip=median(P, na.rm=TRUE)) %>%
@@ -102,7 +102,7 @@ dataFlow4 <- reactive({
     if (input$FLOW_SOURCE4 == "flowSens") {
         dataFlow4 = filter(Q, datetime > input$DATE4[1],
                 datetime < input$DATE4[2],
-                site_name %in% input$SITES4) %>%
+                site_code %in% input$SITES4) %>%
             select(datetime, Q) %>%
             group_by(datetime) %>%
             summarise(flowMaxPerDate=max(Q, na.rm=TRUE)) %>%

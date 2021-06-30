@@ -65,7 +65,7 @@ output$DL_CHECKBOX_TREE <- renderUI({
         filter(site_type == 'stream_gauge') %>%
         group_by(network, domain) %>%
         summarize(pretty_domain = first(pretty_domain),
-                  nsites = length(site_name),
+                  nsites = length(site_code),
                   areamin = round(min(ws_area_ha, na.rm = TRUE), 0),
                   areamax = round(max(ws_area_ha, na.rm = TRUE), 0),
                   latmean = round(mean(latitude, na.rm = TRUE), 1),
@@ -120,7 +120,7 @@ output$DL_CHECKBOX_TREE <- renderUI({
             # sites <- site_data %>%
             #     filter(network == networks$network[i],
             #            domain == domains$domain[j]) %>%
-            #     select(site_name, full_name)
+            #     select(site_code, full_name)
             #
             # for(k in 1:nrow(sites)){
             #
@@ -129,8 +129,8 @@ output$DL_CHECKBOX_TREE <- renderUI({
             #         dlcheck_template_site,
             #         nn = networks$network[i],
             #         dd = domains$domain[j],
-            #         ss = sites$site_name[k],
-            #         S = paste0(sites$full_name[k], ' (', sites$site_name[k], ')')))
+            #         ss = sites$site_code[k],
+            #         S = paste0(sites$full_name[k], ' (', sites$site_code[k], ')')))
             # }
         }
     }
@@ -155,7 +155,7 @@ output$DL_CHECKBOX_TREE2 <- renderUI({
         filter(site_type == 'stream_gauge') %>%
         group_by(network, domain) %>%
         summarize(pretty_domain = first(pretty_domain),
-                  nsites = length(site_name),
+                  nsites = length(site_code),
                   areamin = round(min(ws_area_ha, na.rm = TRUE), 0),
                   areamax = round(max(ws_area_ha, na.rm = TRUE), 0),
                   latmean = round(mean(latitude, na.rm = TRUE), 1),
@@ -210,7 +210,7 @@ output$DL_CHECKBOX_TREE2 <- renderUI({
             # sites <- site_data %>%
             #     filter(network == networks$network[i],
             #            domain == domains$domain[j]) %>%
-            #     select(site_name, full_name)
+            #     select(site_code, full_name)
             #
             # for(k in 1:nrow(sites)){
             #
@@ -219,8 +219,8 @@ output$DL_CHECKBOX_TREE2 <- renderUI({
             #         dlcheck_template_site,
             #         nn = networks$network[i],
             #         dd = domains$domain[j],
-            #         ss = sites$site_name[k],
-            #         S = paste0(sites$full_name[k], ' (', sites$site_name[k], ')')))
+            #         ss = sites$site_code[k],
+            #         S = paste0(sites$full_name[k], ' (', sites$site_code[k], ')')))
             # }
         }
     }
@@ -354,7 +354,7 @@ output$DL_SUBMIT_SITE <- downloadHandler(
                    network_fullname = pretty_network,
                    domain,
                    domain_fullname = pretty_domain,
-                   site_name,
+                   site_code,
                    site_fullname = full_name,
                    stream_name = stream,
                    site_type,
@@ -449,7 +449,7 @@ output$DL_SUBMIT_SPATIALTS <- downloadHandler(
             ~column, ~description,
             'network', "site's network",
             'domain', "site's domain",
-            'site_name',
+            'site_code',
             'var',
             'date',
             'val',

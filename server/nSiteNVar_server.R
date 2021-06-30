@@ -403,7 +403,7 @@ dataVWC <- reactive({
                                  # conc_or_flux = conc_flux)
 
     first_two_rows <- dataq[1:2,]
-    if(first_two_rows$site_name[1] == first_two_rows$site_name[2]){
+    if(first_two_rows$site_code[1] == first_two_rows$site_code[2]){
         dtdiff <- diff(first_two_rows$datetime)
         units(dtdiff) <- 'mins'
         if(as.numeric(dtdiff) == 15){
@@ -447,7 +447,7 @@ dataVWC <- reactive({
 
     period_mean_Q <- dataq %>%
         mutate(datetime = lubridate::floor_date(datetime, unit = agg_unit)) %>%
-        group_by(site_name, datetime) %>%
+        group_by(site_code, datetime) %>%
         #divisor of vwc is MEAN(Q) (unlike Pvwc), because Q is expressed as a rate (L/s)
         summarize(val = mean(val, na.rm = TRUE),
                   ms_status = numeric_any(ms_status),
@@ -456,7 +456,7 @@ dataVWC <- reactive({
 
     datavwc <- dataflux %>%
         mutate(datetime = lubridate::floor_date(datetime, unit = agg_unit)) %>%
-        group_by(site_name, var, datetime) %>%
+        group_by(site_code, var, datetime) %>%
         summarize(nday = sum(! is.na(val)),
                   #vwc dividend is a mean, not a sum, because flux is also a rate
                   val = mean(val, na.rm = TRUE),
@@ -465,15 +465,15 @@ dataVWC <- reactive({
                   .groups = 'drop') %>%
         filter(nday > period_complete_n * 0.1) %>%
         left_join(period_mean_Q,
-                  by = c('datetime', 'site_name'),
+                  by = c('datetime', 'site_code'),
                   suffix = c('.flux', '.Q')) %>%
-        left_join(site_data[c('site_name', 'ws_area_ha')],
-                  by = 'site_name') %>%
+        left_join(site_data[c('site_code', 'ws_area_ha')],
+                  by = 'site_code') %>%
         #     mg/L = kg/ha/d  /  L/s  *  ha          ...
         mutate(val = val.flux / val.Q * ws_area_ha * 1e6 / 86400,
                ms_status = numeric_any_v(ms_status.flux, ms_status.Q),
                ms_interp = numeric_any_v(ms_interp.flux, ms_interp.Q)) %>%
-        select(datetime, site_name, var, val, ms_status, ms_interp)
+        select(datetime, site_code, var, val, ms_status, ms_interp)
 
     if(nrow(datavwc) == 0) return(datavwc)
 
@@ -627,7 +627,7 @@ dataPVWC <- reactive({
 
     period_sum_P <- datap %>%
         mutate(datetime = lubridate::floor_date(datetime, unit = agg_unit)) %>%
-        group_by(site_name, datetime) %>%
+        group_by(site_code, datetime) %>%
         #divisor of Pvwc is SUM(P) (unlike vwc), because P is expressed as a length (mm)
         summarize(val = sum(val, na.rm = TRUE),
                   ms_status = numeric_any(ms_status),
@@ -636,7 +636,7 @@ dataPVWC <- reactive({
 
     dataPvwc <- dataPflux %>%
         mutate(datetime = lubridate::floor_date(datetime, unit = agg_unit)) %>%
-        group_by(site_name, var, datetime) %>%
+        group_by(site_code, var, datetime) %>%
         summarize(nday = sum(! is.na(val)),
                   #Pvwc dividend is a mean, not a sum, because flux is a rate
                   val = mean(val, na.rm = TRUE),
@@ -645,13 +645,13 @@ dataPVWC <- reactive({
                   .groups = 'drop') %>%
         filter(nday > period_complete_n * 0.5) %>%
         left_join(period_sum_P,
-                  by = c('datetime', 'site_name'),
+                  by = c('datetime', 'site_code'),
                   suffix = c('.flux', '.P')) %>%
              #mg/L = kg/ha/d  /  mm (~ per month or per year) * 1e6 / 1e4 * d
         mutate(val = val.flux / val.P * 100 * period_complete_n,
                ms_status = numeric_any_v(ms_status.flux, ms_status.P),
                ms_interp = numeric_any_v(ms_interp.flux, ms_interp.P)) %>%
-        select(datetime, site_name, var, val, ms_status, ms_interp)
+        select(datetime, site_code, var, val, ms_status, ms_interp)
 
     if(nrow(dataPvwc) == 0) return(dataPvwc)
 
@@ -778,7 +778,7 @@ output$GRAPH_PRECIP3 <- renderDygraph({
         {
             dataP <- dataP %>%
                 dplyr::rename_with(~ gsub('_precipitation', '', .x)) %>%
-                tidyr::pivot_wider(names_from = site_name,
+                tidyr::pivot_wider(names_from = site_code,
                                    values_from = c('val', 'ms_status',
                                                    'ms_interp')) %>%
                 dplyr::rename_with(~ gsub('val_', '', .x))
@@ -1145,9 +1145,9 @@ output$GRAPH_QC3a <- renderPlot({
     if(reactive_vals$facet3a == 0 || ! show_qc) return()
 
     alldata <- datachem %>%
-        select(c('datetime', 'site_name', ends_with(varA))) %>%
+        select(c('datetime', 'site_code', ends_with(varA))) %>%
         inner_join(dataq,
-                   by = c("datetime", "site_name"))
+                   by = c("datetime", "site_code"))
 
     n_val_cols <- sum(grepl('^val_', colnames(alldata)))
     if(n_val_cols < 2){
@@ -1172,7 +1172,7 @@ output$GRAPH_QC3a <- renderPlot({
     cq <- ggplot(alldata,
                  aes(x = val_discharge,
                      y = !!sym(paste0('val_', varA)),
-                     colour = site_name)) +
+                     colour = site_code)) +
         geom_point(na.rm = TRUE,
                    size = 1)
 
@@ -1426,9 +1426,9 @@ output$GRAPH_QC3b <- renderPlot({
     if(reactive_vals$facet3b == 0 || ! show_qc) return()
 
     alldata <- datachem %>%
-        select(c('datetime', 'site_name', ends_with(varB))) %>%
+        select(c('datetime', 'site_code', ends_with(varB))) %>%
         inner_join(dataq,
-                   by = c("datetime", "site_name"))
+                   by = c("datetime", "site_code"))
 
     n_val_cols <- sum(grepl('^val_', colnames(alldata)))
     if(n_val_cols < 2){
@@ -1453,7 +1453,7 @@ output$GRAPH_QC3b <- renderPlot({
     cq <- ggplot(alldata,
                  aes(x = val_discharge,
                      y = !!sym(paste0('val_', varB)),
-                     colour = site_name)) +
+                     colour = site_code)) +
         geom_point(na.rm = TRUE,
                    size = 1)
 
@@ -1707,9 +1707,9 @@ output$GRAPH_QC3c <- renderPlot({
     if(reactive_vals$facet3a == 0 || ! show_qc) return()
 
     alldata <- datachem %>%
-        select(c('datetime', 'site_name', ends_with(varC))) %>%
+        select(c('datetime', 'site_code', ends_with(varC))) %>%
         inner_join(dataq,
-                   by = c("datetime", "site_name"))
+                   by = c("datetime", "site_code"))
 
     n_val_cols <- sum(grepl('^val_', colnames(alldata)))
     if(n_val_cols < 2){
@@ -1734,7 +1734,7 @@ output$GRAPH_QC3c <- renderPlot({
     cq <- ggplot(alldata,
                  aes(x = val_discharge,
                      y = !!sym(paste0('val_', varC)),
-                     colour = site_name)) +
+                     colour = site_code)) +
         geom_point(na.rm = TRUE,
                    size = 1)
 
@@ -1780,7 +1780,7 @@ output$GRAPH_Q3 <- renderDygraph({
         {
             dataq <- dataq %>%
                 dplyr::rename_with(~ gsub('_discharge', '', .x)) %>%
-                tidyr::pivot_wider(names_from = site_name,
+                tidyr::pivot_wider(names_from = site_code,
                                    values_from = c('val', 'ms_status',
                                                    'ms_interp')) %>%
                 dplyr::rename_with(~ gsub('val_', '', .x))
