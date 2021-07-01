@@ -239,9 +239,9 @@ strip_colname_clutter <- function(column_names){
 
     #details:
     #ignores preceding "ms_interp_", "ms_status_", and "val_".
-    #drops "datetime" and "site_name". Returns unique elements of what's left
+    #drops "datetime" and "site_code". Returns unique elements of what's left
 
-    names_to_drop <- c('datetime', 'site_name')
+    names_to_drop <- c('datetime', 'site_code')
     column_names <- column_names[! column_names %in% names_to_drop]
 
     uncluttered <- gsub(pattern = '^(ms_interp_|ms_status_|val_)',
@@ -364,7 +364,7 @@ get_sitelist <- function(domain, type){
         filter(domain == !!domain,
                # network == !!network, #we should eventually observe hierarchy all the way up to the network
                site_type %in% !!type) %>%
-        pull(site_name)
+        pull(site_code)
 
     return(sitelist)
 }
@@ -397,8 +397,8 @@ read_combine_feathers <- function(var, dmns, sites = NULL){
     #is implemented
     dmn_sites <- site_data %>%
         filter(domain %in% dmns, site_type %in% c('stream_gauge', 'stream_sampling_point')) %>%
-        filter(site_name %in% sites) %>%
-        select(domain, site_name)
+        filter(site_code %in% sites) %>%
+        select(domain, site_code)
 
     combined_data <- tibble()
     for(i in 1:nrow(dmn_sites)){
@@ -406,7 +406,7 @@ read_combine_feathers <- function(var, dmns, sites = NULL){
         filestr <- glue('data/{d}/{v}/{s}.feather',
                         d = dmn_sites$domain[i],
                         v = var,
-                        s = dmn_sites$site_name[i])
+                        s = dmn_sites$site_code[i])
 
         data_part <- try_read_feather(filestr)
 
@@ -439,7 +439,7 @@ generate_dropdown_varlist = function(chemvars, filter_set=NULL){
 
 filter_dropdown_varlist = function(filter_set, vartype = 'stream'){
 
-    # filter_set = sw(select(filter_set, -one_of('site_name', 'datetime')))
+    # filter_set = sw(select(filter_set, -one_of('site_code', 'datetime')))
 
     if(nrow(filter_set) == 0){
         return(list(Anions = c(),
@@ -516,7 +516,7 @@ ms_aggregate <- function(d, agg_selection){#, conc_flux_selection = NULL){
     # d <- sw(d %>%
     #     mutate(datetime = lubridate::floor_date(datetime,
     #                                             agg_period)) %>%
-    #     group_by(site_name, var, datetime) %>%
+    #     group_by(site_code, var, datetime) %>%
     #     summarize(
     #         val = if(n() > 1){
     #             if(var_is_p){
@@ -539,7 +539,7 @@ ms_aggregate <- function(d, agg_selection){#, conc_flux_selection = NULL){
         d <- sw(d %>%
             mutate(datetime = lubridate::floor_date(datetime,
                                                     agg_period)) %>%
-            group_by(site_name, var, datetime) %>%
+            group_by(site_code, var, datetime) %>%
             summarize(
                 nday = sum(! is.na(val)),
                 val = if(n() > 1){
@@ -555,7 +555,7 @@ ms_aggregate <- function(d, agg_selection){#, conc_flux_selection = NULL){
                 ms_interp = numeric_any(ms_interp),
                 .groups = 'drop') %>%
             filter(nday > period_complete_n * 0.1) %>%
-            group_by(site_name, var) %>%
+            group_by(site_code, var) %>%
             tidyr::complete(datetime = seq(min(datetime),
                                            max(datetime),
                                            by = agg_period)))
@@ -565,7 +565,7 @@ ms_aggregate <- function(d, agg_selection){#, conc_flux_selection = NULL){
         d <- sw(d %>%
             mutate(datetime = lubridate::floor_date(datetime,
                                                     agg_period)) %>%
-            group_by(site_name, var, datetime) %>%
+            group_by(site_code, var, datetime) %>%
             summarize(
                 val = if(n() > 1){
                     if(var_is_p){
@@ -582,7 +582,7 @@ ms_aggregate <- function(d, agg_selection){#, conc_flux_selection = NULL){
     }
 
     d <- select(d,
-                datetime, site_name, var, val, one_of('ms_status', 'ms_interp'))
+                datetime, site_code, var, val, one_of('ms_status', 'ms_interp'))
 
     return(d)
 }
@@ -595,14 +595,14 @@ inject_timeseries_NAs = function(df, fill_by){
     dt_fill = seq.POSIXt(df$datetime[1], df$datetime[nrow(df)], by=fill_by)
     ndates = length(dt_fill)
 
-    # if('site_name' %in% colnames(df)){
+    # if('site_code' %in% colnames(df)){
 
-    sites = unique(df$site_name)
+    sites = unique(df$site_code)
     nsites = length(sites)
 
     dt_fill_tb = tibble(datetime=rep(dt_fill, times=nsites),
-        site_name=rep(sites, each=ndates))
-    df = right_join(df, dt_fill_tb, by=c('site_name', 'datetime'))
+        site_code=rep(sites, each=ndates))
+    df = right_join(df, dt_fill_tb, by=c('site_code', 'datetime'))
 
     # } else if('domain' %in% colnames(df)){
     #
@@ -663,8 +663,8 @@ pad_widen_join <- function(v,
         streamdata <- streamdata %>%
             select(- ! ends_with(paste0('_', v)),
                    datetime,
-                   site_name) %>%
-            tidyr::pivot_wider(names_from = site_name,
+                   site_code) %>%
+            tidyr::pivot_wider(names_from = site_code,
                                values_from = paste0('val_', v))
 
     } else {
@@ -678,8 +678,8 @@ pad_widen_join <- function(v,
             raindata <- raindata %>%
                 select(- ! ends_with(paste0('_', v)),
                        datetime,
-                       site_name) %>%
-                tidyr::pivot_wider(names_from = site_name,
+                       site_code) %>%
+                tidyr::pivot_wider(names_from = site_code,
                                    values_from = paste0('val_', v)) %>%
                 rename_with(~paste0('P_', .),
                             .cols = -datetime)
@@ -753,7 +753,7 @@ manufacture_empty_plotdata = function(sites){
 
 generate_dropdown_sitelist = function(domain_vec){
 
-    if(is.null(domain_vec)) return(NULL)
+    if(is.null(domain_vec)) return(list())
 
     sitelist <- list()
     for(i in seq_along(domain_vec)){
@@ -794,22 +794,22 @@ selection_color_match <- function(sites_selected,
 get_local_solar_time <- function(df, time_scheme) {
 
     df <- site_data %>%
-        select(longitude, local_time_zone, site_name) %>%
+        select(longitude, local_time_zone, site_code) %>%
         right_join(df,
-                   by = 'site_name')
+                   by = 'site_code')
 
     # df <- left_join(df,
     #                 site_info,
-    #                 by = 'site_name')
+    #                 by = 'site_code')
 
-    sites <- unique(df$site_name)
+    sites <- unique(df$site_code)
 
     final <- tibble()
 
     for(i in 1:length(sites)){
 
         times <- df %>%
-            filter(site_name == !!sites[i]) %>%
+            filter(site_code == !!sites[i]) %>%
             mutate(Local = force_tz(with_tz(datetime,
                                             tzone = local_time_zone),
                                     tzone = 'UTC')) %>%
@@ -919,17 +919,17 @@ convert_flux_units_bi = function(df, col, input_unit='kg/ha/year', desired_unit,
            # summary_file <- read_feather('data/general/biplot/year.feather')
 
             sites <- df %>%
-                pull(site_name)
+                pull(site_code)
 
             sites <- unique(sites)
 
             areas <- summary_file %>%
-                filter(site_name %in% sites,
+                filter(site_code %in% sites,
                        var == 'area') %>%
-                select(site_name, area=val)
+                select(site_code, area=val)
 
             df <- df %>%
-                left_join(., areas, by = 'site_name') %>%
+                left_join(., areas, by = 'site_code') %>%
                 mutate(!!flux_cols := .data[[flux_cols]]*area) %>%
                 select(-area)
         }
@@ -976,17 +976,17 @@ convert_area_nor_q_bi = function(df, summary_file){
        # summary_file <- read_feather('data/general/biplot/year.feather')
 
         sites <- df %>%
-            pull(site_name)
+            pull(site_code)
 
         sites <- unique(sites)
 
         areas <- summary_file %>%
-            filter(site_name %in% sites,
+            filter(site_code %in% sites,
                    var == 'area') %>%
-            select(site_name, area=val)
+            select(site_code, area=val)
 
         df <- df %>%
-            left_join(., areas, by = 'site_name') %>%
+            left_join(., areas, by = 'site_code') %>%
             mutate(discharge = discharge/(area*10000)) %>%
             select(-area) %>%
             filter(!is.na(discharge))
@@ -1154,7 +1154,7 @@ get_default_site <- function(domain){
 }
 
 ms_read_portalsite <- function(domain,
-                               site_name,
+                               site_code,
                                prodname){
 
     #read data from network/domain/site, arrange by variable then datetime.
@@ -1166,7 +1166,7 @@ ms_read_portalsite <- function(domain,
     d <- read_feather(glue('data/{dmn}/{p}/{s}.feather',
                            dmn = domain,
                            p = prodname,
-                           s = site_name))
+                           s = site_code))
 
     d <- d %>%
         mutate(val = errors::set_errors(val, val_err)) %>%
@@ -1293,4 +1293,17 @@ get_watermark_specs <- function(dydat = dydat,
 
     return(list(dt = max_dt,
                 series = max_dt_series))
+}
+
+dt_ranges_overlap <- function(range1, range2){
+
+    #converts range1 and range2 to POSIXct, converts them to ranges if they're
+    #vectors of length > 2, then determines if they overlap
+
+    range1 <- with_tz(as.POSIXct(range(range1, na.rm = TRUE)), tz='UTC')
+    range2 <- with_tz(as.POSIXct(range(range2, na.rm = TRUE)), tz='UTC')
+
+    ranges_overlap <- min(c(range1[2], range2[2])) - max(c(range1[1], range2[1])) > 0
+
+    return(ranges_overlap)
 }

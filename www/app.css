@@ -112,6 +112,10 @@ APP TEXT FORMATTING
     top: -0.2em;
 }
 
+/*
+LOADING TEXT
+*/
+
 .loading-container {
   display: flex;
   justify-content: center;
@@ -177,7 +181,10 @@ SELECTIZE MODIFICATIONS
 }
 
 
-/* SLIDER */
+/*
+SLIDER
+*/
+
 .irs-bar {
 	border-top-color: var(--slate) !important;
 	border-bottom-color: var(--slate) !important; 
@@ -206,6 +213,10 @@ SELECTIZE MODIFICATIONS
 .irs-grid-pol.small {
     height: 0px !important;
 }
+
+/*
+CHECKBOXES AND RADIO BUTTONS
+*/
 
 input {
     border-color: #E6E6E6;
@@ -252,6 +263,7 @@ div.shiny-options-group input[type='radio'] {
     border: 1px solid #d1d3d1;
 }
 
+/*input[type='checkbox']:not([id^='msdl_']) {*/
 input[type='checkbox'] {
     appearance: none;
     background: transparent;
@@ -389,3 +401,71 @@ MISC
     border: 1px solid #ccc;
     right: 10%;
 }
+
+/* for brief popup notifications */
+.shiny-notification {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 25%;
+    text-align: center;
+    transform: translate(-50%, -50%);
+}
+
+/* super fancy loader to include with notifications */
+.lds-ellipsis {
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+.lds-ellipsis div {
+  position: absolute;
+  top: 33px;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: #fff;
+  animation-timing-function: cubic-bezier(0, 1, 1, 0);
+}
+.lds-ellipsis div:nth-child(1) {
+  left: 8px;
+  animation: lds-ellipsis1 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(2) {
+  left: 8px;
+  animation: lds-ellipsis2 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(3) {
+  left: 32px;
+  animation: lds-ellipsis2 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(4) {
+  left: 56px;
+  animation: lds-ellipsis3 0.6s infinite;
+}
+@keyframes lds-ellipsis1 {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes lds-ellipsis3 {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0);
+  }
+}
+@keyframes lds-ellipsis2 {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(24px, 0);
+  }
+}
+

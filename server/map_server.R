@@ -6,7 +6,7 @@ sheds <- sf::st_read('data/general/shed_boundary') %>%
 sg = filter(site_data, site_type == 'stream_gauge')
 
 sheds <- sheds %>%
-    filter(site_name %in% sg$site_name)
+    filter(site_code %in% sg$site_code)
 
 output$MAP = renderLeaflet({
 
@@ -23,7 +23,7 @@ output$MAP = renderLeaflet({
             stroke = T,
             fillOpacity = 0.2,
             color = '#000000',
-            layerId = sheds$site_name,
+            layerId = sheds$site_code,
             highlightOptions = highlightOptions(color = '#228B22', fill = '#228B22',
                                                 opacity=1),
             group = 'Catchments'
@@ -33,25 +33,25 @@ output$MAP = renderLeaflet({
                          weight=10, fillOpacity=1,
                          popup=glue(rain_gauge_buttons, domain=rg$domain,
                                     pretty_domain=rg$pretty_domain, site_type=rg$site_type,
-                                    site_code=rg$site_name, site_name=rg$full_name,
+                                    site_code=rg$site_code, site_code=rg$full_name,
                                     latitude=rg$latitude, longitude=rg$longitude),
                          popupOptions=c(
-                             className=paste0(rg$domain, "__", rg$site_name, '_popup'),
+                             className=paste0(rg$domain, "__", rg$site_code, '_popup'),
                              minWidth=200, maxWidth=500
                          ),
                          data=rg) %>%
         addCircleMarkers(lng=sg$longitude, lat=sg$latitude, color='#228B22',
-                         layerId=sg$site_name, stroke = TRUE, opacity=0.5, radius=4,
+                         layerId=sg$site_code, stroke = TRUE, opacity=0.5, radius=4,
                          weight=10, fillOpacity=1, fillColor='#228B22',
                     popup=glue(stream_gauge_buttons, domain=sg$domain,
                          pretty_domain=sg$pretty_domain, stream=sg$stream,
-                         site_code=sg$site_name, site_name=sg$full_name,
+                         site_code=sg$site_code, site_code=sg$full_name,
                          site_type=sg$site_type, latitude=sg$latitude,
                          longitude=sg$longitude,
-                         attribution=paste0(sg$domain, "__", sg$site_name)),
+                         attribution=paste0(sg$domain, "__", sg$site_code)),
                     popupOptions=c(
-                         className=paste0(sg$domain, "__", sg$site_name, '_popup'),
-                         minWidth=200, maxWidth=500), label = ~site_name, clusterId=sg$domain,
+                         className=paste0(sg$domain, "__", sg$site_code, '_popup'),
+                         minWidth=200, maxWidth=500), label = ~site_code, clusterId=sg$domain,
                     clusterOptions = markerClusterOptions(zoomToBoundsOnClick=T, maxClusterRadius=4.5),
                          data=sg) %>%
     # addLegend(
@@ -87,7 +87,7 @@ observeEvent({
         code <- str_split_fixed(input$MAP_shape_click$id, '-', n = Inf)[1]
 
         sg <- filter(site_data, site_type == 'stream_gauge') %>%
-            filter(site_name == code)
+            filter(site_code == code)
 
         selected <- list(id = code, lat = sg$latitude, lng = sg$longitude)
 
@@ -100,13 +100,13 @@ observeEvent({
                 weight = 10, fillOpacity = 1, fillColor = '#228B22',
                 popup = glue(stream_gauge_buttons, domain = sg$domain,
                              pretty_domain = sg$pretty_domain, stream = sg$stream,
-                             site_code = sg$site_name, site_name = sg$full_name,
+                             site_code = sg$site_code, site_code = sg$full_name,
                              site_type = sg$site_type, latitude = sg$latitude,
                              longitude = sg$longitude,
-                             attribution = paste0(sg$domain, "__", sg$site_name)),
+                             attribution = paste0(sg$domain, "__", sg$site_code)),
                 popupOptions = c(
-                    className = paste0(sg$domain, "__", sg$site_name, '_popup'),
-                    minWidth = 200, maxWidth = 500), label = sg$site_name,
+                    className = paste0(sg$domain, "__", sg$site_code, '_popup'),
+                    minWidth = 200, maxWidth = 500), label = sg$site_code,
                 data = sg)  %>%
             removeMarker(layerId = paste0(prev_select()$id, '-temp'))
 
@@ -125,7 +125,7 @@ observeEvent({
 
         code_ <- str_split_fixed(input$MAP_marker_click$id, '-', n=Inf)[1]
         shed <- sheds %>%
-            filter(site_name == code_)
+            filter(site_code == code_)
 
         selected <- list(id = code_)
 
@@ -134,12 +134,12 @@ observeEvent({
             proxy %>%
                 addPolygons(data = shed, weight = 3, smooth = 0, stroke = T,
                             fillOpacity = 0.2, color = '#228B22',
-                            layerId = paste0(shed$site_name, '-temp'), group = 'Catchments')
+                            layerId = paste0(shed$site_code, '-temp'), group = 'Catchments')
 
         proxy %>%
             addPolygons(data = shed, weight = 3, smooth = 0, stroke = T,
                 fillOpacity = 0.2, color = '#228B22',
-                layerId = paste0(shed$site_name, '-temp'), group = 'Catchments') %>%
+                layerId = paste0(shed$site_code, '-temp'), group = 'Catchments') %>%
             removeShape(layerId = paste0(site_remove, '-temp'))
 
         prev_select_m(selected)
@@ -150,7 +150,7 @@ observeEvent({
 ## Add site as a class
 # htmlwidgets::onRender("
 #         for (var i = 0; i < data.longitude.length; i++) {
-#         var site = data.site_name[i];
+#         var site = data.site_code[i];
 #         var domain = data.domain[i];
 #         var sep = '-'
 #         var name = domain.concat(sep, site);

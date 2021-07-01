@@ -21,8 +21,8 @@ compute_monthly_summary <- function(df) {
         stream_sites <- site_data %>%
             filter(domain == dom,
                    site_type %in% c('stream_gauge')) %>%
-            filter(site_name %in% sites) %>%
-            pull(site_name)
+            filter(site_code %in% sites) %>%
+            pull(site_code)
 
         all_sites <- tibble()
         for(p in 1:length(stream_sites)) {
@@ -51,7 +51,7 @@ compute_monthly_summary <- function(df) {
                 #site_chem <- cleve_var_prefix(site_chem)
 
                 site_chem <- site_chem %>%
-                    group_by(site_name, Year, Month, var) %>%
+                    group_by(site_code, Year, Month, var) %>%
                     summarise(val = mean(val, na.rm = TRUE)) %>%
                     ungroup() %>%
                     mutate(Date = ymd(paste(Year, Month, 1, sep = '-'))) %>%
@@ -72,7 +72,7 @@ compute_monthly_summary <- function(df) {
                     #site_flux <- cleve_var_prefix(site_flux)
 
                     site_flux <- site_flux %>%
-                        group_by(site_name, Year, Month, var) %>%
+                        group_by(site_code, Year, Month, var) %>%
                         summarise(val = mean(val, na.rm = TRUE)) %>%
                         mutate(m_factor = case_when(Month %in% c(1,3,5,7,8,10,12) ~ 31,
                                                     Month %in% c(4,6,9,11) ~ 30,
@@ -110,11 +110,11 @@ compute_monthly_summary <- function(df) {
                 #site_q <- cleve_var_prefix(site_q)
 
                 site_q <- site_q %>%
-                    group_by(site_name, Year, Month, day) %>%
+                    group_by(site_code, Year, Month, day) %>%
                     summarise(val = mean(val, na.rm = TRUE)) %>%
                     mutate(NAs = ifelse(is.na(val), 1, 0)) %>%
                     ungroup() %>%
-                    group_by(site_name, Year, Month) %>%
+                    group_by(site_code, Year, Month) %>%
                     summarise(val = sum(val*86400/1000, na.rm = TRUE),
                               NAs = sum(NAs, na.rm = TRUE)) %>%
                     mutate(Date = paste(Year, Month, 1, sep = '-')) %>%
@@ -159,8 +159,8 @@ compute_yearly_summary <- function(df,
         stream_sites <- site_data %>%
             filter(domain == dom,
                    site_type == 'stream_gauge') %>%
-            filter(site_name %in% sites) %>%
-            pull(site_name)
+            filter(site_code %in% sites) %>%
+            pull(site_code)
 
         all_sites <- tibble()
 
@@ -223,12 +223,12 @@ compute_yearly_summary <- function(df,
                     } else{
 
                         site_q <- site_q %>%
-                            group_by(site_name, Year, Month, Day) %>%
+                            group_by(site_code, Year, Month, Day) %>%
                             summarise(val = mean(val, na.rm = T)) %>%
                             ungroup() %>%
                             mutate(Date = ymd(paste(Year, 1, 1, sep = '-'))) %>%
                             mutate(val = val*86400) %>%
-                            group_by(site_name, Date, Year) %>%
+                            group_by(site_code, Date, Year) %>%
                             summarise(val = sum(val, na.rm = TRUE),
                                       count = n()) %>%
                             mutate(val = val/1000) %>%
@@ -271,12 +271,12 @@ compute_yearly_summary <- function(df,
                     }
 
                     site_chem <- site_chem %>%
-                        group_by(site_name, Year, Month, Day, var) %>%
+                        group_by(site_code, Year, Month, Day, var) %>%
                         summarise(val = mean(val, na.rm = TRUE)) %>%
                         ungroup() %>%
                         mutate(Date = ymd(paste(Year, 1, 1, sep = '-'))) %>%
                         select(-Month) %>%
-                        group_by(site_name, Date, Year, var) %>%
+                        group_by(site_code, Date, Year, var) %>%
                         summarise(val = mean(val, na.rm = TRUE),
                                   count = n()) %>%
                         ungroup() %>%
@@ -312,13 +312,13 @@ compute_yearly_summary <- function(df,
                     }
 
                     site_flux <- site_flux %>%
-                        group_by(site_name, Year, Month, Day, var) %>%
+                        group_by(site_code, Year, Month, Day, var) %>%
                         summarise(val = mean(val, na.rm = T)) %>%
                         ungroup() %>%
-                        group_by(site_name, Year, var) %>%
+                        group_by(site_code, Year, var) %>%
                         mutate(Date = ymd(paste(Year, 1, 1, sep = '-'))) %>%
                         ungroup() %>%
-                        group_by(site_name, Date, Year, var) %>%
+                        group_by(site_code, Date, Year, var) %>%
                         summarise(val = sum(val, na.rm = TRUE),
                                   count = n()) %>%
                         ungroup() %>%
@@ -354,11 +354,11 @@ compute_yearly_summary <- function(df,
                     }
 
                     site_precip <- site_precip %>%
-                        group_by(site_name, Year, Month, Day) %>%
+                        group_by(site_code, Year, Month, Day) %>%
                         summarise(val = sum(val, na.rm = T)) %>%
                         ungroup() %>%
                         mutate(Date = ymd(paste(Year, 1, 1, sep = '-'))) %>%
-                        group_by(site_name, Date, Year) %>%
+                        group_by(site_code, Date, Year) %>%
                         summarise(val = sum(val, na.rm = TRUE),
                                   count = n()) %>%
                         ungroup() %>%
@@ -395,12 +395,12 @@ compute_yearly_summary <- function(df,
                     }
 
                     site_precip_chem <- site_precip_chem %>%
-                        group_by(site_name, Year, Month, Day, var) %>%
+                        group_by(site_code, Year, Month, Day, var) %>%
                         summarise(val = mean(val, na.rm = TRUE)) %>%
                         ungroup() %>%
                         mutate(Date = ymd(paste(Year, 1, 1, sep = '-'))) %>%
                         select(-Month) %>%
-                        group_by(site_name, Date, Year, var) %>%
+                        group_by(site_code, Date, Year, var) %>%
                         summarise(val = mean(val, na.rm = TRUE),
                                   count = n()) %>%
                         ungroup() %>%
@@ -437,13 +437,13 @@ compute_yearly_summary <- function(df,
                     }
 
                     site_precip_flux <- site_precip_flux %>%
-                        group_by(site_name, Year, Month, Day, var) %>%
+                        group_by(site_code, Year, Month, Day, var) %>%
                         summarise(val = mean(val, na.rm = T)) %>%
                         ungroup() %>%
-                        group_by(site_name, Year, var) %>%
+                        group_by(site_code, Year, var) %>%
                         mutate(Date = ymd(paste(Year, 1, 1, sep = '-'))) %>%
                         ungroup() %>%
-                        group_by(site_name, Date, Year, var) %>%
+                        group_by(site_code, Date, Year, var) %>%
                         summarise(val = sum(val, na.rm = TRUE),
                                   count = n()) %>%
                         ungroup() %>%
@@ -554,7 +554,7 @@ compute_yearly_summary_ws <- function(df) {
 
         areas <- site_data %>%
             filter(site_type == 'stream_gauge') %>%
-            select(site_name, domain, val = ws_area_ha) %>%
+            select(site_code, domain, val = ws_area_ha) %>%
             mutate(Date = NA,
                    Year = NA,
                    var = 'area') %>%
@@ -564,8 +564,8 @@ compute_yearly_summary_ws <- function(df) {
 
         #calc area normalized q
         area_q <- areas %>%
-            select(site_name, domain, area = val) %>%
-            full_join(., conc_sum, by = c('site_name', 'domain')) %>%
+            select(site_code, domain, area = val) %>%
+            full_join(., conc_sum, by = c('site_code', 'domain')) %>%
             mutate(discharge_a = ifelse(var == 'discharge', val/(area*10000), NA)) %>%
             mutate(discharge_a = discharge_a*1000) %>%
             filter(!is.na(discharge_a)) %>%
@@ -614,8 +614,8 @@ compute_yearly_summary_ws(network_domain_default_sites)
 #         stream_sites <- site_data %>%
 #             filter(domain == dom,
 #                    site_type == 'stream_gauge') %>%
-#             filter(site_name %in% sites) %>%
-#             pull(site_name)
+#             filter(site_code %in% sites) %>%
+#             pull(site_code)
 #
 #         all_sites <- tibble()
 #
@@ -678,11 +678,11 @@ compute_yearly_summary_ws(network_domain_default_sites)
 #                         q_record_length <- detrmin_mean_record_length(site_q)
 #
 #                         site_q <- site_q %>%
-#                             group_by(site_name, Year, Month, Day) %>%
+#                             group_by(site_code, Year, Month, Day) %>%
 #                             summarise(val = mean(val, na.rm = T)) %>%
 #                             ungroup() %>%
 #                             mutate(Date = ymd(paste(Year, 1, 1, sep = '-'))) %>%
-#                             group_by(site_name, Date, Year) %>%
+#                             group_by(site_code, Date, Year) %>%
 #                             summarise(val = mean(val, na.rm = TRUE),
 #                                       count = n()) %>%
 #                             mutate(missing = (q_record_length-count)/q_record_length) %>%
@@ -724,12 +724,12 @@ compute_yearly_summary_ws(network_domain_default_sites)
 #                     }
 #
 #                     site_chem <- site_chem %>%
-#                         group_by(site_name, Year, Month, Day, var) %>%
+#                         group_by(site_code, Year, Month, Day, var) %>%
 #                         summarise(val = mean(val, na.rm = TRUE)) %>%
 #                         ungroup() %>%
 #                         mutate(Date = ymd(paste(Year, 1, 1, sep = '-'))) %>%
 #                         select(-Month) %>%
-#                         group_by(site_name, Date, Year, var) %>%
+#                         group_by(site_code, Date, Year, var) %>%
 #                         summarise(val = mean(val, na.rm = TRUE),
 #                                   count = n()) %>%
 #                         ungroup() %>%
@@ -766,13 +766,13 @@ compute_yearly_summary_ws(network_domain_default_sites)
 #                     }
 #
 #                     site_flux <- site_flux %>%
-#                         group_by(site_name, Year, Month, Day, var) %>%
+#                         group_by(site_code, Year, Month, Day, var) %>%
 #                         summarise(val = mean(val, na.rm = T)) %>%
 #                         ungroup() %>%
-#                         group_by(site_name, Year, var) %>%
+#                         group_by(site_code, Year, var) %>%
 #                         mutate(Date = ymd(paste(Year, 1, 1, sep = '-'))) %>%
 #                         ungroup() %>%
-#                         group_by(site_name, Date, Year, var) %>%
+#                         group_by(site_code, Date, Year, var) %>%
 #                         summarise(val = mean(val, na.rm = TRUE),
 #                                   count = n()) %>%
 #                         ungroup() %>%
@@ -808,11 +808,11 @@ compute_yearly_summary_ws(network_domain_default_sites)
 #                     }
 #
 #                     site_precip <- site_precip %>%
-#                         group_by(site_name, Year, Month, Day) %>%
+#                         group_by(site_code, Year, Month, Day) %>%
 #                         summarise(val = mean(val, na.rm = T)) %>%
 #                         ungroup() %>%
 #                         mutate(Date = ymd(paste(Year, 1, 1, sep = '-'))) %>%
-#                         group_by(site_name, Date, Year) %>%
+#                         group_by(site_code, Date, Year) %>%
 #                         summarise(val = sum(val, na.rm = TRUE),
 #                                   count = n()) %>%
 #                         ungroup() %>%
@@ -848,12 +848,12 @@ compute_yearly_summary_ws(network_domain_default_sites)
 #                     }
 #
 #                     site_precip_chem <- site_precip_chem %>%
-#                         group_by(site_name, Year, Month, Day, var) %>%
+#                         group_by(site_code, Year, Month, Day, var) %>%
 #                         summarise(val = mean(val, na.rm = TRUE)) %>%
 #                         ungroup() %>%
 #                         mutate(Date = ymd(paste(Year, 1, 1, sep = '-'))) %>%
 #                         select(-Month) %>%
-#                         group_by(site_name, Date, Year, var) %>%
+#                         group_by(site_code, Date, Year, var) %>%
 #                         summarise(val = mean(val, na.rm = TRUE),
 #                                   n = n()) %>%
 #                         ungroup() %>%
@@ -890,13 +890,13 @@ compute_yearly_summary_ws(network_domain_default_sites)
 #                     }
 #
 #                     site_precip_flux <- site_precip_flux %>%
-#                         group_by(site_name, Year, Month, Day, var) %>%
+#                         group_by(site_code, Year, Month, Day, var) %>%
 #                         summarise(val = mean(val, na.rm = T)) %>%
 #                         ungroup() %>%
-#                         group_by(site_name, Year, var) %>%
+#                         group_by(site_code, Year, var) %>%
 #                         mutate(Date = ymd(paste(Year, 1, 1, sep = '-'))) %>%
 #                         ungroup() %>%
-#                         group_by(site_name, Date, Year, var) %>%
+#                         group_by(site_code, Date, Year, var) %>%
 #                         summarise(val = mean(val, na.rm = TRUE),
 #                                   n = n()) %>%
 #                         ungroup() %>%
@@ -999,7 +999,7 @@ compute_yearly_summary_ws(network_domain_default_sites)
 #
 #         areas <- site_data %>%
 #             filter(site_type == 'stream_gauge') %>%
-#             select(site_name, domain, val = ws_area_ha) %>%
+#             select(site_code, domain, val = ws_area_ha) %>%
 #             mutate(Date = NA,
 #                    Year = NA,
 #                    var = 'area') %>%
@@ -1009,8 +1009,8 @@ compute_yearly_summary_ws(network_domain_default_sites)
 #
 #         #calc area normalized q
 #         area_q <- areas %>%
-#             select(site_name, domain, area = val) %>%
-#             full_join(., conc_sum, by = c('site_name', 'domain')) %>%
+#             select(site_code, domain, area = val) %>%
+#             full_join(., conc_sum, by = c('site_code', 'domain')) %>%
 #             mutate(discharge_a = ifelse(var == 'discharge', ((val*31556952)/1000)/(area*10000), NA)) %>%
 #             mutate(discharge_a = discharge_a*1000) %>%
 #             filter(!is.na(discharge_a)) %>%

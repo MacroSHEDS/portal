@@ -8,7 +8,7 @@ source('ui/participants_ui.R')
 source('ui/summary_biplot_ui.R')
 source('ui/map_ui.R')
 source('ui/now_hiring_ui.R')
-source('ui/catalog_tab_ui.R')
+source('ui/data_tab_ui.R')
 source('ui/notes_ui.R')
 
 
@@ -34,7 +34,7 @@ ui = fluidPage(
                     about_tab,
                     participants_tab,
                     map_tab,
-                    catalog_tab,
+                    data_tab,
                     notes_tab
                 )
             ),

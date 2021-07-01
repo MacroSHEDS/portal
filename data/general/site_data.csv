@@ -1,4 +1,4 @@
-domain,pretty_domain,network,pretty_network,stream,site_name,full_name,site_type,latitude,longitude,CRS,ws_area_ha,in_workflow,notes,local_time_zone,includes_snow
+domain,pretty_domain,network,pretty_network,stream,site_code,full_name,site_type,latitude,longitude,CRS,ws_area_ha,in_workflow,notes,local_time_zone,includes_snow
 hbef,Hubbard Brook,lter,LTER,Stream 1,w1,Watershed 1,stream_gauge,43.952034,-71.726501,4326,14.0897397738246,1,NA,America/New_York,NA
 hbef,Hubbard Brook,lter,LTER,Stream 2,w2,Watershed 2,stream_gauge,43.953358,-71.724174,4326,17.9266090308577,1,NA,America/New_York,NA
 hbef,Hubbard Brook,lter,LTER,Stream 3,w3,Watershed 3,stream_gauge,43.954875,-71.722816,4326,40.2449543953631,1,NA,America/New_York,NA
