@@ -5,7 +5,6 @@ config.txt
 .Rhistory
 rsconnect
 temp_shinyappsio
-*.svg
 logs
 .Rproj.user
 portal.Rproj
