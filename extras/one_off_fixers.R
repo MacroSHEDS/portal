@@ -6,7 +6,7 @@ hbef_wsheds_tolower = function(d){
     for(f in ff){
         setwd(d)
         x = read_feather(f)
-        x$site_name = tolower(x$site_name)
+        x$site_code = tolower(x$site_code)
         write_feather(x, f)
         setwd('..')
     }
@@ -22,7 +22,7 @@ hbef_wsheds_tolower('flux')
 #     for(f in ff){
 #         setwd(d)
 #         x = read_feather(f)
-#         x$site_name = toupper(x$site_name)
+#         x$site_code = toupper(x$site_code)
 #         write_feather(x, f)
 #         setwd('..')
 #     }

@@ -557,3 +557,4 @@ shale_hills,Shale Hills,czo,CZO,NA,SH_headwaters,"Shale Hills Critical Zone Obse
 shale_hills,Shale Hills,czo,CZO,NA,SH_middle,"Shale Hills Critical Zone Observatory Stream, middle reach",stream_sampling_point,NA,NA,4326,NA,0,NA,US/Eastern,NA
 shale_hills,Shale Hills,czo,CZO,NA,SH_weir,"Shale Hills Critical Zone Observatory Stream, Weir",stream_gauge,40.666664,-77.902778,4326,6.94307712902109,1,NA,US/Eastern,NA
 shale_hills,Shale Hills,czo,CZO,NA,Shale_Hills_precip,Shale Hills Precipitation,rain_gauge,40.665742,-77.904036,4326,NA,1,"This appears to be a combination of gauges reported as one, the location is of one know gauge in the CZO",US/Eastern,NA
+tenderfoot,Tenderfoot,usfs,USFS,Stringer,UPSU,Upper Stringer Creek,stream_gauge,46.932943,-110.892513,4326,NA,0,NA,US/Mountain,0

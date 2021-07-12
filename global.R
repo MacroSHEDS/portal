@@ -6,6 +6,7 @@ suppressPackageStartupMessages({
     # library(dtplyr)
     library(shiny)
     library(shinydashboard)
+    # library(shinyWidgets)
     library(plotly)
     library(dygraphs)
     # library(DBI)
@@ -68,17 +69,19 @@ load_portal_config(from_where = 'local')
 sites_with_Q <- sm(read_csv('data/general/sites_with_discharge.csv')) %>%
     select(-network) %>%
     tidyr::unite(col = 'nds',
-                 domain, site_name,
+                 domain, site_code,
                  remove = TRUE) %>%
     pull(nds)
 
+site_data_copy <- site_data
 site_data <- filter(site_data,
                     as.logical(in_workflow),
-                    paste(domain, site_name, sep = '_') %in% sites_with_Q)
+                    paste(domain, site_code, sep = '_') %in% sites_with_Q |
+                        site_type == 'rain_gauge')
 
 
-#TODO: allow duplicate site_names
-# if(any(duplicated(site_data$site_name))) stop('site_names must be unique, even across domains')
+#TODO: allow duplicate site_codes
+# if(any(duplicated(site_data$site_code))) stop('site_codes must be unique, even across domains')
 ## 1. nSiteNVar page setup ####
 
 #establish color scheme for nSiteNVar plots
@@ -94,12 +97,12 @@ default_network <- 'lter'
 default_domain <- 'hbef'
 network_domain_default_sites <- site_data %>%
     group_by(network, domain) %>%
-    summarize(site_name = first(site_name),
+    summarize(site_code = first(site_code),
               pretty_domain = first(pretty_domain),
               pretty_network = first(pretty_network),
               .groups = 'drop') %>%
     select(pretty_network, network, pretty_domain, domain,
-           default_site = site_name)
+           default_site = site_code)
 
 default_sitelist <- get_sitelist(domain = default_domain,
                                  # network = default_network, #TODO: observe network level within portal?
@@ -110,22 +113,22 @@ default_site <- get_default_site(domain = default_domain)
 
 basedata <- list(
     Q = ms_read_portalsite(domain = default_domain,
-                           site_name = default_site,
+                           site_code = default_site,
                            prodname = 'discharge'),
     chem = ms_read_portalsite(domain = default_domain,
-                              site_name = default_site,
+                              site_code = default_site,
                               prodname = 'stream_chemistry'),
     flux = ms_read_portalsite(domain = default_domain,
-                              site_name = default_site,
+                              site_code = default_site,
                               prodname = 'stream_flux_inst_scaled'),
     P = ms_read_portalsite(domain = default_domain,
-                           site_name = default_site,
+                           site_code = default_site,
                            prodname = 'precipitation'),
     pchem = ms_read_portalsite(domain = default_domain,
-                               site_name = default_site,
+                               site_code = default_site,
                                prodname = 'precip_chemistry'),
     pflux = ms_read_portalsite(domain = default_domain,
-                               site_name = default_site,
+                               site_code = default_site,
                                prodname = 'precip_flux_inst_scaled')
 )
 
