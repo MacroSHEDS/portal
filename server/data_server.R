@@ -284,7 +284,7 @@ output$DL_SUBMIT_TS <- downloadHandler(
                          closeButton = FALSE,
                          type = 'message')
 
-        unlink('macrosheds_timeseries_temp',
+        unlink('macrosheds_timeseries',
                recursive = TRUE)
 
         newpaths <- list()
@@ -296,13 +296,21 @@ output$DL_SUBMIT_TS <- downloadHandler(
                                   include.dirs = FALSE,
                                   pattern = '(?:\\.feather$|documentation_)')
 
+            if(any(c('precipitation', 'precip_chemistry',
+                     'precip_flux_inst_scaled') %in% datasets)){
+
+                #grab some documentation files whose names might differ
+                datasets <- c(datasets, 'documentation_precip_pchem_pflux',
+                              'documentation_stream_flux_inst')
+            }
+
             dmndata <- grep(pattern = paste(datasets,
                                             collapse = '|'),
                             x = dmndata,
                             value = TRUE)
 
             dmndata_newpaths <- sub(pattern = '^data/',
-                                    replacement = 'macrosheds_timeseries_temp/',
+                                    replacement = 'macrosheds_timeseries/',
                                     x = dmndata)
 
             for(j in seq_along(dmndata)){
@@ -337,7 +345,7 @@ output$DL_SUBMIT_TS <- downloadHandler(
             flags = '-r6Xq',
             files = newpaths)
 
-        unlink('macrosheds_timeseries_temp',
+        unlink('macrosheds_timeseries',
                recursive = TRUE)
 
         removeNotification('TS_LOADING_POPUP')
@@ -351,9 +359,7 @@ output$DL_SUBMIT_SITE <- downloadHandler(
         dlset <- site_data_copy %>%
             filter(in_workflow == 1) %>%
             select(network,
-                   network_fullname = pretty_network,
                    domain,
-                   domain_fullname = pretty_domain,
                    site_code,
                    site_fullname = full_name,
                    stream_name = stream,
@@ -362,9 +368,9 @@ output$DL_SUBMIT_SITE <- downloadHandler(
                    longitude,
                    EPSG_code = CRS,
                    # ws_area_ha,
-                   timezone_olson = local_time_zone) %>%
-            mutate(Q_data_available = paste(domain_id, site_id, sep = '_') %in%
-                       sites_with_Q)
+                   timezone_olson = local_time_zone)
+            # mutate(Q_data_available = paste(domain, site_code, sep = '_') %in%
+            #            sites_with_Q)
 
         write_csv(dlset, file)
     },
@@ -406,7 +412,7 @@ output$DL_SUBMIT_SPATIALTS <- downloadHandler(
 
         selected_components <- input$DL_SPATIALTS_SELECTIONS
 
-        unlink('macrosheds_spatial_ts_temp')
+        unlink('macrosheds_spatial_ts')
 
         if(is.null(selected_components)){
             showNotification('No components selected',
@@ -426,12 +432,12 @@ output$DL_SUBMIT_SPATIALTS <- downloadHandler(
                          closeButton = FALSE,
                          type = 'message')
 
-        dir.create('macrosheds_spatial_ts_temp')
+        dir.create('macrosheds_spatial_ts')
 
         fst::read_fst(paste0('data/general/spatial_downloadables/',
                                   'watershed_raw_spatial_timeseries.fst')) %>%
             filter(substr(var, 1, 1) %in% selected_components) %>%
-            write_csv('macrosheds_spatial_ts_temp/macrosheds_watershed_summary_timeseries.csv')
+            write_csv('macrosheds_spatial_ts/macrosheds_watershed_summary_timeseries.csv')
 
         readr::write_file(x = paste("Each watershed summary variable is prefixed",
                                     "with a two-letter code. The first letter",
@@ -443,7 +449,7 @@ output$DL_SUBMIT_SPATIALTS <- downloadHandler(
                                     "variable_category_codes.csv and data_source_codes.csv. For more",
                                     "information about these variables, download",
                                     "the Variable table from the Data tab."),
-                          file = 'macrosheds_spatial_ts_temp/README.txt')
+                          file = 'macrosheds_spatial_ts/README.txt')
 
         #HERE
         # tribble(
@@ -462,10 +468,10 @@ output$DL_SUBMIT_SPATIALTS <- downloadHandler(
             flags = '-r9Xqj',
             files = c('data/general/spatial_downloadables/variable_category_codes.csv',
                       'data/general/spatial_downloadables/data_source_codes.csv',
-                      'macrosheds_spatial_ts_temp/README.txt',
-                      'macrosheds_spatial_ts_temp/macrosheds_watershed_summary_timeseries.csv'))
+                      'macrosheds_spatial_ts/README.txt',
+                      'macrosheds_spatial_ts/macrosheds_watershed_summary_timeseries.csv'))
 
-        unlink('macrosheds_spatial_ts_temp',
+        unlink('macrosheds_spatial_ts',
                recursive = TRUE)
         removeNotification('SPATIALTS_LOADING_POPUP')
     },
@@ -497,7 +503,7 @@ output$DL_SUBMIT_GIS <- downloadHandler(
                          closeButton = FALSE,
                          type = 'message')
 
-        unlink('macrosheds_GIS_files_temp',
+        unlink('macrosheds_GIS_files',
                recursive = TRUE)
 
         newpaths <- list()
@@ -513,7 +519,7 @@ output$DL_SUBMIT_GIS <- downloadHandler(
                             value = TRUE)
 
             dmndata_newpaths <- sub(pattern = '^data/',
-                                    replacement = 'macrosheds_GIS_files_temp/',
+                                    replacement = 'macrosheds_GIS_files/',
                                     x = dmndata)
 
             for(j in seq_along(dmndata)){
@@ -568,7 +574,7 @@ output$DL_SUBMIT_GIS <- downloadHandler(
             flags = '-r6Xq',
             files = newpaths)
 
-        unlink('macrosheds_GIS_files_temp',
+        unlink('macrosheds_GIS_files',
                recursive = TRUE)
 
         removeNotification('GIS_LOADING_POPUP')

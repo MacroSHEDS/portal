@@ -1,13 +1,13 @@
 domain,pretty_domain,network,pretty_network,stream,site_code,full_name,site_type,latitude,longitude,CRS,ws_area_ha,in_workflow,notes,local_time_zone,includes_snow
-hbef,Hubbard Brook,lter,LTER,Stream 1,w1,Watershed 1,stream_gauge,43.952034,-71.726501,4326,14.0897397738246,1,NA,America/New_York,NA
-hbef,Hubbard Brook,lter,LTER,Stream 2,w2,Watershed 2,stream_gauge,43.953358,-71.724174,4326,17.9266090308577,1,NA,America/New_York,NA
-hbef,Hubbard Brook,lter,LTER,Stream 3,w3,Watershed 3,stream_gauge,43.954875,-71.722816,4326,40.2449543953631,1,NA,America/New_York,NA
-hbef,Hubbard Brook,lter,LTER,Stream 4,w4,Watershed 4,stream_gauge,43.950176,-71.725792,4326,38.8277892677509,1,NA,America/New_York,NA
-hbef,Hubbard Brook,lter,LTER,Stream 5,w5,Watershed 5,stream_gauge,43.948845,-71.731918,4326,20.782604069009,1,NA,America/New_York,NA
-hbef,Hubbard Brook,lter,LTER,Stream 6,w6,Watershed 6,stream_gauge,43.94994,-71.735641,4326,14.964518331546,1,NA,America/New_York,NA
-hbef,Hubbard Brook,lter,LTER,Stream 7,w7,Watershed 7,stream_gauge,43.927509,-71.767075,4326,76.5978880057436,1,NA,America/New_York,NA
-hbef,Hubbard Brook,lter,LTER,Stream 8,w8,Watershed 8,stream_gauge,43.929436,-71.759521,4326,61.0434202787758,1,NA,America/New_York,NA
-hbef,Hubbard Brook,lter,LTER,Stream 9,w9,Watershed 9,stream_gauge,43.926014,-71.747195,4326,70.2630617622768,1,NA,America/New_York,NA
+hbef,Hubbard Brook,lter,LTER,Stream 1,w1,Watershed 1,stream_gauge,43.952034,-71.726501,4326,14.089739768101,1,NA,America/New_York,NA
+hbef,Hubbard Brook,lter,LTER,Stream 2,w2,Watershed 2,stream_gauge,43.953358,-71.724174,4326,17.9266090230241,1,NA,America/New_York,NA
+hbef,Hubbard Brook,lter,LTER,Stream 3,w3,Watershed 3,stream_gauge,43.954875,-71.722816,4326,40.2449543795603,1,NA,America/New_York,NA
+hbef,Hubbard Brook,lter,LTER,Stream 4,w4,Watershed 4,stream_gauge,43.950176,-71.725792,4326,38.8277892737352,1,NA,America/New_York,NA
+hbef,Hubbard Brook,lter,LTER,Stream 5,w5,Watershed 5,stream_gauge,43.948845,-71.731918,4326,20.7826040685029,1,NA,America/New_York,NA
+hbef,Hubbard Brook,lter,LTER,Stream 6,w6,Watershed 6,stream_gauge,43.94994,-71.735641,4326,14.9645183211027,1,NA,America/New_York,NA
+hbef,Hubbard Brook,lter,LTER,Stream 7,w7,Watershed 7,stream_gauge,43.927509,-71.767075,4326,76.5978880071327,1,NA,America/New_York,NA
+hbef,Hubbard Brook,lter,LTER,Stream 8,w8,Watershed 8,stream_gauge,43.929436,-71.759521,4326,61.043420283247,1,NA,America/New_York,NA
+hbef,Hubbard Brook,lter,LTER,Stream 9,w9,Watershed 9,stream_gauge,43.926014,-71.747195,4326,70.2630617552412,1,NA,America/New_York,NA
 hbef,Hubbard Brook,lter,LTER,NA,RG1,Rain Gauge 1,rain_gauge,43.952120788912,-71.7248377271807,4326,NA,1,converted shapefile from lter using st_transform,America/New_York,1
 hbef,Hubbard Brook,lter,LTER,NA,RG11,Rain Gauge 11,rain_gauge,43.9502266292999,-71.7346124400276,4326,NA,1,converted shapefile from lter using st_transform,America/New_York,1
 hbef,Hubbard Brook,lter,LTER,NA,RG23,Rain Gauge 23,rain_gauge,43.9272011309167,-71.746926195465,4326,NA,1,converted shapefile from lter using st_transform,America/New_York,1
@@ -140,15 +140,15 @@ baltimore,Baltimore,lter,LTER,NA,WXGFND,Gwynns Falls Near Delight,rain_gauge,39.
 baltimore,Baltimore,lter,LTER,NA,WXMCDO,McDonogh School,rain_gauge,39.39633611,-76.77140833,4326,NA,1,NA,America/New_York,0
 baltimore,Baltimore,lter,LTER,NA,WXORDG,Oregon Ridge Park,rain_gauge,39.49656944,-76.68900556,4326,NA,1,NA,America/New_York,0
 baltimore,Baltimore,lter,LTER,NA,WXUMBC,UMBC Campus,rain_gauge,39.2543,-76.70233889,4326,NA,1,NA,America/New_York,0
-baltimore,Baltimore,lter,LTER,Gwynns Falls,GFCP,Gwynns Falls at Carroll Park,stream_gauge,39.2715,-76.649,4326,16317.4478798946,1,Collocated with USGS gauge 01589352,America/New_York,NA
-baltimore,Baltimore,lter,LTER,Gwynns Falls,GFGB,Gwynns Falls at Gwynnbrook Avenue,stream_gauge,39.443,-76.783,4326,1052.82335077648,1,Collocated with USGS gauge 01589197,America/New_York,NA
-baltimore,Baltimore,lter,LTER,Gwynns Falls,GFGL,Gwynns Falls at Glyndon,stream_gauge,39.4718,-76.817,4326,85.4460652716263,1,Collocated with USGS gauge 01589180,America/New_York,NA
-baltimore,Baltimore,lter,LTER,Gwynns Falls,GFVN,Gwynns Falls at Villa Nova,stream_gauge,39.3458,-76.733,4326,8295.10280539584,1,Collocated with USGS gauge 01589300,America/New_York,NA
-baltimore,Baltimore,lter,LTER,Pond Branch,POBR,Pond Branch forested reference site,stream_gauge,39.4803,-76.688,4326,35.797559317447,1,Collocated with USGS gauge 01583570,America/New_York,NA
-baltimore,Baltimore,lter,LTER,Dead Run,DRKR,Dead Run at Krome Avenue,stream_gauge,39.3112,-76.717,4326,1411.38315697822,1,Collocated with USGS gauge 01589330,America/New_York,NA
-baltimore,Baltimore,lter,LTER,Baisman Run,BARN,Baisman Run at Ivy Hill Road,stream_gauge,39.4794,-76.678,4326,382.395121543823,1,Collocated with USGS gauge 01583580,America/New_York,NA
+baltimore,Baltimore,lter,LTER,Gwynns Falls,GFCP,Gwynns Falls at Carroll Park,stream_gauge,39.2715,-76.649,4326,16317.4586167544,1,Collocated with USGS gauge 01589352,America/New_York,NA
+baltimore,Baltimore,lter,LTER,Gwynns Falls,GFGB,Gwynns Falls at Gwynnbrook Avenue,stream_gauge,39.443,-76.783,4326,1052.82392379943,1,Collocated with USGS gauge 01589197,America/New_York,NA
+baltimore,Baltimore,lter,LTER,Gwynns Falls,GFGL,Gwynns Falls at Glyndon,stream_gauge,39.4718,-76.817,4326,85.446106678451,1,Collocated with USGS gauge 01589180,America/New_York,NA
+baltimore,Baltimore,lter,LTER,Gwynns Falls,GFVN,Gwynns Falls at Villa Nova,stream_gauge,39.3458,-76.733,4326,8295.10738784443,1,Collocated with USGS gauge 01589300,America/New_York,NA
+baltimore,Baltimore,lter,LTER,Pond Branch,POBR,Pond Branch forested reference site,stream_gauge,39.4803,-76.688,4326,35.7976002761846,1,Collocated with USGS gauge 01583570,America/New_York,NA
+baltimore,Baltimore,lter,LTER,Dead Run,DRKR,Dead Run at Krome Avenue,stream_gauge,39.3112,-76.717,4326,1411.38383839179,1,Collocated with USGS gauge 01589330,America/New_York,NA
+baltimore,Baltimore,lter,LTER,Baisman Run,BARN,Baisman Run at Ivy Hill Road,stream_gauge,39.4794,-76.678,4326,382.395526291699,1,Collocated with USGS gauge 01583580,America/New_York,NA
 baltimore,Baltimore,lter,LTER,NA,RGHT,Rognel Heights,stream_sampling_point,39.2547,-76.69,4326,NA,1,point does not look to be on a flow line,America/New_York,NA
-baltimore,Baltimore,lter,LTER,NA,MCDN,McDonogh agricultural site,stream_gauge,39.4004,-76.77,4326,5.61447168191599,1,Collocated with USGS gauge 01589238.,America/New_York,NA
+baltimore,Baltimore,lter,LTER,NA,MCDN,McDonogh agricultural site,stream_gauge,39.4004,-76.77,4326,5.61447518986847,1,Collocated with USGS gauge 01589238.,America/New_York,NA
 baltimore,Baltimore,lter,LTER,Gwynns Run,GRGF,Gwynns Run at Gwynns Run,stream_sampling_point,NA,NA,4326,NA,0,"In baltimore meta data but cant find coordinates, maybe collocated with USGS gauge 0158935180",America/New_York,NA
 baltimore,Baltimore,lter,LTER,Gwynns Falls,GFuGR,Gwynns Falls above Gwynns Run,stream_sampling_point,NA,NA,4326,NA,0,In baltimore meta data but cant find coordinates,America/New_York,NA
 baltimore,Baltimore,lter,LTER,Maidens Choice,MAWI,Maidens Choice at Wilkens Avenue,stream_gauge,39.2755,-76.666,4326,1224.15109685439,1,"Was collocated with USGS gauge 01589351, but sampling and gauging only overlap for a short time",America/New_York,NA
@@ -168,10 +168,10 @@ niwot,Niwot,lter,LTER,Soddie stream,SODDIE,Soddie stream,stream_sampling_point,4
 niwot,Niwot,lter,LTER,Albion,ALBION,Albion Camp,stream_gauge,40.04287468,-105.592296,4326,715.106665095472,1,NA,America/Denver,NA
 niwot,Niwot,lter,LTER,Green Lake 1,GREEN1,Green Lake 1 Outlet,stream_sampling_point,40.049746,-105.605309,4326,NA,1,NA,America/Denver,NA
 niwot,Niwot,lter,LTER,Green Lake 4,GREEN4,Green Lake 4 Outlet,stream_gauge,40.055742,-105.617065,4326,228.789002038879,1,NA,America/Denver,NA
-niwot,Niwot,lter,LTER,Green Lake 5,GREEN5,Green Lake 5 Outlet,stream_sampling_point,40.05367068,-105.6279131,4326,NA,1,NA,America/Denver,NA
+niwot,Niwot,lter,LTER,Green Lake 5,GREEN5,Green Lake 5 Outlet,stream_gauge,40.05367068,-105.6279131,4326,141.941478363502,1,NA,America/Denver,NA
 niwot,Niwot,lter,LTER,Lake Albion Inlet,ALBION_INLET,Lake Albion Inlet,stream_sampling_point,40.047178,-105.607123,4326,NA,1,NA,America/Denver,NA
 niwot,Niwot,lter,LTER,NA,MARTINELLI,Martinelli Basin,stream_gauge,40.05060202,-105.595805,4326,16.1700422112186,1,NA,America/Denver,NA
-niwot,Niwot,lter,LTER,NA,NAVAJO,Navajo meadow,stream_sampling_point,40.05195303,-105.6367,4326,NA,1,NA,America/Denver,NA
+niwot,Niwot,lter,LTER,NA,NAVAJO,Navajo meadow,stream_gauge,40.05195303,-105.6367,4326,47.4239427601218,1,NA,America/Denver,NA
 niwot,Niwot,lter,LTER,NA,SPILLWAY,Lake Albion spillway,stream_sampling_point,40.04287468,-105.592296,4326,NA,0,"This may be the same as the ALBION site, but can not confirm",America/Denver,NA
 niwot,Niwot,lter,LTER,Saddle Stream 007,SADDLE_007,Saddle Stream 007,stream_sampling_point,40.05485646,-105.5901358,4326,NA,1,NA,America/Denver,NA
 niwot,Niwot,lter,LTER,Saddle Stream,SADDLE,Saddle Stream,stream_gauge,40.04903177,-105.5923174,4326,19.9508915072608,1,NA,America/Denver,NA
@@ -518,19 +518,19 @@ suef,SUEF,usfs,USFS,NA,GSFC02,Fox Creek Watershed 2 Gauging Station,stream_sampl
 suef,SUEF,usfs,USFS,NA,GSFC03,Fox Creek Watershed 3 Gauging Station,stream_sampling_point,45.43454,-122.043,4326,NA,1,NA,America/Los_Angeles,NA
 santee,Santee,usfs,USFS,NA,WS77,Weir 77,stream_gauge,33.141649,-79.779912,4326,209.296399883688,1,NA,US/Eastern,NA
 santee,Santee,usfs,USFS,NA,Met5,Met 5 weather station,rain_gauge,33.140537,-79.771937,4326,NA,1,NA,US/Eastern,NA
-krycklan,Krycklan,krycklan,Krycklan,NA,Site1,Risbäcken,stream_gauge,64.2485054693468,19.8080506416433,4326,47.8754445673265,1,NA,Etc/GMT+2,NA
-krycklan,Krycklan,krycklan,Krycklan,NA,Site2,Västrabäcken,stream_gauge,64.2514254759827,19.777804398224202,4326,11.8741294189847,1,NA,Etc/GMT+2,NA
-krycklan,Krycklan,krycklan,Krycklan,NA,Site4,Kallkälsmyren,stream_gauge,64.2594511474447,19.7737483329001,4326,17.7487720423859,1,NA,Etc/GMT+2,NA
-krycklan,Krycklan,krycklan,Krycklan,NA,Site5,Stortjärn outlet,stream_gauge,64.2602610826913,19.760338571586,4326,65.3106708305918,1,NA,Etc/GMT+2,NA
-krycklan,Krycklan,krycklan,Krycklan,NA,Site6,Stortjärnbäcken,stream_gauge,64.2509736643358,19.7731431669639,4326,109.682666613803,1,NA,Etc/GMT+2,NA
-krycklan,Krycklan,krycklan,Krycklan,NA,Site7,Kallkälsbäcken,stream_gauge,64.2513011962503,19.7779000580925,4326,46.6972284735543,1,NA,Etc/GMT+2,NA
-krycklan,Krycklan,krycklan,Krycklan,NA,Site9,Nyängesbäcken,stream_gauge,64.2375278452578,19.7915621692725,4326,287.798781675116,1,NA,Etc/GMT+2,NA
-krycklan,Krycklan,krycklan,Krycklan,NA,Site10,Stormyrbäcken,stream_gauge,64.2569994296571,19.7866430184375,4326,335.340134075001,1,NA,Etc/GMT+2,NA
-krycklan,Krycklan,krycklan,Krycklan,NA,Site12,Nymyrbäcken,stream_gauge,64.2411874792113,19.8143185691995,4326,543.436998085392,1,NA,Etc/GMT+2,NA
-krycklan,Krycklan,krycklan,Krycklan,NA,Site13,Långbäcken,stream_gauge,64.2328569897307,19.7871074196692,4326,411.545488612059,1,NA,Etc/GMT+2,NA
-krycklan,Krycklan,krycklan,Krycklan,NA,Site14,Åhedbäcken,stream_gauge,64.2261543208972,19.7707682829758,4326,1409.01155911083,1,NA,Etc/GMT+2,NA
-krycklan,Krycklan,krycklan,Krycklan,NA,Site15,Övre Krycklan,stream_gauge,64.2485848642973,19.8382111005231,4326,1910.73705488532,1,NA,Etc/GMT+2,NA
-krycklan,Krycklan,krycklan,Krycklan,NA,Site16,Krycklan,stream_gauge,64.198508,19.869488,4326,6783.68706433968,1,NA,Etc/GMT+2,NA
+krycklan,Krycklan,krycklan,Krycklan,NA,Site1,Risbäcken,stream_gauge,64.2485054693468,19.8080506416433,4326,47.8754445673929,1,NA,Etc/GMT+2,NA
+krycklan,Krycklan,krycklan,Krycklan,NA,Site2,Västrabäcken,stream_gauge,64.2514254759827,19.777804398224202,4326,11.8741294194513,1,NA,Etc/GMT+2,NA
+krycklan,Krycklan,krycklan,Krycklan,NA,Site4,Kallkälsmyren,stream_gauge,64.2594511474447,19.7737483329001,4326,17.7487720426027,1,NA,Etc/GMT+2,NA
+krycklan,Krycklan,krycklan,Krycklan,NA,Site5,Stortjärn outlet,stream_gauge,64.2602610826913,19.760338571586,4326,65.3106708308685,1,NA,Etc/GMT+2,NA
+krycklan,Krycklan,krycklan,Krycklan,NA,Site6,Stortjärnbäcken,stream_gauge,64.2509736643358,19.7731431669639,4326,109.682666614257,1,NA,Etc/GMT+2,NA
+krycklan,Krycklan,krycklan,Krycklan,NA,Site7,Kallkälsbäcken,stream_gauge,64.2513011962503,19.7779000580925,4326,46.6972284728917,1,NA,Etc/GMT+2,NA
+krycklan,Krycklan,krycklan,Krycklan,NA,Site9,Nyängesbäcken,stream_gauge,64.2375278452578,19.7915621692725,4326,287.798781674427,1,NA,Etc/GMT+2,NA
+krycklan,Krycklan,krycklan,Krycklan,NA,Site10,Stormyrbäcken,stream_gauge,64.2569994296571,19.7866430184375,4326,335.340134072616,1,NA,Etc/GMT+2,NA
+krycklan,Krycklan,krycklan,Krycklan,NA,Site12,Nymyrbäcken,stream_gauge,64.2411874792113,19.8143185691995,4326,543.436998083742,1,NA,Etc/GMT+2,NA
+krycklan,Krycklan,krycklan,Krycklan,NA,Site13,Långbäcken,stream_gauge,64.2328569897307,19.7871074196692,4326,411.545488613364,1,NA,Etc/GMT+2,NA
+krycklan,Krycklan,krycklan,Krycklan,NA,Site14,Åhedbäcken,stream_gauge,64.2261543208972,19.7707682829758,4326,1409.01155911372,1,NA,Etc/GMT+2,NA
+krycklan,Krycklan,krycklan,Krycklan,NA,Site15,Övre Krycklan,stream_gauge,64.2485848642973,19.8382111005231,4326,1910.73705488752,1,NA,Etc/GMT+2,NA
+krycklan,Krycklan,krycklan,Krycklan,NA,Site16,Krycklan,stream_gauge,64.198508,19.869488,4326,6783.68706433763,1,NA,Etc/GMT+2,NA
 krycklan,Krycklan,krycklan,Krycklan,NA,Site18,Vargstugbäcken,stream_gauge,NA,NA,4326,NA,0,NA,Etc/GMT+2,NA
 krycklan,Krycklan,krycklan,Krycklan,NA,Site20,NA,stream_gauge,64.2202602360509,19.7584056942889,4326,NA,0,NA,Etc/GMT+2,NA
 krycklan,Krycklan,krycklan,Krycklan,NA,Site53,NA,stream_sampling_point,NA,NA,4326,NA,0,NA,Etc/GMT+2,NA
@@ -557,3 +557,4 @@ shale_hills,Shale Hills,czo,CZO,NA,SH_headwaters,"Shale Hills Critical Zone Obse
 shale_hills,Shale Hills,czo,CZO,NA,SH_middle,"Shale Hills Critical Zone Observatory Stream, middle reach",stream_sampling_point,NA,NA,4326,NA,0,NA,US/Eastern,NA
 shale_hills,Shale Hills,czo,CZO,NA,SH_weir,"Shale Hills Critical Zone Observatory Stream, Weir",stream_gauge,40.666664,-77.902778,4326,6.94307712902109,1,NA,US/Eastern,NA
 shale_hills,Shale Hills,czo,CZO,NA,Shale_Hills_precip,Shale Hills Precipitation,rain_gauge,40.665742,-77.904036,4326,NA,1,"This appears to be a combination of gauges reported as one, the location is of one know gauge in the CZO",US/Eastern,NA
+tenderfoot,Tenderfoot,usfs,USFS,Stringer,UPSU,Upper Stringer Creek,stream_gauge,46.932943,-110.892513,4326,NA,0,NA,US/Mountain,0
