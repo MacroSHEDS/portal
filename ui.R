@@ -30,11 +30,11 @@ ui = fluidPage(
             div(class='sidebar-sub',
                 # HTML('<input type="text" id="MAPDATA" style="display: none">'),
                 tabsetPanel(id='left_tabs',
-                    now_hiring_tab,
+                    # now_hiring_tab,
                     about_tab,
-                    participants_tab,
                     map_tab,
                     data_tab,
+                    participants_tab,
                     notes_tab
                 )
             ),

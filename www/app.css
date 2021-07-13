@@ -74,6 +74,15 @@ APP TEXT FORMATTING
     margin: 0px;
 }
 
+.leftpanel-text {
+    color: #7b96b6;
+    font-size: 1.2em;
+}
+
+li.leftpanel::marker {
+    color: white;
+}
+
 /*.dygraphDefaultAnnotation {
     font-size: x-small !important;
     color: black !important;

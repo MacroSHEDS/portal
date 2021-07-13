@@ -1,6 +1,10 @@
 landing_page = quote({
     showModal(
-        modalDialog(title=NULL, footer=NULL, easyClose=TRUE, id='landing',
+        modalDialog(title = NULL,
+                    footer = NULL,
+                    easyClose = TRUE,
+                    id = 'landing',
+                    size = 'l',
             fluidRow(class='text-center',
                 column(12,
                     img(src='new_logo_full.png',
@@ -32,10 +36,10 @@ landing_page = quote({
                 column(8, offset=2,
                     br(),
                     br(),
-                    p(HTML(paste('This portal is under heavy development, and',
-                                 'we\'re still working out some bugs.',
-                                 'Features and data may change.'))),
-                    p(HTML(paste('Be sure to check out the "<strong>Notes/Caveats</strong>" tab.')))
+                    p(HTML(paste("This is MacroSheds v1.0 <span style='color: red'><strong>alpha</strong></span>",
+                                 "(7/19/21), so all major components are in place, but there might still be some feature",
+                                 "bugs or data errors. Please <a href='mailto: help@macrosheds.org'><u>let us know",
+                                 "</u></a> if you find any!")))
                 )
             ),
             fluidRow(class='text-center',
