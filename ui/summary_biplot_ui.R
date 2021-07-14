@@ -3,7 +3,7 @@ biplot_data_types_x <- append(biplot_data_types, 'Year', after = 0)
 biplot_data_types_size <- append(biplot_data_types, 'Proportion of Record Missing', after = 0)
 #biplot_data_types_size <- biplot_data_types
 
-summary_biplot_tab = tabPanel('Biplot', value='biplot',
+summary_biplot_tab = tabPanel('Overview', value='biplot',
     sidebarLayout(
         sidebarPanel(
         div('Site Selection', class='widget-title text-center'),
@@ -86,7 +86,7 @@ summary_biplot_tab = tabPanel('Biplot', value='biplot',
             width =3)
         ),
         mainPanel(div('Single-click legend to toggle plot groups by color. Double-click to isolate a color or restore the full plot',
-                      class = 'widget-caption'), 
+                      class = 'widget-caption'),
                   plotlyOutput('SUMMARY_BIPLOT', height='600px'),
                   sliderInput("DATES2_INTER", label=NULL, min=dtrng[1], max=dtrng[2],
                               value=c(dtrng[1], dtrng[2]),

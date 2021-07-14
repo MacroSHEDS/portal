@@ -1,4 +1,4 @@
-MacroSheds time series data
+MacroSheds time-series data
 Column names and their descriptions
 
 
@@ -22,7 +22,8 @@ of the prefix is either "I" or "G", and the second letter is either "S" or "N".
 Prefixes can be interpreted as follows:
 
     I = "installed", referring to data points that were recorded by some kind of
-        installed apparatus, e.g. a rain gauge or an in-stream sensor array.
+        
+installed apparatus, e.g. a rain gauge or an in-stream sensor array.
     G = "grab", referring to data points that were collected "by hand", either
         as water samples or manual/visual point measurements.
 
@@ -68,5 +69,20 @@ additional imputation techniques and detail them here.
 
 7. val_err
 
-The uncertainty associated with the corresponding data point. Uncertainty is propagated
-through every MacroSheds processing operation... mike will finish this definition
+The combined standard uncertainty associated with the corresponding data point.
+Every time-series data point retrieved from a data provider by MacroSheds is assigned
+an uncertainty value equal to the detection limit of the device/process that measured it.
+For example, a nitrate value may be recorded as 0.24 mg/L using a process accurate to
+0.01 mg/L. The true value in this case could be anywhere from 0.2350000... to
+0.2449999... mg/L. Therefore the detection limit and the uncertainty associated with the
+measured value are both 0.01 mg/L. Through all the operations MacroSheds performs
+(unit conversion, temporal aggregation, spatial/temporal interpolation, flux calculation,
+etc.), we propagate this uncertainty using the errors package for R
+(https://cran.r-project.org/web/packages/errors/index.html). Wherever we leverage
+the data.table package, which is not compatible with the errors package, we implement
+uncertainty propagation according to doi:10.32614/RJ-2018-075. We DO NOT incporporate
+measurement uncertainty as reported by data providers. MacroSheds data are retrieved
+from many providers, only some of which report measurement uncertainty at all. By
+propagating uncertainty from detection limits, which can be inferred from all data values,
+we do not risk inflating the apparent uncertainty of data from those domains who happen to
+report measurement uncertainty vs. those who do not.

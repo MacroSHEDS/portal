@@ -341,9 +341,12 @@ output$DL_SUBMIT_TS <- downloadHandler(
             }
         }
 
+        file.copy(from = 'static/documentation/timeseries/columns.txt',
+                  to = 'macrosheds_timeseries/columns.txt')
+
         zip(zipfile = file,
             flags = '-r6Xq',
-            files = newpaths)
+            files = c(newpaths, 'macrosheds_timeseries/columns.txt'))
 
         unlink('macrosheds_timeseries',
                recursive = TRUE)
@@ -400,7 +403,10 @@ output$DL_SUBMIT_SPATIALSUMM <- downloadHandler(
         zip(zipfile = file,
             flags = '-r6Xqj',
             files = c('data/general/spatial_downloadables/watershed_summaries.csv',
-                      'data/general/spatial_downloadables/watershed_summaries_metadata.csv'))
+                      'static/documentation/variable_category_codes.csv',
+                      'static/documentation/data_source_codes.csv',
+                      'static/documentation/watershed_summary/columns.csv',
+                      'static/documentation/watershed_summary/README.txt'))
     },
     contentType = 'application/zip')
 
@@ -439,36 +445,12 @@ output$DL_SUBMIT_SPATIALTS <- downloadHandler(
             filter(substr(var, 1, 1) %in% selected_components) %>%
             write_csv('macrosheds_spatial_ts/macrosheds_watershed_summary_timeseries.csv')
 
-        readr::write_file(x = paste("Each watershed summary variable is prefixed",
-                                    "with a two-letter code. The first letter",
-                                    "designates the variable's category (variable_category_code), and the",
-                                    "second indicates its source (data_source_code). We use these codes",
-                                    "internally as a compact way to store variable",
-                                    "metadata that is used to filter this dataset.",
-                                    "You may do the same, using the included",
-                                    "variable_category_codes.csv and data_source_codes.csv. For more",
-                                    "information about these variables, download",
-                                    "the Variable table from the Data tab."),
-                          file = 'macrosheds_spatial_ts/README.txt')
-
-        #HERE
-        # tribble(
-        #     ~column, ~description,
-        #     'network', "site's network",
-        #     'domain', "site's domain",
-        #     'site_code',
-        #     'var',
-        #     'date',
-        #     'val',
-        #     'pctCellErr',
-        # )
-        # write_csv(
-
         zip(zipfile = file,
             flags = '-r9Xqj',
-            files = c('data/general/spatial_downloadables/variable_category_codes.csv',
-                      'data/general/spatial_downloadables/data_source_codes.csv',
-                      'macrosheds_spatial_ts/README.txt',
+            files = c('static/documentation/variable_category_codes.csv',
+                      'static/documentation/data_source_codes.csv',
+                      'static/documentation/watershed_trait_timeseries/README.txt',
+                      'static/documentation/watershed_trait_timeseries/columns.csv',
                       'macrosheds_spatial_ts/macrosheds_watershed_summary_timeseries.csv'))
 
         unlink('macrosheds_spatial_ts',

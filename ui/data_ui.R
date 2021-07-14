@@ -251,7 +251,7 @@ spatial_dl <- quote({
             fluidRow(class = 'text-left',
                 column(12,
                     br(),
-                    h3('Watershed averages',
+                    h3('Watershed summary statistics',
                        style = 'margin-bottom: 0px'),
                     div('Spatiotemporal summaries of gridded data. One row for each site.',
                         class = 'widget-caption text-left',
