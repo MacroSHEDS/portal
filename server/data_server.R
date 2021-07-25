@@ -343,10 +343,15 @@ output$DL_SUBMIT_TS <- downloadHandler(
 
         file.copy(from = 'static/documentation/timeseries/columns.txt',
                   to = 'macrosheds_timeseries/columns.txt')
+        file.copy(from = 'static/documentation/timeseries/README.txt',
+                  to = 'macrosheds_timeseries/README.txt')
+        warning('Are we serving data files from our server yet? if so, remove the above readme')
 
         zip(zipfile = file,
             flags = '-r6Xq',
-            files = c(newpaths, 'macrosheds_timeseries/columns.txt'))
+            files = c(newpaths,
+                      'macrosheds_timeseries/columns.txt',
+                      'macrosheds_timeseries/README.txt'))
 
         unlink('macrosheds_timeseries',
                recursive = TRUE)
@@ -359,19 +364,32 @@ output$DL_SUBMIT_SITE <- downloadHandler(
     filename = 'macrosheds_sitedata.csv',
     content = function(file){
 
-        dlset <- site_data_copy %>%
-            filter(in_workflow == 1) %>%
+        dlset <- select(site_data_copy,
+                        network, pretty_network, domain, pretty_domain, site_code,
+                        epsg_code = CRS,
+                        timezone_olson = local_time_zone) %>%
+            right_join(read_csv('../portal/data/general/catalog_files/all_sites.csv',
+                       col_types = cols()),
+                      by = c(pretty_network = 'Network',
+                             pretty_domain = 'Domain',
+                             site_code = 'SiteCode')) %>%
             select(network,
+                   network_fullname = pretty_network,
                    domain,
+                   domain_fullname = pretty_domain,
                    site_code,
-                   site_fullname = full_name,
-                   stream_name = stream,
-                   site_type,
-                   latitude,
-                   longitude,
-                   EPSG_code = CRS,
-                   # ws_area_ha,
-                   timezone_olson = local_time_zone)
+                   site_fullname = SiteName,
+                   stream_name = StreamName,
+                   site_type = SiteType,
+                   latitude = Latitude,
+                   longitude = Longitude,
+                   epsg_code,
+                   ws_area_ha = AreaHectares,
+                   n_observations = Observations,
+                   n_variables = Variables,
+                   first_record_utc = FirstRecordUTC,
+                   last_record_utc = LastRecordUTC,
+                   timezone_olson)
             # mutate(Q_data_available = paste(domain, site_code, sep = '_') %in%
             #            sites_with_Q)
 
@@ -383,14 +401,21 @@ output$DL_SUBMIT_VAR <- downloadHandler(
     filename = 'macrosheds_vardata.csv',
     content = function(file){
 
-        dlset <- variables %>%
-            mutate(method = 'pending') %>%
-            select(variable_code,
-                   variable_name,
-                   unit,
-                   method, #TODO: we don't really have this figured out yet
-                   type = variable_type,
-                   subtype = variable_subtype)
+        dlset <- read_csv('data/general/catalog_files/all_variables.csv',
+                          col_types = cols()) %>%
+            # mutate(method = 'pending') %>% #TODO: include method info?
+            select(variable_code = VariableCode,
+                   variable_name = VariableName,
+                   chem_category = ChemCategory,
+                   unit = Unit,
+                   # method
+                   observations = Observations,
+                   n_sites = Sites,
+                   mean_obs_per_site = MeanObsPerSite,
+                   first_record_utc = FirstRecordUTC,
+                   last_record_utc = LastRecordUTC)
+                   # type = variable_type,
+                   # subtype = variable_subtype)
 
         write_csv(dlset, file)
     },
