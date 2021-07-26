@@ -1,19 +1,26 @@
 domain,dl_size_MB
-arctic,9.1
-baltimore,9.2
-bonanza,3.4
-boulder,8.3
-calhoun,3.4
-catalina_jemez,pending
-east_river,9.2
-fernow,22.5
-general,3.7
-hbef,88.9
-hjandrews,63.8
-konza,3.6
-luquillo,26.1
-mcmurdo,2.7
-neon,8.6
-niwot,9.9
-plum,2.4
-santa_barbara,5.5
+arctic,3.2
+baltimore,< 1
+bonanza,1.7
+boulder,2.3
+calhoun,< 1
+catalina_jemez,< 1
+east_river,0.1
+fernow,4.3
+general,0.4
+hbef,18.8
+hjandrews,< 1
+konza,4
+krew,4.2
+krycklan,< 1
+luquillo,< 1
+mcmurdo,pending
+neon,< 1
+niwot,2.7
+plum,2.6
+santa_barbara,13.3
+santee,1.7
+shale_hills,< 1
+suef,1.8
+usgs,0.6
+walker_branch,1

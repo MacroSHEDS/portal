@@ -673,6 +673,10 @@ output$SUMMARY_BIPLOT <- renderPlotly({
     } else {
         "No data available for \nthe selected variables"
     }
+    
+    if(x_var == 'Year' & y_var %in% c('Soil', 'Geochemistry', 'Hydrology', 'Terrain')){
+        empty_msg <- 'Non-temporal data selected. \nSet Aggregation to "Full record"'
+    }
 
     empty_plot <- plotly::plot_ly() %>%
         plotly::layout(annotations = list(text = empty_msg,

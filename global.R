@@ -93,8 +93,12 @@ pchemcolors <- c('#7b97ea', '#00b300', '#8000ff') #lighter shades of linecolors
 
 ## 2. populate nSiteNVar defaults, which determine data shown when user lands ####
 
-default_network <- 'lter'
-default_domain <- 'hbef'
+# default_network <- 'lter'
+# default_domain <- 'hbef'
+
+default_network <- 'czo'
+default_domain <- 'boulder'
+
 network_domain_default_sites <- site_data %>%
     group_by(network, domain) %>%
     summarize(site_code = first(site_code),
