@@ -411,7 +411,7 @@ output$DL_SUBMIT_VAR <- downloadHandler(
                    # method
                    observations = Observations,
                    n_sites = Sites,
-                   mean_obs_per_site = MeanObsPerSite,
+                   # mean_obs_per_site = MeanObsPerSite,
                    first_record_utc = FirstRecordUTC,
                    last_record_utc = LastRecordUTC)
                    # type = variable_type,

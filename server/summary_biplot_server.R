@@ -90,7 +90,7 @@ filtered_bi <- reactive({
     # sites <<- isolate(input$SITES2)
     # year1 <<- year(isolate(input$DATES2_INTER[1]))
     # year2 <<- year(isolate(input$DATES2_INTER[2]))
-    # fill <- pre_filtered_bi()
+    # pfb <<- pre_filtered_bi()
     # #raw <- isolate(summary())
     # raw <- sum
 
@@ -109,11 +109,11 @@ filtered_bi <- reactive({
     sites <- isolate(input$SITES2)
     year1 <- year(isolate(input$DATES2_INTER[1]))
     year2 <- year(isolate(input$DATES2_INTER[2]))
-    fill <- pre_filtered_bi()
+    pfb <- pre_filtered_bi()
     #raw <- isolate(summary())
     raw <- sum
 
-    if(nrow(fill) == 0){
+    if(nrow(pfb) == 0){
 
         final <- tibble()
         return(final)
@@ -143,7 +143,7 @@ filtered_bi <- reactive({
 
     if('missing' %in% filter_vars && agg == 'YEARLY2'){
         #Filter summary table for needed vars and spread to wide format
-        final <- fill %>%
+        final <- pfb %>%
             filter(!is.na(Year)) %>%
             filter(var %in% !!filter_vars) %>%
             group_by(site_code, Date, Year, var, domain) %>%
@@ -154,7 +154,7 @@ filtered_bi <- reactive({
     } else{
 
         #Filter summary table for needed vars and spread to wide format
-        final <- fill %>%
+        final <- pfb %>%
             filter(!is.na(Year)) %>%
             select(-missing) %>%
             filter(var %in% !!filter_vars) %>%
@@ -390,8 +390,9 @@ observe({
     }
 })
 
-observeEvent(input$Y_VAR2,{
-    current_selection$old_y <- input$Y_VAR2})
+observeEvent(input$Y_VAR2, {
+    current_selection$old_y <- input$Y_VAR2
+})
 
 observe({
     data <- isolate(pre_filtered_bi())
@@ -567,11 +568,11 @@ observe({
 
 })
 
-# Update ws_chars options if the category is changed 
+# Update ws_chars options if the category is changed
 observe({
     x_var <<- input$X_VAR2
     chem_x <<- isolate(input$X_TYPE2)
-    
+
     if(chem_x == 'Watershed Characteristics'){
         updateSelectInput(session, 'X_UNIT2', choices = subset_ws_traits(x_var, ws_traits))
     }
@@ -580,7 +581,7 @@ observe({
 observe({
     y_var <- input$Y_VAR2
     chem_y <- isolate(input$Y_TYPE2)
-    
+
     if(chem_y == 'Watershed Characteristics'){
         updateSelectInput(session, 'Y_UNIT2', choices = subset_ws_traits(y_var, ws_traits))
     }
@@ -589,7 +590,7 @@ observe({
 observe({
     size_var <- input$SIZE_VAR2
     chem_size <- isolate(input$SIZE_TYPE2)
-    
+
     if(chem_size == 'Watershed Characteristics'){
         updateSelectInput(session, 'SIZE_UNIT2', choices = subset_ws_traits(size_var, ws_traits))
     }

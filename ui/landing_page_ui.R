@@ -38,7 +38,7 @@ landing_page = quote({
                     br(),
                     p(HTML(paste("This is MacroSheds v1.0 <span style='color: red'><strong>alpha</strong></span>",
                                  "(7/19/21), so all major components are in place, but there might still be some feature",
-                                 "bugs or data errors. Please <a href='mailto: help@macrosheds.org'><u>let us know",
+                                 "bugs or data errors. Please <a href='mailto: mail@macrosheds.org'><u>let us know",
                                  "</u></a> if you find any!")))
                 )
             ),
