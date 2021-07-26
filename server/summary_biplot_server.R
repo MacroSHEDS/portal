@@ -569,8 +569,8 @@ observe({
 
 # Update ws_chars options if the category is changed 
 observe({
-    x_var <<- input$X_VAR2
-    chem_x <<- isolate(input$X_TYPE2)
+    x_var <- input$X_VAR2
+    chem_x <- isolate(input$X_TYPE2)
     
     if(chem_x == 'Watershed Characteristics'){
         updateSelectInput(session, 'X_UNIT2', choices = subset_ws_traits(x_var, ws_traits))
