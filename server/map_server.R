@@ -127,7 +127,7 @@ observeEvent({
                 weight = 10, fillOpacity = 1, fillColor = '#228B22',
                 popup = glue(stream_gauge_buttons, domain = sg$domain,
                              pretty_domain = sg$pretty_domain, stream = sg$stream,
-                             site_code = sg$site_code, site_code = sg$full_name,
+                             site_code = sg$site_code, full_name = sg$full_name,
                              site_type = sg$site_type, latitude = sg$latitude,
                              longitude = sg$longitude,
                              attribution = paste0(sg$domain, "__", sg$site_code)),

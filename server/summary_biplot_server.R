@@ -570,8 +570,8 @@ observe({
 
 # Update ws_chars options if the category is changed
 observe({
-    x_var <<- input$X_VAR2
-    chem_x <<- isolate(input$X_TYPE2)
+    x_var <- input$X_VAR2
+    chem_x <- isolate(input$X_TYPE2)
 
     if(chem_x == 'Watershed Characteristics'){
         updateSelectInput(session, 'X_UNIT2', choices = subset_ws_traits(x_var, ws_traits))
@@ -673,6 +673,10 @@ output$SUMMARY_BIPLOT <- renderPlotly({
         'No sites selected'
     } else {
         "No data available for \nthe selected variables"
+    }
+
+    if(x_var == 'Year' & y_var %in% c('Soil', 'Geochemistry', 'Hydrology', 'Terrain')){
+        empty_msg <- 'Non-temporal data selected. \nSet Aggregation to "Full record"'
     }
 
     empty_plot <- plotly::plot_ly() %>%
