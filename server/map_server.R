@@ -3,72 +3,99 @@
 sheds <- sf::st_read('data/general/shed_boundary') %>%
     sf::st_transform(4326)
 
-sg = filter(site_data, site_type == 'stream_gauge')
+sg <- filter(site_data,
+             site_type == 'stream_gauge')
 
 sheds <- sheds %>%
     filter(site_code %in% sg$site_code)
 
-output$MAP = renderLeaflet({
+output$MAP <- renderLeaflet({
 
-    rg = filter(site_data, site_type == 'rain_gauge')
+    rg <- filter(site_data,
+                 site_type == 'rain_gauge')
 
-
-    leaflet() %>% addProviderTiles("Esri.WorldTopoMap",
-        group='Topo Mahttps://www.dropbox.com/s/kjkhwip0t8erh3a/MTM_PQ_data.csv?dl=0p') %>%
-        addProviderTiles('Esri.WorldImagery', group='Aerial Imagery') %>%
+    leaflet() %>%
+        addProviderTiles("Esri.WorldTopoMap",
+                         group = paste0('Topo Mahttps://www.dropbox.com/s/kjkhw',
+                                        'ip0t8erh3a/MTM_PQ_data.csv?dl=0p')) %>%
+        addProviderTiles('Esri.WorldImagery',
+                         group = 'Aerial Imagery') %>%
         addPolygons(
             data = sheds,
             weight = 3,
             smooth = 0,
-            stroke = T,
+            stroke = TRUE,
             fillOpacity = 0.2,
             color = '#000000',
             layerId = sheds$site_code,
-            highlightOptions = highlightOptions(color = '#228B22', fill = '#228B22',
+            highlightOptions = highlightOptions(color = '#228B22',
+                                                fill = '#228B22',
                                                 opacity=1),
-            group = 'Catchments'
-        ) %>%
-        addCircleMarkers(lng=rg$longitude, lat=rg$latitude, color='#0000FF',
-                         fillColor='#0000FF', stroke = TRUE, opacity=0.5, radius=4,
-                         weight=10, fillOpacity=1,
-                         popup=glue(rain_gauge_buttons, domain=rg$domain,
-                                    pretty_domain=rg$pretty_domain, site_type=rg$site_type,
-                                    site_code=rg$site_code, site_code=rg$full_name,
-                                    latitude=rg$latitude, longitude=rg$longitude),
-                         popupOptions=c(
-                             className=paste0(rg$domain, "__", rg$site_code, '_popup'),
-                             minWidth=200, maxWidth=500
-                         ),
-                         data=rg) %>%
-        addCircleMarkers(lng=sg$longitude, lat=sg$latitude, color='#228B22',
-                         layerId=sg$site_code, stroke = TRUE, opacity=0.5, radius=4,
-                         weight=10, fillOpacity=1, fillColor='#228B22',
-                    popup=glue(stream_gauge_buttons, domain=sg$domain,
-                         pretty_domain=sg$pretty_domain, stream=sg$stream,
-                         site_code=sg$site_code, site_code=sg$full_name,
-                         site_type=sg$site_type, latitude=sg$latitude,
-                         longitude=sg$longitude,
-                         attribution=paste0(sg$domain, "__", sg$site_code)),
-                    popupOptions=c(
-                         className=paste0(sg$domain, "__", sg$site_code, '_popup'),
-                         minWidth=200, maxWidth=500), label = ~site_code, clusterId=sg$domain,
-                    clusterOptions = markerClusterOptions(zoomToBoundsOnClick=T, maxClusterRadius=4.5),
-                         data=sg) %>%
-    # addLegend(
-    #   position = 'topright',
-    #   values = isco.sheds$BigName,
-    #   labels = isco.sheds$BigName,
-    #   pal = shed.col,
-    #   title = 'Study Catchment'
-    # ) %>%
-    addLayersControl(position='topright',
-        baseGroups=c('Topo Map', 'Aerial Imagery'),
-        # overlayGroups = c('Catchments'),
-        options=layersControlOptions(collapsed=FALSE, autoZIndex=TRUE)) %>%
-    # setView(lng=mean(site_data$longitude, na.rm=TRUE),
-    #     lat=mean(site_data$latitude, na.rm=TRUE), zoom=3)
-    setView(lng=-97.380979, lat=42.877742, zoom=2)  #center of lower 48
-    #flyTo() #temporary: improve ux with this and marker groupings
+            group = 'Catchments') %>%
+        addCircleMarkers(lng = rg$longitude,
+                         lat = rg$latitude,
+                         color = '#0000FF',
+                         fillColor = '#0000FF',
+                         stroke = TRUE,
+                         opacity = 0.5,
+                         radius = 4,
+                         weight = 10,
+                         fillOpacity = 1,
+                         popup = glue(rain_gauge_buttons,
+                                      domain = rg$domain,
+                                      pretty_domain = rg$pretty_domain,
+                                      site_type = rg$site_type,
+                                      site_code = rg$site_code,
+                                      full_name = rg$full_name,
+                                      latitude = rg$latitude,
+                                      longitude = rg$longitude),
+                         popupOptions = c(className = paste0(rg$domain,
+                                                             '__',
+                                                             rg$site_code,
+                                                             '_popup'),
+                                          minWidth = 200,
+                                          maxWidth = 500),
+                         data = rg) %>%
+        addCircleMarkers(lng = sg$longitude,
+                         lat = sg$latitude,
+                         color = '#228B22',
+                         layerId = sg$site_code,
+                         stroke = TRUE,
+                         opacity = 0.5,
+                         radius = 4,
+                         weight = 10,
+                         fillOpacity = 1,
+                         fillColor = '#228B22',
+                    popup = glue(stream_gauge_buttons,
+                                 domain = sg$domain,
+                                 pretty_domain = sg$pretty_domain,
+                                 stream = sg$stream,
+                                 site_code = sg$site_code,
+                                 full_name = sg$full_name,
+                                 site_type = sg$site_type,
+                                 latitude = sg$latitude,
+                                 longitude = sg$longitude,
+                                 attribution = paste0(sg$domain,
+                                                      '__',
+                                                      sg$site_code)),
+                    popupOptions = c(className = paste0(sg$domain,
+                                                        '__',
+                                                        sg$site_code,
+                                                        '_popup'),
+                                     minWidth = 200,
+                                     maxWidth = 500),
+                    label = ~site_code,
+                    clusterId = sg$domain,
+                    clusterOptions = markerClusterOptions(zoomToBoundsOnClick = TRUE,
+                                                          maxClusterRadius = 4.5),
+                    data = sg) %>%
+    addLayersControl(position = 'topright',
+                     baseGroups = c('Topo Map', 'Aerial Imagery'),
+                     options = layersControlOptions(collapsed = FALSE,
+                                                    autoZIndex = TRUE)) %>%
+    setView(lng = -97.380979,
+            lat = 42.877742,
+            zoom = 2)  #center of lower 48
 })
 
 #Highlight on click
@@ -100,7 +127,7 @@ observeEvent({
                 weight = 10, fillOpacity = 1, fillColor = '#228B22',
                 popup = glue(stream_gauge_buttons, domain = sg$domain,
                              pretty_domain = sg$pretty_domain, stream = sg$stream,
-                             site_code = sg$site_code, site_code = sg$full_name,
+                             site_code = sg$site_code, full_name = sg$full_name,
                              site_type = sg$site_type, latitude = sg$latitude,
                              longitude = sg$longitude,
                              attribution = paste0(sg$domain, "__", sg$site_code)),
