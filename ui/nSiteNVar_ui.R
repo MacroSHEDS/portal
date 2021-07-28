@@ -153,14 +153,16 @@ nSiteNVar_tab <- tabPanel("Inspection",
             conditionalPanel('input.ADDTL_OPTIONS % 2 == 1',
 
                 br(),
-                div('Time System',
+                div(style = 'display: none', #hiding this until we reactivate high res mode
+                div('Time system',
                     class = 'widget-title text-center'),
 
                 selectizeInput('TIME_SCHEME3',
                                label = NULL,
                                choices = c('UTC', 'Local', 'Solar'),
                                selected = 'UTC'),
-                br(),
+                br()
+                ),
 
                 div('Include data collected by:',
                     class = 'widget-title text-center'),
@@ -198,7 +200,7 @@ nSiteNVar_tab <- tabPanel("Inspection",
 
                 div('Uncertainty',
                     class = 'widget-title text-center'),
-                div('(propagated detection limit as absolute error)',
+                div('(propagated detection limit as absolute error; not shown for Q or P)',
                     class = 'widget-caption text-center'),
 
                 div(class = 'text-center',

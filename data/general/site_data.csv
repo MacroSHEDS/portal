@@ -37,7 +37,11 @@ hjandrews,H. J. Andrews,lter,LTER,NA,EARTHF,Earthflow Standard RG,rain_gauge,44.
 hjandrews,H. J. Andrews,lter,LTER,NA,FORKS_,Forks Standard RG,rain_gauge,44.22249,-122.240035,4326,NA,1,NA,America/Los_Angeles,1
 hjandrews,H. J. Andrews,lter,LTER,NA,FRISEL,Frissell Ridge Storage RG,rain_gauge,44.227168,-122.10624,4326,NA,1,NA,America/Los_Angeles,1
 hjandrews,H. J. Andrews,lter,LTER,NA,WS3GRD,WS#3 G Road Standard RG,rain_gauge,44.216648,-122.231448,4326,NA,1,NA,America/Los_Angeles,1
+<<<<<<< HEAD
 hjandrews,H. J. Andrews,lter,LTER,NA,GSMACK,Mack Creek Gaging Station Standard RG,rain_gauge,44.21928,-122.167472,4326,579.061211896117,1,NA,America/Los_Angeles,1
+=======
+hjandrews,H. J. Andrews,lter,LTER,NA,GSMACK,Mack Creek Gaging Station Standard RG,rain_gauge,44.21928,-122.167472,4326,579.049557975353,1,NA,America/Los_Angeles,1
+>>>>>>> d6c84f72feb667656ce822e3611ac0af1b0c675a
 hjandrews,H. J. Andrews,lter,LTER,NA,WS3JRD,WS#3 J Road Standard RG,rain_gauge,44.211035,-122.233762,4326,NA,1,NA,America/Los_Angeles,1
 hjandrews,H. J. Andrews,lter,LTER,NA,MCRAEB,McRae Bridge Standard RG,rain_gauge,44.232959,-122.209223,4326,NA,1,NA,America/Los_Angeles,1
 hjandrews,H. J. Andrews,lter,LTER,NA,MIDWAY,Midway Standard RG,rain_gauge,44.251137,-122.185031,4326,NA,1,NA,America/Los_Angeles,1
@@ -107,10 +111,17 @@ neon,NEON,neon,NEON,Kings Creek,KING,Kings Creek,stream_gauge,39.10506,-96.60336
 neon,NEON,neon,NEON,Mayfield Creek,MAYF,Mayfield Creek,stream_gauge,32.95966,-87.40813,4326,1436.21156518419,1,NA,America/Chicago,NA
 neon,NEON,neon,NEON,Walker Branch,WALK,Walker Branch,stream_gauge,35.95947,-84.28041,4326,108.996108174732,1,NA,America/New_York,NA
 neon,NEON,neon,NEON,LeConte Creek,LECO,LeConte Creek,stream_gauge,35.69043,-83.50379,4326,912.099386545824,1,NA,America/New_York,NA
+<<<<<<< HEAD
 konza,Konza,lter,LTER,N04D,N04D,?,stream_gauge,39.0874,-96.5844,4326,126.444670122611,1,NA,America/Chicago,NA
 konza,Konza,lter,LTER,N20B,N20B,?,stream_gauge,39.08858,-96.57654,4326,200.667192650518,1,NA,America/Chicago,NA
 konza,Konza,lter,LTER,N01B,N01B,?,stream_gauge,39.08668,-96.577,4326,120.355803466656,1,NA,America/Chicago,NA
 konza,Konza,lter,LTER,N02B,N02B,?,stream_gauge,39.0898,-96.5886,4326,95.6294790693302,1,NA,America/Chicago,NA
+=======
+konza,Konza,lter,LTER,N04D,N04D,?,stream_gauge,39.0874,-96.5844,4326,121.549153918347,1,NA,America/Chicago,NA
+konza,Konza,lter,LTER,N20B,N20B,?,stream_gauge,39.08858,-96.57654,4326,74.6906998195772,1,NA,America/Chicago,NA
+konza,Konza,lter,LTER,N01B,N01B,?,stream_gauge,39.08668,-96.577,4326,119.163318126073,1,NA,America/Chicago,NA
+konza,Konza,lter,LTER,N02B,N02B,?,stream_gauge,39.0898,-96.5886,4326,85.8069643275778,1,NA,America/Chicago,NA
+>>>>>>> d6c84f72feb667656ce822e3611ac0af1b0c675a
 konza,Konza,lter,LTER,HIKN,HIKN,Hiking Trail,stream_sampling_point,39.10713,-96.60664,4326,NA,1,NA,America/Chicago,NA
 konza,Konza,lter,LTER,HOKN,HOKN,Hokanson,stream_sampling_point,39.10376,-96.59542,4326,NA,1,NA,America/Chicago,NA
 konza,Konza,lter,LTER,NFKC,NFKC,North Fork Kings Creek,stream_sampling_point,39.10155,-96.59239,4326,NA,1,NA,America/Chicago,NA
@@ -122,14 +133,14 @@ konza,Konza,lter,LTER,SHAN,SHAN,Shane,stream_sampling_point,39.11439,-96.55757,4
 konza,Konza,lter,LTER,K2AL-2,K2AL-2,?,stream_sampling_point,39.10065,-96.57412,4326,NA,1,NA,America/Chicago,NA
 konza,Konza,lter,LTER,TUBE,TUBE,Four Tubes,stream_sampling_point,39.09873,-96.58944,4326,NA,1,NA,America/Chicago,NA
 konza,Konza,lter,LTER,NA,HQ02,?,rain_gauge,39.1023,-96.6095,4326,NA,1,NA,America/Chicago,1
-konza,Konza,lter,LTER,NA,N02B,?,rain_gauge,39.0877,-96.5954,4326,95.6294790693302,1,NA,America/Chicago,1
+konza,Konza,lter,LTER,NA,N02B,?,rain_gauge,39.0877,-96.5954,4326,85.8069643275778,1,NA,America/Chicago,1
 konza,Konza,lter,LTER,NA,R01A,?,rain_gauge,39.0692,-96.6107,4326,NA,1,NA,America/Chicago,1
 konza,Konza,lter,LTER,NA,004B,?,rain_gauge,39.0776,-96.5954,4326,NA,1,NA,America/Chicago,1
 konza,Konza,lter,LTER,NA,N4DU,?,rain_gauge,39.0778,-96.5898,4326,NA,1,NA,America/Chicago,1
 konza,Konza,lter,LTER,NA,002C,?,rain_gauge,39.0678,-96.5792,4326,NA,1,NA,America/Chicago,1
 konza,Konza,lter,LTER,NA,020B,?,rain_gauge,39.0756,-96.5758,4326,NA,1,NA,America/Chicago,1
 konza,Konza,lter,LTER,NA,K01B,?,rain_gauge,39.0862,-96.5631,4326,NA,1,NA,America/Chicago,1
-konza,Konza,lter,LTER,NA,N01B,?,rain_gauge,39.0849,-96.571,4326,120.355803466656,1,NA,America/Chicago,1
+konza,Konza,lter,LTER,NA,N01B,?,rain_gauge,39.0849,-96.571,4326,119.163318126073,1,NA,America/Chicago,1
 konza,Konza,lter,LTER,NA,N4DF,?,rain_gauge,39.0876,-96.5843,4326,NA,1,NA,America/Chicago,1
 konza,Konza,lter,LTER,Kings Creek,HIKX,Hiking Trail,stream_sampling_point,39.107,-96.6068,4326,NA,1,NA,America/Chicago,NA
 baltimore,Baltimore,lter,LTER,NA,WXCMNC,Carrie Murray Nature Center,rain_gauge,39.30724722,-76.69507222,4326,NA,1,NA,America/New_York,0
@@ -140,6 +151,7 @@ baltimore,Baltimore,lter,LTER,NA,WXGFND,Gwynns Falls Near Delight,rain_gauge,39.
 baltimore,Baltimore,lter,LTER,NA,WXMCDO,McDonogh School,rain_gauge,39.39633611,-76.77140833,4326,NA,1,NA,America/New_York,0
 baltimore,Baltimore,lter,LTER,NA,WXORDG,Oregon Ridge Park,rain_gauge,39.49656944,-76.68900556,4326,NA,1,NA,America/New_York,0
 baltimore,Baltimore,lter,LTER,NA,WXUMBC,UMBC Campus,rain_gauge,39.2543,-76.70233889,4326,NA,1,NA,America/New_York,0
+<<<<<<< HEAD
 baltimore,Baltimore,lter,LTER,Gwynns Falls,GFCP,Gwynns Falls at Carroll Park,stream_gauge,39.2715,-76.649,4326,16317.4478798723,1,Collocated with USGS gauge 01589352,America/New_York,NA
 baltimore,Baltimore,lter,LTER,Gwynns Falls,GFGB,Gwynns Falls at Gwynnbrook Avenue,stream_gauge,39.443,-76.783,4326,1052.8233507751,1,Collocated with USGS gauge 01589197,America/New_York,NA
 baltimore,Baltimore,lter,LTER,Gwynns Falls,GFGL,Gwynns Falls at Glyndon,stream_gauge,39.4718,-76.817,4326,85.4460652722415,1,Collocated with USGS gauge 01589180,America/New_York,NA
@@ -147,6 +159,15 @@ baltimore,Baltimore,lter,LTER,Gwynns Falls,GFVN,Gwynns Falls at Villa Nova,strea
 baltimore,Baltimore,lter,LTER,Pond Branch,POBR,Pond Branch forested reference site,stream_gauge,39.4803,-76.688,4326,35.797559317245,1,Collocated with USGS gauge 01583570,America/New_York,NA
 baltimore,Baltimore,lter,LTER,Dead Run,DRKR,Dead Run at Krome Avenue,stream_gauge,39.3112,-76.717,4326,1411.38315698687,1,Collocated with USGS gauge 01589330,America/New_York,NA
 baltimore,Baltimore,lter,LTER,Baisman Run,BARN,Baisman Run at Ivy Hill Road,stream_gauge,39.4794,-76.678,4326,382.395121551206,1,Collocated with USGS gauge 01583580,America/New_York,NA
+=======
+baltimore,Baltimore,lter,LTER,Gwynns Falls,GFCP,Gwynns Falls at Carroll Park,stream_gauge,39.2715,-76.649,4326,16317.4586167544,1,Collocated with USGS gauge 01589352,America/New_York,NA
+baltimore,Baltimore,lter,LTER,Gwynns Falls,GFGB,Gwynns Falls at Gwynnbrook Avenue,stream_gauge,39.443,-76.783,4326,1052.82392379943,1,Collocated with USGS gauge 01589197,America/New_York,NA
+baltimore,Baltimore,lter,LTER,Gwynns Falls,GFGL,Gwynns Falls at Glyndon,stream_gauge,39.4718,-76.817,4326,85.4460652722415,1,Collocated with USGS gauge 01589180,America/New_York,NA
+baltimore,Baltimore,lter,LTER,Gwynns Falls,GFVN,Gwynns Falls at Villa Nova,stream_gauge,39.3458,-76.733,4326,8295.10738784443,1,Collocated with USGS gauge 01589300,America/New_York,NA
+baltimore,Baltimore,lter,LTER,Pond Branch,POBR,Pond Branch forested reference site,stream_gauge,39.4803,-76.688,4326,35.797559317245,1,Collocated with USGS gauge 01583570,America/New_York,NA
+baltimore,Baltimore,lter,LTER,Dead Run,DRKR,Dead Run at Krome Avenue,stream_gauge,39.3112,-76.717,4326,1411.38383839179,1,Collocated with USGS gauge 01589330,America/New_York,NA
+baltimore,Baltimore,lter,LTER,Baisman Run,BARN,Baisman Run at Ivy Hill Road,stream_gauge,39.4794,-76.678,4326,382.395526291699,1,Collocated with USGS gauge 01583580,America/New_York,NA
+>>>>>>> d6c84f72feb667656ce822e3611ac0af1b0c675a
 baltimore,Baltimore,lter,LTER,NA,RGHT,Rognel Heights,stream_sampling_point,39.2547,-76.69,4326,NA,1,point does not look to be on a flow line,America/New_York,NA
 baltimore,Baltimore,lter,LTER,NA,MCDN,McDonogh agricultural site,stream_gauge,39.4004,-76.77,4326,5.61447168170114,1,Collocated with USGS gauge 01589238.,America/New_York,NA
 baltimore,Baltimore,lter,LTER,Gwynns Run,GRGF,Gwynns Run at Gwynns Run,stream_sampling_point,NA,NA,4326,NA,0,"In baltimore meta data but cant find coordinates, maybe collocated with USGS gauge 0158935180",America/New_York,NA
@@ -165,16 +186,16 @@ baltimore,Baltimore,lter,LTER,Jennifer Branch,JBHH,Jennifer Branch at Hartford H
 baltimore,Baltimore,lter,LTER,Jennifer Branch,JBNW,Jennifer Branch at Northwind,stream_sampling_point,NA,NA,4326,NA,1,Cant find location,America/New_York,NA
 baltimore,Baltimore,lter,LTER,Jennifer Branch,JBON,Jennifer Branch at Ontario,stream_sampling_point,NA,NA,4326,NA,1,Cant find location,America/New_York,NA
 niwot,Niwot,lter,LTER,Soddie stream,SODDIE,Soddie stream,stream_sampling_point,40.047778,-105.570833,4326,NA,1,NA,America/Denver,NA
-niwot,Niwot,lter,LTER,Albion,ALBION,Albion Camp,stream_gauge,40.04287468,-105.592296,4326,715.106665095472,1,NA,America/Denver,NA
+niwot,Niwot,lter,LTER,Albion,ALBION,Albion Camp,stream_gauge,40.04287468,-105.592296,4326,719.531979175105,1,NA,America/Denver,NA
 niwot,Niwot,lter,LTER,Green Lake 1,GREEN1,Green Lake 1 Outlet,stream_sampling_point,40.049746,-105.605309,4326,NA,1,NA,America/Denver,NA
-niwot,Niwot,lter,LTER,Green Lake 4,GREEN4,Green Lake 4 Outlet,stream_gauge,40.055742,-105.617065,4326,228.789002038879,1,NA,America/Denver,NA
+niwot,Niwot,lter,LTER,Green Lake 4,GREEN4,Green Lake 4 Outlet,stream_gauge,40.055742,-105.617065,4326,5.11032322126968,1,NA,America/Denver,NA
 niwot,Niwot,lter,LTER,Green Lake 5,GREEN5,Green Lake 5 Outlet,stream_gauge,40.05367068,-105.6279131,4326,141.941478363502,1,NA,America/Denver,NA
 niwot,Niwot,lter,LTER,Lake Albion Inlet,ALBION_INLET,Lake Albion Inlet,stream_sampling_point,40.047178,-105.607123,4326,NA,1,NA,America/Denver,NA
-niwot,Niwot,lter,LTER,NA,MARTINELLI,Martinelli Basin,stream_gauge,40.05060202,-105.595805,4326,16.1700422112186,1,NA,America/Denver,NA
-niwot,Niwot,lter,LTER,NA,NAVAJO,Navajo meadow,stream_gauge,40.05195303,-105.6367,4326,47.4239427601218,1,NA,America/Denver,NA
+niwot,Niwot,lter,LTER,NA,MARTINELLI,Martinelli Basin,stream_gauge,40.05060202,-105.595805,4326,3.93612536301239,1,NA,America/Denver,NA
+niwot,Niwot,lter,LTER,NA,NAVAJO,Navajo meadow,stream_gauge,40.05195303,-105.6367,4326,47.3994403313134,1,NA,America/Denver,NA
 niwot,Niwot,lter,LTER,NA,SPILLWAY,Lake Albion spillway,stream_sampling_point,40.04287468,-105.592296,4326,NA,0,"This may be the same as the ALBION site, but can not confirm",America/Denver,NA
 niwot,Niwot,lter,LTER,Saddle Stream 007,SADDLE_007,Saddle Stream 007,stream_sampling_point,40.05485646,-105.5901358,4326,NA,1,NA,America/Denver,NA
-niwot,Niwot,lter,LTER,Saddle Stream,SADDLE,Saddle Stream,stream_gauge,40.04903177,-105.5923174,4326,19.9508915072608,1,NA,America/Denver,NA
+niwot,Niwot,lter,LTER,Saddle Stream,SADDLE,Saddle Stream,stream_gauge,40.04903177,-105.5923174,4326,14.1442382798078,1,NA,America/Denver,NA
 niwot,Niwot,lter,LTER,NA,FLUME,Watershed Flume,stream_sampling_point,40.01368597,-105.5578493,4326,NA,1,NA,America/Denver,NA
 niwot,Niwot,lter,LTER,NA,ROCK_GLACIER,Green Lake 5 Rock Glacier,stream_sampling_point,40.05213501,-105.6289841,4326,NA,1,NA,America/Denver,NA
 niwot,Niwot,lter,LTER,NA,saddle,Saddle Climate Station,rain_gauge,40.05492794,-105.5893007,4326,NA,1,NA,America/Denver,1
@@ -239,8 +260,8 @@ santa_barbara,Santa Barbara,lter,LTER,NA,RG204,Refugio at Rancho La Scherpa,rain
 santa_barbara,Santa Barbara,lter,LTER,NA,HO201,Arroyo Hondo at East Avocado Orchard,rain_gauge,34.47651,-120.14064,4326,NA,1,NA,America/Los_Angeles,0
 santa_barbara,Santa Barbara,lter,LTER,NA,HO202,Arroyo Hondo at Upper Outlaw Trail,rain_gauge,34.49059,-120.13678,4326,NA,1,NA,America/Los_Angeles,0
 santa_barbara,Santa Barbara,lter,LTER,NA,GV201,Gaviota at Hwy 101 N rest stop,rain_gauge,34.48011,-120.22917,4326,NA,1,NA,America/Los_Angeles,0
-bonanza,Bonanza Creek,lter,LTER,NA,C2,NA,stream_gauge,65.159188,-147.607454,4326,516.252735472744,1,"alt site name:  C-2, C2-1100, C2 Flume",America/Anchorage,NA
-bonanza,Bonanza Creek,lter,LTER,NA,C3,NA,stream_gauge,65.144853,-147.574368,4326,527.453940325682,1,alt site name:  C-3,America/Anchorage,NA
+bonanza,Bonanza Creek,lter,LTER,NA,C2,NA,stream_gauge,65.159188,-147.607454,4326,360.244866543256,1,"alt site name:  C-2, C2-1100, C2 Flume",America/Anchorage,NA
+bonanza,Bonanza Creek,lter,LTER,NA,C3,NA,stream_gauge,65.144853,-147.574368,4326,483.777254429203,1,alt site name:  C-3,America/Anchorage,NA
 bonanza,Bonanza Creek,lter,LTER,NA,CB,NA,stream_sampling_point,65.15,-147.56,4326,NA,1,NA,America/Anchorage,NA
 bonanza,Bonanza Creek,lter,LTER,NA,C4,Little Poker Creek,stream_gauge,65.162726,-147.50057,4326,936.068302729278,1,"alt site name: C-4, C4 CTRL, Little Poker Creek, C4",America/Anchorage,NA
 bonanza,Bonanza Creek,lter,LTER,NA,P6,NA,stream_sampling_point,65.184791,-147.388939,4326,NA,1,NA,America/Anchorage,NA
@@ -321,6 +342,7 @@ arctic,Arctic,lter,LTER,Imnavait Creek,Imnavait_Creek_E,"Imnavait Creek E: Imnav
 arctic,Arctic,lter,LTER,Kuparuk River,Kuparuk_River_-0.1,NA,stream_gauge,68.639236,-149.393711,4326,11571.5579875445,1,Kuparuk River is gauged at location on the river (1.2 until 1993 whenit was moved to 0.74)  but we as associating Q at this site with all sampling points on the Kuparuk River,America/Anchorage,NA
 arctic,Arctic,lter,LTER,Kuparuk River,Kuparuk_River_-0.177,"Kuparuk -0.177k: Kuparuk River, North Slope of Alaska, reference reach, upstream of the fertilized reach",stream_gauge,68.6381,-149.392,4326,11317.4891925631,1,Kuparuk River is gauged at location on the river (1.2 until 1993 whenit was moved to 0.74)  but we as associating Q at this site with all sampling points on the Kuparuk River,America/Anchorage,NA
 arctic,Arctic,lter,LTER,Kuparuk River,Kuparuk_River_-0.3,"Kuparuk -0.3k: Kuparuk River, North Slope of Alaska, reference reach, upstream of the fertilized reach",stream_gauge,68.6384,-149.389,4326,11294.3138666927,1,Kuparuk River is gauged at location on the river (1.2 until 1993 whenit was moved to 0.74)  but we as associating Q at this site with all sampling points on the Kuparuk River,America/Anchorage,NA
+<<<<<<< HEAD
 arctic,Arctic,lter,LTER,Kuparuk River,Kuparuk_River_-0.47,"Kuparuk -0.47k: Kuparuk River, North Slope of Alaska, reference reach, upstream of the fertilized reach",stream_gauge,68.6374,-149.387,4326,13062.5558043597,1,Kuparuk River is gauged at location on the river (1.2 until 1993 whenit was moved to 0.74)  but we as associating Q at this site with all sampling points on the Kuparuk River,America/Anchorage,NA
 arctic,Arctic,lter,LTER,Kuparuk River,Kuparuk_River_-0.7,"Kuparuk -0.7k: Kuparuk River, North Slope of Alaska, reference reach, upstream of the fertilized reach",stream_gauge,68.6369,-149.384,4326,12953.1973768699,1,Kuparuk River is gauged at location on the river (1.2 until 1993 whenit was moved to 0.74)  but we as associating Q at this site with all sampling points on the Kuparuk River,America/Anchorage,NA
 arctic,Arctic,lter,LTER,Kuparuk River,Kuparuk_River_0,Kuparuk 0.0k: Kuparuk 0.0k,stream_gauge,68.6393,-149.3936,4326,11571.5579875447,1,"Kuparuk River is gauged at location on the river (1.2 until 1993 whenit was moved to 0.74)  but we as associating Q at this site with all sampling points on the Kuparuk River. mike adjusted this point's location from 68.6391,-149.394 to 68.6393,-149.3936 on 20210708",America/Anchorage,NA
@@ -336,23 +358,40 @@ arctic,Arctic,lter,LTER,Kuparuk River,Kuparuk_River_2.5,"Kuparuk 2.5k: Kuparuk R
 arctic,Arctic,lter,LTER,Kuparuk River,Kuparuk_River_3,"Kuparuk 3.0k: Kuparuk River, North Slope of Alaska, fertilized reach",stream_gauge,68.6537,-149.421,4326,14452.0009725321,1,Kuparuk River is gauged at location on the river (1.2 until 1993 whenit was moved to 0.74)  but we as associating Q at this site with all sampling points on the Kuparuk River,America/Anchorage,NA
 arctic,Arctic,lter,LTER,Kuparuk River,Kuparuk_River_4,"Kuparuk 4.0k: Kuparuk River, North Slope of Alaska, fertilized reach",stream_gauge,68.6588,-149.424,4326,14832.2648309963,1,Kuparuk River is gauged at location on the river (1.2 until 1993 whenit was moved to 0.74)  but we as associating Q at this site with all sampling points on the Kuparuk River,America/Anchorage,NA
 arctic,Arctic,lter,LTER,Kuparuk River,Kuparuk_River_4.1,NA,stream_gauge,68.659528,-149.425365,4326,14805.8942122044,1,Kuparuk River is gauged at location on the river (1.2 until 1993 whenit was moved to 0.74)  but we as associating Q at this site with all sampling points on the Kuparuk River,America/Anchorage,NA
+=======
+arctic,Arctic,lter,LTER,Kuparuk River,Kuparuk_River_-0.47,"Kuparuk -0.47k: Kuparuk River, North Slope of Alaska, reference reach, upstream of the fertilized reach",stream_gauge,68.6374,-149.387,4326,11224.9845807174,1,Kuparuk River is gauged at location on the river (1.2 until 1993 whenit was moved to 0.74)  but we as associating Q at this site with all sampling points on the Kuparuk River,America/Anchorage,NA
+arctic,Arctic,lter,LTER,Kuparuk River,Kuparuk_River_-0.7,"Kuparuk -0.7k: Kuparuk River, North Slope of Alaska, reference reach, upstream of the fertilized reach",stream_gauge,68.6369,-149.384,4326,11183.3686152631,1,Kuparuk River is gauged at location on the river (1.2 until 1993 whenit was moved to 0.74)  but we as associating Q at this site with all sampling points on the Kuparuk River,America/Anchorage,NA
+arctic,Arctic,lter,LTER,Kuparuk River,Kuparuk_River_0,Kuparuk 0.0k: Kuparuk 0.0k,stream_gauge,68.6393,-149.3936,4326,11571.5579875447,1,"Kuparuk River is gauged at location on the river (1.2 until 1993 whenit was moved to 0.74)  but we as associating Q at this site with all sampling points on the Kuparuk River. mike adjusted this point's location from 68.6391,-149.394 to 68.6393,-149.3936 on 20210708",America/Anchorage,NA
+arctic,Arctic,lter,LTER,Kuparuk River,Kuparuk_River_0.3,"Kuparuk 0.3k: Kuparuk River, North Slope of Alaska, re-fertilized reach, formerly the recovery reach after historic fertilization",stream_gauge,68.6407,-149.401,4326,4.77016385091455,1,Kuparuk River is gauged at location on the river (1.2 until 1993 whenit was moved to 0.74)  but we as associating Q at this site with all sampling points on the Kuparuk River,America/Anchorage,NA
+arctic,Arctic,lter,LTER,Kuparuk River,Kuparuk_River_0.56,"Kuparuk 0.56k: Kuparuk River, North Slope of Alaska, re-fertilized reach, formerly the recovery reach after historic fertilization",stream_gauge,68.6415,-149.4012,4326,11484.6061832042,1,"Kuparuk River is gauged at location on the river (1.2 until 1993 whenit was moved to 0.74)  but we as associating Q at this site with all sampling points on the Kuparuk River. mike adjusted this point's location from 68.6421,-149.404 to 68.6415-149.4012 on 20210719",America/Anchorage,NA
+arctic,Arctic,lter,LTER,Kuparuk River,Kuparuk_River_0.74,"Kuparuk 0.74k: Kuparuk River, North Slope of Alaska, re-fertilized reach, formerly the recovery reach after historic fertilization",stream_gauge,68.6432,-149.403,4326,0.29943307258859,1,Kuparuk River is gauged at location on the river (1.2 until 1993 whenit was moved to 0.74)  but we as associating Q at this site with all sampling points on the Kuparuk River,America/Anchorage,NA
+arctic,Arctic,lter,LTER,Kuparuk River,Kuparuk_River_1,"Kuparuk 1.0k: Kuparuk River, North Slope of Alaska, re-fertilized reach, formerly the recovery reach after historic fertilization",stream_gauge,68.6447,-149.405,4326,4.17675581870265,1,Kuparuk River is gauged at location on the river (1.2 until 1993 whenit was moved to 0.74)  but we as associating Q at this site with all sampling points on the Kuparuk River,America/Anchorage,NA
+arctic,Arctic,lter,LTER,Kuparuk River,Kuparuk_River_1.39,"Kuparuk 1.39k: Kuparuk River, North Slope of Alaska, re-fertilized reach, formerly the recovery reach after historic fertilization",stream_gauge,68.6463,-149.41,4326,2.387809734641,1,Kuparuk River is gauged at location on the river (1.2 until 1993 whenit was moved to 0.74)  but we as associating Q at this site with all sampling points on the Kuparuk River,America/Anchorage,NA
+arctic,Arctic,lter,LTER,Kuparuk River,Kuparuk_River_1.5,NA,stream_gauge,68.64756,-149.411706,4326,14084.4091464408,1,Kuparuk River is gauged at location on the river (1.2 until 1993 whenit was moved to 0.74)  but we as associating Q at this site with all sampling points on the Kuparuk River,America/Anchorage,NA
+arctic,Arctic,lter,LTER,Kuparuk River,Kuparuk_River_1.8,"Kuparuk 1.8k: Kuparuk River, North Slope of Alaska, fertilized reach",stream_gauge,68.6478,-149.416,4326,0.597772598257298,1,Kuparuk River is gauged at location on the river (1.2 until 1993 whenit was moved to 0.74)  but we as associating Q at this site with all sampling points on the Kuparuk River,America/Anchorage,NA
+arctic,Arctic,lter,LTER,Kuparuk River,Kuparuk_River_2,"Kuparuk 2.0k: Kuparuk River, North Slope of Alaska, fertilized reach",stream_gauge,68.6495,-149.416,4326,14154.2615977865,1,Kuparuk River is gauged at location on the river (1.2 until 1993 whenit was moved to 0.74)  but we as associating Q at this site with all sampling points on the Kuparuk River,America/Anchorage,NA
+arctic,Arctic,lter,LTER,Kuparuk River,Kuparuk_River_2.5,"Kuparuk 2.5k: Kuparuk River, North Slope of Alaska, fertilized reach",stream_gauge,68.6523,-149.415,4326,14103.4298200976,1,Kuparuk River is gauged at location on the river (1.2 until 1993 whenit was moved to 0.74)  but we as associating Q at this site with all sampling points on the Kuparuk River,America/Anchorage,NA
+arctic,Arctic,lter,LTER,Kuparuk River,Kuparuk_River_3,"Kuparuk 3.0k: Kuparuk River, North Slope of Alaska, fertilized reach",stream_gauge,68.6537,-149.421,4326,4.76798302778749,1,Kuparuk River is gauged at location on the river (1.2 until 1993 whenit was moved to 0.74)  but we as associating Q at this site with all sampling points on the Kuparuk River,America/Anchorage,NA
+arctic,Arctic,lter,LTER,Kuparuk River,Kuparuk_River_4,"Kuparuk 4.0k: Kuparuk River, North Slope of Alaska, fertilized reach",stream_gauge,68.6588,-149.424,4326,14182.5013549242,1,Kuparuk River is gauged at location on the river (1.2 until 1993 whenit was moved to 0.74)  but we as associating Q at this site with all sampling points on the Kuparuk River,America/Anchorage,NA
+arctic,Arctic,lter,LTER,Kuparuk River,Kuparuk_River_4.1,NA,stream_gauge,68.659528,-149.425365,4326,14201.822547206,1,Kuparuk River is gauged at location on the river (1.2 until 1993 whenit was moved to 0.74)  but we as associating Q at this site with all sampling points on the Kuparuk River,America/Anchorage,NA
+>>>>>>> d6c84f72feb667656ce822e3611ac0af1b0c675a
 arctic,Arctic,lter,LTER,Hershey Creek,Hershey_Creek,"Kuparuk Trib: Hershey Creek: Tributary of the Kuparuk River, North Slope of Alaska",stream_sampling_point,68.6445,-149.412,4326,NA,1,NA,America/Anchorage,NA
 arctic,Arctic,lter,LTER,North River,North_River_Main,"North River Main: North River, North Slope of Alaska, Anaktuvuk River Fire Impacted Site",stream_sampling_point,69.0553,-150.399,4326,NA,1,NA,America/Anchorage,NA
-arctic,Arctic,lter,LTER,Oksrukuyik Creek,Oksrukuyik_Creek_-0.1,Oksrukuyik -0.1k: Oksrukuyik -0.1k,stream_gauge,68.6715,-149.128,4326,7011.03469524265,1,Oksrukuyik Creek is gauged at one point referred to as Oksrukuyik_Creek_2.49 but we as associating Q at this site with all sampling points on the Oksrukuyik Creek,America/Anchorage,NA
-arctic,Arctic,lter,LTER,Oksrukuyik Creek,Oksrukuyik_Creek_-0.3,"Oksrukuyik -0.3k: Oksrukuyik Creek, North Slope of Alaska, reference reach, upstream of the formerly fertilized reach",stream_gauge,68.6714,-149.131,4326,6120.84059163305,1,Oksrukuyik Creek is gauged at one point referred to as Oksrukuyik_Creek_2.49 but we as associating Q at this site with all sampling points on the Oksrukuyik Creek,America/Anchorage,NA
-arctic,Arctic,lter,LTER,Oksrukuyik Creek,Oksrukuyik_Creek_-0.7,"Oksrukuyik -0.7k: Oksrukuyik Creek, North Slope of Alaska, reference reach, upstream of the formerly fertilized reach",stream_gauge,68.671,-149.138,4326,5888.11261939474,1,Oksrukuyik Creek is gauged at one point referred to as Oksrukuyik_Creek_2.49 but we as associating Q at this site with all sampling points on the Oksrukuyik Creek,America/Anchorage,NA
-arctic,Arctic,lter,LTER,Oksrukuyik Creek,Oksrukuyik_Creek_-1.2,"Oksrukuyik -1.2k: Oksrukuyik Creek, North Slope of Alaska, reference reach, upstream of the formerly fertilized reach",stream_gauge,68.6693,-149.146,4326,5790.80986698557,1,Oksrukuyik Creek is gauged at one point referred to as Oksrukuyik_Creek_2.49 but we as associating Q at this site with all sampling points on the Oksrukuyik Creek,America/Anchorage,NA
-arctic,Arctic,lter,LTER,Oksrukuyik Creek,Oksrukuyik_Creek_0.23,NA,stream_gauge,68.674104,-149.122683,4326,6910.88417912511,1,Oksrukuyik Creek is gauged at one point referred to as Oksrukuyik_Creek_2.49 but we as associating Q at this site with all sampling points on the Oksrukuyik Creek,America/Anchorage,NA
-arctic,Arctic,lter,LTER,Oksrukuyik Creek,Oksrukuyik_Creek_0.48,NA,stream_gauge,68.674851,-149.122057,4326,7125.10746086196,1,Oksrukuyik Creek is gauged at one point referred to as Oksrukuyik_Creek_2.49 but we as associating Q at this site with all sampling points on the Oksrukuyik Creek,America/Anchorage,NA
-arctic,Arctic,lter,LTER,Oksrukuyik Creek,Oksrukuyik_Creek_1.06,NA,stream_gauge,68.6782,-149.117129,4326,7105.69294885649,1,Oksrukuyik Creek is gauged at one point referred to as Oksrukuyik_Creek_2.49 but we as associating Q at this site with all sampling points on the Oksrukuyik Creek,America/Anchorage,NA
-arctic,Arctic,lter,LTER,Oksrukuyik Creek,Oksrukuyik_Creek_1.37,"Oksrukuyik 1.37k: Oksrukuyik Creek, North Slope of Alaska, recovery reach, formerly fertilized reach",stream_gauge,68.6798,-149.114,4326,7094.08482816402,1,Oksrukuyik Creek is gauged at one point referred to as Oksrukuyik_Creek_2.49 but we as associating Q at this site with all sampling points on the Oksrukuyik Creek,America/Anchorage,NA
-arctic,Arctic,lter,LTER,Oksrukuyik Creek,Oksrukuyik_Creek_1.7,NA,stream_gauge,68.682117,-149.112195,4326,7143.66443166122,1,Oksrukuyik Creek is gauged at one point referred to as Oksrukuyik_Creek_2.49 but we as associating Q at this site with all sampling points on the Oksrukuyik Creek,America/Anchorage,NA
-arctic,Arctic,lter,LTER,Oksrukuyik Creek,Oksrukuyik_Creek_2.5,NA,stream_gauge,68.685997009277,-149.098999023438,4326,7292.25832880853,1,Oksrukuyik Creek is gauged at one point referred to as Oksrukuyik_Creek_2.49 but we as associating Q at this site with all sampling points on the Oksrukuyik Creek,America/Anchorage,NA
-arctic,Arctic,lter,LTER,Oksrukuyik Creek,Oksrukuyik_Creek_2.7,"Oksrukuyik 2.7k: Oksrukuyik Creek, North Slope of Alaska, recovery reach, formerly fertilized reach",stream_gauge,68.686,-149.099,4326,7345.07154517282,1,Oksrukuyik Creek is gauged at one point referred to as Oksrukuyik_Creek_2.49 but we as associating Q at this site with all sampling points on the Oksrukuyik Creek,America/Anchorage,NA
+arctic,Arctic,lter,LTER,Oksrukuyik Creek,Oksrukuyik_Creek_-0.1,Oksrukuyik -0.1k: Oksrukuyik -0.1k,stream_gauge,68.6715,-149.128,4326,7018.6860330774,1,Oksrukuyik Creek is gauged at one point referred to as Oksrukuyik_Creek_2.49 but we as associating Q at this site with all sampling points on the Oksrukuyik Creek,America/Anchorage,NA
+arctic,Arctic,lter,LTER,Oksrukuyik Creek,Oksrukuyik_Creek_-0.3,"Oksrukuyik -0.3k: Oksrukuyik Creek, North Slope of Alaska, reference reach, upstream of the formerly fertilized reach",stream_gauge,68.6714,-149.131,4326,6863.01204242572,1,Oksrukuyik Creek is gauged at one point referred to as Oksrukuyik_Creek_2.49 but we as associating Q at this site with all sampling points on the Oksrukuyik Creek,America/Anchorage,NA
+arctic,Arctic,lter,LTER,Oksrukuyik Creek,Oksrukuyik_Creek_-0.7,"Oksrukuyik -0.7k: Oksrukuyik Creek, North Slope of Alaska, reference reach, upstream of the formerly fertilized reach",stream_gauge,68.671,-149.138,4326,6785.45800933438,1,Oksrukuyik Creek is gauged at one point referred to as Oksrukuyik_Creek_2.49 but we as associating Q at this site with all sampling points on the Oksrukuyik Creek,America/Anchorage,NA
+arctic,Arctic,lter,LTER,Oksrukuyik Creek,Oksrukuyik_Creek_-1.2,"Oksrukuyik -1.2k: Oksrukuyik Creek, North Slope of Alaska, reference reach, upstream of the formerly fertilized reach",stream_gauge,68.6693,-149.146,4326,5755.3860355872,1,Oksrukuyik Creek is gauged at one point referred to as Oksrukuyik_Creek_2.49 but we as associating Q at this site with all sampling points on the Oksrukuyik Creek,America/Anchorage,NA
+arctic,Arctic,lter,LTER,Oksrukuyik Creek,Oksrukuyik_Creek_0.23,NA,stream_gauge,68.674104,-149.122683,4326,7435.24109172792,1,Oksrukuyik Creek is gauged at one point referred to as Oksrukuyik_Creek_2.49 but we as associating Q at this site with all sampling points on the Oksrukuyik Creek,America/Anchorage,NA
+arctic,Arctic,lter,LTER,Oksrukuyik Creek,Oksrukuyik_Creek_0.48,NA,stream_gauge,68.674851,-149.122057,4326,7436.72675941301,1,Oksrukuyik Creek is gauged at one point referred to as Oksrukuyik_Creek_2.49 but we as associating Q at this site with all sampling points on the Oksrukuyik Creek,America/Anchorage,NA
+arctic,Arctic,lter,LTER,Oksrukuyik Creek,Oksrukuyik_Creek_1.06,NA,stream_gauge,68.6782,-149.117129,4326,7536.54727715549,1,Oksrukuyik Creek is gauged at one point referred to as Oksrukuyik_Creek_2.49 but we as associating Q at this site with all sampling points on the Oksrukuyik Creek,America/Anchorage,NA
+arctic,Arctic,lter,LTER,Oksrukuyik Creek,Oksrukuyik_Creek_1.37,"Oksrukuyik 1.37k: Oksrukuyik Creek, North Slope of Alaska, recovery reach, formerly fertilized reach",stream_gauge,68.6798,-149.114,4326,7577.54298506216,1,Oksrukuyik Creek is gauged at one point referred to as Oksrukuyik_Creek_2.49 but we as associating Q at this site with all sampling points on the Oksrukuyik Creek,America/Anchorage,NA
+arctic,Arctic,lter,LTER,Oksrukuyik Creek,Oksrukuyik_Creek_1.7,NA,stream_gauge,68.682117,-149.112195,4326,7605.76522093929,1,Oksrukuyik Creek is gauged at one point referred to as Oksrukuyik_Creek_2.49 but we as associating Q at this site with all sampling points on the Oksrukuyik Creek,America/Anchorage,NA
+arctic,Arctic,lter,LTER,Oksrukuyik Creek,Oksrukuyik_Creek_2.5,NA,stream_gauge,68.685997009277,-149.098999023438,4326,8288.91120140667,1,Oksrukuyik Creek is gauged at one point referred to as Oksrukuyik_Creek_2.49 but we as associating Q at this site with all sampling points on the Oksrukuyik Creek,America/Anchorage,NA
+arctic,Arctic,lter,LTER,Oksrukuyik Creek,Oksrukuyik_Creek_2.7,"Oksrukuyik 2.7k: Oksrukuyik Creek, North Slope of Alaska, recovery reach, formerly fertilized reach",stream_gauge,68.686,-149.099,4326,8288.9112014113,1,Oksrukuyik Creek is gauged at one point referred to as Oksrukuyik_Creek_2.49 but we as associating Q at this site with all sampling points on the Oksrukuyik Creek,America/Anchorage,NA
 arctic,Arctic,lter,LTER,Wolf Creek,Wolf_Creek,Wolf Creek: Oksrukuyik Creek Tributary,stream_sampling_point,68.6703,-149.127,4326,NA,1,NA,America/Anchorage,NA
-arctic,Arctic,lter,LTER,Roche Moutonnee Creek,Roche_Moutonnee_Creek_Main,"Roche Moutonnee Creek Main: Roche Moutonnee Creek, Brooks Range, Alaska, upstream of Dalton Highway crossing",stream_gauge,68.3737,-149.309,4326,8410.86336429893,1,NA,America/Anchorage,NA
+arctic,Arctic,lter,LTER,Roche Moutonnee Creek,Roche_Moutonnee_Creek_Main,"Roche Moutonnee Creek Main: Roche Moutonnee Creek, Brooks Range, Alaska, upstream of Dalton Highway crossing",stream_gauge,68.3737,-149.309,4326,8498.2632199557,1,NA,America/Anchorage,NA
 arctic,Arctic,lter,LTER,South River,South_River_Main,"South River Main: South River, North Slope of Alaska, Anaktuvuk River Fire and Thermokarst Impacted Site",stream_sampling_point,68.9975,-150.308,4326,NA,1,NA,America/Anchorage,NA
-arctic,Arctic,lter,LTER,Toolik River,Toolik_Inlet_Main,"Toolik Inlet Main: Toolik Inlet, North Slope of Alaska, about 50 meters upstream of foot bridge",stream_gauge,68.6256,-149.595,4326,4821.11996898384,1,NA,America/Anchorage,NA
+arctic,Arctic,lter,LTER,Toolik River,Toolik_Inlet_Main,"Toolik Inlet Main: Toolik Inlet, North Slope of Alaska, about 50 meters upstream of foot bridge",stream_gauge,68.6256,-149.595,4326,4472.63299217937,1,NA,America/Anchorage,NA
 arctic,Arctic,lter,LTER,Toolik River,Toolik_River_IMP,"Toolik River IMP: North Slope of Alaska, Thermokarst Impacted Stream",stream_sampling_point,68.6955,-149.208,4326,NA,1,NA,America/Anchorage,NA
 arctic,Arctic,lter,LTER,Toolik River,Toolik_River_REF,"Toolik River REF: North Slope of Alaska, Thermokarst Reference Stream",stream_sampling_point,68.6957,-149.205,4326,NA,1,NA,America/Anchorage,NA
 arctic,Arctic,lter,LTER,Toolik River,Toolik_River_TK_Above,Toolik River TK Above: Toolik River TK Above,stream_sampling_point,68.6907,-149.208,4326,NA,1,NA,America/Anchorage,NA
@@ -379,6 +418,7 @@ boulder,Boulder Creek,czo,CZO,NA,GGU_SPW1,Gordon Gulch Upper Spring 1,stream_sam
 boulder,Boulder Creek,czo,CZO,NA,GGU_SPW2,Gordon Gulch Upper Spring 2,stream_sampling_point,40.019453,-105.474922,4326,NA,1,NA,America/Denver,NA
 catalina_jemez,Catalina-Jemez,czo,CZO,NA,RedondoMeadow,Redondo Meadow,stream_gauge,35.8546,-106.5941,4326,593.330925539074,1,NA,America/Denver,NA
 catalina_jemez,Catalina-Jemez,czo,CZO,NA,HistoryGrove,History Grove,stream_gauge,35.8759,-106.5125,4326,75.6203204944092,1,NA,America/Denver,NA
+<<<<<<< HEAD
 catalina_jemez,Catalina-Jemez,czo,CZO,Jaramillo Creek,UpperJaramillo,Upper Jaramillo Creek,stream_gauge,35.9092,-106.5304,4326,786.531988698722,1,NA,America/Denver,NA
 catalina_jemez,Catalina-Jemez,czo,CZO,Jaramillo Creek,LowerJaramillo,Lower Jaramillo Creek,stream_gauge,35.8929,-106.4958,4326,2732.60398781136,1,NA,America/Denver,NA
 catalina_jemez,Catalina-Jemez,czo,CZO,La Jara Creek,UpperLaJara,Upper La Jara Creek,stream_gauge,35.87033,-106.527,4326,352.16802147914,1,NA,America/Denver,NA
@@ -390,6 +430,19 @@ catalina_jemez,Catalina-Jemez,czo,CZO,NA,Bigelow,Bigelow Zero Order Basin,stream
 catalina_jemez,Catalina-Jemez,czo,CZO,NA,OracleRidge,Oracle Ridge,stream_gauge,32.4494,-110.7399,4326,86.026135194536,1,NA,America/Denver,NA
 catalina_jemez,Catalina-Jemez,czo,CZO,Redondo Creek,UpperRedondo,Upper Redondo Creek,stream_gauge,35.8929,-106.577,4326,420.903749091213,1,NA,America/Denver,NA
 catalina_jemez,Catalina-Jemez,czo,CZO,NA,FLUME_MCZOB,MC ZOB Flume,stream_gauge,35.88083,-106.536,4326,43.6678904288823,1,NA,America/Denver,NA
+=======
+catalina_jemez,Catalina-Jemez,czo,CZO,Jaramillo Creek,UpperJaramillo,Upper Jaramillo Creek,stream_gauge,35.9092,-106.5304,4326,741.544754868409,1,NA,America/Denver,NA
+catalina_jemez,Catalina-Jemez,czo,CZO,Jaramillo Creek,LowerJaramillo,Lower Jaramillo Creek,stream_gauge,35.8929,-106.4958,4326,2732.60398781136,1,NA,America/Denver,NA
+catalina_jemez,Catalina-Jemez,czo,CZO,La Jara Creek,UpperLaJara,Upper La Jara Creek,stream_gauge,35.87033,-106.527,4326,351.192323691097,1,NA,America/Denver,NA
+catalina_jemez,Catalina-Jemez,czo,CZO,La Jara Creek,LowerLaJara,Lower La Jara Creek,stream_gauge,35.8667,-106.5235,4326,373.330049346688,1,mike changed long from -106.525 to -106.5235 on 20210726,America/Denver,NA
+catalina_jemez,Catalina-Jemez,czo,CZO,Redondo Creek,LowerRedondo,Lower Redondo Creek,stream_gauge,35.8663,-106.5978,4326,1302.45029024401,1,NA,America/Denver,NA
+catalina_jemez,Catalina-Jemez,czo,CZO,NA,MC_ FLUME,Mixed Conifer ZOB,stream_gauge,35.88083,-106.53575,4326,37.1917407880278,1,NA,America/Denver,NA
+catalina_jemez,Catalina-Jemez,czo,CZO,Marshall Gulch,MarshallGulch,Marshall Gulch Schist catchment,stream_gauge,32.427351,-110.757857,4326,159.693511385123,1,NA,America/Denver,NA
+catalina_jemez,Catalina-Jemez,czo,CZO,NA,Bigelow,Bigelow Zero Order Basin,stream_gauge,32.4152,-110.7243,4326,3.96841028665908,1,NA,America/Denver,NA
+catalina_jemez,Catalina-Jemez,czo,CZO,NA,OracleRidge,Oracle Ridge,stream_gauge,32.4494,-110.7399,4326,88.0054388786304,1,NA,America/Denver,NA
+catalina_jemez,Catalina-Jemez,czo,CZO,Redondo Creek,UpperRedondo,Upper Redondo Creek,stream_gauge,35.8929,-106.577,4326,420.903749091213,1,NA,America/Denver,NA
+catalina_jemez,Catalina-Jemez,czo,CZO,NA,FLUME_MCZOB,MC ZOB Flume,stream_gauge,35.88083,-106.536,4326,37.1917407885708,1,NA,America/Denver,NA
+>>>>>>> d6c84f72feb667656ce822e3611ac0af1b0c675a
 catalina_jemez,Catalina-Jemez,czo,CZO,NA,B2_Rain1,B2 desert site rain gage 1 (GR1),rain_gauge,32.55696,-110.841,4326,NA,1,NA,America/Denver,0
 catalina_jemez,Catalina-Jemez,czo,CZO,NA,B2_Rain2,B2 desert site rain gage 2 (GR2),rain_gauge,32.55537,-110.84,4326,NA,1,NA,America/Denver,0
 catalina_jemez,Catalina-Jemez,czo,CZO,NA,OR_PC1,Oracle Ridge Precipitation Collector,rain_gauge,32.44983,-110.74,4326,NA,1,NA,America/Denver,0
@@ -426,33 +479,37 @@ calhoun,Calhoun,czo,CZO,NA,Ref4_Drain,Ref 4 Drain,stream_sampling_point,34.5976,
 calhoun,Calhoun,czo,CZO,NA,Tyger_River_Sardis_Rd,Tyger River at Sardis Rd,stream_sampling_point,34.61535,-81.6665,4326,NA,1,NA,US/Eastern,NA
 calhoun,Calhoun,czo,CZO,NA,Ref4_Below_Bowl,Ref 4 Below Bowl,stream_sampling_point,34.59963,-81.6741,4326,NA,1,NA,US/Eastern,NA
 calhoun,Calhoun,czo,CZO,NA,weir_1,Weir 1,stream_sampling_point,34.59971,-81.6838,4326,NA,1,NA,US/Eastern,NA
-calhoun,Calhoun,czo,CZO,NA,weir_3,Weir 3,stream_gauge,34.6098,-81.6952,4326,7.73531250703349,1,NA,US/Eastern,NA
-calhoun,Calhoun,czo,CZO,NA,weir_4,Weir 4,stream_gauge,34.61222,-81.6943,4326,5.90803089032138,1,NA,US/Eastern,NA
+calhoun,Calhoun,czo,CZO,NA,weir_3,Weir 3,stream_gauge,34.6098,-81.6952,4326,4.73915502252533,1,NA,US/Eastern,NA
+calhoun,Calhoun,czo,CZO,NA,weir_4,Weir 4,stream_gauge,34.61222,-81.6943,4326,6.53102550520252,1,NA,US/Eastern,NA
 calhoun,Calhoun,czo,CZO,NA,Holcombes_Branch,Holcombe's Branch,stream_sampling_point,34.61308,-81.6966,4326,NA,1,NA,US/Eastern,NA
 calhoun,Calhoun,czo,CZO,NA,weir_2,Weir 2,stream_gauge,34.61411,-81.6933,4326,7.31294490647589,1,NA,US/Eastern,NA
+<<<<<<< HEAD
 luquillo,Luquillo,lter,LTER,NA,Q1,Quebrada uno-Bisley,stream_gauge,18.315717,-65.74538,4326,5.76332994919415,1,NA,Etc/GMT-4,NA
+=======
+luquillo,Luquillo,lter,LTER,NA,Q1,Quebrada uno-Bisley,stream_gauge,18.315717,-65.74538,4326,6.85230124926723,1,NA,Etc/GMT-4,NA
+>>>>>>> d6c84f72feb667656ce822e3611ac0af1b0c675a
 luquillo,Luquillo,lter,LTER,NA,Q2,Quebrada dos-Bisley,stream_gauge,18.314637,-65.74629,4326,6.32776712507104,1,NA,Etc/GMT-4,NA
 luquillo,Luquillo,lter,LTER,NA,Q3,Quebrada tres-Bisley,stream_gauge,18.314091,-65.747312,4326,32.6429304869289,1,NA,Etc/GMT-4,NA
 luquillo,Luquillo,lter,LTER,NA,QG,Quebrada Guaba,stream_gauge,18.283889,-65.788889,4326,144.141488221499,1,usgs 50074950,Etc/GMT-4,NA
 luquillo,Luquillo,lter,LTER,NA,QPA,Quebrada Prieta A,stream_sampling_point,NA,NA,4326,NA,0,NA,Etc/GMT-4,NA
 luquillo,Luquillo,lter,LTER,NA,QPB,Quebrada Prieta B,stream_sampling_point,NA,NA,4326,NA,0,NA,Etc/GMT-4,NA
 luquillo,Luquillo,lter,LTER,NA,QP,Quebrada Prieta,stream_gauge,18.2957,-65.8006,4326,2.63280746627962,0,this ws is listed as 30.77ha on czo site,Etc/GMT-4,NA
-luquillo,Luquillo,lter,LTER,NA,QS,Quebrada Sonadora,stream_gauge,18.322013,-65.817991,4326,164.795008459469,1,"usgs 50063440, czo site lists the ws area as 261.59 ha",Etc/GMT-4,NA
+luquillo,Luquillo,lter,LTER,NA,QS,Quebrada Sonadora,stream_gauge,18.322013,-65.817991,4326,150.524299299199,1,"usgs 50063440, czo site lists the ws area as 261.59 ha",Etc/GMT-4,NA
 luquillo,Luquillo,lter,LTER,NA,MG,Rio Mameyes,stream_sampling_point,18.3561,-65.7685,4326,NA,1,NA,Etc/GMT-4,NA
 luquillo,Luquillo,lter,LTER,NA,RI,Rio Icacos,stream_gauge,18.275091,-65.785529,4326,336.289938452396,1,usgs 50075000,Etc/GMT-4,NA
-luquillo,Luquillo,lter,LTER,NA,MPR,Puente Roto Mameyes,stream_gauge,18.326951,-65.750292,4326,1783.39089439801,1,usgs 50065500,Etc/GMT-4,NA
+luquillo,Luquillo,lter,LTER,NA,MPR,Puente Roto Mameyes,stream_gauge,18.326951,-65.750292,4326,1784.91375636796,1,usgs 50065500,Etc/GMT-4,NA
 luquillo,Luquillo,lter,LTER,NA,El_Verde,NA,rain_gauge,18.3212,-65.8199,4326,NA,1,NA,Etc/GMT-4,0
 luquillo,Luquillo,lter,LTER,NA,Bisley_Tower,NA,rain_gauge,18.3144,-65.7449,4326,NA,1,NA,Etc/GMT-4,0
-fernow,Fernow,usfs,USFS,NA,WS-5,WS-5,stream_gauge,39.0525528696489,-79.6854724847227,4326,35.8254776619775,1,NA,US/Eastern,NA
-fernow,Fernow,usfs,USFS,NA,WS-4,WS-4,stream_gauge,39.0539284002756,-79.686952264096,4326,36.9036451122178,1,NA,US/Eastern,NA
-fernow,Fernow,usfs,USFS,NA,WS-2,WS-2,stream_gauge,39.0538800089031,-79.6825845648589,4326,15.7841726751109,1,NA,US/Eastern,NA
-fernow,Fernow,usfs,USFS,NA,WS-3,WS-3,stream_gauge,39.0541986200578,-79.685995835684,4326,35.2321730019518,1,NA,US/Eastern,NA
-fernow,Fernow,usfs,USFS,NA,WS-10,WS-10,stream_gauge,39.0542394444556,-79.6802015411856,4326,15.7823941295029,1,NA,US/Eastern,NA
-fernow,Fernow,usfs,USFS,NA,WS-1,WS-1,stream_gauge,39.0601514498466,-79.6710782773528,4326,29.8618330076571,1,NA,US/Eastern,NA
-fernow,Fernow,usfs,USFS,NA,WS-13,WS-13,stream_gauge,39.0628613311943,-79.6789735729715,4326,14.0898255455109,1,NA,US/Eastern,NA
-fernow,Fernow,usfs,USFS,NA,WS-7,WS-7,stream_gauge,39.0640144312179,-79.6800685040863,4326,26.0170885865431,1,NA,US/Eastern,NA
-fernow,Fernow,usfs,USFS,NA,WS-6,WS-6,stream_gauge,39.0661498684073,-79.676658597899,4326,22.4035065724175,1,NA,US/Eastern,NA
-fernow,Fernow,usfs,USFS,NA,WS-14,WS-14,stream_gauge,39.0605510367107,-79.6696770538846,4326,130.878850705673,1,NA,US/Eastern,NA
+fernow,Fernow,usfs,USFS,NA,WS-5,WS-5,stream_gauge,39.0525528696489,-79.6854724847227,4326,35.7804313193687,1,NA,US/Eastern,NA
+fernow,Fernow,usfs,USFS,NA,WS-4,WS-4,stream_gauge,39.0539284002756,-79.686952264096,4326,0.101085763122321,1,NA,US/Eastern,NA
+fernow,Fernow,usfs,USFS,NA,WS-2,WS-2,stream_gauge,39.0538800089031,-79.6825845648589,4326,14.8455437559824,1,NA,US/Eastern,NA
+fernow,Fernow,usfs,USFS,NA,WS-3,WS-3,stream_gauge,39.0541986200578,-79.685995835684,4326,33.7896888882656,1,NA,US/Eastern,NA
+fernow,Fernow,usfs,USFS,NA,WS-10,WS-10,stream_gauge,39.0542394444556,-79.6802015411856,4326,15.6406424329272,1,NA,US/Eastern,NA
+fernow,Fernow,usfs,USFS,NA,WS-1,WS-1,stream_gauge,39.0601514498466,-79.6710782773528,4326,29.7559411399298,1,NA,US/Eastern,NA
+fernow,Fernow,usfs,USFS,NA,WS-13,WS-13,stream_gauge,39.0628613311943,-79.6789735729715,4326,1.34994773358713,1,NA,US/Eastern,NA
+fernow,Fernow,usfs,USFS,NA,WS-7,WS-7,stream_gauge,39.0640144312179,-79.6800685040863,4326,27.3715918349281,1,NA,US/Eastern,NA
+fernow,Fernow,usfs,USFS,NA,WS-6,WS-6,stream_gauge,39.0661498684073,-79.676658597899,4326,21.3423728337547,1,NA,US/Eastern,NA
+fernow,Fernow,usfs,USFS,NA,WS-14,WS-14,stream_gauge,39.0605510367107,-79.6696770538846,4326,132.013553249478,1,NA,US/Eastern,NA
 fernow,Fernow,usfs,USFS,NA,C,C,rain_gauge,39.053048,-79.685435,4326,NA,1,NA,US/Eastern,1
 fernow,Fernow,usfs,USFS,NA,D,D,rain_gauge,39.058067,-79.69194,4326,NA,1,NA,US/Eastern,1
 east_river,East River,doe,DOE,NA,KCOMKRET2,Weather Underground Weather Station near Crested Butte,rain_gauge,38.9150314,-106.95892,4326,NA,1,NA,America/Denver,NA
@@ -491,6 +548,7 @@ christina,Christina,czo,CZO,White Clay Creek,USGSNRNEWARK,USGS01479000 on White 
 christina,Christina,czo,CZO,NA,LAURELSSPR1,NA,stream_sampling_point,39.92187,-75.7896,4326,NA,0,NA,US/Eastern,NA
 christina,Christina,czo,CZO,NA,WCW_NRCM27,White Clay Creek east branch at Rt. 926 downstream side near monument 27,stream_sampling_point,39.87096,-75.7845,4326,NA,0,NA,US/Eastern,NA
 christina,Christina,czo,CZO,NA,SWRC_met,Stroud Water Research Center,rain_gauge,39.859272,-75.782889,4326,NA,0,NA,US/Eastern,NA
+<<<<<<< HEAD
 krew,KREW,usfs,USFS,Providence Creek,P300,Providence Creek P300,stream_gauge,37.052,-119.203263,4326,460.988916655782,1,NA,America/Los_Angeles,NA
 krew,KREW,usfs,USFS,Providence Creek,P301,Providence Creek P301,stream_gauge,37.05945,-119.203626,4326,99.1564978068797,1,NA,America/Los_Angeles,NA
 krew,KREW,usfs,USFS,Providence Creek,P303,Providence Creek P303,stream_gauge,37.05404,-119.196253,4326,132.323125200931,1,NA,America/Los_Angeles,NA
@@ -501,6 +559,18 @@ krew,KREW,usfs,USFS,Bull Creek,B201,Bull Creek B201,stream_gauge,36.97813,-119.0
 krew,KREW,usfs,USFS,Bull Creek,B203,Bull Creek B203,stream_gauge,36.97586,-119.073332,4326,138.355621904332,1,NA,America/Los_Angeles,NA
 krew,KREW,usfs,USFS,Bull Creek,B204,Bull Creek B204,stream_gauge,36.9748,-119.073078,4326,166.914751940812,1,NA,America/Los_Angeles,NA
 krew,KREW,usfs,USFS,Teakettle Creek,T003,Teakettle Creek T001,stream_gauge,36.95894,-119.026558,4326,227.728860635872,1,NA,America/Los_Angeles,NA
+=======
+krew,KREW,usfs,USFS,Providence Creek,P300,Providence Creek P300,stream_gauge,37.052,-119.203263,4326,460.99874290697,1,NA,America/Los_Angeles,NA
+krew,KREW,usfs,USFS,Providence Creek,P301,Providence Creek P301,stream_gauge,37.05945,-119.203626,4326,99.1585710755763,1,NA,America/Los_Angeles,NA
+krew,KREW,usfs,USFS,Providence Creek,P303,Providence Creek P303,stream_gauge,37.05404,-119.196253,4326,132.325968297819,1,NA,America/Los_Angeles,NA
+krew,KREW,usfs,USFS,Providence Creek,P304,Providence Creek P304,stream_gauge,37.05066,-119.195268,4326,48.7327407516071,1,NA,America/Los_Angeles,NA
+krew,KREW,usfs,USFS,Duff Creek,D102,Duff Creek D102,stream_gauge,37.0377,-119.202923,4326,120.76189433476,1,NA,America/Los_Angeles,NA
+krew,KREW,usfs,USFS,Bull Creek,B200,Bull Creek B200,stream_gauge,36.97719,-119.081964,4326,473.961020238262,1,NA,America/Los_Angeles,NA
+krew,KREW,usfs,USFS,Bull Creek,B201,Bull Creek B201,stream_gauge,36.97813,-119.079194,4326,52.9797825077988,1,NA,America/Los_Angeles,NA
+krew,KREW,usfs,USFS,Bull Creek,B203,Bull Creek B203,stream_gauge,36.97586,-119.073332,4326,138.359752725568,1,NA,America/Los_Angeles,NA
+krew,KREW,usfs,USFS,Bull Creek,B204,Bull Creek B204,stream_gauge,36.9748,-119.073078,4326,166.919722244378,1,NA,America/Los_Angeles,NA
+krew,KREW,usfs,USFS,Teakettle Creek,T003,Teakettle Creek T001,stream_gauge,36.95894,-119.026558,4326,227.735553186467,1,NA,America/Los_Angeles,NA
+>>>>>>> d6c84f72feb667656ce822e3611ac0af1b0c675a
 krew,KREW,usfs,USFS,NA,lower_bull,Lower Bull Creek,rain_gauge,36.9781144234137,-119.074554462827,4326,NA,1,NA,America/Los_Angeles,1
 krew,KREW,usfs,USFS,NA,lower_providence,Lower Providence Creek,rain_gauge,37.0581364641927,-119.203053708403,4326,NA,1,NA,America/Los_Angeles,1
 krew,KREW,usfs,USFS,NA,upper_bull,Upper Bull Creek,rain_gauge,36.9669457952837,-119.056578504432,4326,NA,1,NA,America/Los_Angeles,1
@@ -514,9 +584,15 @@ suef,SUEF,usfs,USFS,NA,GSCC04,Coyote Creek Watershed 4 Gauging Station,stream_ga
 suef,SUEF,usfs,USFS,NA,GSFC01,Fox Creek Watershed 1 Gauging Station,stream_sampling_point,45.43363,-122.043,4326,NA,1,NA,America/Los_Angeles,NA
 suef,SUEF,usfs,USFS,NA,GSFC02,Fox Creek Watershed 2 Gauging Station,stream_sampling_point,45.43413,-122.043,4326,NA,1,NA,America/Los_Angeles,NA
 suef,SUEF,usfs,USFS,NA,GSFC03,Fox Creek Watershed 3 Gauging Station,stream_sampling_point,45.43454,-122.043,4326,NA,1,NA,America/Los_Angeles,NA
+<<<<<<< HEAD
 santee,Santee,usfs,USFS,NA,WS77,Weir 77,stream_gauge,33.141649,-79.779912,4326,184.977246580532,1,NA,US/Eastern,NA
 santee,Santee,usfs,USFS,Turkey Creek,WS78,Weir 78,stream_gauge,33.1311815286249,-79.7840809256234,4326,2.32369432412088e-4,1,NA,US/Eastern,NA
 santee,Santee,usfs,USFS,NA,WS79,Weir 79,stream_gauge,33.1412234754962,-79.7908352648646,4326,474.983215700905,1,NA,US/Eastern,NA
+=======
+santee,Santee,usfs,USFS,NA,WS77,Weir 77,stream_gauge,33.141649,-79.779912,4326,150.764861179632,1,NA,US/Eastern,NA
+santee,Santee,usfs,USFS,Turkey Creek,WS78,Weir 78,stream_gauge,33.1311815286249,-79.7840809256234,4326,2.32369432412088e-4,0,NA,US/Eastern,NA
+santee,Santee,usfs,USFS,NA,WS79,Weir 79,stream_gauge,33.1412234754962,-79.7908352648646,4326,474.983215700905,0,NA,US/Eastern,NA
+>>>>>>> d6c84f72feb667656ce822e3611ac0af1b0c675a
 santee,Santee,usfs,USFS,NA,WS80,Weir 80,stream_gauge,33.1443029554038,-79.790443356472,4326,155.7185573606,1,NA,US/Eastern,NA
 santee,Santee,usfs,USFS,NA,Met5,Met 5 weather station,rain_gauge,33.140537,-79.771937,4326,NA,1,NA,US/Eastern,0
 santee,Santee,usfs,USFS,NA,SEFHQ,Headquarters weather station,rain_gauge,33.1365336448737,-79.8145411608427,4326,NA,1,NA,US/Eastern,0

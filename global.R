@@ -43,6 +43,7 @@ conf <- jsonlite::fromJSON('config.json')
 #                           secret = conf$shinyapps_cuahsi_secret)
 #
 # #uncomment and run this (without saving script) to deploy app
+# options(rsconnect.max.bundle.size = 5 * 1024 * 1024 * 1024)
 # rsconnect::deployApp('/home/mike/git/macrosheds/portal',
 #                      appName = 'macrosheds',
 #                      account = 'cuahsi')
@@ -93,11 +94,9 @@ pchemcolors <- c('#7b97ea', '#00b300', '#8000ff') #lighter shades of linecolors
 
 ## 2. populate nSiteNVar defaults, which determine data shown when user lands ####
 
-# default_network <- 'lter'
-# default_domain <- 'hbef'
+default_network <- 'lter'
+default_domain <- 'hbef'
 
-default_network <- 'czo'
-default_domain <- 'boulder'
 
 network_domain_default_sites <- site_data %>%
     group_by(network, domain) %>%
@@ -115,7 +114,7 @@ default_sitelist <- get_sitelist(domain = default_domain,
 default_site <- get_default_site(domain = default_domain)
                                  # network = default_network)
 
-default_site <- 'GGL'
+default_site <- 'ws1'
 
 basedata <- list(
     Q = ms_read_portalsite(domain = default_domain,
