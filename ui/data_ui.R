@@ -258,7 +258,7 @@ spatial_dl <- quote({
                         style = 'margin-bottom: 6px'),
                     downloadButton('DL_SUBMIT_SPATIALSUMM'),
 
-                    h3('Watershed data, complete',
+                    h3('Watershed attribute data, complete',
                        style = 'margin-bottom: 0px'),
                     div('Spatial summaries of gridded data in long (indexed) format, as time series where applicable.',
                         class = 'widget-caption text-left'),
