@@ -258,28 +258,28 @@ pd_geo_S_mean,Lithological sulfur Mean,%,UNKNOWN,ws_char,Geochemistry,NA,NA,0,NA
 pd_geo_S_sd,Lithological sulfur Standard Deviation,%,UNKNOWN,ws_char,Geochemistry,NA,NA,0,NA,NA,NA,NA
 pd_geo_SiO2_mean,Lithological silicon dioxide Mean,%,UNKNOWN,ws_char,Geochemistry,NA,NA,0,NA,NA,NA,NA
 pd_geo_SiO2_sd,Lithological silicon dioxide Standard Deviation,%,UNKNOWN,ws_char,Geochemistry,NA,NA,0,NA,NA,NA,NA
-ch_annual_Ca_flux_mean,Mean Annual Calcium Flux,kg/ha,UNKNOWN,ws_char,NADP,NA,NA,0,NA,NA,NA,NA
-ch_annual_Ca_flux_sd_space,Annual Calcium Flux Standard Deviation,kg/ha,UNKNOWN,ws_char,NADP,NA,NA,0,NA,NA,NA,NA
-ch_annual_Cl_flux_mean,Mean Annual Chlorine Flux,kg/ha,UNKNOWN,ws_char,NADP,NA,NA,0,NA,NA,NA,NA
-ch_annual_Cl_flux_sd_space,Annual Chlorine Flux Standard Deviation,kg/ha,UNKNOWN,ws_char,NADP,NA,NA,0,NA,NA,NA,NA
-ch_annual_H_flux_mean,Mean Annual Hydrogen ion Flux,kg/ha,UNKNOWN,ws_char,NADP,NA,NA,0,NA,NA,NA,NA
-ch_annual_H_flux_sd_space,Annual Hydrogen ion Flux Standard Deviation,kg/ha,UNKNOWN,ws_char,NADP,NA,NA,0,NA,NA,NA,NA
-ch_annual_K_flux_mean,Mean Annual Potassium Flux,kg/ha,UNKNOWN,ws_char,NADP,NA,NA,0,NA,NA,NA,NA
-ch_annual_K_flux_sd_space,Annual Potassium Flux Standard Deviation,kg/ha,UNKNOWN,ws_char,NADP,NA,NA,0,NA,NA,NA,NA
-ch_annual_Mg_flux_mean,Mean Annual Magnesium Flux,kg/ha,UNKNOWN,ws_char,NADP,NA,NA,0,NA,NA,NA,NA
-ch_annual_Mg_flux_sd_space,Annual Magnesium Flux Standard Deviation,kg/ha,UNKNOWN,ws_char,NADP,NA,NA,0,NA,NA,NA,NA
-ch_annual_Na_flux_mean,Mean Annual Sodium Flux,kg/ha,UNKNOWN,ws_char,NADP,NA,NA,0,NA,NA,NA,NA
-ch_annual_Na_flux_sd_space,Annual Sodium Flux Standard Deviation,kg/ha,UNKNOWN,ws_char,NADP,NA,NA,0,NA,NA,NA,NA
-ch_annual_NH4_flux_mean,Mean Annual Ammonium Flux,kg/ha,UNKNOWN,ws_char,NADP,NA,NA,0,NA,NA,NA,NA
-ch_annual_NH4_flux_sd_space,Annual Ammonium Flux Standard Deviation,kg/ha,UNKNOWN,ws_char,NADP,NA,NA,0,NA,NA,NA,NA
-ch_annual_NO3_flux_mean,Mean Annual nitrate flux,kg/ha,UNKNOWN,ws_char,NADP,NA,NA,0,NA,NA,NA,NA
-ch_annual_NO3_flux_sd_space,Annual Nitrate Flux Standard Deviation,kg/ha,UNKNOWN,ws_char,NADP,NA,NA,0,NA,NA,NA,NA
-ch_annual_SO4_flux_mean,Mean Annual Sulfate Flux,kg/ha,UNKNOWN,ws_char,NADP,NA,NA,0,NA,NA,NA,NA
-ch_annual_SO4_flux_sd_space,Annual Sulfate Flux Standard Deviation,kg/ha,UNKNOWN,ws_char,NADP,NA,NA,0,NA,NA,NA,NA
-ch_annual_S_N_flux_mean,Mean Annual Nitrogen+Sulfur Flux,kg/ha,UNKNOWN,ws_char,NADP,NA,NA,0,NA,NA,NA,NA
-ch_annual_S_N_flux_sd_space,Annual Nitrogen+Dulfur Flux Standard Deviation,kg/ha,UNKNOWN,ws_char,NADP,NA,NA,0,NA,NA,NA,NA
-ch_annual_N_flux_mean,Mean Annual Inorganic Nitrogen Flux,kg/ha,UNKNOWN,ws_char,NADP,NA,NA,0,NA,NA,NA,NA
-ch_annual_N_flux_sd_space,Annual Inorganic Nitrogen Flux Standard Deviation,kg/ha,UNKNOWN,ws_char,NADP,NA,NA,0,NA,NA,NA,NA
+ch_annual_Ca_flux_mean,Mean Annual Calcium Flux,kg/ha,UNKNOWN,ws_char,"NADP",NA,NA,0,NA,NA,NA,NA
+ch_annual_Ca_flux_sd_space,Annual Calcium Flux Standard Deviation,kg/ha,UNKNOWN,ws_char,"NADP",NA,NA,0,NA,NA,NA,NA
+ch_annual_Cl_flux_mean,Mean Annual Chlorine Flux,kg/ha,UNKNOWN,ws_char,"NADP",NA,NA,0,NA,NA,NA,NA
+ch_annual_Cl_flux_sd_space,Annual Chlorine Flux Standard Deviation,kg/ha,UNKNOWN,ws_char,"NADP",NA,NA,0,NA,NA,NA,NA
+ch_annual_H_flux_mean,Mean Annual Hydrogen ion Flux,kg/ha,UNKNOWN,ws_char,"NADP",NA,NA,0,NA,NA,NA,NA
+ch_annual_H_flux_sd_space,Annual Hydrogen ion Flux Standard Deviation,kg/ha,UNKNOWN,ws_char,"NADP",NA,NA,0,NA,NA,NA,NA
+ch_annual_K_flux_mean,Mean Annual Potassium Flux,kg/ha,UNKNOWN,ws_char,"NADP",NA,NA,0,NA,NA,NA,NA
+ch_annual_K_flux_sd_space,Annual Potassium Flux Standard Deviation,kg/ha,UNKNOWN,ws_char,"NADP",NA,NA,0,NA,NA,NA,NA
+ch_annual_Mg_flux_mean,Mean Annual Magnesium Flux,kg/ha,UNKNOWN,ws_char,"NADP",NA,NA,0,NA,NA,NA,NA
+ch_annual_Mg_flux_sd_space,Annual Magnesium Flux Standard Deviation,kg/ha,UNKNOWN,ws_char,"NADP",NA,NA,0,NA,NA,NA,NA
+ch_annual_Na_flux_mean,Mean Annual Sodium Flux,kg/ha,UNKNOWN,ws_char,"NADP",NA,NA,0,NA,NA,NA,NA
+ch_annual_Na_flux_sd_space,Annual Sodium Flux Standard Deviation,kg/ha,UNKNOWN,ws_char,"NADP",NA,NA,0,NA,NA,NA,NA
+ch_annual_NH4_flux_mean,Mean Annual Ammonium Flux,kg/ha,UNKNOWN,ws_char,"NADP",NA,NA,0,NA,NA,NA,NA
+ch_annual_NH4_flux_sd_space,Annual Ammonium Flux Standard Deviation,kg/ha,UNKNOWN,ws_char,"NADP",NA,NA,0,NA,NA,NA,NA
+ch_annual_NO3_flux_mean,Mean Annual nitrate flux,kg/ha,UNKNOWN,ws_char,"NADP",NA,NA,0,NA,NA,NA,NA
+ch_annual_NO3_flux_sd_space,Annual Nitrate Flux Standard Deviation,kg/ha,UNKNOWN,ws_char,"NADP",NA,NA,0,NA,NA,NA,NA
+ch_annual_SO4_flux_mean,Mean Annual Sulfate Flux,kg/ha,UNKNOWN,ws_char,"NADP",NA,NA,0,NA,NA,NA,NA
+ch_annual_SO4_flux_sd_space,Annual Sulfate Flux Standard Deviation,kg/ha,UNKNOWN,ws_char,"NADP",NA,NA,0,NA,NA,NA,NA
+ch_annual_S_N_flux_mean,Mean Annual Nitrogen+Sulfur Flux,kg/ha,UNKNOWN,ws_char,"NADP",NA,NA,0,NA,NA,NA,NA
+ch_annual_S_N_flux_sd_space,Annual Nitrogen+Dulfur Flux Standard Deviation,kg/ha,UNKNOWN,ws_char,"NADP",NA,NA,0,NA,NA,NA,NA
+ch_annual_N_flux_mean,Mean Annual Inorganic Nitrogen Flux,kg/ha,UNKNOWN,ws_char,"NADP",NA,NA,0,NA,NA,NA,NA
+ch_annual_N_flux_sd_space,Annual Inorganic Nitrogen Flux Standard Deviation,kg/ha,UNKNOWN,ws_char,"NADP",NA,NA,0,NA,NA,NA,NA
 vb_ndvi_median,Daily Median NDVI,unitless,UNKNOWN,ws_char,NDVI,NA,NA,0,NA,NA,NA,NA
 vb_ndvi_sd,Daily NDVI Standard Deviation,unitless,UNKNOWN,ws_char,NDVI,NA,NA,0,NA,NA,NA,NA
 vb_ndvi_max,Annual Maximum NDVI,unitless,UNKNOWN,ws_char,NDVI,NA,NA,0,NA,NA,NA,NA
