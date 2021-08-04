@@ -1,5 +1,4 @@
 
-
 sheds <- sf::st_read('data/general/shed_boundary') %>%
     sf::st_transform(4326)
 

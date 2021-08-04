@@ -1313,3 +1313,48 @@ dt_ranges_overlap <- function(range1, range2){
 
     return(ranges_overlap)
 }
+
+read_combine_ws_traits <- function(ws_prod, ws_var, new_var_name, dmns, 
+                       sites = NULL, aggregate = FALSE){
+
+    dmn_sites <- site_data %>%
+        filter(domain %in% dmns, site_type %in% c('stream_gauge', 'stream_sampling_point')) %>%
+        filter(site_code %in% sites) %>%
+        select(domain, site_code)
+    
+    if(aggregate){ 
+        agg <- 'sum_' 
+    } else { 
+            agg <- 'raw_' 
+    }
+    
+    combined_data <- tibble()
+    for(i in 1:nrow(dmn_sites)){
+        
+        filestr <- glue('data/{d}/{v}/{s}.feather',
+                        d = dmn_sites$domain[i],
+                        v = paste0('ws_traits/', ws_prod),
+                        s = paste0(agg, dmn_sites$site_code[i]))
+        
+        ws_file <- try(feather::read_feather(filestr),
+                       silent = TRUE)
+        
+        if('try-error' %in% class(ws_file)){
+            ws_file <- tibble()
+        } else {
+            ws_file <- ws_file %>%
+                filter(var == !!ws_var) %>%
+                mutate(var := !!new_var_name,
+                       ms_status = 0,
+                       ms_interp = 0) %>%
+                mutate(val = errors::set_errors(val,
+                                                0)) 
+        }
+        
+        # if(var %in% c('precip', 'pchem')) data_part$domain = dmn_sites$domain[i]
+        
+        combined_data <- bind_rows(combined_data,
+                                   ws_file)
+    }
+    return(combined_data)
+}

@@ -244,8 +244,7 @@ nSiteNVar_tab <- tabPanel("Inspection",
                                       'up to 15 days for chemistry.'),
                         enc2native('\U2753')
                     )
-                ),
-
+                )
             )
         ),
 
