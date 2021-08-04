@@ -177,7 +177,8 @@ load_basedata <- eventReactive({
     # time_scheme <<- input$TIME_SCHEME3
     # agg <<- isolate(input$AGG3)
     # dmns <<- get_domains3()
-    #
+    # precip_source <<- input$PRECIP_S3
+    # 
     # if(is.null(dmns)){ #for empty domain dropdown
     #     dmns <<- init_vals$recent_domain
     #     sites <<- get_default_site(domain = dmns[1])

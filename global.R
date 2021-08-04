@@ -74,6 +74,7 @@ sites_with_Q <- sm(read_csv('data/general/sites_with_discharge.csv')) %>%
                  remove = TRUE) %>%
     pull(nds)
 
+
 site_data_copy <- site_data
 site_data <- filter(site_data,
                     as.logical(in_workflow),
@@ -96,6 +97,10 @@ pchemcolors <- c('#7b97ea', '#00b300', '#8000ff') #lighter shades of linecolors
 
 default_network <- 'lter'
 default_domain <- 'hbef'
+# default_network <- 'czo'
+# default_domain <- 'boulder'
+
+
 network_domain_default_sites <- site_data %>%
     group_by(network, domain) %>%
     summarize(site_code = first(site_code),
@@ -111,6 +116,8 @@ default_sitelist <- get_sitelist(domain = default_domain,
 
 default_site <- get_default_site(domain = default_domain)
                                  # network = default_network)
+
+# default_site <- 'GGU'
 
 basedata <- list(
     Q = ms_read_portalsite(domain = default_domain,

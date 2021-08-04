@@ -674,6 +674,10 @@ output$SUMMARY_BIPLOT <- renderPlotly({
     } else {
         "No data available for \nthe selected variables"
     }
+    
+    if(x_var == 'Year' & y_var %in% c('Soil', 'Geochemistry', 'Hydrology', 'Terrain')){
+        empty_msg <- 'Non-temporal data selected. \nSet Aggregation to "Full record"'
+    }
 
     if(x_var == 'Year' & y_var %in% c('Soil', 'Geochemistry', 'Hydrology', 'Terrain')){
         empty_msg <- 'Non-temporal data selected. \nSet Aggregation to "Full record"'
@@ -1086,7 +1090,7 @@ output$SUMMARY_BIPLOT <- renderPlotly({
 
     plot <- plot %>%
         plotly::layout(annotations = list(
-            text = paste0('macrosheds.org data provided by: ', networks_cite),
+            text = paste0('macrosheds.org data provided by:\n', networks_cite),
             xref = "paper",
             yref = "paper",
             opacity = 0.10,
