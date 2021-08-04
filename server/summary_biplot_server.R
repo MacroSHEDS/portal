@@ -1090,7 +1090,7 @@ output$SUMMARY_BIPLOT <- renderPlotly({
 
     plot <- plot %>%
         plotly::layout(annotations = list(
-            text = paste0('macrosheds.org data provided by: ', networks_cite),
+            text = paste0('macrosheds.org data provided by:\n', networks_cite),
             xref = "paper",
             yref = "paper",
             opacity = 0.10,

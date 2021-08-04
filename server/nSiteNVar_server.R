@@ -170,7 +170,6 @@ load_basedata <- eventReactive({
     # input$SHOW_UNCERT3
     input$FLAGS3
     input$INTERP3
-    input$PRECIP_S3
 
 }, {
 
@@ -190,7 +189,6 @@ load_basedata <- eventReactive({
     time_scheme <- input$TIME_SCHEME3
     agg <- isolate(input$AGG3)
     dmns <- get_domains3()
-    precip_source <- input$PRECIP_S3
 
     if(is.null(dmns)){ #for empty domain dropdown
         dmns <- init_vals$recent_domain
@@ -208,18 +206,9 @@ load_basedata <- eventReactive({
     flux <- read_combine_feathers('stream_flux_inst_scaled',
                                   dmns = dmns,
                                   sites = sites)
-    
-    if(precip_source == 'Domain Gauges'){
-        P <- read_combine_feathers('precipitation',
-                                   dmns = dmns,
-                                   sites = sites)
-    } else{
-        P <- read_combine_ws_traits(ws_prod = 'cc_precip',
-                                    ws_var = 'cc_precip_median',
-                                    new_var_name = 'IS_precipitation',
-                                    dmns = dmns,
-                                    sites = sites)
-    }
+    P <- read_combine_feathers('precipitation',
+                               dmns = dmns,
+                               sites = sites)
     pchem <- read_combine_feathers('precip_chemistry',
                                    dmns = dmns,
                                    sites = sites)

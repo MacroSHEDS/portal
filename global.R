@@ -95,10 +95,10 @@ pchemcolors <- c('#7b97ea', '#00b300', '#8000ff') #lighter shades of linecolors
 
 ## 2. populate nSiteNVar defaults, which determine data shown when user lands ####
 
-# default_network <- 'lter'
-# default_domain <- 'hbef'
-default_network <- 'czo'
-default_domain <- 'boulder'
+default_network <- 'lter'
+default_domain <- 'hbef'
+# default_network <- 'czo'
+# default_domain <- 'boulder'
 
 
 network_domain_default_sites <- site_data %>%
@@ -117,7 +117,7 @@ default_sitelist <- get_sitelist(domain = default_domain,
 default_site <- get_default_site(domain = default_domain)
                                  # network = default_network)
 
-default_site <- 'GGU'
+# default_site <- 'GGU'
 
 basedata <- list(
     Q = ms_read_portalsite(domain = default_domain,
@@ -131,13 +131,13 @@ basedata <- list(
                               prodname = 'stream_flux_inst_scaled'),
     P = ms_read_portalsite(domain = default_domain,
                            site_code = default_site,
-                           prodname = 'precipitation')
-    # pchem = ms_read_portalsite(domain = default_domain,
-    #                            site_code = default_site,
-    #                            prodname = 'precip_chemistry'),
-    # pflux = ms_read_portalsite(domain = default_domain,
-    #                            site_code = default_site,
-    #                            prodname = 'precip_flux_inst_scaled')
+                           prodname = 'precipitation'),
+    pchem = ms_read_portalsite(domain = default_domain,
+                               site_code = default_site,
+                               prodname = 'precip_chemistry'),
+    pflux = ms_read_portalsite(domain = default_domain,
+                               site_code = default_site,
+                               prodname = 'precip_flux_inst_scaled')
 )
 
 #date range for date selector

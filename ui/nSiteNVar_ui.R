@@ -244,13 +244,7 @@ nSiteNVar_tab <- tabPanel("Inspection",
                                       'up to 15 days for chemistry.'),
                         enc2native('\U2753')
                     )
-                ),
-                div('Precipitation Source',
-                    class = 'widget-title text-center'),
-                radioButtons('PRECIP_S3', label=NULL, selected='Domain Gauges',
-                             # choices=c('Instantaneous', 'Daily', 'Monthly', 'Yearly')),
-                             choices=c('Domain Gauges', 'PRISM')),
-
+                )
             )
         ),
 
