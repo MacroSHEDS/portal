@@ -32,7 +32,7 @@ summary_biplot_tab = tabPanel('Overview', value='biplot',
                      choices=c('Full record'='WHOLE2',
                                'Yearly'='YEARLY2'),
                              #  'Monthly'='MONTHLY2'),
-                     selected='YEARLY2'),
+                     selected='WHOLE2'),
         # br(),
 
         # div('Plot Options', class = 'widget-title text-center'),
