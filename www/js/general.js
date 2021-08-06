@@ -91,14 +91,14 @@ shinyjs.init = function() {
         });
     });
 
+    //adjust height on right-side content so that dropdown doesn't go off the page
     $(document).ready(function(){
         $('#ADD_SIZE2').click(function(){
-            console.log('testing');
             var current_height = $('.content').height();
             if($('#ADD_SIZE2').is(':checked')){
-                $('.content').height(current_height + 30);
+                $('.content').height(current_height + 150);
             } else {
-                $('.content').height(current_height - 30);
+                $('.content').height(current_height - 150);
             };
         });
     });
@@ -699,20 +699,7 @@ shinyjs.init = function() {
             }, 500);
         };
     });
-
-    $(document).ready(function(){
-    $('#ADD_SIZE2').click(function(){
-        var current_height = $('.content').height();
-        console.log('testing');
-        if($('#ADD_SIZE2').is(':checked')){
-            $('.content').height(current_height + 150);
-        } else {
-            $('.content').height(current_height - 150);
-        };
-    });
-    });
-
-}
+};
 
 //shinyjs.calcHeight = function(propHeight) {
 //  var h = $(window).height() * propHeight;

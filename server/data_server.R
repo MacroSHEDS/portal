@@ -368,7 +368,7 @@ output$DL_SUBMIT_SITE <- downloadHandler(
                         network, pretty_network, domain, pretty_domain, site_code,
                         epsg_code = CRS,
                         timezone_olson = local_time_zone) %>%
-            right_join(read_csv('../portal/data/general/catalog_files/all_sites.csv',
+            right_join(read_csv('data/general/catalog_files/all_sites.csv',
                        col_types = cols()),
                       by = c(pretty_network = 'Network',
                              pretty_domain = 'Domain',

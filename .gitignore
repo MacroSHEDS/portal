@@ -1,5 +1,4 @@
-data/*
-data/general/catalog_files
+data/
 config.txt
 .Rhistory
 rsconnect
@@ -18,5 +17,3 @@ config.json
 googlesheet_service_accnt.json
 data.bak
 js/
-data/general/spatial_downloadables/watershed_raw_spatial_timeseries.csv
-data/general/spatial_downloadables/watershed_raw_spatial_timeseries.fst
