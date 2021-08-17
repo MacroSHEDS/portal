@@ -251,6 +251,13 @@ output$DL_SUBMIT_TS <- downloadHandler(
         datasets <- isolate(input$DL_SETS_TS)
         file_format <- isolate(input$DL_FORMAT_TS)
         selected_domains <- input$DL_TS_SELECTIONS
+        # datasets <<- isolate(input$DL_SETS_TS)
+        # file_format <<- isolate(input$DL_FORMAT_TS)
+        # selected_domains <<- input$DL_TS_SELECTIONS
+        message('datasets:')
+        message(paste(datasets, collapse = ', '))
+        message('domains:')
+        message(paste(selected_domains, collapse = ', '))
 
         if(is.null(datasets)){
             showNotification('No datasets selected',
@@ -269,6 +276,15 @@ output$DL_SUBMIT_TS <- downloadHandler(
         if(length(selected_domains) == 1 && is.numeric(selected_domains)){
             showNotification('No domains selected',
                              duration = 0.75,
+                             closeButton = FALSE,
+                             type = 'warning')
+
+            return()
+        }
+
+        if(length(selected_domains) > 4){
+            showNotification('Please select no more than 4 domains at a time',
+                             duration = 1,
                              closeButton = FALSE,
                              type = 'warning')
 
@@ -296,18 +312,21 @@ output$DL_SUBMIT_TS <- downloadHandler(
                                   include.dirs = FALSE,
                                   pattern = '(?:\\.feather$|documentation_)')
 
+            #grab some documentation files whose names might differ
             if(any(c('precipitation', 'precip_chemistry',
                      'precip_flux_inst_scaled') %in% datasets)){
-
-                #grab some documentation files whose names might differ
-                datasets <- c(datasets, 'documentation_precip_pchem_pflux',
-                              'documentation_stream_flux_inst')
+                datasets <- c(datasets, 'documentation_precip_pchem_pflux')
+            }
+            if('stream_flux_inst_scaled' %in% datasets){
+                datasets <- c(datasets, 'documentation_stream_flux_inst')
             }
 
             dmndata <- grep(pattern = paste(datasets,
                                             collapse = '|'),
                             x = dmndata,
                             value = TRUE)
+
+            if(all(grepl('documentation', dmndata))) next #
 
             dmndata_newpaths <- sub(pattern = '^data/',
                                     replacement = 'macrosheds_timeseries/',
@@ -325,6 +344,17 @@ output$DL_SUBMIT_TS <- downloadHandler(
             }
 
             newpaths[[i]] <- dmndata_newpaths
+        }
+
+        if(! length(list.files('macrosheds_timeseries'))){
+
+            removeNotification('TS_LOADING_POPUP')
+            showNotification('No data available for selected datasets/domains',
+                             duration = 1,
+                             closeButton = FALSE,
+                             type = 'warning')
+
+            return()
         }
 
         newpaths <- unlist(newpaths)
@@ -435,17 +465,50 @@ output$DL_SUBMIT_SPATIALSUMM <- downloadHandler(
     },
     contentType = 'application/zip')
 
-output$DL_SUBMIT_SPATIALTS <- downloadHandler(
-    filename = 'macrosheds_watershed_summary_timeseries.zip',
+output$DL_SPATIALTS_METADATA <- downloadHandler(
+    filename = 'macrosheds_spatial_timeseries_metadata.zip',
     content = function(file){
 
-        require(fst)
+        unlink('macrosheds_spatial_ts_meta')
+        dir.create('macrosheds_spatial_ts_meta')
 
-        selected_components <- input$DL_SPATIALTS_SELECTIONS
+        zip(zipfile = file,
+            flags = '-r9Xqj',
+            files = c('static/documentation/variable_category_codes.csv',
+                      'static/documentation/data_source_codes.csv',
+                      'static/documentation/watershed_trait_timeseries/README.txt',
+                      'static/documentation/watershed_trait_timeseries/columns.txt'))
+
+        unlink('macrosheds_spatial_ts_meta',
+               recursive = TRUE)
+    },
+    contentType = 'application/zip')
+
+output$DL_SUBMIT_SPATIALTS <- downloadHandler(
+    # filename = 'macrosheds_watershed_summary_timeseries.zip',
+    filename = function(){
+
+        selected_component <- input$DL_SPATIALTS_SELECTIONS
+
+        selection_map <- list(c = 'climate',
+                              h = 'hydrology',
+                              p = 'parentmaterial',
+                              t = 'terrain',
+                              l = 'landcover',
+                              v = 'vegetation')
+
+            glue('macrosheds_spatial_timeseries_{d}.csv.zip',
+                 d = selection_map[[selected_component]])
+        },
+    content = function(file){
+
+        # require(fst)
+
+        selected_component <- input$DL_SPATIALTS_SELECTIONS
 
         unlink('macrosheds_spatial_ts')
 
-        if(is.null(selected_components)){
+        if(is.null(selected_component)){
             showNotification('No components selected',
                              duration = 0.75,
                              closeButton = FALSE,
@@ -463,23 +526,35 @@ output$DL_SUBMIT_SPATIALTS <- downloadHandler(
                          closeButton = FALSE,
                          type = 'message')
 
-        dir.create('macrosheds_spatial_ts')
+        # dir.create('macrosheds_spatial_ts')
 
-        fst::read_fst(paste0('data/general/spatial_downloadables/',
-                                  'watershed_raw_spatial_timeseries.fst')) %>%
-            filter(substr(var, 1, 1) %in% selected_components) %>%
-            write_csv('macrosheds_spatial_ts/macrosheds_watershed_summary_timeseries.csv')
+        # fst::read_fst(paste0('data/general/spatial_downloadables/',
+        #                           'watershed_raw_spatial_timeseries.fst')) %>%
+        #     filter(substr(var, 1, 1) %in% selected_component) %>%
+        #     write_csv('macrosheds_spatial_ts/macrosheds_watershed_summary_timeseries.csv')
 
-        zip(zipfile = file,
-            flags = '-r9Xqj',
-            files = c('static/documentation/variable_category_codes.csv',
-                      'static/documentation/data_source_codes.csv',
-                      'static/documentation/watershed_trait_timeseries/README.txt',
-                      'static/documentation/watershed_trait_timeseries/columns.csv',
-                      'macrosheds_spatial_ts/macrosheds_watershed_summary_timeseries.csv'))
+        selection_map <- list(c = 'climate',
+                              h = 'hydrology',
+                              p = 'parentmaterial',
+                              t = 'terrain',
+                              l = 'landcover',
+                              v = 'vegetation')
 
-        unlink('macrosheds_spatial_ts',
-               recursive = TRUE)
+        # zip(zipfile = file,
+        #     flags = '-r9Xqj',
+        #     files = c('static/documentation/variable_category_codes.csv',
+        #               'static/documentation/data_source_codes.csv',
+        #               'static/documentation/watershed_trait_timeseries/README.txt',
+        #               'static/documentation/watershed_trait_timeseries/columns.txt',
+        #               'macrosheds_spatial_ts/macrosheds_watershed_summary_timeseries.csv'))
+
+        file.copy(from = glue('data/general/spatial_downloadables/spatial_timeseries_{d}.csv.zip',
+                              d = selection_map[[selected_component]]),
+                  to = file,
+                  copy.mode = FALSE)
+
+        # unlink('macrosheds_spatial_ts',
+        #        recursive = TRUE)
         removeNotification('SPATIALTS_LOADING_POPUP')
     },
     contentType = 'application/zip')

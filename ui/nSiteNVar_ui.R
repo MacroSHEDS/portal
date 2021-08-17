@@ -200,7 +200,7 @@ nSiteNVar_tab <- tabPanel("Inspection",
 
                 div('Uncertainty',
                     class = 'widget-title text-center'),
-                div('(propagated detection limit as absolute error; not shown for Q or P)',
+                div('(See Notes/Caveats tab for details; not shown for Q or P.)',
                     class = 'widget-caption text-center'),
 
                 div(class = 'text-center',
@@ -433,7 +433,13 @@ nSiteNVar_tab <- tabPanel("Inspection",
                     #discharge plot
                     div(id='Q3'),
                     dygraphOutput("GRAPH_Q3", height='75px'),
-                    br()
+                    br(),
+                    HTML(paste0('<p style="color: blue; font-size: 0.75em">',
+                                'Click and drag to zoom. Double-click to reset view. ',
+                                'You may have to double-click after changing ',
+                                '<strong><span style="color: var(--darkblue)">Sites</span></strong> ',
+                                'selection.</p>'))
+                      # style = 'color: blue; font-size: 0.75em')
                 )
             )
         )

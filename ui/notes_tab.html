@@ -30,6 +30,16 @@
     </li>
 </ul>
 
+<h4>Uncertainty</h4>
+<ul>
+    <li>
+        Every time-series data point retrieved from a data provider by MacroSheds is assigned an uncertainty value equal to the detection limit of the device/process that measured it. For example, a nitrate value may be recorded as 0.24 mg/L using a process accurate to 0.01 mg/L. The true value in this case could be anywhere from 0.2350000... to 0.2449999... mg/L. Therefore the detection limit and the uncertainty associated with the measured value are both 0.01 mg/L. Through all the operations MacroSheds performs (unit conversion, temporal aggregation, spatial/temporal interpolation, flux calculation, etc.), we propagate this uncertainty using the <a href="https://cran.r-project.org/web/packages/errors/index.html" target="_blank" rel="noopener"><u>errors package for R</u></a>. Wherever we leverage the data.table package, which is not compatible with the errors package, we implement uncertainty propagation according to <a href="https://journal.r-project.org/archive/2018/RJ-2018-075/RJ-2018-075.pdf" target="_blank" rel="noopener"><u>Ucar et al.</u></a>
+    </li>
+    <li>
+        We <strong>do not</strong> incporporate measurement uncertainty as reported by data providers. MacroSheds data are retrieved from many providers, only some of which report measurement uncertainty at all. By propagating uncertainty from detection limits, which can be inferred from all data values, we do not risk inflating the apparent uncertainty of data from those domains who happen to report measurement uncertainty vs. those who do not.
+    </li>
+</ul>
+
 <h4>Volume-Weighted Concentration</h4>
 <ul>
     <li>

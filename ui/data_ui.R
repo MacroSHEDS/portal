@@ -213,6 +213,8 @@ timeseries_dl <- quote({
                             enc2native('\U2753')
                         )
                     ),
+                    p("(No more than 4 domains at a time, please. If download immediately fails, try again.\nIf it contains files that won't open, please contact us. Note that precip datasets are not available for all domains.)",
+                      style = 'color: blue; font-size: 0.75em'),
 
                     div(style = 'position: relative; height: 3em',
                         h4('Network', style = 'position: absolute; font-color: gray; bottom: 0; margin-top: 0'),
@@ -261,15 +263,21 @@ spatial_dl <- quote({
                     h3('Watershed attribute data, complete',
                        style = 'margin-bottom: 0px'),
                     div('Spatial summaries of gridded data in long (indexed) format, as time series where applicable.',
-                        class = 'widget-caption text-left'),
-                        # style = 'margin-bottom: 6px'),
-                    div('NOTICE: this may take several minutes. Please wait.',
                         class = 'widget-caption text-left',
-                        style = 'margin-bottom: 6px; color: red'),
-                    div('Choose categories:',
+                        style = "padding-bottom: 6px"),
+                        # style = 'margin-bottom: 6px'),
+                    # div('NOTICE: each may take several minutes. Please wait.',
+                    #     class = 'widget-caption text-left',
+                    #     style = 'margin-bottom: 6px; color: red'),
+                    HTML('<p><span>First, </span><span>'),
+                    downloadButton('DL_SPATIALTS_METADATA'),
+                    HTML(paste('</span><span> related metadata. Then, download data one category',
+                               'at a time (to take it easy on our server).</span></p>')),
+                    div('Choose category:',
                         style = "padding-bottom: 6px; padding-top: 6px",
                         class = 'widget-title text-left'),
-                    checkboxGroupInput(
+                    # checkboxGroupInput(
+                    radioButtons(
                         inputId = 'DL_SPATIALTS_SELECTIONS',
                         label = NULL,
                         choiceNames = c('Climate (precip, temp, deposition, ET ref)',
@@ -279,6 +287,7 @@ spatial_dl <- quote({
                                         'Landcover (NLCD classes)',
                                         'Vegetation (phenology, metabolism, cover, etc.)'),
                         choiceValues = c('c', 'h', 'p', 't', 'l', 'v'),
+                        selected = character(0),
                         width = '100%'
                     ),
                     downloadButton('DL_SUBMIT_SPATIALTS'),
