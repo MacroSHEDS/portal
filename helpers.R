@@ -1155,6 +1155,10 @@ get_default_site <- function(domain){
         filter(domain == !!domain) %>%
                # network == !!network) %>% #TODO: observe network level in portal
         pull(default_site)
+    
+    if(domain == 'hbef'){
+        site <- 'w6'
+    }
 
     return(site)
 }

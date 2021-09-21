@@ -197,11 +197,15 @@ shinyjs.init = function() {
 
     //only show QC plots when their box is checked
     function govern_qc3(){
-        if( $('#SHOW_QC3').is(':checked') ){
+        if( $('#SHOW_QC3').is(':checked')){
             //$('#inlineQC3a').css('display', 'inline-block');
 
             //$('[id^="inlineQC3"').attr('style', 'width: 25% !important; display: inline-block; vertical-align: top');
             //$('[id^="inlineMAIN3"').attr('style', 'width: 75% !important; display: inline-block; vertical-align: top');
+            //if($('output[name=SHOW_QCa3][value=true]')){
+            //              $('[id="inlineQC3a"').css('width', '25%');
+            //              $('[id="inlineMAIN3a"').css('width', '75%');
+            //}
             $('[id^="inlineQC3"').css('width', '25%');
             $('[id^="inlineMAIN3"').css('width', '75%');
             //$("inlineQC3a").css('width', '25%');
@@ -219,6 +223,7 @@ shinyjs.init = function() {
             //$('#inlineMAIN3a').css('width', 'auto');
         }
 
+        //$('#GEN_PLOTS3').trigger('click');
         $('#REFRESH').trigger('click');
         //$('#inlineQC3a').offsetHeight
         //$('#inlineMAIN3a').offsetHeight
@@ -228,9 +233,9 @@ shinyjs.init = function() {
     };
 
     $('body').ready(function(){
-        $('#SHOW_QC3').click(govern_qc3);
+        $('#GEN_PLOTS3').click(govern_qc3);
     });
-
+  
     //BIPLOT: disable X-axis selection when aggregation == 'Yearly'
     function govern_xvar_section(){
         if( ['MONTHLY2', 'YEARLY2'].includes($('input[name=AGG2]:checked').val()) ){

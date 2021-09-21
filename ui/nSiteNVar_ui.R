@@ -1,4 +1,4 @@
-nSiteNVar_tab <- tabPanel("Inspection",
+nSiteNVar_tab <- tabPanel("Time Series",
                           value = 'multisite_exploration',
 
     sidebarLayout(
@@ -41,7 +41,7 @@ nSiteNVar_tab <- tabPanel("Inspection",
 
             selectizeInput('VARS3',
                            label = NULL,
-                           selected = chemvars_display_subset[[1]][[1]],
+                           selected = 'SO4_S',
                            multiple = TRUE,
                            choices = chemvars_display_subset,
                            options = list(maxItems = 3)),
@@ -143,6 +143,13 @@ nSiteNVar_tab <- tabPanel("Inspection",
                 # choices=c('Instantaneous', 'Daily', 'Monthly', 'Yearly')),
                 choices=c('Daily', 'Monthly', 'Yearly')),
             hr(),
+
+            div(class = 'text-center',
+                actionButton('GEN_PLOTS3',
+                             label = 'Update Plots',
+                             class = 'text-center')
+            ),
+            br(),
 
             div(class = 'text-center',
                 actionButton('ADDTL_OPTIONS',
@@ -252,7 +259,7 @@ nSiteNVar_tab <- tabPanel("Inspection",
             fluidRow(class='text-center',
                 wellPanel(
                     sliderInput("DATES3", label=NULL, min=dtrng[1], max=dtrng[2],
-                        value=most_recent_year(dtrng),
+                        value=dtrng,
                         width='100%', timeFormat='%b %Y', step=30,
                         dragRange=TRUE),
                     # fluidRow(class='text-right',
@@ -309,8 +316,9 @@ nSiteNVar_tab <- tabPanel("Inspection",
                             div(id = 'inlineQC3a',
                                 style = 'width: 0%; display: inline-block; vertical-align: top',
                                 # conditionalPanel('input.SHOW_QC3 == true',
+                                conditionalPanel('output.SHOW_QC_GEN3 == true',
                                     plotOutput('GRAPH_QC3a', height='125px')
-                                # )
+                                 )
                             )
                         ),
 
@@ -395,7 +403,8 @@ nSiteNVar_tab <- tabPanel("Inspection",
                      #),
 
                     #facet B
-                    conditionalPanel('input.VARS3.length > 1',
+                    # conditionalPanel('input.VARS3.length > 1',
+                    conditionalPanel('output.n_plots3 > 1',
                         div(id='main3b'),
                         div(id = 'inlineContainerB',
                             style = 'font-size: 0px',
@@ -405,7 +414,8 @@ nSiteNVar_tab <- tabPanel("Inspection",
                             ),
                             div(id = 'inlineQC3b',
                                 style = 'width: 0%; display: inline-block; vertical-align: top',
-                                conditionalPanel('input.SHOW_QC3 == true',
+                                # conditionalPanel('input.SHOW_QC3 == true',
+                                conditionalPanel('output.SHOW_QC_GEN3 == true',
                                     plotOutput('GRAPH_QC3b', height='125px')
                                 )
                             )
@@ -413,7 +423,8 @@ nSiteNVar_tab <- tabPanel("Inspection",
                     ),
 
                     #facet C
-                    conditionalPanel('input.VARS3.length > 2',
+                    # conditionalPanel('input.VARS3.length > 2',
+                    conditionalPanel('output.n_plots3 > 2',
                         div(id='main3c'),
                         div(id = 'inlineContainerC',
                             style = 'font-size: 0px',
@@ -423,7 +434,8 @@ nSiteNVar_tab <- tabPanel("Inspection",
                             ),
                             div(id = 'inlineQC3c',
                                 style = 'width: 0%; display: inline-block; vertical-align: top',
-                                conditionalPanel('input.SHOW_QC3 == true',
+                                #conditionalPanel('input.SHOW_QC3 == true',
+                                conditionalPanel('output.SHOW_QC_GEN3 == true',
                                     plotOutput('GRAPH_QC3c', height='125px')
                                 )
                             )
@@ -433,7 +445,9 @@ nSiteNVar_tab <- tabPanel("Inspection",
                     #discharge plot
                     div(id='Q3'),
                     dygraphOutput("GRAPH_Q3", height='75px'),
-                    br()
+                    br(),
+                    conditionalPanel('length(output.PLOT_CAPTION3) > 1',
+                                     textOutput('PLOT_CAPTION3')),
                 )
             )
         )
