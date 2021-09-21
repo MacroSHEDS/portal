@@ -6,5 +6,10 @@ map_tab = tabPanel('Map',
 
     #this button opens the site exploration tab. the button is hidden and unclickable.
     #it's triggered by links in the popups on the map tab.
-    actionButton('SITE_EXPLORE', '', style='display: none')
+    actionButton('SITE_EXPLORE', '', style='display: none'),
+    br(),
+    # DT::dataTableOutput('MAP_SITE_INFO')
+    textOutput('MAP_SITE_INFO_TITLE'),
+    # div('Site Information', class = 'widget-title text-center'),
+    tableOutput('MAP_SITE_INFO')
 )
