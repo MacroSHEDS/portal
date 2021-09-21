@@ -19,6 +19,8 @@
 
 sum <- read_feather('data/general/biplot/year.feather')
 
+reactive_vals <- reactiveValues()
+
 #filter for sites and years. This file is used to update options for axis
 #in if only a few domains are selected and not all variables are available
 #at that site
@@ -295,22 +297,38 @@ filtered_bi <- reactive({
 
 # Update axis options ####
 #remove year as an axis option when aggregation the whole records
+
+observeEvent(input$AGG2, {
+
+    if(length(reactive_vals$facet) == 0) {
+        reactive_vals$facet <- 0
+    } else{
+        reactive_vals$facet <- reactive_vals$facet + 1
+    }
+    print(reactive_vals$facet)
+})
+
 observe({
     agg <- input$AGG2
     yearly <- 'Year'
     data <- isolate(pre_filtered_bi())
 
-    if(agg == 'YEARLY2'){
-        updateSelectInput(session, 'X_TYPE2', choices = yearly)
 
-        biplot_data_types_size <- append(biplot_data_types, 'Proportion of Record Missing', after = 0)
-        updateSelectInput(session, 'SIZE_TYPE2', choices = biplot_data_types_size)
-        updateRadioButtons(session, inputId = 'LOG_X2', selected = 'XAXIS_sta2')
-    } else{
-        updateSelectInput(session, 'X_TYPE2', choices = biplot_data_types, selected = 'Discharge')
-        updateSelectInput(session, 'X_VAR2', choices = 'Q', selected = 'Q')
-        updateSelectInput(session, 'SIZE_TYPE2', choices = biplot_data_types_size)
+    if(reactive_vals$facet == 0) {
+        return()
     }
+        if(agg == 'YEARLY2'){
+            updateSelectInput(session, 'X_TYPE2', choices = yearly)
+            
+            biplot_data_types_size <- append(biplot_data_types, 'Proportion of Record Missing', after = 0)
+            updateSelectInput(session, 'SIZE_TYPE2', choices = biplot_data_types_size)
+            updateRadioButtons(session, inputId = 'LOG_X2', selected = 'XAXIS_sta2')
+        } else{
+            updateSelectInput(session, 'X_TYPE2', choices = biplot_data_types, selected = 'Discharge')
+            updateSelectInput(session, 'X_VAR2', choices = 'Q', selected = 'Q')
+            updateSelectInput(session, 'SIZE_TYPE2', choices = biplot_data_types_size)
+        }
+    # }
 })
 
 # reactivre value saves varibles so when conc is changed to flux, it will not change the
@@ -321,15 +339,16 @@ current_selection <- reactiveValues(old_x = 'old',
 observeEvent(input$X_VAR2,{
     current_selection$old_x <- input$X_VAR2})
 
+
 #update individual options for variables based on variable type
 observe({
     data <- isolate(pre_filtered_bi())
-    data_type <- input$X_TYPE2
-    doms <- input$DOMAINS2_S
+    data_type <<- input$X_TYPE2
+    doms <<- input$DOMAINS2_S
     input$DOMAINS2
-    sites <- input$SITES2
-    site_select <- input$SITE_SELECTION2
-    old_selection <- isolate(current_selection$old_x)
+    sites <<- input$SITES2
+    site_select <<- input$SITE_SELECTION2
+    old_selection <<- isolate(current_selection$old_x)
 
     # data <- isolate(pre_filtered_bi())
     # data_type <<- input$X_TYPE2

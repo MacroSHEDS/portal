@@ -1,9 +1,27 @@
 
+
 sheds <- sf::st_read('data/general/shed_boundary') %>%
     sf::st_transform(4326)
 
 sg <- filter(site_data,
              site_type == 'stream_gauge')
+
+watershed_summaries <- sm(read_csv('data/general/spatial_downloadables/watershed_summaries.csv'))
+
+watershed_quar <- watershed_summaries %>%
+    summarise('Annual Precip (mm)_bb' = quantile(cc_mean_annual_precip, .25, na.rm = T),
+              'Annual Precip (mm)_tt' = quantile(cc_mean_annual_precip, .75, na.rm = T),
+              'Annual Temp (C)_bb' = quantile(cc_mean_annual_temp, .25, na.rm = T),
+              'Annual Temp (C)_tt' = quantile(cc_mean_annual_temp, .75, na.rm = T),
+              'Slope (%)_bb' = quantile(te_slope_mean, .25, na.rm = T),
+              'Slope (%)_tt' = quantile(te_slope_mean, .75, na.rm = T),
+              'Area (ha)_bb' = quantile(ws_area_ha, .25, na.rm = T),
+              'Area (ha)_tt' = quantile(ws_area_ha, .75, na.rm = T)) %>%
+    pivot_longer(cols = everything()) %>%
+    mutate(var = str_split_fixed(name, '_', n = Inf)[,1],
+           quan = str_split_fixed(name, '_', n = Inf)[,2]) %>%
+    select(-name) %>%
+    pivot_wider(names_from = quan, values_from = value)
 
 sheds <- sheds %>%
     filter(site_code %in% sg$site_code)
@@ -35,6 +53,7 @@ output$MAP <- renderLeaflet({
                          lat = rg$latitude,
                          color = '#0000FF',
                          fillColor = '#0000FF',
+                         layerId = paste0(rg$site_code, '___rain'),
                          stroke = TRUE,
                          opacity = 0.5,
                          radius = 4,
@@ -42,12 +61,13 @@ output$MAP <- renderLeaflet({
                          fillOpacity = 1,
                          popup = glue(rain_gauge_buttons,
                                       domain = rg$domain,
-                                      pretty_domain = rg$pretty_domain,
-                                      site_type = rg$site_type,
+                                      # pretty_domain = rg$pretty_domain,
+                                      # site_type = rg$site_type,
                                       site_code = rg$site_code,
-                                      full_name = rg$full_name,
-                                      latitude = rg$latitude,
-                                      longitude = rg$longitude),
+                                      # full_name = rg$full_name,
+                                      # latitude = rg$latitude,
+                                      # longitude = rg$longitude
+                                      ),
                          popupOptions = c(className = paste0(rg$domain,
                                                              '__',
                                                              rg$site_code,
@@ -67,13 +87,13 @@ output$MAP <- renderLeaflet({
                          fillColor = '#228B22',
                     popup = glue(stream_gauge_buttons,
                                  domain = sg$domain,
-                                 pretty_domain = sg$pretty_domain,
-                                 stream = sg$stream,
+                                 # pretty_domain = sg$pretty_domain,
+                                 # stream = sg$stream,
                                  site_code = sg$site_code,
-                                 full_name = sg$full_name,
-                                 site_type = sg$site_type,
-                                 latitude = sg$latitude,
-                                 longitude = sg$longitude,
+                                 # full_name = sg$full_name,
+                                 # site_type = sg$site_type,
+                                 # latitude = sg$latitude,
+                                 # longitude = sg$longitude,
                                  attribution = paste0(sg$domain,
                                                       '__',
                                                       sg$site_code)),
@@ -172,6 +192,86 @@ observeEvent({
     }
 })
 
+site_info_tib <- reactive({
+        site_id <- input$MAP_marker_click$id
+        
+        code <- str_split_fixed(site_id, '-', n=Inf)[1]
+        
+        if(is.na(code)){
+            return()
+        }
+        
+        rain <- str_split_fixed(code, '___', n = Inf)[2]
+        
+        if(rain == 'rain' & !is.na(rain)) {
+            
+            site_code <- str_split_fixed(code, '___', n = Inf)[1]
+            
+            shed <- site_data %>%
+                filter(site_code == !!site_code)
+            
+            fin_tib <- tibble(var = c('Site Code', 'Full Name', 'Domain', 'Site Type'),
+                              val = c(site_code, shed$full_name, shed$pretty_domain, shed$site_type)) 
+        } else {
+            
+            
+            shed <- site_data %>%
+                filter(site_code == !!code)
+            
+            shed_summary <- watershed_summaries %>%
+                filter(site_code == !!code)
+            
+            dom_cover <- shed_summary %>%
+                select(starts_with('lg')) %>%
+                pivot_longer(cols = starts_with('lg')) %>%
+                filter(value == max(value))
+            
+            if(nrow(dom_cover) == 0){
+                dom_cover <- NA
+            } else {
+                dom_cover <- substr(dom_cover$name, 1, 3)
+            }
+            
+            fin_tib <- tibble(var = c('Site Code', 'Full Name', 'Domain', 'Site Type', 'Stream',
+                                      'Area (ha)', 'Slope (%)', 'Annual Precip (mm)', 'Annual Temp (C)',
+                                      'Dominant  Land Cover'),
+                              val = c(code, shed$full_name, shed$pretty_domain, shed$site_type,
+                                      shed$stream, round(shed$ws_area_ha, 1), round(shed_summary$te_slope_mean, 1),
+                                      round(shed_summary$cc_mean_annual_precip, 1),
+                                      round(shed_summary$cc_mean_annual_temp, 1), dom_cover)) %>%
+                left_join(watershed_quar) %>%
+                mutate(qua = ifelse(as.numeric(val) < bb, 'Bottom 25%', NA),
+                       qua = ifelse(as.numeric(val) >= tt, 'Top 25%', qua)) %>%
+                select(-bb, -tt)
+            
+        }
+        
+        fin_tib[is.na(fin_tib)] <- ''
+        
+        return(fin_tib)
+    })
+output$MAP_SITE_INFO <- renderTable(colnames = FALSE,
+                                   # bordered = TRUE,
+                                    {
+    expr = {
+        tib <- site_info_tib()
+        
+        return(tib)
+
+    }
+    
+})
+
+output$MAP_SITE_INFO_TITLE <- renderText({
+    site_tib <- site_info_tib()
+    if(nrow(site_tib) == 0 || is.null(site_tib) ) {
+        return(' ')
+    } else {
+        return('Site Information')
+    }
+    
+    
+})
 
 ## Add site as a class
 # htmlwidgets::onRender("
