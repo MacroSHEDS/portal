@@ -463,14 +463,17 @@ shinyjs.init = function() {
                 window.setTimeout(function(){
                     $('.loading-container').hide();
                     $('#landing #DISMISS_MODAL').show();
+                    $('#landing #TAKE_TOUR').show();
                 }, 1000);
                 window.setTimeout(function(){
                     $('.loading-container').hide();
                     $('#landing #DISMISS_MODAL').show();
+                    $('#landing #TAKE_TOUR').show();
                 }, 3000);
                 window.setTimeout(function(){
                     $('.loading-container').hide();
                     $('#landing #DISMISS_MODAL').show();
+                    $('#landing #TAKE_TOUR').show();
                 }, 8000);
 
                 return;
@@ -553,6 +556,13 @@ shinyjs.init = function() {
 
         }, 400);
     }, 1000));
+
+    //conduct tour
+    $('body').on('click', '#TAKE_TOUR', function(i, v){
+
+        $('#DISMISS_MODAL').trigger('click');
+
+    });
 
     //all this crap (and associated CSS) is necessary just to make "macrosheds.org"
     //appear (and STAY appeared) in the bottom of each dygraph as an annotation

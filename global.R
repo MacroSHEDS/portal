@@ -24,6 +24,7 @@ suppressPackageStartupMessages({
     library(googlesheets4)
     library(DT)
     library(errors)
+    library(cicerone)
     # library(rhandsontable)
     # library(shiny.router)
 })
@@ -235,3 +236,14 @@ ws_traits <- generate_dropdown_varlist_ws(variables)
 
 ws_traits_names <- unlist(ws_traits)
 
+## 5. "Take a tour" guide setup ####
+
+guide <- Cicerone$
+    new()$
+    step(
+        el = 'a[data-value="multisite_exploration"]',
+        is_id = FALSE,
+        title = NULL,
+        description = 'Explore '
+    )#$
+    # step()

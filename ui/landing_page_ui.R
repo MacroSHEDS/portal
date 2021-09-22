@@ -40,8 +40,7 @@ landing_page = quote({
                                  "(dataset modified 8/17/21), so all major components are in place, but there might still be some feature",
                                  "bugs or data errors. Please <a href='mailto: mail@macrosheds.org'><u>let us know",
                                  "</u></a> if you find any!"))),
-                    # p(paste("We've hit the size limit for our hosting service, so two domains (Niwot Ridge and McMurdo) are not available for download or site inspection. You can still see summary data for these domains on the Overview tab, and we'll be getting a dedicated server soon.")),
-                    p(paste("Note: downloads are finicky at the moment. This will be resolved when we start serving files from a dedicated server. Until then, you might just have to retry your downloads if they fail. Don't trust 'No data available for selected datasets/domains' until you see it on two consecutive clicks.")),
+                    # p(paste("We've hit the size limit for our hosting service, so two domains (Niwot Ridge and McMurdo) are not available for download or site inspection. You can still see summary data for these domains on the Site Comparison tab, and we'll be getting a dedicated server soon.")),
                     p(paste("Our documentation in a future release will include the date and time at which we retrieved each dataset",
                             "that comprises MacroSheds. For this release, every dataset was retrieved from its web source between",
                             "2021-07-01 and 2021-07-26."))
@@ -64,9 +63,20 @@ landing_page = quote({
                             div(class = 'loading-letter', 'N'),
                             div(class = 'loading-letter', 'G')
                         ),
-                    ),
-                    #p(id='landing_loading', 'Loading...'),
-                    actionButton('DISMISS_MODAL', label='Continue', style='display: none')
+                    )
+                ),
+                column(6,
+                       class = 'text-right',
+                    actionButton('DISMISS_MODAL',
+                                 label = 'Continue',
+                                 style = 'display: none')
+                ),
+                column(6,
+                       class = 'text-left',
+                    actionButton('TAKE_TOUR',
+                                 label = 'Take a tour',
+                                 class = 'btn btn-info',
+                                 style = 'display: none')
                 )
             )
         )

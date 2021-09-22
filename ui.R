@@ -12,7 +12,8 @@ source('ui/data_tab_ui.R')
 source('ui/notes_ui.R')
 
 
-ui = fluidPage(
+ui <- fluidPage(
+    use_cicerone(),
     tags$head(includeHTML(("ui/google_analytics.html"))),
 
     #screen shouldn't go gray when plots are updating.
