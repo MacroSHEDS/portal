@@ -238,12 +238,67 @@ ws_traits_names <- unlist(ws_traits)
 
 ## 5. "Take a tour" guide setup ####
 
-guide <- Cicerone$
-    new()$
+guide1 <- Cicerone$
+    new(
+        id = 'cicerone1',
+        keyboard_control = FALSE,
+        done_btn_text = 'Next',
+        # next_btn_text = paste0('Next (', enc2native('\U2192'), ')'),
+        # prev_btn_text = paste0('Previous (', enc2native('\U2190'), ')'),
+        # close_btn_text = paste0('Close (Esc)'),
+        # done_btn_text = paste0('Next (', enc2native('\U2192'), ')')
+    )$
     step(
         el = 'a[data-value="multisite_exploration"]',
         is_id = FALSE,
-        title = NULL,
-        description = 'Explore '
-    )#$
-    # step()
+        title = 'Examine',
+        description = 'time-series of discharge, precipitation, chemistry, and flux.'
+    )$
+    step(
+        el = 'domains_div',
+        title = 'Domains',
+        description = 'are organizations that manage watershed sites.'
+    )$
+    step(
+        el = 'sites_div',
+        title = 'Sites',
+        description = 'include stream gauges and their associated watersheds. Choose up to 3 here.'
+    )$
+    step(
+        el = 'cf_div',
+        title = "We're interested in chemistry",
+        description = paste("of precipitation and streams. It can be represented",
+                            "as concentration or flux. See how our flux is calculated",
+                            "on the Notes/Caveats page.")
+    )$
+    step(
+        class = 'cicerone1',
+        el = 'addtl_div',
+        title = 'You can filter',
+        description = 'by sampling regime and/or data quality here. You can also include uncertainty bounds.'
+    )
+
+guide2 <- Cicerone$
+    new(id = 'cicerone2',
+        keyboard_control = FALSE)$
+    step(
+        el = 'a[data-value="biplot"]',
+        is_id = FALSE,
+        title = 'On the Site Comparison tab',
+        description = 'you can compare chemistry, watershed attributes, and more across all sites.'
+    )$
+    step(
+        el = 'axes_div',
+        title = 'Set your variables',
+        description = 'for each axis.'
+    )$
+    step(
+        el = 'size_div',
+        title = 'Add a third dimension',
+        description = '(optionally).'
+    )$
+    step(
+        el = 'agg_div',
+        title = ' ',
+        description = 'Plot points (all-time summaries), or lines (yearly summaries)'
+    )

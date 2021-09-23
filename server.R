@@ -10,7 +10,8 @@ hyetograph_js <- readChar(con = hyetograph_file,
 
 server <- function(input, output, session){
 
-    guide$init()
+    guide1$init()
+    guide2$init()
 
     # #hacky way to specify div height by % with js
     # height50 = reactive({
@@ -132,7 +133,15 @@ server <- function(input, output, session){
      observeEvent(
          eventExpr = input$TAKE_TOUR,
          handlerExpr = {
-             guide$start()
+             guide1$start()
+         },
+         autoDestroy = FALSE,
+         ignoreInit = TRUE
+     )
+     observeEvent(
+         eventExpr = input$CONTINUE_TOUR,
+         handlerExpr = {
+             guide2$start()
          },
          autoDestroy = FALSE,
          ignoreInit = TRUE

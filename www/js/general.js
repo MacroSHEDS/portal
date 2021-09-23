@@ -559,9 +559,11 @@ shinyjs.init = function() {
 
     //conduct tour
     $('body').on('click', '#TAKE_TOUR', function(i, v){
-
         $('#DISMISS_MODAL').trigger('click');
-
+    });
+    $('body').on('click', '.cicerone1 .driver-next-btn', function(i, v){
+        $('a[data-value="biplot"]').trigger('click');
+        Shiny.setInputValue('CONTINUE_TOUR', ' ');
     });
 
     //all this crap (and associated CSS) is necessary just to make "macrosheds.org"
