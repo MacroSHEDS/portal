@@ -53,7 +53,7 @@ output$MAP <- renderLeaflet({
                          lat = rg$latitude,
                          color = '#0000FF',
                          fillColor = '#0000FF',
-                         layerId = paste0(rg$site_code, '___rain'),
+                         layerId = paste0(rg$site_code, '_*_rain'),
                          stroke = TRUE,
                          opacity = 0.5,
                          radius = 4,
@@ -130,7 +130,14 @@ observeEvent({
 
     if(is.null(prev_select()) && is.null(input$MAP_shape_click)) { } else {
 
-        code <- str_split_fixed(input$MAP_shape_click$id, '-', n = Inf)[1]
+        site_id <- input$MAP_shape_click$id
+        code_temp_check <- str_split_fixed(site_id, '-', n = Inf)[1,]
+        
+        if(code_temp_check[length(code_temp_check)] == 'temp'){
+            code <- substr(site_id, 1, nchar(site_id)-5)
+        } else{
+            code <- site_id
+        }
 
         sg <- filter(site_data, site_type == 'stream_gauge') %>%
             filter(site_code == code)
@@ -162,14 +169,22 @@ observeEvent({
 
 # Highlight watersheds when stream guages are clicked
 prev_select_m <- reactiveVal()
-observeEvent({
+observeEvent(ignoreNULL = FALSE,{
         input$MAP_marker_click
         input$MAP_click
     }, {
 
     if(is.null(prev_select_m()) && is.null(input$MAP_marker_click)) { } else {
 
-        code_ <- str_split_fixed(input$MAP_marker_click$id, '-', n=Inf)[1]
+        site_id <- input$MAP_marker_click$id
+        code_temp_check <- str_split_fixed(site_id, '-', n = Inf)[1,]
+        
+        if(code_temp_check[length(code_temp_check)] == 'temp'){
+            code_ <- substr(site_id, 1, nchar(site_id)-5)
+        } else{
+            code_ <- site_id
+        }
+        
         shed <- sheds %>%
             filter(site_code == code_)
 
@@ -182,41 +197,52 @@ observeEvent({
                             fillOpacity = 0.2, color = '#228B22',
                             layerId = paste0(shed$site_code, '-temp'), group = 'Catchments')
 
-        proxy %>%
-            addPolygons(data = shed, weight = 3, smooth = 0, stroke = T,
-                fillOpacity = 0.2, color = '#228B22',
-                layerId = paste0(shed$site_code, '-temp'), group = 'Catchments') %>%
-            removeShape(layerId = paste0(site_remove, '-temp'))
+
+                proxy %>%
+                    addPolygons(data = shed, weight = 3, smooth = 0, stroke = T,
+                                fillOpacity = 0.2, color = '#228B22',
+                                layerId = paste0(shed$site_code, '-temp'), group = 'Catchments') %>%
+                    removeShape(layerId = paste0(site_remove, '-temp'))
 
         prev_select_m(selected)
     }
 })
 
+# Display table below map when a gauge is clicked 
 site_info_tib <- reactive({
+
         site_id <- input$MAP_marker_click$id
         
-        code <- str_split_fixed(site_id, '-', n=Inf)[1]
-        
-        if(is.na(code)){
+        if(is.na(site_id) || is.null(site_id)){
             return()
         }
+
+        code_temp_check <- str_split_fixed(site_id, '-', n = Inf)[1,]
         
-        rain <- str_split_fixed(code, '___', n = Inf)[2]
+        if(code_temp_check[length(code_temp_check)] == 'temp'){
+            code <- substr(site_id, 1, nchar(site_id)-5)
+        } else{
+            code <- site_id
+        }
+        
+        rain <- str_split_fixed(code, '_[*]_', n = Inf)[2]
         
         if(rain == 'rain' & !is.na(rain)) {
             
-            site_code <- str_split_fixed(code, '___', n = Inf)[1]
+            site_code <- str_split_fixed(code, '_[*]_', n = Inf)[1]
             
             shed <- site_data %>%
-                filter(site_code == !!site_code)
+                filter(site_code == !!site_code) %>%
+                filter(site_type == 'rain_gauge')
             
             fin_tib <- tibble(var = c('Site Code', 'Full Name', 'Domain', 'Site Type'),
-                              val = c(site_code, shed$full_name, shed$pretty_domain, shed$site_type)) 
+                              val = c(site_code, shed$full_name, shed$pretty_domain, 'Rain Gauge')) 
         } else {
             
             
             shed <- site_data %>%
-                filter(site_code == !!code)
+                filter(site_code == !!code) %>%
+                filter(site_type == 'stream_gauge')
             
             shed_summary <- watershed_summaries %>%
                 filter(site_code == !!code)
@@ -232,17 +258,17 @@ site_info_tib <- reactive({
                 dom_cover <- substr(dom_cover$name, 1, 3)
             }
             
-            fin_tib <- tibble(var = c('Site Code', 'Full Name', 'Domain', 'Site Type', 'Stream',
-                                      'Area (ha)', 'Slope (%)', 'Annual Precip (mm)', 'Annual Temp (C)',
+            fin_tib <- sw(tibble(var = c('Site Code', 'Full Name', 'Domain', 'Site Type', 'Stream',
+                                      'Area (ha)', 'Mean Slope (%)', 'Annual Mean Precip (mm)', 'Annual Mean Temp (C)',
                                       'Dominant  Land Cover'),
-                              val = c(code, shed$full_name, shed$pretty_domain, shed$site_type,
+                              val = c(code, shed$full_name, shed$pretty_domain, 'Stream Gauge',
                                       shed$stream, round(shed$ws_area_ha, 1), round(shed_summary$te_slope_mean, 1),
                                       round(shed_summary$cc_mean_annual_precip, 1),
                                       round(shed_summary$cc_mean_annual_temp, 1), dom_cover)) %>%
-                left_join(watershed_quar) %>%
+                left_join(watershed_quar, by = 'var') %>%
                 mutate(qua = ifelse(as.numeric(val) < bb, 'Bottom 25%', NA),
                        qua = ifelse(as.numeric(val) >= tt, 'Top 25%', qua)) %>%
-                select(-bb, -tt)
+                select(-bb, -tt))
             
         }
         
@@ -250,6 +276,7 @@ site_info_tib <- reactive({
         
         return(fin_tib)
     })
+
 output$MAP_SITE_INFO <- renderTable(colnames = FALSE,
                                    # bordered = TRUE,
                                     {
