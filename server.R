@@ -12,6 +12,7 @@ server <- function(input, output, session){
 
     guide1$init()
     guide2$init()
+    guide3$init()
 
     # #hacky way to specify div height by % with js
     # height50 = reactive({
@@ -142,6 +143,14 @@ server <- function(input, output, session){
          eventExpr = input$CONTINUE_TOUR,
          handlerExpr = {
              guide2$start()
+         },
+         autoDestroy = FALSE,
+         ignoreInit = TRUE
+     )
+     observeEvent(
+         eventExpr = input$START_DATA_TOUR,
+         handlerExpr = {
+             guide3$start()
          },
          autoDestroy = FALSE,
          ignoreInit = TRUE

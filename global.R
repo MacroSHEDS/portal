@@ -236,7 +236,7 @@ ws_traits <- generate_dropdown_varlist_ws(variables)
 
 ws_traits_names <- unlist(ws_traits)
 
-## 5. "Take a tour" guide setup ####
+## 5. "Take a tour" and "Take a data tour" guide setup ####
 
 guide1 <- Cicerone$
     new(
@@ -301,4 +301,26 @@ guide2 <- Cicerone$
         el = 'agg_div',
         title = ' ',
         description = 'Plot points (all-time summaries), or lines (yearly summaries)'
+    )$
+    step(
+        el = 'a[data-value="Data"]',
+        is_id = FALSE,
+        title = 'Check out',
+        description = 'the data catalogues, and download data here.'
+    )$
+    step(
+        el = 'DATA_TOUR',
+        title = 'The tour continues!',
+        description = 'Click here to see some of the stories these data tell us.'
+    )
+
+guide3 <- Cicerone$
+    new(id = 'cicerone3',
+        keyboard_control = FALSE)$
+    step(
+        el = 'GRAPH_MAIN3a',
+        title = ' ',
+        description = paste("Streams at Hubbard Brook Experimental Forest have",
+                            "seen a multi-decade decline in stream sulfate due",
+                            "in part to reductions in acid rain")
     )

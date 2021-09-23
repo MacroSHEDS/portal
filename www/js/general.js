@@ -565,6 +565,10 @@ shinyjs.init = function() {
         $('a[data-value="biplot"]').trigger('click');
         Shiny.setInputValue('CONTINUE_TOUR', ' ');
     });
+    $('body').on('click', '#DATA_TOUR', function(i, v){
+        $('a[data-value="multisite_exploration"]').trigger('click');
+        Shiny.setInputValue('START_DATA_TOUR', ' ');
+    });
 
     //all this crap (and associated CSS) is necessary just to make "macrosheds.org"
     //appear (and STAY appeared) in the bottom of each dygraph as an annotation

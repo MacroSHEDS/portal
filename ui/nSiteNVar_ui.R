@@ -455,9 +455,9 @@ nSiteNVar_tab <- tabPanel("Time Series",
                     br(),
 
                     HTML(paste0('<p style="color: blue; font-size: 0.75em">',
-                                'Click and drag to zoom. Double-click to reset view.</p>')),
-                    conditionalPanel('length(output.PLOT_CAPTION3) > 1',
-                                     textOutput('PLOT_CAPTION3'))
+                                'Click and drag to zoom. Double-click to reset view.</p>'))
+                    # conditionalPanel('length(output.PLOT_CAPTION3) > 1',
+                    #                  textOutput('PLOT_CAPTION3'))
                 )
             )
         )

@@ -74,7 +74,7 @@ landing_page = quote({
                 column(6,
                        class = 'text-left',
                     actionButton('TAKE_TOUR',
-                                 label = 'Take a tour',
+                                 label = 'Take a site tour',
                                  class = 'btn btn-info',
                                  style = 'display: none')
                 )
