@@ -463,14 +463,17 @@ shinyjs.init = function() {
                 window.setTimeout(function(){
                     $('.loading-container').hide();
                     $('#landing #DISMISS_MODAL').show();
+                    $('#landing #TAKE_TOUR').show();
                 }, 1000);
                 window.setTimeout(function(){
                     $('.loading-container').hide();
                     $('#landing #DISMISS_MODAL').show();
+                    $('#landing #TAKE_TOUR').show();
                 }, 3000);
                 window.setTimeout(function(){
                     $('.loading-container').hide();
                     $('#landing #DISMISS_MODAL').show();
+                    $('#landing #TAKE_TOUR').show();
                 }, 8000);
 
                 return;
@@ -493,100 +496,6 @@ shinyjs.init = function() {
                     set_tablebutton_listener(btn = arguments[2], modal_id_ = arguments[0]);
                 }, modal_id));
             };
-
-            //for timeseries download modal
-            if(['timeseries_dl', 'spatial_dl'].includes(modal_id)){
-
-                await new Promise(r => setTimeout(r, 100)); //wait 0.1 sec for tooltips to appear
-
-                $('.ms-tooltip').click(function(){
-                    $(this).addClass('instruct-hover').delay(800).queue(function(){
-                        $(this).removeClass('instruct-hover').dequeue();
-                    });
-                });
-
-                await new Promise(r => setTimeout(r, 1000)); //wait a second for the modal and its contents to load
-
-                //$('#DL_ALLSITES').click(function(){
-                //    if(this.checked == true){
-                //        $('#DL_CHECKBOX_TREE_DIV').css('display', 'none');
-                //    } else {
-                //        $('#DL_CHECKBOX_TREE_DIV').css('display', '');
-                //    };
-                //});
-
-                $('button[id^="DL_NETWORK_BUTTON"]').click(function(){
-                    
-                    let network = this.id.match('^DL_NETWORK_BUTTON_(.+)')[1]
-                    let domains_hidden = $(this).parents().eq(4).next('div[id^="DL_DOMAIN_DIV"]').css('display') == 'none'
-
-                    $('div[id^="DL_DOMAIN_DIV_' + network + '"]').each(function(){
-
-                        if(domains_hidden){
-                            $(this).show();
-                        } else {
-                            $(this).hide();
-                        };
-                    });
-                });
-
-                //manage domain tier
-                $('.dl-checkbox-network').change(function(){
-
-                    let network = this.id.match('^DL_NETWORK_(.+)')[1]
-                    let network_is_checked = this.checked
-
-                    $('.dl-checkbox-domain[id^="DL_DOMAIN_' + network + '"]').each(function(){
-
-                        if(network_is_checked){
-                            this.checked = true
-                        } else {
-                            this.checked = false
-                        };
-                    });
-                });
-
-                //send array of selected domains to R when download button is clicked; or flash warning (via R) if no selections
-                $('#DL_SUBMIT_TS').click(function(){
-
-                    let selected_domains = [];
-                    $('#DL_CHECKBOX_TREE input[type="checkbox"][id^="DL_DOMAIN"]:checked')
-                        .each( (i, x) => selected_domains.push( x.id.match('\\|\\|(.+)$')[1] ));
-
-                    selected_domains = selected_domains.length === 0 ? [Math.random()] : selected_domains;
-                    Shiny.setInputValue('DL_TS_SELECTIONS', selected_domains);
-
-                });
-
-                $('#DL_SUBMIT_GIS').click(function(){
-
-                    let selected_domains = [];
-                    $('#DL_CHECKBOX_TREE2 input[type="checkbox"][id^="DL_DOMAIN"]:checked')
-                        .each( (i, x) => selected_domains.push( x.id.match('\\|\\|(.+)$')[1] ));
-
-                    selected_domains = selected_domains.length === 0 ? [Math.random()] : selected_domains;
-                    Shiny.setInputValue('DL_GIS_SELECTIONS', selected_domains);
-
-                });
-
-              //  //manage site tier
-              //  $('.dl-checkbox-domain').change(function(){
-
-              //      let ntw_dmn = this.id.match('^DL_DOMAIN_(.+)?\\|\\|(.+)').slice(1, 3)
-              //      let domain_is_checked = this.checked
-
-              //      $('.dl-checkbox-site[id^="DL_SITE_' + ntw_dmn[0] + '\\|\\|' + ntw_dmn[1] + '"]').each(function(){
-
-              //          if(domain_is_checked){
-              //              this.checked = true
-              //          } else {
-              //              this.checked = false
-              //          };
-              //      });
-              //  });
-
-            };
-
         };
     });
 
@@ -647,6 +556,19 @@ shinyjs.init = function() {
 
         }, 400);
     }, 1000));
+
+    //conduct tour
+    $('body').on('click', '#TAKE_TOUR', function(i, v){
+        $('#DISMISS_MODAL').trigger('click');
+    });
+    $('body').on('click', '.cicerone1 .driver-next-btn', function(i, v){
+        $('a[data-value="biplot"]').trigger('click');
+        Shiny.setInputValue('CONTINUE_TOUR', ' ');
+    });
+    $('body').on('click', '#DATA_TOUR', function(i, v){
+        $('a[data-value="multisite_exploration"]').trigger('click');
+        Shiny.setInputValue('START_DATA_TOUR', ' ');
+    });
 
     //all this crap (and associated CSS) is necessary just to make "macrosheds.org"
     //appear (and STAY appeared) in the bottom of each dygraph as an annotation

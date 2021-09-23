@@ -4,17 +4,26 @@ nSiteNVar_tab <- tabPanel("Time Series",
     sidebarLayout(
         sidebarPanel(width = 3,
 
+            div(class = 'text-center',
+                actionButton('GEN_PLOTS3',
+                             label = 'Update Plots',
+                             class = 'text-center, btn btn-block btn-primary')
+            ),
+            br(),
+
             #domain selector
             div('Domains',
                 class = 'widget-title text-center'),
 
-            selectizeInput('DOMAINS3',
-                           label = NULL,
-                           selected = default_domain,
-                           choices = domains_pretty,
-                           multiple = TRUE,
-                           options = list(maxItems = 3,
-                                          allowEmptyOption = FALSE)),
+            div(id = 'domains_div',
+                selectizeInput('DOMAINS3',
+                               label = NULL,
+                               selected = default_domain,
+                               choices = domains_pretty,
+                               multiple = TRUE,
+                               options = list(maxItems = 3,
+                                              allowEmptyOption = FALSE))
+            ),
 
             div('(Up to 3; populates sites)',
                 class = 'widget-caption text-center'),
@@ -24,12 +33,14 @@ nSiteNVar_tab <- tabPanel("Time Series",
             div('Sites',
                 class = 'widget-title text-center'),
 
-            selectizeInput('SITES3',
-                           label = NULL,
-                           selected = default_site,
-                           choices = default_sitelist,
-                           multiple = TRUE,
-                           options = list(maxItems = 3)),
+            div(id = 'sites_div',
+                selectizeInput('SITES3',
+                               label = NULL,
+                               selected = default_site,
+                               choices = default_sitelist,
+                               multiple = TRUE,
+                               options = list(maxItems = 3))
+            ),
 
             div('(Up to 3; populates variables)',
                 class = 'widget-caption text-center'),
@@ -102,8 +113,10 @@ nSiteNVar_tab <- tabPanel("Time Series",
             div('Unit', class='widget-title text-center'),
             div('(Applies to solutes only)',
                 class='widget-caption text-center'),
-            radioButtons('CONC_FLUX3', label=NULL,
-                choices=conc_flux_names, selected='Concentration'),
+            div(id = 'cf_div',
+                radioButtons('CONC_FLUX3', label=NULL,
+                    choices=conc_flux_names, selected='Concentration')
+            ),
             conditionalPanel('["Concentration", "VWC"].includes(input.CONC_FLUX3)',
                 selectizeInput('CONC_UNIT3', label=NULL, choices=conc_units,
                     selected='mg/L')
@@ -144,14 +157,8 @@ nSiteNVar_tab <- tabPanel("Time Series",
                 choices=c('Daily', 'Monthly', 'Yearly')),
             hr(),
 
-            div(class = 'text-center',
-                actionButton('GEN_PLOTS3',
-                             label = 'Update Plots',
-                             class = 'text-center')
-            ),
-            br(),
-
-            div(class = 'text-center',
+            div(id = 'addtl_div',
+                class = 'text-center',
                 actionButton('ADDTL_OPTIONS',
                              label = 'Additional options',
                              class = 'text-center')
@@ -207,7 +214,7 @@ nSiteNVar_tab <- tabPanel("Time Series",
 
                 div('Uncertainty',
                     class = 'widget-title text-center'),
-                div('(propagated detection limit as absolute error; not shown for Q or P)',
+                div('(See Notes/Caveats tab for details; not shown for Q or P.)',
                     class = 'widget-caption text-center'),
 
                 div(class = 'text-center',
@@ -446,8 +453,11 @@ nSiteNVar_tab <- tabPanel("Time Series",
                     div(id='Q3'),
                     dygraphOutput("GRAPH_Q3", height='75px'),
                     br(),
-                    conditionalPanel('length(output.PLOT_CAPTION3) > 1',
-                                     textOutput('PLOT_CAPTION3')),
+
+                    HTML(paste0('<p style="color: blue; font-size: 0.75em">',
+                                'Click and drag to zoom. Double-click to reset view.</p>'))
+                    # conditionalPanel('length(output.PLOT_CAPTION3) > 1',
+                    #                  textOutput('PLOT_CAPTION3'))
                 )
             )
         )
