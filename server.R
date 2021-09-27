@@ -109,6 +109,8 @@ server <- function(input, output, session){
                              label = NULL,
                              selected = site_sel,
                              choices = dmn_sitelist)
+        
+        click('GEN_PLOTS3')
 
         session$sendCustomMessage('flash_plot',
                                   jsonlite::toJSON('placeholder'))
