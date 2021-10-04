@@ -53,13 +53,13 @@ pre_filtered_bi <- reactive({
 
 
     if(type == 'dom') {
-        fill <- raw %>%
+        fill <- raw |>
             filter(domain %in% domains)
     }
 
     if(type == 'site') {
-        fill <- raw %>%
-            filter(domain %in% domains_s) %>%
+        fill <- raw |>
+            filter(domain %in% domains_s) |>
             filter(site_code %in% sites)
     }
 
@@ -67,7 +67,7 @@ pre_filtered_bi <- reactive({
         fill <- raw
     }
 
-    final <- fill %>%
+    final <- fill |>
         filter(Year >= !!date1,
                Year <= !!date2)
 
@@ -145,24 +145,24 @@ filtered_bi <- reactive({
 
     if('missing' %in% filter_vars && agg == 'YEARLY2'){
         #Filter summary table for needed vars and spread to wide format
-        final <- pfb %>%
-            filter(!is.na(Year)) %>%
-            filter(var %in% !!filter_vars) %>%
-            group_by(site_code, Date, Year, var, domain) %>%
+        final <- pfb |>
+            filter(!is.na(Year)) |>
+            filter(var %in% !!filter_vars) |>
+            group_by(site_code, Date, Year, var, domain) |>
             summarise(val = mean(val, na.rm = TRUE),
-                      missing = mean(missing, na.rm = TRUE)) %>%
-            ungroup() %>%
+                      missing = mean(missing, na.rm = TRUE)) |>
+            ungroup() |>
             pivot_wider(names_from = 'var', values_from = 'val')
     } else{
 
         #Filter summary table for needed vars and spread to wide format
-        final <- pfb %>%
-            filter(!is.na(Year)) %>%
-            select(-missing) %>%
-            filter(var %in% !!filter_vars) %>%
-            group_by(site_code, Date, Year, var, domain) %>%
-            summarise(val = mean(val, na.rm = TRUE)) %>%
-            ungroup() %>%
+        final <- pfb |>
+            filter(!is.na(Year)) |>
+            select(-missing) |>
+            filter(var %in% !!filter_vars) |>
+            group_by(site_code, Date, Year, var, domain) |>
+            summarise(val = mean(val, na.rm = TRUE)) |>
+            ungroup() |>
             pivot_wider(names_from = 'var', values_from = 'val')
     }
 
@@ -170,32 +170,32 @@ filtered_bi <- reactive({
     # For variables that are not associated with a year (constant through time),
     # they need to be added this way because their year column is NA
     if(x_var %in% c('Terrain', 'Hydrology', 'Geochemistry', 'Soil')){
-        terrain <- raw %>%
-            filter(var == !!x_var_) %>%
-            rename(!!x_var_ := val) %>%
+        terrain <- raw |>
+            filter(var == !!x_var_) |>
+            rename(!!x_var_ := val) |>
             select(-Year, -var, -Date, -pctCellErr, -missing)
 
-        final <- final %>%
+        final <- final |>
             left_join(., terrain, by = c('site_code', 'domain'))
     }
 
     if(y_var %in% c('Terrain', 'Hydrology', 'Geochemistry', 'Soil')){
-        terrain <- raw %>%
-            filter(var == !!y_var_) %>%
-            rename(!!y_var_ := val) %>%
+        terrain <- raw |>
+            filter(var == !!y_var_) |>
+            rename(!!y_var_ := val) |>
             select(-Year, -var, -Date, -pctCellErr, -missing)
 
-        final <- final %>%
+        final <- final |>
             left_join(., terrain, by = c('site_code', 'domain'))
     }
 
     if(size_var %in% c('Terrain', 'Hydrology', 'Geochemistry', 'Soil')){
-        terrain <- raw %>%
-            filter(var == !!size_var_) %>%
-            rename(!!size_var_ := val) %>%
+        terrain <- raw |>
+            filter(var == !!size_var_) |>
+            rename(!!size_var_ := val) |>
             select(-Year, -var, -Date, -pctCellErr, -missing)
 
-        final <- final %>%
+        final <- final |>
             left_join(., terrain, by = c('site_code', 'domain'))
     }
 
@@ -206,13 +206,13 @@ filtered_bi <- reactive({
         return(tibble())
     }
 
-    x_unit_start <- variables %>%
+    x_unit_start <- variables |>
         filter(variable_code == x_var)
 
     #Unit conversions. Could be improved for sure
     if(chem_x %in% c('Stream Chemistry', 'Precipitation Chemistry')) {
-        x_unit_start <- pull(variables %>%
-                                 filter(variable_code == x_var) %>%
+        x_unit_start <- pull(variables |>
+                                 filter(variable_code == x_var) |>
                                  select(unit))
 
         final <- convert_conc_units_bi(final, x_var_, x_unit_start, x_unit)
@@ -225,13 +225,13 @@ filtered_bi <- reactive({
                                        summary_file = raw)
     }
     if(chem_x == 'Discharge' && x_unit == 'mm/d'){
-        final <- final %>%
+        final <- final |>
             mutate(discharge_a = discharge_a/365)
     }
 
     if(chem_y %in% c('Stream Chemistry', 'Precipitation Chemistry')) {
-        y_unit_start <- pull(variables %>%
-                                 filter(variable_code == y_var) %>%
+        y_unit_start <- pull(variables |>
+                                 filter(variable_code == y_var) |>
                                  select(unit))
 
         final <- convert_conc_units_bi(final, y_var_, y_unit_start, y_unit)
@@ -244,7 +244,7 @@ filtered_bi <- reactive({
                                        summary_file = raw)
         }
     if(chem_y == 'Discharge' && y_unit == 'mm/d'){
-        final <- final %>%
+        final <- final |>
             mutate(discharge_a = discharge_a/365)
     }
 
@@ -252,8 +252,8 @@ filtered_bi <- reactive({
     if(include_size){
 
         if(chem_size %in% c('Stream Chemistry', 'Precipitation Chemistry')) {
-            size_unit_start <- pull(variables %>%
-                                        filter(variable_code == size_var) %>%
+            size_unit_start <- pull(variables |>
+                                        filter(variable_code == size_var) |>
                                         select(unit))
 
             final <- convert_conc_units_bi(final, size_var_, size_unit_start, size_unit)
@@ -266,7 +266,7 @@ filtered_bi <- reactive({
                                            summary_file = raw)
             }
         if(chem_size == 'Discharge' && size_unit == 'mm/d'){
-            final <- final %>%
+            final <- final |>
                 mutate(discharge_a = discharge_a/365)
         }
     }
@@ -277,17 +277,17 @@ filtered_bi <- reactive({
         if(include_size && size_var_ == 'missing'){
 
             year_dif <- (year2 - year1 ) + 1
-            final <- final %>%
-                #select(-Year) %>%
-                group_by(site_code, domain) %>%
+            final <- final |>
+                #select(-Year) |>
+                group_by(site_code, domain) |>
                 summarise(across(where(is.numeric), ~mean(.x, na.rm = TRUE)),
-                          n = n()) %>%
-                mutate(missing = round((((year_dif-n)/year_dif)*100), 1)) %>%
+                          n = n()) |>
+                mutate(missing = round((((year_dif-n)/year_dif)*100), 1)) |>
                 select(-Year, -n)
         } else{
-            final <- final %>%
-                select(-Year) %>%
-                group_by(site_code, domain) %>%
+            final <- final |>
+                select(-Year) |>
+                group_by(site_code, domain) |>
                 summarise(across(where(is.numeric), ~mean(.x, na.rm = TRUE)))
         }
     }
@@ -534,16 +534,16 @@ observe({
     data_type <- input$DOMAINS2_S
     current_sites <- isolate(input$SITES2)
 
-    domain_choices <- site_data %>%
+    domain_choices <- site_data |>
         filter(site_type == 'stream_gauge',
-               domain %in% !!data_type) %>%
-        pull(domain) %>%
+               domain %in% !!data_type) |>
+        pull(domain) |>
         unique()
 
     domain_site_list <- generate_dropdown_sitelist(domain_vec = domain_choices)
 
-    sites_in_domains <- site_data %>%
-        filter(domain %in% domain_choices) %>%
+    sites_in_domains <- site_data |>
+        filter(domain %in% domain_choices) |>
         pull(site_code)
 
     new_sites <- current_sites[current_sites %in% sites_in_domains]
@@ -625,8 +625,8 @@ n_sites <- reactive({
         num <- 1
     } else{
 
-        sites_num <- sites %>%
-            distinct(site_code) %>%
+        sites_num <- sites |>
+            distinct(site_code) |>
             pull(site_code)
 
         num <- length(sites_num)
@@ -643,7 +643,7 @@ n_sites <- reactive({
 biplot_trigger <- reactive({
     filtered_bi()
     return()
-}) %>%
+}) |>
     debounce(250)
 
 output$SUMMARY_BIPLOT <- renderPlotly({
@@ -702,7 +702,7 @@ output$SUMMARY_BIPLOT <- renderPlotly({
         empty_msg <- 'Non-temporal data selected. \nSet Aggregation to "Full record"'
     }
 
-    empty_plot <- plotly::plot_ly() %>%
+    empty_plot <- plotly::plot_ly() |>
         plotly::layout(annotations = list(text = empty_msg,
                                           xref = "paper",
                                           yref = "paper",
@@ -733,7 +733,7 @@ output$SUMMARY_BIPLOT <- renderPlotly({
                                        unit = size_unit,
                                        var = size_var)
 
-    emplty_blank <- plotly::plot_ly() %>%
+    emplty_blank <- plotly::plot_ly() |>
         plotly::layout()
 
     if(! include_size) {
@@ -794,16 +794,16 @@ output$SUMMARY_BIPLOT <- renderPlotly({
         networks_cite <- paste(paste(domains_cite, domains_n_cite, sep = ' '), collapse = ', ')
     }
 
-    bi_table <- network_domain_default_sites %>%
-        select(domain, pretty_domain) %>%
+    bi_table <- network_domain_default_sites |>
+        select(domain, pretty_domain) |>
         right_join(.,bi_table, by = 'domain')
 
     if(col_by == 'legend_name'){
-        bi_table <- bi_table %>%
+        bi_table <- bi_table |>
             mutate(legend_name = paste0(pretty_domain, ' - ', site_code))
 
     } else{
-        bi_table <- bi_table %>%
+        bi_table <- bi_table |>
             mutate(legend_name = site_code)
 
     }
@@ -811,7 +811,7 @@ output$SUMMARY_BIPLOT <- renderPlotly({
     #Currently disabled
     if(agg == 'm') {
 
-        plot <- bi_table %>%
+        plot <- bi_table |>
             plotly::plot_ly(x = ~get(x_tvar),
                 y = ~get(y_tvar),
                 size = ~get(size_tvar),
@@ -820,7 +820,7 @@ output$SUMMARY_BIPLOT <- renderPlotly({
                 frame = ~Date,
                 type = 'scatter',
                 mode = 'markers',
-                text = ~paste0(size_var, ' ', size_unit, ':', get(size_var))) %>%
+                text = ~paste0(size_var, ' ', size_unit, ':', get(size_var))) |>
         plotly::layout(xaxis = list(title = paste0(x_var, ' ', x_unit)),
                        yaxis = list(title = paste0(y_var, ' ', y_unit)),
                        paper_bgcolor='rgba(0,0,0,0)',
@@ -846,7 +846,7 @@ output$SUMMARY_BIPLOT <- renderPlotly({
         if(include_size) {
 
             if(col_by == 'pretty_domain'){
-                plot <- bi_table %>%
+                plot <- bi_table |>
                     plotly::plot_ly(x = ~get(x_tvar),
                                     y = ~get(y_tvar),
                                     type = 'scatter',
@@ -860,7 +860,7 @@ output$SUMMARY_BIPLOT <- renderPlotly({
                                     text = ~paste0(size_var, ' ', size_unit, ':', round(get(size_tvar), digits = 2), '\nSite:', site_code, ', \nDomain:', pretty_domain),
                                     legendgroup = ~get(col_by)
 
-                    ) %>%
+                    ) |>
                     plotly::layout(xaxis = list(title = paste0(x_var, ' ', x_unit),
                                                 range = c(min_year, max_year),
                                                 tickvals = tick_vals),
@@ -870,7 +870,7 @@ output$SUMMARY_BIPLOT <- renderPlotly({
                                    legend = list(itemsizing='constant',
                                                  traceorder = 'grouped'))
             } else{
-                plot <- bi_table %>%
+                plot <- bi_table |>
                     plotly::plot_ly(x = ~get(x_tvar),
                                     y = ~get(y_tvar),
                                     type = 'scatter',
@@ -883,7 +883,7 @@ output$SUMMARY_BIPLOT <- renderPlotly({
                                     text = ~paste0(size_var, ' ', size_unit, ':', round(get(size_tvar), digits = 2), '\nSite:', site_code, ', \nDomain:', pretty_domain),
                                     legendgroup = ~get(col_by)
 
-                    ) %>%
+                    ) |>
                     plotly::layout(xaxis = list(title = paste0(x_var, ' ', x_unit),
                                                 range = c(min_year, max_year),
                                                 tickvals = tick_vals),
@@ -896,18 +896,18 @@ output$SUMMARY_BIPLOT <- renderPlotly({
             }
         } else {
 
-            # site_to_domain <- bi_table %>%
-            #     select(site_code, pretty_domain) %>%
+            # site_to_domain <- bi_table |>
+            #     select(site_code, pretty_domain) |>
             #     distinct(site_code, .keep_all = TRUE)
             #
-            # one_site <- bi_table %>%
-            #     #filter(domain %in% c('boulder', 'hbef')) %>%
+            # one_site <- bi_table |>
+            #     #filter(domain %in% c('boulder', 'hbef')) |>
             #     pivot_wider(names_from = 'site_code', values_from = 'SO4_S_conc',
-            #                 id_cols = 'Year') %>%
+            #                 id_cols = 'Year') |>
             #     arrange(Year)
             #
-            # site_cols <- one_site %>%
-            #     select(-Year) %>%
+            # site_cols <- one_site |>
+            #     select(-Year) |>
             #     colnames()
             #
             # fin_test <- plotly::plot_ly()
@@ -918,8 +918,8 @@ output$SUMMARY_BIPLOT <- renderPlotly({
             #
             #     this_site <- site_cols[s]
             #
-            #     this_pretty_domain <- site_to_domain %>%
-            #         filter(site_code == !!this_site) %>%
+            #     this_pretty_domain <- site_to_domain |>
+            #         filter(site_code == !!this_site) |>
             #         pull(pretty_domain)
             #
             #     colo_pos  <- grep(this_pretty_domain, all_doms)
@@ -938,7 +938,7 @@ output$SUMMARY_BIPLOT <- renderPlotly({
             #         )
             # }
 
-            # plotly::plot_ly(one_site, x = ~get(x_tvar)) %>%
+            # plotly::plot_ly(one_site, x = ~get(x_tvar)) |>
             #     plotly::add_trace(y = ~w1,
             #                       type = 'scatter',
             #                       mode = 'lines',
@@ -948,7 +948,7 @@ output$SUMMARY_BIPLOT <- renderPlotly({
             #                       name = 'HBEF',
             #                       legendgroup = ~pretty_domain,
             #                       connectgaps=T
-            #     ) %>%
+            #     ) |>
             #     plotly::add_trace(y = ~w4,
             #                       type = 'scatter',
             #                       mode = 'lines',
@@ -957,7 +957,7 @@ output$SUMMARY_BIPLOT <- renderPlotly({
             #                       legendgroup = ~pretty_domain,
             #                       showlegend = F,
             #                       connectgaps=T
-            #     ) %>%
+            #     ) |>
             #     plotly::add_trace(y = ~w3,
             #                       type = 'scatter',
             #                       mode = 'lines',
@@ -966,7 +966,7 @@ output$SUMMARY_BIPLOT <- renderPlotly({
             #                       legendgroup = ~pretty_domain,
             #                       showlegend = F,
             #                       connectgaps=T
-            #     ) %>%
+            #     ) |>
             #     plotly::add_trace(y = ~w5,
             #                       type = 'scatter',
             #                       mode = 'lines',
@@ -975,7 +975,7 @@ output$SUMMARY_BIPLOT <- renderPlotly({
             #                       legendgroup = ~pretty_domain,
             #                       showlegend = F,
             #                       connectgaps=T
-            #     ) %>%
+            #     ) |>
             #     plotly::add_trace(y = ~w7,
             #                       type = 'scatter',
             #                       mode = 'lines',
@@ -984,25 +984,25 @@ output$SUMMARY_BIPLOT <- renderPlotly({
             #                       legendgroup = ~pretty_domain,
             #                       showlegend = F,
             #                       connectgaps=T
-            #     ) %>%
+            #     ) |>
             #     plotly::add_trace(y = ~GGU,
             #                       type = 'scatter',
             #                       mode = 'lines',
             #                       alpha = 0.8,
             #                       line = list(width = 2, color = safe_cols[2])
-            #     ) %>%
+            #     ) |>
             #     plotly::add_trace(y = ~GGL,
             #                       type = 'scatter',
             #                       mode = 'lines',
             #                       alpha = 0.8,
             #                       line = list(width = 2, color = safe_cols[2])
-            #     ) %>%
+            #     ) |>
             #     plotly::add_trace(y = ~BC_SW_4,
             #                       type = 'scatter',
             #                       mode = 'lines',
             #                       alpha = 0.8,
             #                       line = list(width = 2, color = safe_cols[2])
-            #     ) %>%
+            #     ) |>
             #     plotly::layout(xaxis = list(title = paste0(x_var, ' ', x_unit),
             #                                 range = c(min_year, max_year),
             #                                 tickvals = tick_vals),
@@ -1013,7 +1013,7 @@ output$SUMMARY_BIPLOT <- renderPlotly({
 
             if(col_by == 'pretty_domain'){
 
-                plot <- bi_table %>%
+                plot <- bi_table |>
                     plotly::plot_ly(x = ~get(x_tvar),
                                     y = ~get(y_tvar),
                                     type = 'scatter',
@@ -1027,7 +1027,7 @@ output$SUMMARY_BIPLOT <- renderPlotly({
                                     text = ~paste0('Site:', site_code, ', \nDomain:', pretty_domain),
                                     legendgroup = ~get(col_by)
                                     #name = paste0(~pretty_domain, '>', ~site_code)
-                    ) %>%
+                    ) |>
                     plotly::layout(xaxis = list(title = paste0(x_var, ' ', x_unit),
                                                 range = c(min_year, max_year),
                                                 tickvals = tick_vals),
@@ -1036,7 +1036,7 @@ output$SUMMARY_BIPLOT <- renderPlotly({
                                    plot_bgcolor = 'rgba(0,0,0,0)'
                     )
             } else{
-                plot <- bi_table %>%
+                plot <- bi_table |>
                     plotly::plot_ly(x = ~get(x_tvar),
                                     y = ~get(y_tvar),
                                     type = 'scatter',
@@ -1049,7 +1049,7 @@ output$SUMMARY_BIPLOT <- renderPlotly({
                                     text = ~paste0('Site:', site_code, ', \nDomain:', pretty_domain),
                                     legendgroup = ~get(col_by)
                                     #name = paste0(~pretty_domain, '>', ~site_code)
-                    ) %>%
+                    ) |>
                     plotly::layout(xaxis = list(title = paste0(x_var, ' ', x_unit),
                                                 range = c(min_year, max_year),
                                                 tickvals = tick_vals),
@@ -1064,7 +1064,7 @@ output$SUMMARY_BIPLOT <- renderPlotly({
     if(agg == 'year ') {
 
         if(include_size) {
-            plot <- bi_table %>%
+            plot <- bi_table |>
                 plotly::plot_ly(x = ~get(x_tvar),
                                 y = ~get(y_tvar),
                                 size = ~get(size_tvar),
@@ -1073,14 +1073,14 @@ output$SUMMARY_BIPLOT <- renderPlotly({
                                 fill = '',
                                 type = 'scatter',
                                 mode = 'markers',
-                                text = ~paste0(size_var, ' ', size_unit, ':', round(get(size_tvar), digits = 2), '\nSite:', site_code, ', \nDomain:', pretty_domain)) %>%
+                                text = ~paste0(size_var, ' ', size_unit, ':', round(get(size_tvar), digits = 2), '\nSite:', site_code, ', \nDomain:', pretty_domain)) |>
                 plotly::layout(xaxis = list(title = paste0('Mean', ' ', x_var, ' ', x_unit)),
                                yaxis = list(title = paste0('Mean', ' ', y_var, ' ', y_unit)),
                                paper_bgcolor='rgba(0,0,0,0)',
                                plot_bgcolor='rgba(0,0,0,0)',
                                legend = list(itemsizing='constant'))
         } else{
-            plot <- bi_table %>%
+            plot <- bi_table |>
                 plotly::plot_ly(x = ~get(x_tvar),
                                 y = ~get(y_tvar),
                                 size = 2,
@@ -1089,7 +1089,7 @@ output$SUMMARY_BIPLOT <- renderPlotly({
                                 fill = '',
                                 type = 'scatter',
                                 mode = 'markers',
-                                text = ~paste0('\nSite:', site_code, ', \nDomain:', pretty_domain)) %>%
+                                text = ~paste0('\nSite:', site_code, ', \nDomain:', pretty_domain)) |>
                 plotly::layout(xaxis = list(title = paste0('Mean', ' ', x_var, ' ', x_unit)),
                                yaxis = list(title = paste0('Mean', ' ', y_var, ' ', y_unit)),
                                paper_bgcolor='rgba(0,0,0,0)',
@@ -1098,16 +1098,16 @@ output$SUMMARY_BIPLOT <- renderPlotly({
     }
 
     if(input$LOG_X2 == 'XAXIS_log2'){
-        plot <- plot %>%
+        plot <- plot |>
             layout(xaxis = list(type = "log"))
     }
 
     if(input$LOG_Y2 == 'YAXIS_log2'){
-        plot <- plot %>%
+        plot <- plot |>
             layout(yaxis = list(type = "log"))
     }
 
-    plot <- plot %>%
+    plot <- plot |>
         plotly::layout(annotations = list(
             text = paste0('macrosheds.org data provided by:\n', networks_cite),
             xref = "paper",
@@ -1136,8 +1136,8 @@ output$SUMMARY_BIPLOT <- renderPlotly({
 # observe({
 #     selected <- sites$sites
 #
-#     map_dom <- site_data %>%
-#         filter(site_code %in% selected) %>%
+#     map_dom <- site_data |>
+#         filter(site_code %in% selected) |>
 #         pull(domain)
 #
 #     updateSelectInput(session, 'DOMAINS2_S', selected=map_dom)

@@ -1,6 +1,6 @@
 
 
-sheds <- sf::st_read('data/general/shed_boundary') %>%
+sheds <- sf::st_read('data/general/shed_boundary') |>
     sf::st_transform(4326)
 
 sg <- filter(site_data,
@@ -8,7 +8,7 @@ sg <- filter(site_data,
 
 watershed_summaries <- sm(read_csv('data/general/spatial_downloadables/watershed_summaries.csv'))
 
-watershed_quar <- watershed_summaries %>%
+watershed_quar <- watershed_summaries |>
     summarise('Annual Mean Precip (mm)_bb' = quantile(cc_mean_annual_precip, .25, na.rm = T),
               'Annual Mean Precip (mm)_tt' = quantile(cc_mean_annual_precip, .75, na.rm = T),
               'Annual Mean Temp (C)_bb' = quantile(cc_mean_annual_temp, .25, na.rm = T),
@@ -16,14 +16,14 @@ watershed_quar <- watershed_summaries %>%
               'Mean Slope (%)_bb' = quantile(te_slope_mean, .25, na.rm = T),
               'Mean Slope (%)_tt' = quantile(te_slope_mean, .75, na.rm = T),
               'Area (ha)_bb' = quantile(ws_area_ha, .25, na.rm = T),
-              'Area (ha)_tt' = quantile(ws_area_ha, .75, na.rm = T)) %>%
-    pivot_longer(cols = everything()) %>%
+              'Area (ha)_tt' = quantile(ws_area_ha, .75, na.rm = T)) |>
+    pivot_longer(cols = everything()) |>
     mutate(var = str_split_fixed(name, '_', n = Inf)[,1],
-           quan = str_split_fixed(name, '_', n = Inf)[,2]) %>%
-    select(-name) %>%
+           quan = str_split_fixed(name, '_', n = Inf)[,2]) |>
+    select(-name) |>
     pivot_wider(names_from = quan, values_from = value)
 
-sheds <- sheds %>%
+sheds <- sheds |>
     filter(site_code %in% sg$site_code)
 
 output$MAP <- renderLeaflet({
@@ -31,12 +31,12 @@ output$MAP <- renderLeaflet({
     rg <- filter(site_data,
                  site_type == 'rain_gauge')
 
-    leaflet() %>%
+    leaflet() |>
         addProviderTiles("Esri.WorldTopoMap",
                          group = paste0('Topo Mahttps://www.dropbox.com/s/kjkhw',
-                                        'ip0t8erh3a/MTM_PQ_data.csv?dl=0p')) %>%
+                                        'ip0t8erh3a/MTM_PQ_data.csv?dl=0p')) |>
         addProviderTiles('Esri.WorldImagery',
-                         group = 'Aerial Imagery') %>%
+                         group = 'Aerial Imagery') |>
         addPolygons(
             data = sheds,
             weight = 3,
@@ -48,7 +48,7 @@ output$MAP <- renderLeaflet({
             highlightOptions = highlightOptions(color = '#228B22',
                                                 fill = '#228B22',
                                                 opacity=1),
-            group = 'Catchments') %>%
+            group = 'Catchments') |>
         addCircleMarkers(lng = rg$longitude,
                          lat = rg$latitude,
                          color = '#0000FF',
@@ -74,7 +74,7 @@ output$MAP <- renderLeaflet({
                                                              '_popup'),
                                           minWidth = 200,
                                           maxWidth = 500),
-                         data = rg) %>%
+                         data = rg) |>
         addCircleMarkers(lng = sg$longitude,
                          lat = sg$latitude,
                          color = '#228B22',
@@ -107,11 +107,11 @@ output$MAP <- renderLeaflet({
                     clusterId = sg$domain,
                     clusterOptions = markerClusterOptions(zoomToBoundsOnClick = TRUE,
                                                           maxClusterRadius = 4.5),
-                    data = sg) %>%
+                    data = sg) |>
     addLayersControl(position = 'topright',
                      baseGroups = c('Topo Map', 'Aerial Imagery'),
                      options = layersControlOptions(collapsed = FALSE,
-                                                    autoZIndex = TRUE)) %>%
+                                                    autoZIndex = TRUE)) |>
     setView(lng = -97.380979,
             lat = 42.877742,
             zoom = 2)  #center of lower 48
@@ -139,12 +139,12 @@ observeEvent({
             code <- site_id
         }
 
-        sg <- filter(site_data, site_type == 'stream_gauge') %>%
+        sg <- filter(site_data, site_type == 'stream_gauge') |>
             filter(site_code == code)
 
         selected <- list(id = code, lat = sg$latitude, lng = sg$longitude)
 
-        proxy %>%
+        proxy |>
             addCircleMarkers(
                 layerId = paste0(code, '-temp'),
                 lng = sg$longitude,
@@ -160,7 +160,7 @@ observeEvent({
                 popupOptions = c(
                     className = paste0(sg$domain, "__", sg$site_code, '_popup'),
                     minWidth = 200, maxWidth = 500), label = sg$site_code,
-                data = sg)  %>%
+                data = sg)  |>
             removeMarker(layerId = paste0(prev_select()$id, '-temp'))
 
         prev_select(selected)
@@ -185,23 +185,23 @@ observeEvent(ignoreNULL = FALSE,{
             code_ <- site_id
         }
         
-        shed <- sheds %>%
+        shed <- sheds |>
             filter(site_code == code_)
 
         selected <- list(id = code_)
 
         site_remove <- prev_select_m()$id
 
-            proxy %>%
+            proxy |>
                 addPolygons(data = shed, weight = 3, smooth = 0, stroke = T,
                             fillOpacity = 0.2, color = '#228B22',
                             layerId = paste0(shed$site_code, '-temp'), group = 'Catchments')
 
 
-                proxy %>%
+                proxy |>
                     addPolygons(data = shed, weight = 3, smooth = 0, stroke = T,
                                 fillOpacity = 0.2, color = '#228B22',
-                                layerId = paste0(shed$site_code, '-temp'), group = 'Catchments') %>%
+                                layerId = paste0(shed$site_code, '-temp'), group = 'Catchments') |>
                     removeShape(layerId = paste0(site_remove, '-temp'))
 
         prev_select_m(selected)
@@ -231,8 +231,8 @@ site_info_tib <- reactive({
             
             site_code <- str_split_fixed(code, '_[*]_', n = Inf)[1]
             
-            shed <- site_data %>%
-                filter(site_code == !!site_code) %>%
+            shed <- site_data |>
+                filter(site_code == !!site_code) |>
                 filter(site_type == 'rain_gauge')
             
             fin_tib <- tibble(var = c('Site Code', 'Full Name', 'Domain', 'Site Type'),
@@ -240,16 +240,16 @@ site_info_tib <- reactive({
         } else {
             
             
-            shed <- site_data %>%
-                filter(site_code == !!code) %>%
+            shed <- site_data |>
+                filter(site_code == !!code) |>
                 filter(site_type == 'stream_gauge')
             
-            shed_summary <- watershed_summaries %>%
+            shed_summary <- watershed_summaries |>
                 filter(site_code == !!code)
             
-            dom_cover <- shed_summary %>%
-                select(starts_with('lg')) %>%
-                pivot_longer(cols = starts_with('lg')) %>%
+            dom_cover <- shed_summary |>
+                select(starts_with('lg')) |>
+                pivot_longer(cols = starts_with('lg')) |>
                 filter(value == max(value))
             
             if(nrow(dom_cover) == 0){
@@ -264,10 +264,10 @@ site_info_tib <- reactive({
                               val = c(code, shed$full_name, shed$pretty_domain, 'Stream Gauge',
                                       shed$stream, round(shed$ws_area_ha, 1), round(shed_summary$te_slope_mean, 1),
                                       round(shed_summary$cc_mean_annual_precip, 1),
-                                      round(shed_summary$cc_mean_annual_temp, 1), dom_cover)) %>%
-                left_join(watershed_quar, by = 'var') %>%
+                                      round(shed_summary$cc_mean_annual_temp, 1), dom_cover)) |>
+                left_join(watershed_quar, by = 'var') |>
                 mutate(qua = ifelse(as.numeric(val) < bb, 'Bottom 25%', NA),
-                       qua = ifelse(as.numeric(val) >= tt, 'Top 25%', qua)) %>%
+                       qua = ifelse(as.numeric(val) >= tt, 'Top 25%', qua)) |>
                 select(-bb, -tt))
             
         }

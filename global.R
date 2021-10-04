@@ -68,19 +68,19 @@ source('function_aliases.R')
 #                         use_oob = TRUE)
 load_portal_config(from_where = 'local')
 
-# sites_with_Q <- sm(read_csv('data/general/sites_with_discharge.csv')) %>%
-#     select(-network) %>%
+# sites_with_Q <- sm(read_csv('data/general/sites_with_discharge.csv')) |>
+#     select(-network) |>
 #     tidyr::unite(col = 'nds',
 #                  domain, site_code,
-#                  remove = TRUE) %>%
+#                  remove = TRUE) |>
 #     pull(nds)
 
-sites_with_Q <- site_data %>%
-    filter(site_type == 'stream_gauge') %>%
-    select(-network) %>%
+sites_with_Q <- site_data |>
+    filter(site_type == 'stream_gauge') |>
+    select(-network) |>
     tidyr::unite(col = 'nds',
                  domain, site_code,
-                 remove = TRUE) %>%
+                 remove = TRUE) |>
     pull(nds)
 
 site_data_copy <- site_data
@@ -109,12 +109,12 @@ default_domain <- 'hbef'
 # default_domain <- 'boulder'
 
 
-network_domain_default_sites <- site_data %>%
-    group_by(network, domain) %>%
+network_domain_default_sites <- site_data |>
+    group_by(network, domain) |>
     summarize(site_code = first(site_code),
               pretty_domain = first(pretty_domain),
               pretty_network = first(pretty_network),
-              .groups = 'drop') %>%
+              .groups = 'drop') |>
     select(pretty_network, network, pretty_domain, domain,
            default_site = site_code)
 
@@ -157,8 +157,8 @@ dtrng <- as.Date(range(basedata$chem$datetime,
 domains_pretty <- network_domain_default_sites$domain
 names(domains_pretty) <- network_domain_default_sites$pretty_domain
 
-fluxvars <- variables %>%
-    filter(as.logical(flux_convertible)) %>%
+fluxvars <- variables |>
+    filter(as.logical(flux_convertible)) |>
     pull(variable_code)
 
 chemvars <- filter(variables,
@@ -181,8 +181,8 @@ pchemvars_display <- generate_dropdown_varlist(chemvars,
                                                filter_set = Reduce(union,
                                                                    pchemvars))
 
-conc_vars <- variables %>%
-    filter(variable_type %in% c('chem_discrete', 'gas')) %>% #TODO: allow the 4 gas variables to be displayed in ppx OR x/L, xM, xeq
+conc_vars <- variables |>
+    filter(variable_type %in% c('chem_discrete', 'gas')) |> #TODO: allow the 4 gas variables to be displayed in ppx OR x/L, xM, xeq
     pull(variable_code)
 
 #these are the available selections for the unit conversion menus
@@ -227,9 +227,9 @@ conc_units_bi <- c('ng/L', 'ug/L', 'mg/L', 'g/L')
 
 discharge_units_bi <- c('mm/year', 'm^3', 'mm/d')
 
-ws_trait_types <- variables %>%
-    filter(variable_type == 'ws_char') %>%
-    pull(variable_subtype) %>%
+ws_trait_types <- variables |>
+    filter(variable_type == 'ws_char') |>
+    pull(variable_subtype) |>
     unique()
 
 ws_traits <- generate_dropdown_varlist_ws(variables)

@@ -65,9 +65,9 @@ server <- function(input, output, session){
 
     output$NOBS <- renderText({
 
-        readr::read_file('data/general/total_nonspatial_observations.txt') %>%
-            as.numeric() %>%
-            round(-4) %>%
+        readr::read_file('data/general/total_nonspatial_observations.txt') |>
+            as.numeric() |>
+            round(-4) |>
             format(scientific = FALSE,
                    big.mark = ',')
     })

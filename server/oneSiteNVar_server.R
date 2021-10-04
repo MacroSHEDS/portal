@@ -67,10 +67,10 @@ observeEvent(input$SITES4, {
 data4 <- reactive({
 
     data4 = if(input$CONC_FLUX4 == 'Concentration') grab else flux
-    data4 = data4 %>%
-        filter(site_code %in% input$SITES4) %>%
-        filter(datetime >= input$DATE4[1]) %>%
-        filter(datetime <= input$DATE4[2]) %>%
+    data4 = data4 |>
+        filter(site_code %in% input$SITES4) |>
+        filter(datetime >= input$DATE4[1]) |>
+        filter(datetime <= input$DATE4[2]) |>
         select(one_of("datetime", "site_code", input$SOLUTES4))
 
     if(init_vals$enable_unitconvert){
@@ -86,14 +86,14 @@ data4 <- reactive({
 
 dataPrecip4 <- reactive({
 
-    dataPrecip4 = P %>%
-        filter(datetime >= input$DATE4[1]) %>%
-        filter(datetime <= input$DATE4[2]) %>%
-        filter(site_code %in% sites_with_P) %>%
-        select(one_of("datetime", "site_code", 'P')) %>%
-        # group_by(lubridate::yday(datetime)) %>%
-        group_by(datetime) %>%
-        summarise(medianPrecip=median(P, na.rm=TRUE)) %>%
+    dataPrecip4 = P |>
+        filter(datetime >= input$DATE4[1]) |>
+        filter(datetime <= input$DATE4[2]) |>
+        filter(site_code %in% sites_with_P) |>
+        select(one_of("datetime", "site_code", 'P')) |>
+        # group_by(lubridate::yday(datetime)) |>
+        group_by(datetime) |>
+        summarise(medianPrecip=median(P, na.rm=TRUE)) |>
         ungroup()
 })
 
@@ -102,10 +102,10 @@ dataFlow4 <- reactive({
     if (input$FLOW_SOURCE4 == "flowSens") {
         dataFlow4 = filter(Q, datetime > input$DATE4[1],
                 datetime < input$DATE4[2],
-                site_code %in% input$SITES4) %>%
-            select(datetime, Q) %>%
-            group_by(datetime) %>%
-            summarise(flowMaxPerDate=max(Q, na.rm=TRUE)) %>%
+                site_code %in% input$SITES4) |>
+            select(datetime, Q) |>
+            group_by(datetime) |>
+            summarise(flowMaxPerDate=max(Q, na.rm=TRUE)) |>
             ungroup()
     }
 
@@ -122,10 +122,10 @@ output$GRAPH_PRECIP4 <- renderDygraph({
         dimnames(dydat) = list(NULL, 'P')
         ymax = max(dydat, na.rm=TRUE)
 
-        p = dygraph(dydat, group='oneSiteNVar') %>%
+        p = dygraph(dydat, group='oneSiteNVar') |>
             dyOptions(useDataTimezone=TRUE, drawPoints=FALSE, fillGraph=TRUE,
                 fillAlpha=1, colors='#4b92cc', strokeWidth=3,
-                plotter=hyetograph_js) %>%
+                plotter=hyetograph_js) |>
             dyAxis('y', label='P (mm)', valueRange=c(ymax + ymax * 0.1, 0),
                 labelWidth=16, labelHeight=10, pixelsPerLabel=10,
                 rangePad=10)
@@ -143,18 +143,18 @@ output$GRAPH_MAIN4a <- renderDygraph({
     n_vars = isolate(changesInSelections4$n_vars)
     plotvars = isolate(input$SOLUTES4)[1:min(c(n_vars, 3))]
 
-    varnames = filter(grabvars, variable_code %in% plotvars) %>%
+    varnames = filter(grabvars, variable_code %in% plotvars) |>
         mutate(combined=case_when(! variable_code %in% conc_vars ~
                 paste0(variable_name, ' (', unit, ')'),
             variable_code %in% conc_vars & input$CONC_FLUX4 == 'Concentration' ~
                 paste0(variable_name, ' (', input$CONC_UNIT4, ')'),
             variable_code %in% conc_vars & input$CONC_FLUX4 == 'Flux' ~
-                paste0(variable_name, ' (', input$FLUX_UNIT4, ')'))) %>%
+                paste0(variable_name, ' (', input$FLUX_UNIT4, ')'))) |>
         select(variable_name, unit, combined)
 
-    # widedat = isolate(dataMain4()) %>%
-    widedat = isolate(data4()) %>%
-        # filter(solute %in% plotvars) %>%
+    # widedat = isolate(dataMain4()) |>
+    widedat = isolate(data4()) |>
+        # filter(solute %in% plotvars) |>
         select(datetime, one_of(plotvars))
 
     if(nrow(widedat)){
@@ -162,11 +162,11 @@ output$GRAPH_MAIN4a <- renderDygraph({
         dydat = xts(widedat[, plotvars], order.by=widedat$datetime, tzone='UTC')
         dimnames(dydat) = list(NULL, varnames$combined)
 
-        dg = dygraph(dydat, group='oneSiteNVar') %>%
+        dg = dygraph(dydat, group='oneSiteNVar') |>
             dyOptions(useDataTimezone=TRUE, drawPoints=FALSE,
-                colors=linecolors, strokeWidth=2) %>% #, pointSize=2) %>%
+                colors=linecolors, strokeWidth=2) |> #, pointSize=2) |>
             dyLegend(show='always', labelsSeparateLines=FALSE,
-                labelsDiv='main4a') %>%
+                labelsDiv='main4a') |>
             dyAxis('y', label=NULL, pixelsPerLabel=20, rangePad=10)
     } else {
         dg = plot_empty_dygraph(isolate(input$DATE4), plotgroup='oneSiteNVar',
@@ -188,7 +188,7 @@ output$GRAPH_MAIN4a <- renderDygraph({
     #             dydat = xts(data[, pv], order.by=data$datetime)
     #             dimnames(dydat) = list(NULL, varnames$combined)
     #
-    #             m = m %>%
+    #             m = m |>
     #                 dySeries('')
     #         }
     #
@@ -206,16 +206,16 @@ output$GRAPH_MAIN4b <- renderDygraph({
     n_vars = isolate(changesInSelections4$n_vars)
     plotvars = isolate(input$SOLUTES4)[4:min(c(n_vars, 6))]
 
-    varnames = filter(grabvars, variable_code %in% plotvars) %>%
+    varnames = filter(grabvars, variable_code %in% plotvars) |>
         mutate(combined=case_when(! variable_code %in% conc_vars ~
                 paste0(variable_name, ' (', unit, ')'),
             variable_code %in% conc_vars & input$CONC_FLUX4 == 'Concentration' ~
                 paste0(variable_name, ' (', input$CONC_UNIT4, ')'),
             variable_code %in% conc_vars & input$CONC_FLUX4 == 'Flux' ~
-                paste0(variable_name, ' (', input$FLUX_UNIT4, ')'))) %>%
+                paste0(variable_name, ' (', input$FLUX_UNIT4, ')'))) |>
         select(variable_name, unit, combined)
 
-    widedat = isolate(data4()) %>%
+    widedat = isolate(data4()) |>
         select(datetime, one_of(plotvars))
 
     if(nrow(widedat)){
@@ -223,11 +223,11 @@ output$GRAPH_MAIN4b <- renderDygraph({
         dydat = xts(widedat[, plotvars], order.by=widedat$datetime, tzone='UTC')
         dimnames(dydat) = list(NULL, varnames$combined)
 
-        dg = dygraph(dydat, group='oneSiteNVar') %>%
+        dg = dygraph(dydat, group='oneSiteNVar') |>
             dyOptions(useDataTimezone=TRUE, drawPoints=FALSE,
-                colors=linecolors, strokeWidth=2) %>%
+                colors=linecolors, strokeWidth=2) |>
             dyLegend(show='always', labelsSeparateLines=FALSE,
-                labelsDiv='main4b') %>%
+                labelsDiv='main4b') |>
             dyAxis('y', label=NULL, pixelsPerLabel=20, rangePad=10)
     } else {
         dg = plot_empty_dygraph(isolate(input$DATE4), plotgroup='oneSiteNVar',
@@ -248,16 +248,16 @@ output$GRAPH_MAIN4c <- renderDygraph({
     plotvars = isolate(input$SOLUTES4)[7:min(c(n_vars, 9))]
 
     input = list(CONC_FLUX4='Concentration', CONC_UNIT4='ug/L')
-    varnames = filter(grabvars, variable_code %in% plotvars) %>%
+    varnames = filter(grabvars, variable_code %in% plotvars) |>
         mutate(combined=case_when(! variable_code %in% conc_vars ~
                 paste0(variable_name, ' (', unit, ')'),
             variable_code %in% conc_vars & input$CONC_FLUX4 == 'Concentration' ~
                 paste0(variable_name, ' (', input$CONC_UNIT4, ')'),
             variable_code %in% conc_vars & input$CONC_FLUX4 == 'Flux' ~
-                paste0(variable_name, ' (', input$FLUX_UNIT4, ')'))) %>%
+                paste0(variable_name, ' (', input$FLUX_UNIT4, ')'))) |>
         select(variable_name, unit, combined)
 
-    widedat = isolate(data4()) %>%
+    widedat = isolate(data4()) |>
         select(datetime, one_of(plotvars))
 
     if(nrow(widedat)){
@@ -265,11 +265,11 @@ output$GRAPH_MAIN4c <- renderDygraph({
         dydat = xts(widedat[, plotvars], order.by=widedat$datetime, tzone='UTC')
         dimnames(dydat) = list(NULL, varnames$combined)
 
-        dg = dygraph(dydat, group='oneSiteNVar') %>%
+        dg = dygraph(dydat, group='oneSiteNVar') |>
             dyOptions(useDataTimezone=TRUE, drawPoints=FALSE,
-                colors=linecolors, strokeWidth=2) %>%
+                colors=linecolors, strokeWidth=2) |>
             dyLegend(show='always', labelsSeparateLines=FALSE,
-                labelsDiv='main4c') %>%
+                labelsDiv='main4c') |>
             dyAxis('y', label=NULL, pixelsPerLabel=20, rangePad=10)
     } else {
         dg = plot_empty_dygraph(isolate(input$DATE4), plotgroup='oneSiteNVar',
@@ -289,9 +289,9 @@ output$GRAPH_FLOW4 <- renderDygraph({
             tzone='UTC')
         dimnames(dydat) = list(NULL, 'Q')
 
-        dg = dygraph(dydat, group='oneSiteNVar') %>%
+        dg = dygraph(dydat, group='oneSiteNVar') |>
             dyOptions(useDataTimezone=TRUE, drawPoints=FALSE, fillGraph=TRUE,
-                colors='#4b92cc', strokeWidth=2, fillAlpha=0.25) %>%
+                colors='#4b92cc', strokeWidth=2, fillAlpha=0.25) |>
             dyAxis('y', label='Q (L/s)', labelWidth=16, labelHeight=10,
                 pixelsPerLabel=10, rangePad=10)
     } else {

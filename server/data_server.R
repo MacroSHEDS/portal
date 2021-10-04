@@ -7,9 +7,9 @@
 #                                  rowHeaders = NULL,
 #                                  # search = TRUE,
 #                                  height = 700,
-#                                  readOnly = TRUE) %>%
-#         rhandsontable::hot_cols(colWidths = 100) %>%
-#         rhandsontable::hot_rows(rowHeights = 50) %>%
+#                                  readOnly = TRUE) |>
+#         rhandsontable::hot_cols(colWidths = 100) |>
+#         rhandsontable::hot_rows(rowHeights = 50) |>
 #         rhandsontable::hot_table(overflow = 'hidden')
 # })
 
@@ -71,12 +71,12 @@ output$DL_SUBMIT_SITE <- downloadHandler(
         dlset <- select(site_data_copy,
                         network, pretty_network, domain, pretty_domain, site_code,
                         epsg_code = CRS,
-                        timezone_olson = local_time_zone) %>%
+                        timezone_olson = local_time_zone) |>
             right_join(read_csv('data/general/catalog_files/all_sites.csv',
                        col_types = cols()),
                       by = c(pretty_network = 'Network',
                              pretty_domain = 'Domain',
-                             site_code = 'SiteCode')) %>%
+                             site_code = 'SiteCode')) |>
             select(network,
                    network_fullname = pretty_network,
                    domain,
@@ -106,8 +106,8 @@ output$DL_SUBMIT_VAR <- downloadHandler(
     content = function(file){
 
         dlset <- read_csv('data/general/catalog_files/all_variables.csv',
-                          col_types = cols()) %>%
-            # mutate(method = 'pending') %>% #TODO: include method info?
+                          col_types = cols()) |>
+            # mutate(method = 'pending') |> #TODO: include method info?
             select(variable_code = VariableCode,
                    variable_name = VariableName,
                    chem_category = ChemCategory,

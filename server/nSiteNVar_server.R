@@ -310,7 +310,7 @@ observe({
 timeSliderUpdate <- reactive({
     input$DATES3
     return()
-}) %>%
+}) |>
     debounce(1000)
 
 
@@ -537,34 +537,34 @@ dataVWC <- reactive({
                                     show_flagged = show_flagged,
                                     show_imputed = show_imputed)
 
-    period_mean_Q <- dataq %>%
-        mutate(datetime = lubridate::floor_date(datetime, unit = agg_unit)) %>%
-        group_by(site_code, datetime) %>%
+    period_mean_Q <- dataq |>
+        mutate(datetime = lubridate::floor_date(datetime, unit = agg_unit)) |>
+        group_by(site_code, datetime) |>
         #divisor of vwc is MEAN(Q) (unlike Pvwc), because Q is expressed as a rate (L/s)
         summarize(val = mean(val, na.rm = TRUE),
                   ms_status = numeric_any(ms_status),
                   ms_interp = numeric_any(ms_interp),
                   .groups = 'drop')
 
-    datavwc <- dataflux %>%
-        mutate(datetime = lubridate::floor_date(datetime, unit = agg_unit)) %>%
-        group_by(site_code, var, datetime) %>%
+    datavwc <- dataflux |>
+        mutate(datetime = lubridate::floor_date(datetime, unit = agg_unit)) |>
+        group_by(site_code, var, datetime) |>
         summarize(nday = sum(! is.na(val)),
                   #vwc dividend is a mean, not a sum, because flux is also a rate
                   val = mean(val, na.rm = TRUE),
                   ms_status = numeric_any(ms_status),
                   ms_interp = numeric_any(ms_interp),
-                  .groups = 'drop') %>%
-        filter(nday > period_complete_n * 0.1) %>%
+                  .groups = 'drop') |>
+        filter(nday > period_complete_n * 0.1) |>
         left_join(period_mean_Q,
                   by = c('datetime', 'site_code'),
-                  suffix = c('.flux', '.Q')) %>%
+                  suffix = c('.flux', '.Q')) |>
         left_join(site_data[c('site_code', 'ws_area_ha')],
-                  by = 'site_code') %>%
+                  by = 'site_code') |>
         #     mg/L = kg/ha/d  /  L/s  *  ha          ...
         mutate(val = val.flux / val.Q * ws_area_ha * 1e6 / 86400,
                ms_status = numeric_any_v(ms_status.flux, ms_status.Q),
-               ms_interp = numeric_any_v(ms_interp.flux, ms_interp.Q)) %>%
+               ms_interp = numeric_any_v(ms_interp.flux, ms_interp.Q)) |>
         select(datetime, site_code, var, val, ms_status, ms_interp)
 
     if(nrow(datavwc) == 0) return(datavwc)
@@ -745,32 +745,32 @@ dataPVWC <- reactive({
                                      show_flagged = show_flagged,
                                      show_imputed = show_imputed)
 
-    period_sum_P <- datap %>%
-        mutate(datetime = lubridate::floor_date(datetime, unit = agg_unit)) %>%
-        group_by(site_code, datetime) %>%
+    period_sum_P <- datap |>
+        mutate(datetime = lubridate::floor_date(datetime, unit = agg_unit)) |>
+        group_by(site_code, datetime) |>
         #divisor of Pvwc is SUM(P) (unlike vwc), because P is expressed as a length (mm)
         summarize(val = sum(val, na.rm = TRUE),
                   ms_status = numeric_any(ms_status),
                   ms_interp = numeric_any(ms_interp),
                   .groups = 'drop')
 
-    dataPvwc <- dataPflux %>%
-        mutate(datetime = lubridate::floor_date(datetime, unit = agg_unit)) %>%
-        group_by(site_code, var, datetime) %>%
+    dataPvwc <- dataPflux |>
+        mutate(datetime = lubridate::floor_date(datetime, unit = agg_unit)) |>
+        group_by(site_code, var, datetime) |>
         summarize(nday = sum(! is.na(val)),
                   #Pvwc dividend is a mean, not a sum, because flux is a rate
                   val = mean(val, na.rm = TRUE),
                   ms_status = numeric_any(ms_status),
                   ms_interp = numeric_any(ms_interp),
-                  .groups = 'drop') %>%
-        filter(nday > period_complete_n * 0.5) %>%
+                  .groups = 'drop') |>
+        filter(nday > period_complete_n * 0.5) |>
         left_join(period_sum_P,
                   by = c('datetime', 'site_code'),
-                  suffix = c('.flux', '.P')) %>%
+                  suffix = c('.flux', '.P')) |>
              #mg/L = kg/ha/d  /  mm (~ per month or per year) * 1e6 / 1e4 * d
         mutate(val = val.flux / val.P * 100 * period_complete_n,
                ms_status = numeric_any_v(ms_status.flux, ms_status.P),
-               ms_interp = numeric_any_v(ms_interp.flux, ms_interp.P)) %>%
+               ms_interp = numeric_any_v(ms_interp.flux, ms_interp.P)) |>
         select(datetime, site_code, var, val, ms_status, ms_interp)
 
     if(nrow(dataPvwc) == 0) return(dataPvwc)
@@ -929,13 +929,13 @@ output$GRAPH_PRECIP3 <- renderDygraph({
 
     tryCatch(
         {
-            dataP <- dataP %>%
+            dataP <- dataP |>
                 # filter(datetime >= dates[1],
-                #        datetime <= dates[2]) %>%
-                dplyr::rename_with(~ gsub('_precipitation', '', .x)) %>%
+                #        datetime <= dates[2]) |>
+                dplyr::rename_with(~ gsub('_precipitation', '', .x)) |>
                 tidyr::pivot_wider(names_from = site_code,
                                    values_from = c('val', 'ms_status',
-                                                   'ms_interp')) %>%
+                                                   'ms_interp')) |>
                 dplyr::rename_with(~ gsub('val_', '', .x))
         },
         error = function(e) NULL
@@ -963,7 +963,7 @@ output$GRAPH_PRECIP3 <- renderDygraph({
         #                                        displabs = displabs)
 
         dg <- dygraph(dydat,
-                      group = 'nSiteNVar') %>%
+                      group = 'nSiteNVar') |>
             dyOptions(useDataTimezone = TRUE,
                       fillGraph = TRUE,
                       retainDateWindow = TRUE,
@@ -1000,10 +1000,10 @@ output$GRAPH_PRECIP3 <- renderDygraph({
                       #     colorvec = linecolors
                       # ),
 
-            ) %>%
+            ) |>
             dyLegend(show = 'always',
                      labelsSeparateLines = FALSE,
-                     labelsDiv = 'P3') %>%
+                     labelsDiv = 'P3') |>
             dyAxis('y',
                    label = 'P (mm)',
                    valueRange = c(ymax + ymax * 0.1,
@@ -1012,7 +1012,7 @@ output$GRAPH_PRECIP3 <- renderDygraph({
                    labelHeight = 10,
                    pixelsPerLabel = 10,
                    rangePad = 10)
-            # # dyCSS('~/git/macrosheds/portal/www/dygraph.css') %>%
+            # # dyCSS('~/git/macrosheds/portal/www/dygraph.css') |>
             # dyAnnotation(x = watermark_specs$dt,
             #              text = 'macrosheds.org',
             #              attachAtBottom = TRUE,
@@ -1031,7 +1031,7 @@ output$GRAPH_PRECIP3 <- renderDygraph({
         #                axis = 'y',
         #                drawPoints = TRUE,
         #                strokeWidth = 0,
-        #                pointSize = 1) %>%
+        #                pointSize = 1) |>
         #     dyOptions(stackedGraph = TRUE)
         # dg2
 
@@ -1040,7 +1040,7 @@ output$GRAPH_PRECIP3 <- renderDygraph({
         dg <- plot_empty_dygraph(dates,
                                  plotgroup = 'nSiteNVar',
                                  ylab = 'P (mm)',
-                                 px_per_lab = 10) %>%
+                                 px_per_lab = 10) |>
             dyLegend(show = 'always',
                      labelsSeparateLines = FALSE,
                      labelsDiv = 'P3')
@@ -1143,10 +1143,10 @@ output$GRAPH_MAIN3a <- renderDygraph({
 
         if(show_uncert){
 
-            alldata <- alldata %>%
+            alldata <- alldata |>
                 mutate(across(any_of(included_cols),
                        .fns = list(errhi = ~(errors::drop_errors(.) +
-                                                 errors::errors(.))))) %>%
+                                                 errors::errors(.))))) |>
                 mutate(across(any_of(included_cols),
                        .fns = list(errlo = ~(errors::drop_errors(.) -
                                                  errors::errors(.)))))
@@ -1165,7 +1165,7 @@ output$GRAPH_MAIN3a <- renderDygraph({
                           FALSE)
 
         dg <- dygraph(dydat,#[,1:2],
-                      group = 'nSiteNVar') %>%
+                      group = 'nSiteNVar') |>
             dyOptions(useDataTimezone = TRUE,
                       retainDateWindow = TRUE,
 
@@ -1193,18 +1193,18 @@ output$GRAPH_MAIN3a <- renderDygraph({
                       #     colorvec = linecolors
                       # ),
 
-                      connectSeparatedPoints = is_inst) %>%
+                      connectSeparatedPoints = is_inst) |>
             dyLegend(show = 'always',
                      labelsSeparateLines = FALSE,
-                     labelsDiv = 'main3a') %>%#
+                     labelsDiv = 'main3a') |>#
             dyAxis('y',
                    label = ylabel,
                    labelWidth = 16,
                    labelHeight = 10,
                    pixelsPerLabel = 20,
                    rangePad = 10)
-            # # dyCSS('~/git/macrosheds/portal/www/dygraph.css') %>%
-            # # dyCSS('www/dygraph.css') %>%
+            # # dyCSS('~/git/macrosheds/portal/www/dygraph.css') |>
+            # # dyCSS('www/dygraph.css') |>
             # dyAnnotation(x = watermark_specs$dt,
             #              text = 'macrosheds.org',
             #              attachAtBottom = TRUE,
@@ -1278,7 +1278,7 @@ output$GRAPH_MAIN3a <- renderDygraph({
                                  maindiv = 'main3a',#
                                  plotgroup = 'nSiteNVar',
                                  ylab = ylabel,
-                                 px_per_lab = 20) %>%
+                                 px_per_lab = 20) |>
             dyLegend(show = 'always',
                      labelsSeparateLines = FALSE,
                      labelsDiv = 'main3a')
@@ -1335,10 +1335,10 @@ output$GRAPH_QC3a <- renderPlot({
 
     if(reactive_vals$facet3a == 0 || ! show_qc) return()
 
-    alldata <- datachem %>%
+    alldata <- datachem |>
         # filter(datetime >= dates[1],
-        #        datetime <= dates[2]) %>%
-        select(c('datetime', 'site_code', ends_with(varA))) %>%
+        #        datetime <= dates[2]) |>
+        select(c('datetime', 'site_code', ends_with(varA))) |>
         inner_join(dataq,
                    by = c("datetime", "site_code"))
 
@@ -1349,14 +1349,14 @@ output$GRAPH_QC3a <- renderPlot({
 
     if(show_uncert){
 
-        alldata <- alldata %>%
+        alldata <- alldata |>
             mutate(across(starts_with('val_'),
                           .fns = list(errhi = ~(errors::drop_errors(.) +
-                                                    errors::errors(.))))) %>%
+                                                    errors::errors(.))))) |>
             mutate(across(starts_with('val_') &
                               ! ends_with('_errhi'),
                           .fns = list(errlo = ~(errors::drop_errors(.) -
-                                                    errors::errors(.))))) %>%
+                                                    errors::errors(.))))) |>
             mutate(across(starts_with('val_') &
                               ! ends_with(c('_errhi', '_errlo')),
                           errors::drop_errors))
@@ -1489,10 +1489,10 @@ output$GRAPH_MAIN3b <- renderDygraph({
 
         if(show_uncert){
 
-            alldata <- alldata %>%
+            alldata <- alldata |>
                 mutate(across(any_of(included_cols),
                               .fns = list(errhi = ~(errors::drop_errors(.) +
-                                                        errors::errors(.))))) %>%
+                                                        errors::errors(.))))) |>
                 mutate(across(any_of(included_cols),
                               .fns = list(errlo = ~(errors::drop_errors(.) -
                                                         errors::errors(.)))))
@@ -1511,7 +1511,7 @@ output$GRAPH_MAIN3b <- renderDygraph({
                           FALSE)
 
         dg <- dygraph(dydat,
-                      group = 'nSiteNVar') %>%
+                      group = 'nSiteNVar') |>
             dyOptions(useDataTimezone = TRUE,
                       retainDateWindow = TRUE,
 
@@ -1526,10 +1526,10 @@ output$GRAPH_MAIN3b <- renderDygraph({
                       drawGapEdgePoints = TRUE,
                       labelsKMB = TRUE,
 
-                      connectSeparatedPoints = is_inst) %>%
+                      connectSeparatedPoints = is_inst) |>
             dyLegend(show = 'always',
                      labelsSeparateLines = FALSE,
-                     labelsDiv = 'main3b') %>%
+                     labelsDiv = 'main3b') |>
             dyAxis('y',
                    label = ylabel,
                    labelWidth = 16,
@@ -1599,7 +1599,7 @@ output$GRAPH_MAIN3b <- renderDygraph({
                                  maindiv = 'main3b',
                                  plotgroup = 'nSiteNVar',
                                  ylab = ylabel,
-                                 px_per_lab = 20) %>%
+                                 px_per_lab = 20) |>
             dyLegend(show = 'always',
                      labelsSeparateLines = FALSE,
                      labelsDiv = 'main3b')
@@ -1656,10 +1656,10 @@ output$GRAPH_QC3b <- renderPlot({
 
     if(isolate(reactive_vals$facet3b) == 0 || ! show_qc) return()
 
-    alldata <- datachem %>%
+    alldata <- datachem |>
         # filter(datetime >= dates[1],
-        #        datetime <= dates[2]) %>%
-        select(c('datetime', 'site_code', ends_with(varB))) %>%
+        #        datetime <= dates[2]) |>
+        select(c('datetime', 'site_code', ends_with(varB))) |>
         inner_join(dataq,
                    by = c("datetime", "site_code"))
 
@@ -1670,14 +1670,14 @@ output$GRAPH_QC3b <- renderPlot({
 
     if(show_uncert){
 
-        alldata <- alldata %>%
+        alldata <- alldata |>
             mutate(across(starts_with('val_'),
                           .fns = list(errhi = ~(errors::drop_errors(.) +
-                                                    errors::errors(.))))) %>%
+                                                    errors::errors(.))))) |>
             mutate(across(starts_with('val_') &
                               ! ends_with('_errhi'),
                           .fns = list(errlo = ~(errors::drop_errors(.) -
-                                                    errors::errors(.))))) %>%
+                                                    errors::errors(.))))) |>
             mutate(across(starts_with('val_') &
                               ! ends_with(c('_errhi', '_errlo')),
                           errors::drop_errors))
@@ -1812,10 +1812,10 @@ output$GRAPH_MAIN3c <- renderDygraph({
 
         if(show_uncert){
 
-            alldata <- alldata %>%
+            alldata <- alldata |>
                 mutate(across(any_of(included_cols),
                               .fns = list(errhi = ~(errors::drop_errors(.) +
-                                                        errors::errors(.))))) %>%
+                                                        errors::errors(.))))) |>
                 mutate(across(any_of(included_cols),
                               .fns = list(errlo = ~(errors::drop_errors(.) -
                                                         errors::errors(.)))))
@@ -1834,7 +1834,7 @@ output$GRAPH_MAIN3c <- renderDygraph({
                           FALSE)
 
         dg <- dygraph(dydat,
-                      group = 'nSiteNVar') %>%
+                      group = 'nSiteNVar') |>
             dyOptions(useDataTimezone = TRUE,
                       retainDateWindow = TRUE,
 
@@ -1849,10 +1849,10 @@ output$GRAPH_MAIN3c <- renderDygraph({
                       drawGapEdgePoints = TRUE,
                       labelsKMB = TRUE,
 
-                      connectSeparatedPoints = is_inst) %>%
+                      connectSeparatedPoints = is_inst) |>
             dyLegend(show = 'always',
                      labelsSeparateLines = FALSE,
-                     labelsDiv = 'main3c') %>%
+                     labelsDiv = 'main3c') |>
             dyAxis('y',
                    label = ylabel,
                    labelWidth = 16,
@@ -1922,7 +1922,7 @@ output$GRAPH_MAIN3c <- renderDygraph({
                                  maindiv = 'main3c',
                                  plotgroup = 'nSiteNVar',
                                  ylab = ylabel,
-                                 px_per_lab = 20) %>%
+                                 px_per_lab = 20) |>
             dyLegend(show = 'always',
                      labelsSeparateLines = FALSE,
                      labelsDiv = 'main3c')
@@ -1979,10 +1979,10 @@ output$GRAPH_QC3c <- renderPlot({
 
     if(isolate(reactive_vals$facet3a) == 0 || ! show_qc) return()
 
-    alldata <- datachem %>%
+    alldata <- datachem |>
         # filter(datetime >= dates[1],
-        #        datetime <= dates[2]) %>%
-        select(c('datetime', 'site_code', ends_with(varC))) %>%
+        #        datetime <= dates[2]) |>
+        select(c('datetime', 'site_code', ends_with(varC))) |>
         inner_join(dataq,
                    by = c("datetime", "site_code"))
 
@@ -1993,14 +1993,14 @@ output$GRAPH_QC3c <- renderPlot({
 
     if(show_uncert){
 
-        alldata <- alldata %>%
+        alldata <- alldata |>
             mutate(across(starts_with('val_'),
                           .fns = list(errhi = ~(errors::drop_errors(.) +
-                                                    errors::errors(.))))) %>%
+                                                    errors::errors(.))))) |>
             mutate(across(starts_with('val_') &
                               ! ends_with('_errhi'),
                           .fns = list(errlo = ~(errors::drop_errors(.) -
-                                                    errors::errors(.))))) %>%
+                                                    errors::errors(.))))) |>
             mutate(across(starts_with('val_') &
                               ! ends_with(c('_errhi', '_errlo')),
                           errors::drop_errors))
@@ -2053,13 +2053,13 @@ output$GRAPH_Q3 <- renderDygraph({
 
     tryCatch(
         {
-            dataq <- dataq %>%
+            dataq <- dataq |>
                 # filter(datetime >= dates[1],
-                #        datetime <= dates[2]) %>%
-                dplyr::rename_with(~ gsub('_discharge', '', .x)) %>%
+                #        datetime <= dates[2]) |>
+                dplyr::rename_with(~ gsub('_discharge', '', .x)) |>
                 tidyr::pivot_wider(names_from = site_code,
                                    values_from = c('val', 'ms_status',
-                                                   'ms_interp')) %>%
+                                                   'ms_interp')) |>
                 dplyr::rename_with(~ gsub('val_', '', .x))
         },
         error = function(e) NULL
@@ -2089,7 +2089,7 @@ output$GRAPH_Q3 <- renderDygraph({
         dimnames(dydat) <- list(NULL, displabs)
 
         dg <- dygraph(dydat,
-                      group = 'nSiteNVar') %>%
+                      group = 'nSiteNVar') |>
             dyOptions(useDataTimezone = TRUE,
                       drawPoints = FALSE,
                       fillGraph = TRUE,
@@ -2102,10 +2102,10 @@ output$GRAPH_Q3 <- renderDygraph({
                           colorvec = linecolors
                       ),
                       labelsKMB = TRUE,
-                      drawGapEdgePoints = TRUE) %>%
+                      drawGapEdgePoints = TRUE) |>
             dyLegend(show = 'always',
                      labelsSeparateLines = FALSE,
-                     labelsDiv = 'Q3') %>%
+                     labelsDiv = 'Q3') |>
             dyAxis('y',
                    label = 'Q (L/s)',
                    labelWidth = 16,
@@ -2118,7 +2118,7 @@ output$GRAPH_Q3 <- renderDygraph({
         dg <- plot_empty_dygraph(dates,
                                  plotgroup = 'nSiteNVar',
                                  ylab = 'Q (L/s)',
-                                 px_per_lab = 10) %>%
+                                 px_per_lab = 10) |>
             dyLegend(show = 'always',
                      labelsSeparateLines = FALSE,
                      labelsDiv = 'Q3')

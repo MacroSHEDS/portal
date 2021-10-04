@@ -44,14 +44,14 @@ plot_empty_dygraph = function(datelims, mainlab='', maindiv=NULL, plotgroup,
     emptydat = xts(emptydat, order.by=dateseq, tzone='UTC')
     dimnames(emptydat) = list(NULL, mainlab)
 
-    dg = dygraph(emptydat, group=plotgroup) %>%
+    dg = dygraph(emptydat, group=plotgroup) |>
         dyOptions(useDataTimezone=TRUE, drawPoints=FALSE,
-            colors='transparent', retainDateWindow=TRUE) %>%
+            colors='transparent', retainDateWindow=TRUE) |>
         dyAxis('y', label=ylab, labelWidth=16, labelHeight=10,
             pixelsPerLabel=px_per_lab, rangePad=10)
 
     if(! is.null(maindiv)){
-        dg = dg %>%
+        dg = dg |>
             dyLegend(show='always', labelsSeparateLines=FALSE,
                 labelsDiv=maindiv)
     }
@@ -93,9 +93,9 @@ get_timeslider_extent = function(basedata, selected_daterange){
         dset = tibble(datetime=selected_daterange)
     }
 
-    dtrng = dset %>%
-        mutate(datetime = as.Date(datetime)) %>%
-        pull(datetime) %>%
+    dtrng = dset |>
+        mutate(datetime = as.Date(datetime)) |>
+        pull(datetime) |>
         range(., na.rm=TRUE)
 
     return(dtrng)
@@ -246,7 +246,7 @@ strip_colname_clutter <- function(column_names){
 
     uncluttered <- gsub(pattern = '^(ms_interp_|ms_status_|val_)',
                         replacement = '',
-                        column_names) %>%
+                        column_names) |>
         unique()
 
     return(uncluttered)
@@ -261,7 +261,7 @@ pad_ts <- function(d,
                    datebounds){
 
     dtcol <- as.POSIXct(datebounds,
-                        tz = 'UTC') %>%
+                        tz = 'UTC') |>
         lubridate::with_tz(lubridate::tz(d$datetime[1]))
 
     ms_cols <- grep(pattern = '(?:P_)?ms_(status|interp)_',
@@ -360,10 +360,10 @@ get_sitelist <- function(domain, type){
 
     #type is one or more of the types listed in site_data.csv, e.g. 'stream_gauge'
 
-    sitelist <- site_data %>%
+    sitelist <- site_data |>
         filter(domain == !!domain,
                # network == !!network, #we should eventually observe hierarchy all the way up to the network
-               site_type %in% !!type) %>%
+               site_type %in% !!type) |>
         pull(site_code)
 
     return(sitelist)
@@ -377,9 +377,9 @@ try_read_feather <- function(path){
     if('try-error' %in% class(out)){
         out <- tibble()
     } else {
-        out <- out %>%
+        out <- out |>
             mutate(val = errors::set_errors(val,
-                                            val_err)) %>%
+                                            val_err)) |>
             select(-val_err)
     }
 
@@ -395,9 +395,9 @@ read_combine_feathers <- function(var, dmns, sites = NULL){
     #in case duplicate sitenames do appear, this will make it a bit less
     #likely that there's a collision. this can be simplified if js solution
     #is implemented
-    dmn_sites <- site_data %>%
-        filter(domain %in% dmns, site_type %in% c('stream_gauge', 'stream_sampling_point')) %>%
-        filter(site_code %in% sites) %>%
+    dmn_sites <- site_data |>
+        filter(domain %in% dmns, site_type %in% c('stream_gauge', 'stream_sampling_point')) |>
+        filter(site_code %in% sites) |>
         select(domain, site_code)
 
     combined_data <- tibble()
@@ -425,9 +425,9 @@ generate_dropdown_varlist = function(chemvars, filter_set=NULL){
         chemvars = filter(chemvars, variable_code %in% filter_set)
     }
 
-    chemvars = chemvars %>%
-        mutate(displayname=paste0(variable_name, ' (', unit, ')')) %>%
-    select(displayname, variable_code, variable_subtype) %>%
+    chemvars = chemvars |>
+        mutate(displayname=paste0(variable_name, ' (', unit, ')')) |>
+    select(displayname, variable_code, variable_subtype) |>
         plyr::dlply(plyr::.(variable_subtype), function(x){
             plyr::daply(x, plyr::.(displayname), function(y){
                 y['variable_code']
@@ -488,7 +488,7 @@ numeric_any_v <- function(...){
     }
 
     out <- do.call(numeric_any_elementwise,
-                   args = list(...)) %>%
+                   args = list(...)) |>
         unlist()
 
     if(is.null(out)) out <- numeric()
@@ -513,10 +513,10 @@ ms_aggregate <- function(d, agg_selection){#, conc_flux_selection = NULL){
     # var_is_q <- d$var[1] == 'discharge'
 
     # #round to desired_interval and summarize
-    # d <- sw(d %>%
+    # d <- sw(d |>
     #     mutate(datetime = lubridate::floor_date(datetime,
-    #                                             agg_period)) %>%
-    #     group_by(site_code, var, datetime) %>%
+    #                                             agg_period)) |>
+    #     group_by(site_code, var, datetime) |>
     #     summarize(
     #         val = if(n() > 1){
     #             if(var_is_p){
@@ -536,10 +536,10 @@ ms_aggregate <- function(d, agg_selection){#, conc_flux_selection = NULL){
         period_complete_n <- ifelse(agg_period == 'month', 30, 365)
 
         #round to desired_interval and summarize
-        d <- sw(d %>%
+        d <- sw(d |>
             mutate(datetime = lubridate::floor_date(datetime,
-                                                    agg_period)) %>%
-            group_by(site_code, var, datetime) %>%
+                                                    agg_period)) |>
+            group_by(site_code, var, datetime) |>
             summarize(
                 nday = sum(! is.na(val)),
                 val = if(n() > 1){
@@ -553,19 +553,19 @@ ms_aggregate <- function(d, agg_selection){#, conc_flux_selection = NULL){
                 },
                 ms_status = numeric_any(ms_status),
                 ms_interp = numeric_any(ms_interp),
-                .groups = 'drop') %>%
-            filter(nday > period_complete_n * 0.1) %>%
-            group_by(site_code, var) %>%
+                .groups = 'drop') |>
+            filter(nday > period_complete_n * 0.1) |>
+            group_by(site_code, var) |>
             tidyr::complete(datetime = seq(min(datetime),
                                            max(datetime),
                                            by = agg_period)))
     } else {
 
         #round to desired_interval and summarize
-        d <- sw(d %>%
+        d <- sw(d |>
             mutate(datetime = lubridate::floor_date(datetime,
-                                                    agg_period)) %>%
-            group_by(site_code, var, datetime) %>%
+                                                    agg_period)) |>
+            group_by(site_code, var, datetime) |>
             summarize(
                 val = if(n() > 1){
                     if(var_is_p){
@@ -660,10 +660,10 @@ pad_widen_join <- function(v,
 
     if(streamdata_exist && v_present){
 
-        streamdata <- streamdata %>%
+        streamdata <- streamdata |>
             select(- ! ends_with(paste0('_', v)),
                    datetime,
-                   site_code) %>%
+                   site_code) |>
             tidyr::pivot_wider(names_from = site_code,
                                values_from = paste0('val_', v))
 
@@ -675,12 +675,12 @@ pad_widen_join <- function(v,
 
         if(raindata_exist){
 
-            raindata <- raindata %>%
+            raindata <- raindata |>
                 select(- ! ends_with(paste0('_', v)),
                        datetime,
-                       site_code) %>%
+                       site_code) |>
                 tidyr::pivot_wider(names_from = site_code,
-                                   values_from = paste0('val_', v)) %>%
+                                   values_from = paste0('val_', v)) |>
                 rename_with(~paste0('P_', .),
                             .cols = -datetime)
                             # .cols = any_of(!!sites))
@@ -744,8 +744,8 @@ manufacture_empty_plotdata = function(sites){
 
     outdata = matrix(NA, ncol=length(sites) + 1, nrow=0,
         dimnames=list(NULL, c('datetime', sites)))
-    outdata = as_tibble(outdata) %>%
-        mutate_all(as.numeric) %>%
+    outdata = as_tibble(outdata) |>
+        mutate_all(as.numeric) |>
         mutate(datetime = as.POSIXct(datetime, origin='1970-01-01'))
 
     return(outdata)
@@ -793,8 +793,8 @@ selection_color_match <- function(sites_selected,
 
 get_local_solar_time <- function(df, time_scheme) {
 
-    df <- site_data %>%
-        select(longitude, local_time_zone, site_code) %>%
+    df <- site_data |>
+        select(longitude, local_time_zone, site_code) |>
         right_join(df,
                    by = 'site_code')
 
@@ -808,19 +808,19 @@ get_local_solar_time <- function(df, time_scheme) {
 
     for(i in 1:length(sites)){
 
-        times <- df %>%
-            filter(site_code == !!sites[i]) %>%
+        times <- df |>
+            filter(site_code == !!sites[i]) |>
             mutate(Local = force_tz(with_tz(datetime,
                                             tzone = local_time_zone),
-                                    tzone = 'UTC')) %>%
+                                    tzone = 'UTC')) |>
             mutate(local_dif = Local - datetime,
-                   doy = yday(datetime)) %>%
+                   doy = yday(datetime)) |>
             mutate(solar_dif = solartime::computeSolarToLocalTimeDifference(
                 longitude,
                 local_dif,
-                doy)) %>%
-            mutate(Solar = Local + seconds(solar_dif * 60 * 60)) %>%
-            mutate(datetime = .data[[time_scheme]]) %>%
+                doy)) |>
+            mutate(Solar = Local + seconds(solar_dif * 60 * 60)) |>
+            mutate(datetime = .data[[time_scheme]]) |>
             select(-solar_dif, -doy, -local_dif, -Local, -Solar, -longitude,
                    -local_time_zone)
 
@@ -834,8 +834,8 @@ get_local_solar_time <- function(df, time_scheme) {
 
 convertible <- function(var) {
 
-    test <- pull(variables %>%
-                          filter(variable_code == var) %>%
+    test <- pull(variables |>
+                          filter(variable_code == var) |>
                           select(unit))
 
     if(length(test) == 0 || is.na(test)){
@@ -911,26 +911,26 @@ convert_flux_units_bi = function(df, col, input_unit='kg/ha/year', desired_unit,
 
         if('area' %in% colnames(df)){
 
-            df <- df %>%
+            df <- df |>
                 mutate(!!flux_cols := .data[[flux_cols]]*area)
 
         } else{
 
            # summary_file <- read_feather('data/general/biplot/year.feather')
 
-            sites <- df %>%
+            sites <- df |>
                 pull(site_code)
 
             sites <- unique(sites)
 
-            areas <- summary_file %>%
+            areas <- summary_file |>
                 filter(site_code %in% sites,
-                       var == 'area') %>%
+                       var == 'area') |>
                 select(site_code, area=val)
 
-            df <- df %>%
-                left_join(., areas, by = 'site_code') %>%
-                mutate(!!flux_cols := .data[[flux_cols]]*area) %>%
+            df <- df |>
+                left_join(., areas, by = 'site_code') |>
+                mutate(!!flux_cols := .data[[flux_cols]]*area) |>
                 select(-area)
         }
     }
@@ -967,32 +967,32 @@ convert_area_nor_q_bi = function(df, summary_file){
 
     if('area' %in% colnames(df)){
 
-        df <- df %>%
-            mutate(discharge = discharge/(area*10000)) %>%
+        df <- df |>
+            mutate(discharge = discharge/(area*10000)) |>
             filter(!is.na(discharge))
 
     } else{
 
        # summary_file <- read_feather('data/general/biplot/year.feather')
 
-        sites <- df %>%
+        sites <- df |>
             pull(site_code)
 
         sites <- unique(sites)
 
-        areas <- summary_file %>%
+        areas <- summary_file |>
             filter(site_code %in% sites,
-                   var == 'area') %>%
+                   var == 'area') |>
             select(site_code, area=val)
 
-        df <- df %>%
-            left_join(., areas, by = 'site_code') %>%
-            mutate(discharge = discharge/(area*10000)) %>%
-            select(-area) %>%
+        df <- df |>
+            left_join(., areas, by = 'site_code') |>
+            mutate(discharge = discharge/(area*10000)) |>
+            select(-area) |>
             filter(!is.na(discharge))
     }
 
-    df <- df %>%
+    df <- df |>
         rename(discharge_a = discharge)
 
     return(df)
@@ -1048,28 +1048,28 @@ load_portal_config <- function(from_where){
 
 generate_dropdown_varlist_ws = function(variables){
 
-    biplot_summary_file <- read_feather('data/general/biplot/year.feather') %>%
-        pull(var) %>%
+    biplot_summary_file <- read_feather('data/general/biplot/year.feather') |>
+        pull(var) |>
         unique()
 
-    ws_vars_table <- variables %>%
-        filter(variable_type == 'ws_char') %>%
+    ws_vars_table <- variables |>
+        filter(variable_type == 'ws_char') |>
         filter(! variable_code %in% c('cc_precip_sd', 'cc_precip_median',
                                       'cc_temp_mean_sd', 'cc_temp_mean_median',
                                       'vb_lai_median', 'vb_lai_sd', 'vb_fpar_median',
                                       'vb_fpar_sd', 'va_gpp_median', 'va_gpp_sd',
                                       'vb_ndvi_median', 'vb_ndvi_sd', 'vh_tcw_sd',
-                                      'vh_tcw_median')) %>%
-        filter(variable_code %in% biplot_summary_file) %>%
+                                      'vh_tcw_median')) |>
+        filter(variable_code %in% biplot_summary_file) |>
         mutate(displayname = ifelse(! is.na(unit),
                                     paste0(variable_name,
                                            ' (',
                                            unit,
                                            ')'),
-                                    variable_name)) %>%
+                                    variable_name)) |>
         select(displayname, variable_code, variable_subtype)
 
-    ws_vars <- ws_vars_table %>%
+    ws_vars <- ws_vars_table |>
         plyr::dlply(plyr::.(variable_subtype), function(x){
             plyr::daply(x, plyr::.(displayname), function(y){
                 y['variable_code']
@@ -1083,8 +1083,8 @@ generate_dropdown_varlist_ws = function(variables){
 
     for(i in 1:length(legnth_1_vars)){
         var <- ws_vars[[legnth_1_vars[i]]]
-        var_name <- ws_vars_table %>%
-            filter(variable_code == !!var) %>%
+        var_name <- ws_vars_table |>
+            filter(variable_code == !!var) |>
             pull(displayname)
 
         names(ws_vars[[legnth_1_vars[i]]]) <- var_name
@@ -1151,9 +1151,9 @@ extract_var_prefix <- function(x){
 
 get_default_site <- function(domain){
 
-    site <- network_domain_default_sites %>%
-        filter(domain == !!domain) %>%
-               # network == !!network) %>% #TODO: observe network level in portal
+    site <- network_domain_default_sites |>
+        filter(domain == !!domain) |>
+               # network == !!network) |> #TODO: observe network level in portal
         pull(default_site)
     
     if(domain == 'hbef'){
@@ -1178,9 +1178,9 @@ ms_read_portalsite <- function(domain,
                            p = prodname,
                            s = site_code))
 
-    d <- d %>%
-        mutate(val = errors::set_errors(val, val_err)) %>%
-        select(-val_err) %>%
+    d <- d |>
+        mutate(val = errors::set_errors(val, val_err)) |>
+        select(-val_err) |>
         arrange(var, datetime)
 
     return(d)
@@ -1199,14 +1199,14 @@ filter_and_unprefix <- function(d,
     if(nrow(d) == 0) return(d)
 
     prefix_in_selected <- stringr::str_split(string = extract_var_prefix(d$var),
-                                             pattern = '') %>%
-                              purrr::map(~all(.x %in% selected_prefixes)) %>%
+                                             pattern = '') |>
+                              purrr::map(~all(.x %in% selected_prefixes)) |>
                               unlist()
 
     d <- filter(d,
                 prefix_in_selected,
                 drop_var_prefix(var) %in% selected_vars,
-                datetime >= selected_datebounds[1], datetime <= selected_datebounds[2]) %>%
+                datetime >= selected_datebounds[1], datetime <= selected_datebounds[2]) |>
         mutate(var = drop_var_prefix(var))
 
     if(! show_uncert){
@@ -1255,13 +1255,13 @@ biplot_selection_to_name <- function(chem, unit, var){
 
 detrmin_mean_record_length <- function(df){
 
-    test <- df %>%
-        filter(Year != year(Sys.Date())) %>%
-        group_by(Year, Month, Day) %>%
-        summarise(max = max(val, na.rm = TRUE)) %>%
-        ungroup() %>%
-        filter(!(Month == 2 & Day == 29)) %>%
-        group_by(Month, Day) %>%
+    test <- df |>
+        filter(Year != year(Sys.Date())) |>
+        group_by(Year, Month, Day) |>
+        summarise(max = max(val, na.rm = TRUE)) |>
+        ungroup() |>
+        filter(!(Month == 2 & Day == 29)) |>
+        group_by(Month, Day) |>
         summarise(n = n())
 
     if(mean(test$n, na.rm = TRUE) < 3){
@@ -1272,7 +1272,7 @@ detrmin_mean_record_length <- function(df){
 
         quart_val <- quantile(test$n, .2)
 
-        q_check <- test %>%
+        q_check <- test |>
             filter(n >= quart_val)
 
         days_in_rec <- nrow(q_check)
@@ -1321,9 +1321,9 @@ dt_ranges_overlap <- function(range1, range2){
 read_combine_ws_traits <- function(ws_prod, ws_var, new_var_name, dmns, 
                        sites = NULL, aggregate = FALSE){
 
-    dmn_sites <- site_data %>%
-        filter(domain %in% dmns, site_type %in% c('stream_gauge', 'stream_sampling_point')) %>%
-        filter(site_code %in% sites) %>%
+    dmn_sites <- site_data |>
+        filter(domain %in% dmns, site_type %in% c('stream_gauge', 'stream_sampling_point')) |>
+        filter(site_code %in% sites) |>
         select(domain, site_code)
     
     if(aggregate){ 
@@ -1346,11 +1346,11 @@ read_combine_ws_traits <- function(ws_prod, ws_var, new_var_name, dmns,
         if('try-error' %in% class(ws_file)){
             ws_file <- tibble()
         } else {
-            ws_file <- ws_file %>%
-                filter(var == !!ws_var) %>%
+            ws_file <- ws_file |>
+                filter(var == !!ws_var) |>
                 mutate(var := !!new_var_name,
                        ms_status = 0,
-                       ms_interp = 0) %>%
+                       ms_interp = 0) |>
                 mutate(val = errors::set_errors(val,
                                                 0)) 
         }

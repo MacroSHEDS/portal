@@ -18,10 +18,10 @@ compute_monthly_summary <- function(df) {
 
         sites <- str_split_fixed(site_files, pattern = '[.]', n = 2)[,1]
 
-        stream_sites <- site_data %>%
+        stream_sites <- site_data |>
             filter(domain == dom,
-                   site_type %in% c('stream_gauge')) %>%
-            filter(site_code %in% sites) %>%
+                   site_type %in% c('stream_gauge')) |>
+            filter(site_code %in% sites) |>
             pull(site_code)
 
         all_sites <- tibble()
@@ -43,19 +43,19 @@ compute_monthly_summary <- function(df) {
                 site_chem <- tibble()
             } else {
 
-                site_chem <- sm(read_feather(path_chem) %>%
+                site_chem <- sm(read_feather(path_chem) |>
                                     mutate(Year = year(datetime),
-                                           Month = month(datetime)) %>%
+                                           Month = month(datetime)) |>
                                     select(-datetime))
 
                 #site_chem <- cleve_var_prefix(site_chem)
 
-                site_chem <- site_chem %>%
-                    group_by(site_code, Year, Month, var) %>%
-                    summarise(val = mean(val, na.rm = TRUE)) %>%
-                    ungroup() %>%
-                    mutate(Date = ymd(paste(Year, Month, 1, sep = '-'))) %>%
-                    mutate(var = glue('{v}_conc', v = var)) %>%
+                site_chem <- site_chem |>
+                    group_by(site_code, Year, Month, var) |>
+                    summarise(val = mean(val, na.rm = TRUE)) |>
+                    ungroup() |>
+                    mutate(Date = ymd(paste(Year, Month, 1, sep = '-'))) |>
+                    mutate(var = glue('{v}_conc', v = var)) |>
                     mutate(domain = dom)
 
             }
@@ -64,24 +64,24 @@ compute_monthly_summary <- function(df) {
                     site_flux <- tibble()
                 } else {
 
-                    site_flux <- sm(read_feather(path_flux) %>%
+                    site_flux <- sm(read_feather(path_flux) |>
                                         mutate(Year = year(datetime),
-                                               Month = month(datetime)) %>%
+                                               Month = month(datetime)) |>
                                         select(-datetime))
 
                     #site_flux <- cleve_var_prefix(site_flux)
 
-                    site_flux <- site_flux %>%
-                        group_by(site_code, Year, Month, var) %>%
-                        summarise(val = mean(val, na.rm = TRUE)) %>%
+                    site_flux <- site_flux |>
+                        group_by(site_code, Year, Month, var) |>
+                        summarise(val = mean(val, na.rm = TRUE)) |>
                         mutate(m_factor = case_when(Month %in% c(1,3,5,7,8,10,12) ~ 31,
                                                     Month %in% c(4,6,9,11) ~ 30,
-                                                    Month == 2 ~ 28)) %>%
-                        mutate(val = val * m_factor) %>%
-                        mutate(Date = ymd(paste(Year, Month, 1, sep = '-'))) %>%
-                        ungroup() %>%
-                        select(-m_factor) %>%
-                        mutate(var = glue('{v}_flux', v = var)) %>%
+                                                    Month == 2 ~ 28)) |>
+                        mutate(val = val * m_factor) |>
+                        mutate(Date = ymd(paste(Year, Month, 1, sep = '-'))) |>
+                        ungroup() |>
+                        select(-m_factor) |>
+                        mutate(var = glue('{v}_flux', v = var)) |>
                         mutate(domain = dom)
                     site_flux[is.numeric(site_flux) & site_flux <= 0.00000001] <- NA
                 }
@@ -102,25 +102,25 @@ compute_monthly_summary <- function(df) {
                 site_q <- tibble()
             } else {
 
-                site_q <- sm(read_feather(path_q)) %>%
+                site_q <- sm(read_feather(path_q)) |>
                     mutate(Year = year(datetime),
                            Month = month(datetime),
                            day = day(datetime))
 
                 #site_q <- cleve_var_prefix(site_q)
 
-                site_q <- site_q %>%
-                    group_by(site_code, Year, Month, day) %>%
-                    summarise(val = mean(val, na.rm = TRUE)) %>%
-                    mutate(NAs = ifelse(is.na(val), 1, 0)) %>%
-                    ungroup() %>%
-                    group_by(site_code, Year, Month) %>%
+                site_q <- site_q |>
+                    group_by(site_code, Year, Month, day) |>
+                    summarise(val = mean(val, na.rm = TRUE)) |>
+                    mutate(NAs = ifelse(is.na(val), 1, 0)) |>
+                    ungroup() |>
+                    group_by(site_code, Year, Month) |>
                     summarise(val = sum(val*86400/1000, na.rm = TRUE),
-                              NAs = sum(NAs, na.rm = TRUE)) %>%
-                    mutate(Date = paste(Year, Month, 1, sep = '-')) %>%
-                    mutate(Date = ymd(Date)) %>%
-                    ungroup() %>%
-                    select(-NAs) %>%
+                              NAs = sum(NAs, na.rm = TRUE)) |>
+                    mutate(Date = paste(Year, Month, 1, sep = '-')) |>
+                    mutate(Date = ymd(Date)) |>
+                    ungroup() |>
+                    select(-NAs) |>
                     mutate(domain = dom,
                            var = 'IS_discharge')
 
@@ -156,10 +156,10 @@ compute_yearly_summary <- function(df,
 
         sites <- str_split_fixed(site_files, pattern = '[.]', n = 2)[,1]
 
-        stream_sites <- site_data %>%
+        stream_sites <- site_data |>
             filter(domain == dom,
-                   site_type == 'stream_gauge') %>%
-            filter(site_code %in% sites) %>%
+                   site_type == 'stream_gauge') |>
+            filter(site_code %in% sites) |>
             pull(site_code)
 
         all_sites <- tibble()
@@ -200,20 +200,20 @@ compute_yearly_summary <- function(df,
                     q_record_length <- 365
                 } else {
 
-                    site_q <- sm(read_feather(path_q)) %>%
+                    site_q <- sm(read_feather(path_q)) |>
                         mutate(Year = year(datetime),
                                Month = month(datetime),
-                               Day = day(datetime)) %>%
+                               Day = day(datetime)) |>
                         filter(Year != year(Sys.Date()))
 
                     q_record_length <- detrmin_mean_record_length(site_q)
 
                     if(filter_ms_interp){
-                        site_q <- site_q %>%
+                        site_q <- site_q |>
                             filter(ms_interp == 0)
                     }
                     if(filter_ms_status){
-                        site_q <- site_q %>%
+                        site_q <- site_q |>
                             filter(ms_status == 0)
                     }
 
@@ -222,21 +222,21 @@ compute_yearly_summary <- function(df,
                         q_record_length <- 365
                     } else{
 
-                        site_q <- site_q %>%
-                            group_by(site_code, Year, Month, Day) %>%
-                            summarise(val = mean(val, na.rm = T)) %>%
-                            ungroup() %>%
-                            mutate(Date = ymd(paste(Year, 1, 1, sep = '-'))) %>%
-                            mutate(val = val*86400) %>%
-                            group_by(site_code, Date, Year) %>%
+                        site_q <- site_q |>
+                            group_by(site_code, Year, Month, Day) |>
+                            summarise(val = mean(val, na.rm = T)) |>
+                            ungroup() |>
+                            mutate(Date = ymd(paste(Year, 1, 1, sep = '-'))) |>
+                            mutate(val = val*86400) |>
+                            group_by(site_code, Date, Year) |>
                             summarise(val = sum(val, na.rm = TRUE),
-                                      count = n()) %>%
-                            mutate(val = val/1000) %>%
-                            mutate(missing = (q_record_length-count)/q_record_length) %>%
-                            mutate(missing = ifelse(missing < 0, 0, missing)) %>%
-                            ungroup() %>%
-                            select(-count) %>%
-                            mutate(var = 'discharge') %>%
+                                      count = n()) |>
+                            mutate(val = val/1000) |>
+                            mutate(missing = (q_record_length-count)/q_record_length) |>
+                            mutate(missing = ifelse(missing < 0, 0, missing)) |>
+                            ungroup() |>
+                            select(-count) |>
+                            mutate(var = 'discharge') |>
                             mutate(domain = dom)
                     }
 
@@ -253,37 +253,37 @@ compute_yearly_summary <- function(df,
                     #mean. This is to try to limit sampling bias, where 100 samples are taken
                     #in the summer but only a few in the winter
 
-                    site_chem <- sm(read_feather(path_chem) %>%
+                    site_chem <- sm(read_feather(path_chem) |>
                                         mutate(Year = year(datetime),
                                                Month = month(datetime),
-                                               Day = day(datetime)) %>%
-                                        select(-datetime)) %>%
-                        mutate(var = drop_var_prefix(var)) %>%
+                                               Day = day(datetime)) |>
+                                        select(-datetime)) |>
+                        mutate(var = drop_var_prefix(var)) |>
                         filter(Year != year(Sys.Date()))
 
                     if(filter_ms_interp){
-                        site_chem <- site_chem %>%
+                        site_chem <- site_chem |>
                             filter(ms_interp == 0)
                     }
                     if(filter_ms_status){
-                        site_chem <- site_chem %>%
+                        site_chem <- site_chem |>
                             filter(ms_status == 0)
                     }
 
-                    site_chem <- site_chem %>%
-                        group_by(site_code, Year, Month, Day, var) %>%
-                        summarise(val = mean(val, na.rm = TRUE)) %>%
-                        ungroup() %>%
-                        mutate(Date = ymd(paste(Year, 1, 1, sep = '-'))) %>%
-                        select(-Month) %>%
-                        group_by(site_code, Date, Year, var) %>%
+                    site_chem <- site_chem |>
+                        group_by(site_code, Year, Month, Day, var) |>
+                        summarise(val = mean(val, na.rm = TRUE)) |>
+                        ungroup() |>
+                        mutate(Date = ymd(paste(Year, 1, 1, sep = '-'))) |>
+                        select(-Month) |>
+                        group_by(site_code, Date, Year, var) |>
                         summarise(val = mean(val, na.rm = TRUE),
-                                  count = n()) %>%
-                        ungroup() %>%
-                        mutate(missing = (q_record_length-count)/q_record_length) %>%
-                        mutate(missing = ifelse(missing < 0, 0, missing)) %>%
-                        select(-count) %>%
-                        mutate(var = glue('{v}_conc', v = var)) %>%
+                                  count = n()) |>
+                        ungroup() |>
+                        mutate(missing = (q_record_length-count)/q_record_length) |>
+                        mutate(missing = ifelse(missing < 0, 0, missing)) |>
+                        select(-count) |>
+                        mutate(var = glue('{v}_conc', v = var)) |>
                         mutate(domain = dom)
                 }
 
@@ -294,38 +294,38 @@ compute_yearly_summary <- function(df,
                     site_flux <- tibble()
                 } else {
 
-                    site_flux <- read_feather(path_flux)  %>%
+                    site_flux <- read_feather(path_flux)  |>
                         mutate(Year = year(datetime),
                                Month = month(datetime),
-                               Day = day(datetime)) %>%
-                        select(-datetime) %>%
-                        mutate(var = drop_var_prefix(var)) %>%
+                               Day = day(datetime)) |>
+                        select(-datetime) |>
+                        mutate(var = drop_var_prefix(var)) |>
                         filter(Year != year(Sys.Date()))
 
                     if(filter_ms_interp){
-                        site_flux <- site_flux %>%
+                        site_flux <- site_flux |>
                             filter(ms_interp == 0)
                     }
                     if(filter_ms_status){
-                        site_flux <- site_flux %>%
+                        site_flux <- site_flux |>
                             filter(ms_status == 0)
                     }
 
-                    site_flux <- site_flux %>%
-                        group_by(site_code, Year, Month, Day, var) %>%
-                        summarise(val = mean(val, na.rm = T)) %>%
-                        ungroup() %>%
-                        group_by(site_code, Year, var) %>%
-                        mutate(Date = ymd(paste(Year, 1, 1, sep = '-'))) %>%
-                        ungroup() %>%
-                        group_by(site_code, Date, Year, var) %>%
+                    site_flux <- site_flux |>
+                        group_by(site_code, Year, Month, Day, var) |>
+                        summarise(val = mean(val, na.rm = T)) |>
+                        ungroup() |>
+                        group_by(site_code, Year, var) |>
+                        mutate(Date = ymd(paste(Year, 1, 1, sep = '-'))) |>
+                        ungroup() |>
+                        group_by(site_code, Date, Year, var) |>
                         summarise(val = sum(val, na.rm = TRUE),
-                                  count = n()) %>%
-                        ungroup() %>%
-                        mutate(missing = (q_record_length-count)/q_record_length) %>%
-                        mutate(missing = ifelse(missing < 0, 0, missing)) %>%
-                        select(-count) %>%
-                        mutate(var = glue('{v}_flux', v = var)) %>%
+                                  count = n()) |>
+                        ungroup() |>
+                        mutate(missing = (q_record_length-count)/q_record_length) |>
+                        mutate(missing = ifelse(missing < 0, 0, missing)) |>
+                        select(-count) |>
+                        mutate(var = glue('{v}_flux', v = var)) |>
                         mutate(domain = dom)
 
                     site_flux[is.numeric(site_flux) & site_flux <= 0.00000001] <- NA
@@ -338,34 +338,34 @@ compute_yearly_summary <- function(df,
                     site_precip <- tibble()
                 } else {
 
-                    site_precip <- sm(read_feather(path_precip)) %>%
+                    site_precip <- sm(read_feather(path_precip)) |>
                         mutate(Year = year(datetime),
                                Month = month(datetime),
-                               Day = day(datetime)) %>%
+                               Day = day(datetime)) |>
                         filter(Year != year(Sys.Date()))
 
                     if(filter_ms_interp){
-                        site_precip <- site_precip %>%
+                        site_precip <- site_precip |>
                             filter(ms_interp == 0)
                     }
                     if(filter_ms_status){
-                        site_precip <- site_precip %>%
+                        site_precip <- site_precip |>
                             filter(ms_status == 0)
                     }
 
-                    site_precip <- site_precip %>%
-                        group_by(site_code, Year, Month, Day) %>%
-                        summarise(val = sum(val, na.rm = T)) %>%
-                        ungroup() %>%
-                        mutate(Date = ymd(paste(Year, 1, 1, sep = '-'))) %>%
-                        group_by(site_code, Date, Year) %>%
+                    site_precip <- site_precip |>
+                        group_by(site_code, Year, Month, Day) |>
+                        summarise(val = sum(val, na.rm = T)) |>
+                        ungroup() |>
+                        mutate(Date = ymd(paste(Year, 1, 1, sep = '-'))) |>
+                        group_by(site_code, Date, Year) |>
                         summarise(val = sum(val, na.rm = TRUE),
-                                  count = n()) %>%
-                        ungroup() %>%
-                        mutate(missing = (365-count)/365) %>%
-                        mutate(missing = ifelse(missing < 0, 0, missing)) %>%
-                        select(-count) %>%
-                        mutate(var = 'precip') %>%
+                                  count = n()) |>
+                        ungroup() |>
+                        mutate(missing = (365-count)/365) |>
+                        mutate(missing = ifelse(missing < 0, 0, missing)) |>
+                        select(-count) |>
+                        mutate(var = 'precip') |>
                         mutate(domain = dom)
 
                 }
@@ -377,37 +377,37 @@ compute_yearly_summary <- function(df,
                     site_precip_chem <- tibble()
                 } else {
 
-                    site_precip_chem <- sm(read_feather(path_precip_chem) %>%
+                    site_precip_chem <- sm(read_feather(path_precip_chem) |>
                                                mutate(Year = year(datetime),
                                                       Month = month(datetime),
-                                                      Day = day(datetime)) %>%
-                                               select(-datetime)) %>%
-                        mutate(var = drop_var_prefix(var)) %>%
+                                                      Day = day(datetime)) |>
+                                               select(-datetime)) |>
+                        mutate(var = drop_var_prefix(var)) |>
                         filter(Year != year(Sys.Date()))
 
                     if(filter_ms_interp){
-                        site_precip_chem <- site_precip_chem %>%
+                        site_precip_chem <- site_precip_chem |>
                             filter(ms_interp == 0)
                     }
                     if(filter_ms_status){
-                        site_precip_chem <- site_precip_chem %>%
+                        site_precip_chem <- site_precip_chem |>
                             filter(ms_status == 0)
                     }
 
-                    site_precip_chem <- site_precip_chem %>%
-                        group_by(site_code, Year, Month, Day, var) %>%
-                        summarise(val = mean(val, na.rm = TRUE)) %>%
-                        ungroup() %>%
-                        mutate(Date = ymd(paste(Year, 1, 1, sep = '-'))) %>%
-                        select(-Month) %>%
-                        group_by(site_code, Date, Year, var) %>%
+                    site_precip_chem <- site_precip_chem |>
+                        group_by(site_code, Year, Month, Day, var) |>
+                        summarise(val = mean(val, na.rm = TRUE)) |>
+                        ungroup() |>
+                        mutate(Date = ymd(paste(Year, 1, 1, sep = '-'))) |>
+                        select(-Month) |>
+                        group_by(site_code, Date, Year, var) |>
                         summarise(val = mean(val, na.rm = TRUE),
-                                  count = n()) %>%
-                        ungroup() %>%
-                        mutate(missing = (356-count)/365) %>%
-                        mutate(missing = ifelse(missing < 0, 0, missing)) %>%
-                        select(-count) %>%
-                        mutate(var = glue('{v}_precip_conc', v = var)) %>%
+                                  count = n()) |>
+                        ungroup() |>
+                        mutate(missing = (356-count)/365) |>
+                        mutate(missing = ifelse(missing < 0, 0, missing)) |>
+                        select(-count) |>
+                        mutate(var = glue('{v}_precip_conc', v = var)) |>
                         mutate(domain = dom)
 
                 }
@@ -419,38 +419,38 @@ compute_yearly_summary <- function(df,
                     site_precip_flux <- tibble()
                 } else {
 
-                    site_precip_flux <- read_feather(path_precip_flux)  %>%
+                    site_precip_flux <- read_feather(path_precip_flux)  |>
                         mutate(Year = year(datetime),
                                Month = month(datetime),
-                               Day = day(datetime)) %>%
-                        select(-datetime) %>%
-                        mutate(var = drop_var_prefix(var)) %>%
+                               Day = day(datetime)) |>
+                        select(-datetime) |>
+                        mutate(var = drop_var_prefix(var)) |>
                         filter(Year != year(Sys.Date()))
 
                     if(filter_ms_interp){
-                        site_precip_flux <- site_precip_flux %>%
+                        site_precip_flux <- site_precip_flux |>
                             filter(ms_interp == 0)
                     }
                     if(filter_ms_status){
-                        site_precip_flux <- site_precip_flux %>%
+                        site_precip_flux <- site_precip_flux |>
                             filter(ms_status == 0)
                     }
 
-                    site_precip_flux <- site_precip_flux %>%
-                        group_by(site_code, Year, Month, Day, var) %>%
-                        summarise(val = mean(val, na.rm = T)) %>%
-                        ungroup() %>%
-                        group_by(site_code, Year, var) %>%
-                        mutate(Date = ymd(paste(Year, 1, 1, sep = '-'))) %>%
-                        ungroup() %>%
-                        group_by(site_code, Date, Year, var) %>%
+                    site_precip_flux <- site_precip_flux |>
+                        group_by(site_code, Year, Month, Day, var) |>
+                        summarise(val = mean(val, na.rm = T)) |>
+                        ungroup() |>
+                        group_by(site_code, Year, var) |>
+                        mutate(Date = ymd(paste(Year, 1, 1, sep = '-'))) |>
+                        ungroup() |>
+                        group_by(site_code, Date, Year, var) |>
                         summarise(val = sum(val, na.rm = TRUE),
-                                  count = n()) %>%
-                        ungroup() %>%
-                        mutate(missing = (356-count)/365) %>%
-                        mutate(missing = ifelse(missing < 0, 0, missing)) %>%
-                        mutate(var = glue('{v}_precip_flux', v = var)) %>%
-                        mutate(domain = dom) %>%
+                                  count = n()) |>
+                        ungroup() |>
+                        mutate(missing = (356-count)/365) |>
+                        mutate(missing = ifelse(missing < 0, 0, missing)) |>
+                        mutate(var = glue('{v}_precip_flux', v = var)) |>
+                        mutate(domain = dom) |>
                         select(-count)
 
                     site_precip_flux[is.numeric(site_precip_flux) & site_precip_flux <= 0.00000001] <- NA
@@ -464,9 +464,9 @@ compute_yearly_summary <- function(df,
 
     }
 
-    all_domain <- all_domain %>%
-        mutate(missing = missing*100) %>%
-        mutate(missing = as.numeric(substr(missing, 1, 2))) %>%
+    all_domain <- all_domain |>
+        mutate(missing = missing*100) |>
+        mutate(missing = as.numeric(substr(missing, 1, 2))) |>
         mutate(val = round(val, 4))
 
     dir.create('data/general/biplot')
@@ -514,7 +514,7 @@ compute_yearly_summary_ws <- function(df) {
                 prod_names <- names(prod_tib)
 
                 if(! 'pctCellErr' %in% prod_names){
-                    prod_tib <- prod_tib %>%
+                    prod_tib <- prod_tib |>
                         mutate(pctCellErr = NA)
                 }
 
@@ -522,9 +522,9 @@ compute_yearly_summary_ws <- function(df) {
 
             }
 
-            all_prods <- all_prods %>%
-                mutate(Date = ymd(paste0(year, '-01', '-01'))) %>%
-                mutate(domain = dom) %>%
+            all_prods <- all_prods |>
+                mutate(Date = ymd(paste0(year, '-01', '-01'))) |>
+                mutate(domain = dom) |>
                 rename(Year = year)
 
             all_domain <- rbind(all_domain, all_prods)
@@ -536,7 +536,7 @@ compute_yearly_summary_ws <- function(df) {
     ws_vars_keep <- all_ws_vars[! grepl('sd', all_ws_vars)]
     ws_vars_keep <- ws_vars_keep[! grepl('1992', ws_vars_keep)]
 
-    all_domain <- all_domain %>%
+    all_domain <- all_domain |>
         filter(var %in% !!ws_vars_keep)
 
     summary_file_paths <- grep('year', list.files('data/general/biplot',
@@ -544,36 +544,36 @@ compute_yearly_summary_ws <- function(df) {
 
     for(s in 1:length(summary_file_paths)){
 
-        conc_sum <- read_feather(summary_file_paths[s]) %>%
+        conc_sum <- read_feather(summary_file_paths[s]) |>
             mutate(pctCellErr = NA)
 
-        all_domain <- all_domain %>%
+        all_domain <- all_domain |>
             mutate(missing = 0)
 
         final <- rbind(conc_sum, all_domain)
 
-        areas <- site_data %>%
-            filter(site_type == 'stream_gauge') %>%
-            select(site_code, domain, val = ws_area_ha) %>%
+        areas <- site_data |>
+            filter(site_type == 'stream_gauge') |>
+            select(site_code, domain, val = ws_area_ha) |>
             mutate(Date = NA,
                    Year = NA,
-                   var = 'area') %>%
-            filter(!is.na(val)) %>%
-            mutate(missing = 0) %>%
+                   var = 'area') |>
+            filter(!is.na(val)) |>
+            mutate(missing = 0) |>
             mutate(pctCellErr = NA)
 
         #calc area normalized q
-        area_q <- areas %>%
-            select(site_code, domain, area = val) %>%
-            full_join(., conc_sum, by = c('site_code', 'domain')) %>%
-            mutate(discharge_a = ifelse(var == 'discharge', val/(area*10000), NA)) %>%
-            mutate(discharge_a = discharge_a*1000) %>%
-            filter(!is.na(discharge_a)) %>%
-            mutate(var = 'discharge_a') %>%
-            select(-val, -area) %>%
+        area_q <- areas |>
+            select(site_code, domain, area = val) |>
+            full_join(., conc_sum, by = c('site_code', 'domain')) |>
+            mutate(discharge_a = ifelse(var == 'discharge', val/(area*10000), NA)) |>
+            mutate(discharge_a = discharge_a*1000) |>
+            filter(!is.na(discharge_a)) |>
+            mutate(var = 'discharge_a') |>
+            select(-val, -area) |>
             rename(val = discharge_a)
 
-        final <- rbind(final, areas, area_q) %>%
+        final <- rbind(final, areas, area_q) |>
             filter(Year < year(Sys.Date()) | is.na(Year))
 
         write_feather(final, summary_file_paths[s])
@@ -611,10 +611,10 @@ compute_yearly_summary_ws(network_domain_default_sites)
 #
 #         sites <- str_split_fixed(site_files, pattern = '[.]', n = 2)[,1]
 #
-#         stream_sites <- site_data %>%
+#         stream_sites <- site_data |>
 #             filter(domain == dom,
-#                    site_type == 'stream_gauge') %>%
-#             filter(site_code %in% sites) %>%
+#                    site_type == 'stream_gauge') |>
+#             filter(site_code %in% sites) |>
 #             pull(site_code)
 #
 #         all_sites <- tibble()
@@ -655,18 +655,18 @@ compute_yearly_summary_ws(network_domain_default_sites)
 #                     q_record_length <- 365
 #                 } else {
 #
-#                     site_q <- sm(read_feather(path_q)) %>%
+#                     site_q <- sm(read_feather(path_q)) |>
 #                         mutate(Year = year(datetime),
 #                                Month = month(datetime),
-#                                Day = day(datetime)) %>%
+#                                Day = day(datetime)) |>
 #                         filter(Year != year(Sys.Date()))
 #
 #                     if(filter_ms_interp){
-#                         site_q <- site_q %>%
+#                         site_q <- site_q |>
 #                             filter(ms_interp == 0)
 #                     }
 #                     if(filter_ms_status){
-#                         site_q <- site_q %>%
+#                         site_q <- site_q |>
 #                             filter(ms_status == 0)
 #                     }
 #                     if(nrow(site_q) == 0){
@@ -677,19 +677,19 @@ compute_yearly_summary_ws(network_domain_default_sites)
 #
 #                         q_record_length <- detrmin_mean_record_length(site_q)
 #
-#                         site_q <- site_q %>%
-#                             group_by(site_code, Year, Month, Day) %>%
-#                             summarise(val = mean(val, na.rm = T)) %>%
-#                             ungroup() %>%
-#                             mutate(Date = ymd(paste(Year, 1, 1, sep = '-'))) %>%
-#                             group_by(site_code, Date, Year) %>%
+#                         site_q <- site_q |>
+#                             group_by(site_code, Year, Month, Day) |>
+#                             summarise(val = mean(val, na.rm = T)) |>
+#                             ungroup() |>
+#                             mutate(Date = ymd(paste(Year, 1, 1, sep = '-'))) |>
+#                             group_by(site_code, Date, Year) |>
 #                             summarise(val = mean(val, na.rm = TRUE),
-#                                       count = n()) %>%
-#                             mutate(missing = (q_record_length-count)/q_record_length) %>%
-#                             mutate(missing = ifelse(missing < 0, 0, missing)) %>%
-#                             ungroup() %>%
-#                             select(-count) %>%
-#                             mutate(var = 'discharge') %>%
+#                                       count = n()) |>
+#                             mutate(missing = (q_record_length-count)/q_record_length) |>
+#                             mutate(missing = ifelse(missing < 0, 0, missing)) |>
+#                             ungroup() |>
+#                             select(-count) |>
+#                             mutate(var = 'discharge') |>
 #                             mutate(domain = dom)
 #                     }
 #
@@ -706,37 +706,37 @@ compute_yearly_summary_ws(network_domain_default_sites)
 #                     #mean. This is to try to limit sampling bias, where 100 samples are taken
 #                     #in the summer but only a few in the winter
 #
-#                     site_chem <- sm(read_feather(path_chem) %>%
+#                     site_chem <- sm(read_feather(path_chem) |>
 #                                         mutate(Year = year(datetime),
 #                                                Month = month(datetime),
-#                                                Day = day(datetime)) %>%
-#                                         select(-datetime)) %>%
-#                         mutate(var = drop_var_prefix(var)) %>%
+#                                                Day = day(datetime)) |>
+#                                         select(-datetime)) |>
+#                         mutate(var = drop_var_prefix(var)) |>
 #                         filter(Year != year(Sys.Date()))
 #
 #                     if(filter_ms_interp){
-#                         site_chem <- site_chem %>%
+#                         site_chem <- site_chem |>
 #                             filter(ms_interp == 0)
 #                     }
 #                     if(filter_ms_status){
-#                         site_chem <- site_chem %>%
+#                         site_chem <- site_chem |>
 #                             filter(ms_status == 0)
 #                     }
 #
-#                     site_chem <- site_chem %>%
-#                         group_by(site_code, Year, Month, Day, var) %>%
-#                         summarise(val = mean(val, na.rm = TRUE)) %>%
-#                         ungroup() %>%
-#                         mutate(Date = ymd(paste(Year, 1, 1, sep = '-'))) %>%
-#                         select(-Month) %>%
-#                         group_by(site_code, Date, Year, var) %>%
+#                     site_chem <- site_chem |>
+#                         group_by(site_code, Year, Month, Day, var) |>
+#                         summarise(val = mean(val, na.rm = TRUE)) |>
+#                         ungroup() |>
+#                         mutate(Date = ymd(paste(Year, 1, 1, sep = '-'))) |>
+#                         select(-Month) |>
+#                         group_by(site_code, Date, Year, var) |>
 #                         summarise(val = mean(val, na.rm = TRUE),
-#                                   count = n()) %>%
-#                         ungroup() %>%
-#                         mutate(missing = (q_record_length-count)/q_record_length) %>%
-#                         mutate(missing = ifelse(missing < 0, 0, missing)) %>%
-#                         select(-count) %>%
-#                         mutate(var = glue('{v}_conc', v = var)) %>%
+#                                   count = n()) |>
+#                         ungroup() |>
+#                         mutate(missing = (q_record_length-count)/q_record_length) |>
+#                         mutate(missing = ifelse(missing < 0, 0, missing)) |>
+#                         select(-count) |>
+#                         mutate(var = glue('{v}_conc', v = var)) |>
 #                         mutate(domain = dom)
 #
 #                 }
@@ -748,38 +748,38 @@ compute_yearly_summary_ws(network_domain_default_sites)
 #                     site_flux <- tibble()
 #                 } else {
 #
-#                     site_flux <- read_feather(path_flux)  %>%
+#                     site_flux <- read_feather(path_flux)  |>
 #                         mutate(Year = year(datetime),
 #                                Month = month(datetime),
-#                                Day = day(datetime)) %>%
-#                         select(-datetime) %>%
-#                         mutate(var = drop_var_prefix(var)) %>%
+#                                Day = day(datetime)) |>
+#                         select(-datetime) |>
+#                         mutate(var = drop_var_prefix(var)) |>
 #                         filter(Year != year(Sys.Date()))
 #
 #                     if(filter_ms_interp){
-#                         site_flux <- site_flux %>%
+#                         site_flux <- site_flux |>
 #                             filter(ms_interp == 0)
 #                     }
 #                     if(filter_ms_status){
-#                         site_flux <- site_flux %>%
+#                         site_flux <- site_flux |>
 #                             filter(ms_status == 0)
 #                     }
 #
-#                     site_flux <- site_flux %>%
-#                         group_by(site_code, Year, Month, Day, var) %>%
-#                         summarise(val = mean(val, na.rm = T)) %>%
-#                         ungroup() %>%
-#                         group_by(site_code, Year, var) %>%
-#                         mutate(Date = ymd(paste(Year, 1, 1, sep = '-'))) %>%
-#                         ungroup() %>%
-#                         group_by(site_code, Date, Year, var) %>%
+#                     site_flux <- site_flux |>
+#                         group_by(site_code, Year, Month, Day, var) |>
+#                         summarise(val = mean(val, na.rm = T)) |>
+#                         ungroup() |>
+#                         group_by(site_code, Year, var) |>
+#                         mutate(Date = ymd(paste(Year, 1, 1, sep = '-'))) |>
+#                         ungroup() |>
+#                         group_by(site_code, Date, Year, var) |>
 #                         summarise(val = mean(val, na.rm = TRUE),
-#                                   count = n()) %>%
-#                         ungroup() %>%
-#                         mutate(missing = (q_record_length-count)/q_record_length) %>%
-#                         mutate(missing = ifelse(missing < 0, 0, missing)) %>%
-#                         select(-count) %>%
-#                         mutate(var = glue('{v}_flux', v = var)) %>%
+#                                   count = n()) |>
+#                         ungroup() |>
+#                         mutate(missing = (q_record_length-count)/q_record_length) |>
+#                         mutate(missing = ifelse(missing < 0, 0, missing)) |>
+#                         select(-count) |>
+#                         mutate(var = glue('{v}_flux', v = var)) |>
 #                         mutate(domain = dom)
 #
 #                     # site_flux[is.numeric(site_flux) & site_flux <= 0.00000001] <- NA
@@ -792,34 +792,34 @@ compute_yearly_summary_ws(network_domain_default_sites)
 #                     site_precip <- tibble()
 #                 } else {
 #
-#                     site_precip <- sm(read_feather(path_precip)) %>%
+#                     site_precip <- sm(read_feather(path_precip)) |>
 #                         mutate(Year = year(datetime),
 #                                Month = month(datetime),
-#                                Day = day(datetime)) %>%
+#                                Day = day(datetime)) |>
 #                         filter(Year != year(Sys.Date()))
 #
 #                     if(filter_ms_interp){
-#                         site_precip <- site_precip %>%
+#                         site_precip <- site_precip |>
 #                             filter(ms_interp == 0)
 #                     }
 #                     if(filter_ms_status){
-#                         site_precip <- site_precip %>%
+#                         site_precip <- site_precip |>
 #                             filter(ms_status == 0)
 #                     }
 #
-#                     site_precip <- site_precip %>%
-#                         group_by(site_code, Year, Month, Day) %>%
-#                         summarise(val = mean(val, na.rm = T)) %>%
-#                         ungroup() %>%
-#                         mutate(Date = ymd(paste(Year, 1, 1, sep = '-'))) %>%
-#                         group_by(site_code, Date, Year) %>%
+#                     site_precip <- site_precip |>
+#                         group_by(site_code, Year, Month, Day) |>
+#                         summarise(val = mean(val, na.rm = T)) |>
+#                         ungroup() |>
+#                         mutate(Date = ymd(paste(Year, 1, 1, sep = '-'))) |>
+#                         group_by(site_code, Date, Year) |>
 #                         summarise(val = sum(val, na.rm = TRUE),
-#                                   count = n()) %>%
-#                         ungroup() %>%
-#                         mutate(var = 'precip') %>%
-#                         mutate(domain = dom) %>%
-#                         mutate(missing = (365-count)/365) %>%
-#                         mutate(missing = ifelse(missing < 0, 0, missing)) %>%
+#                                   count = n()) |>
+#                         ungroup() |>
+#                         mutate(var = 'precip') |>
+#                         mutate(domain = dom) |>
+#                         mutate(missing = (365-count)/365) |>
+#                         mutate(missing = ifelse(missing < 0, 0, missing)) |>
 #                         select(-count)
 #                 }
 #
@@ -830,37 +830,37 @@ compute_yearly_summary_ws(network_domain_default_sites)
 #                     site_precip_chem <- tibble()
 #                 } else {
 #
-#                     site_precip_chem <- sm(read_feather(path_precip_chem) %>%
+#                     site_precip_chem <- sm(read_feather(path_precip_chem) |>
 #                                                mutate(Year = year(datetime),
 #                                                       Month = month(datetime),
-#                                                       Day = day(datetime)) %>%
-#                                                select(-datetime)) %>%
-#                         mutate(var = drop_var_prefix(var)) %>%
+#                                                       Day = day(datetime)) |>
+#                                                select(-datetime)) |>
+#                         mutate(var = drop_var_prefix(var)) |>
 #                         filter(Year != year(Sys.Date()))
 #
 #                     if(filter_ms_interp){
-#                         site_precip_chem <- site_precip_chem %>%
+#                         site_precip_chem <- site_precip_chem |>
 #                             filter(ms_interp == 0)
 #                     }
 #                     if(filter_ms_status){
-#                         site_precip_chem <- site_precip_chem %>%
+#                         site_precip_chem <- site_precip_chem |>
 #                             filter(ms_status == 0)
 #                     }
 #
-#                     site_precip_chem <- site_precip_chem %>%
-#                         group_by(site_code, Year, Month, Day, var) %>%
-#                         summarise(val = mean(val, na.rm = TRUE)) %>%
-#                         ungroup() %>%
-#                         mutate(Date = ymd(paste(Year, 1, 1, sep = '-'))) %>%
-#                         select(-Month) %>%
-#                         group_by(site_code, Date, Year, var) %>%
+#                     site_precip_chem <- site_precip_chem |>
+#                         group_by(site_code, Year, Month, Day, var) |>
+#                         summarise(val = mean(val, na.rm = TRUE)) |>
+#                         ungroup() |>
+#                         mutate(Date = ymd(paste(Year, 1, 1, sep = '-'))) |>
+#                         select(-Month) |>
+#                         group_by(site_code, Date, Year, var) |>
 #                         summarise(val = mean(val, na.rm = TRUE),
-#                                   n = n()) %>%
-#                         ungroup() %>%
-#                         mutate(var = glue('{v}_precip_conc', v = var)) %>%
-#                         mutate(domain = dom) %>%
-#                         mutate(missing = (365-n)/365) %>%
-#                         mutate(missing = ifelse(missing < 0, 0, missing)) %>%
+#                                   n = n()) |>
+#                         ungroup() |>
+#                         mutate(var = glue('{v}_precip_conc', v = var)) |>
+#                         mutate(domain = dom) |>
+#                         mutate(missing = (365-n)/365) |>
+#                         mutate(missing = ifelse(missing < 0, 0, missing)) |>
 #                         select(-n)
 #
 #                 }
@@ -872,38 +872,38 @@ compute_yearly_summary_ws(network_domain_default_sites)
 #                     site_precip_flux <- tibble()
 #                 } else {
 #
-#                     site_precip_flux <- read_feather(path_precip_flux)  %>%
+#                     site_precip_flux <- read_feather(path_precip_flux)  |>
 #                         mutate(Year = year(datetime),
 #                                Month = month(datetime),
-#                                Day = day(datetime)) %>%
-#                         select(-datetime) %>%
-#                         mutate(var = drop_var_prefix(var)) %>%
+#                                Day = day(datetime)) |>
+#                         select(-datetime) |>
+#                         mutate(var = drop_var_prefix(var)) |>
 #                         filter(Year != year(Sys.Date()))
 #
 #                     if(filter_ms_interp){
-#                         site_precip_flux <- site_precip_flux %>%
+#                         site_precip_flux <- site_precip_flux |>
 #                             filter(ms_interp == 0)
 #                     }
 #                     if(filter_ms_status){
-#                         site_precip_flux <- site_precip_flux %>%
+#                         site_precip_flux <- site_precip_flux |>
 #                             filter(ms_status == 0)
 #                     }
 #
-#                     site_precip_flux <- site_precip_flux %>%
-#                         group_by(site_code, Year, Month, Day, var) %>%
-#                         summarise(val = mean(val, na.rm = T)) %>%
-#                         ungroup() %>%
-#                         group_by(site_code, Year, var) %>%
-#                         mutate(Date = ymd(paste(Year, 1, 1, sep = '-'))) %>%
-#                         ungroup() %>%
-#                         group_by(site_code, Date, Year, var) %>%
+#                     site_precip_flux <- site_precip_flux |>
+#                         group_by(site_code, Year, Month, Day, var) |>
+#                         summarise(val = mean(val, na.rm = T)) |>
+#                         ungroup() |>
+#                         group_by(site_code, Year, var) |>
+#                         mutate(Date = ymd(paste(Year, 1, 1, sep = '-'))) |>
+#                         ungroup() |>
+#                         group_by(site_code, Date, Year, var) |>
 #                         summarise(val = mean(val, na.rm = TRUE),
-#                                   n = n()) %>%
-#                         ungroup() %>%
-#                         mutate(var = glue('{v}_precip_flux', v = var)) %>%
-#                         mutate(domain = dom) %>%
-#                         mutate(missing = (365-n)/365) %>%
-#                         mutate(missing = ifelse(missing < 0, 0, missing)) %>%
+#                                   n = n()) |>
+#                         ungroup() |>
+#                         mutate(var = glue('{v}_precip_flux', v = var)) |>
+#                         mutate(domain = dom) |>
+#                         mutate(missing = (365-n)/365) |>
+#                         mutate(missing = ifelse(missing < 0, 0, missing)) |>
 #                         select(-n)
 #
 #                     site_precip_flux[is.numeric(site_precip_flux) & site_precip_flux <= 0.00000001] <- NA
@@ -917,9 +917,9 @@ compute_yearly_summary_ws(network_domain_default_sites)
 #
 #     }
 #
-#     all_domain <- all_domain %>%
-#         mutate(missing = missing*100) %>%
-#         mutate(missing = as.numeric(substr(missing, 1, 2))) %>%
+#     all_domain <- all_domain |>
+#         mutate(missing = missing*100) |>
+#         mutate(missing = as.numeric(substr(missing, 1, 2))) |>
 #         mutate(val = round(val, 4))
 #
 #     dir.create('data/general/biplot')
@@ -967,7 +967,7 @@ compute_yearly_summary_ws(network_domain_default_sites)
 #                 prod_names <- names(prod_tib)
 #
 #                 if(! 'pctCellErr' %in% prod_names){
-#                     prod_tib <- prod_tib %>%
+#                     prod_tib <- prod_tib |>
 #                         mutate(pctCellErr = NA)
 #                 }
 #
@@ -975,9 +975,9 @@ compute_yearly_summary_ws(network_domain_default_sites)
 #
 #             }
 #
-#             all_prods <- all_prods %>%
-#                 mutate(Date = ymd(paste0(year, '-01', '-01'))) %>%
-#                 mutate(domain = dom) %>%
+#             all_prods <- all_prods |>
+#                 mutate(Date = ymd(paste0(year, '-01', '-01'))) |>
+#                 mutate(domain = dom) |>
 #                 rename(Year = year)
 #
 #             all_domain <- rbind(all_domain, all_prods)
@@ -989,36 +989,36 @@ compute_yearly_summary_ws(network_domain_default_sites)
 #
 #     for(s in 1:length(summary_file_paths)){
 #
-#         conc_sum <- read_feather(summary_file_paths[s]) %>%
+#         conc_sum <- read_feather(summary_file_paths[s]) |>
 #             mutate(pctCellErr = NA)
 #
-#         all_domain <- all_domain %>%
+#         all_domain <- all_domain |>
 #             mutate(missing = 0)
 #
 #         final <- rbind(conc_sum, all_domain)
 #
-#         areas <- site_data %>%
-#             filter(site_type == 'stream_gauge') %>%
-#             select(site_code, domain, val = ws_area_ha) %>%
+#         areas <- site_data |>
+#             filter(site_type == 'stream_gauge') |>
+#             select(site_code, domain, val = ws_area_ha) |>
 #             mutate(Date = NA,
 #                    Year = NA,
-#                    var = 'area') %>%
-#             filter(!is.na(val)) %>%
-#             mutate(missing = 0) %>%
+#                    var = 'area') |>
+#             filter(!is.na(val)) |>
+#             mutate(missing = 0) |>
 #             mutate(pctCellErr = NA)
 #
 #         #calc area normalized q
-#         area_q <- areas %>%
-#             select(site_code, domain, area = val) %>%
-#             full_join(., conc_sum, by = c('site_code', 'domain')) %>%
-#             mutate(discharge_a = ifelse(var == 'discharge', ((val*31556952)/1000)/(area*10000), NA)) %>%
-#             mutate(discharge_a = discharge_a*1000) %>%
-#             filter(!is.na(discharge_a)) %>%
-#             mutate(var = 'discharge_a') %>%
-#             select(-val, -area) %>%
+#         area_q <- areas |>
+#             select(site_code, domain, area = val) |>
+#             full_join(., conc_sum, by = c('site_code', 'domain')) |>
+#             mutate(discharge_a = ifelse(var == 'discharge', ((val*31556952)/1000)/(area*10000), NA)) |>
+#             mutate(discharge_a = discharge_a*1000) |>
+#             filter(!is.na(discharge_a)) |>
+#             mutate(var = 'discharge_a') |>
+#             select(-val, -area) |>
 #             rename(val = discharge_a)
 #
-#         final <- rbind(final, areas, area_q) %>%
+#         final <- rbind(final, areas, area_q) |>
 #             filter(Year < year(Sys.Date()) | is.na(Year))
 #
 #         write_feather(final, summary_file_paths[s])
