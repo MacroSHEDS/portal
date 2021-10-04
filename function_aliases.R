@@ -26,7 +26,6 @@ pull = dplyr::pull
 distinct = dplyr::distinct
 spread = tidyr::spread
 gather = tidyr::gather
-`|>` = magrittr::`|>`
 `.` = plyr::`.`
 sm = suppressMessages
 sw = suppressWarnings
