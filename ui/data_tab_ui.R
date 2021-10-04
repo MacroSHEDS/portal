@@ -33,13 +33,16 @@ data_tab <- tabPanel('Data',
             #              label = 'Spatial data and GIS files',
             #              width = '100%',
             #              style = 'color: #333')
+            br(),
             actionButton(inputId = 'FIGSHARE_LINK',
                          label = 'Everything else',
                          icon = icon('external-link',
                                      lib = 'font-awesome'),
                          width = '100%',
                          style = 'color: #333',
-                         onclick = "window.open('https://figshare.com/collections/MacroSheds/5621740', '_blank')")
+                         class = 'disabled',
+                         onclick = "window.open('https://figshare.com/collections/MacroSheds/5621740', '_blank')"),
+            p('(coming very soon, via Figshare)', style = 'color: white')
         )
     )
 )
