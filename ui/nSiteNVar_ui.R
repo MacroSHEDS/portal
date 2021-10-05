@@ -67,21 +67,25 @@ nSiteNVar_tab <- tabPanel("Time Series",
                           label = paste('Show precip chemistry')),
                                         # enc2native('\U2753'))),
 
-            div(style = "white-space: nowrap",
+            # div(id="showqc"),
+
+            div(id = "showqc",
+                style = "white-space: nowrap",
                 div(style = "display: inline-block; vertical-align: middle; white-space: normal",
                     checkboxInput('SHOW_QC3',
                                   value = FALSE,
                                   label = paste('Show Q-C (Q-F) plots')),
                 ),
-                div(class = 'ms-tooltip',
-                    style = "display: inline-block; vertical-align: middle",
-                    title = paste('Discharge vs. concentration or flux, (precip',
-                                  'and precip chem excluded); the y-axis',
-                                  'reflects all selections made in',
-                                  'the Unit section below.'),
-                    enc2native('\U2753')
-                )
+                # div(class = 'ms-tooltip',
+                #     style = "display: inline-block; vertical-align: middle",
+                #     title = paste('Discharge vs. concentration or flux, (precip',
+                #                   'and precip chem excluded); the y-axis',
+                #                   'reflects all selections made in',
+                #                   'the Unit section below.'),
+                #     enc2native('\U2753')
+                # )
             ),
+
             br(),
 
             # conditionalPanel('input.SHOW_PCHEM3 == true',
@@ -126,32 +130,27 @@ nSiteNVar_tab <- tabPanel("Time Series",
                     selected='kg/ha/d')
             ),
             br(),
-            div(style = "white-space: nowrap",
-                class = 'widget-title text-center',
-                div(style = "display: inline-block; vertical-align: middle; white-space: normal",
-                    div('Aggregation')
-                ),
-                div(class = 'ms-tooltip',
-                    style = "display: inline-block; vertical-align: middle",
-                    title = paste0('Daily aggregation requires that ',
-                    # title=paste('Instantaneous and Daily aggregation require that',
-                                 'Unit is set to "Concentration" or "Flux". ',
-                                 # 'and "Show rain chemistry" is off."',
-                                 'Precipitation aggregates by sum',
-                                 enc2native('\U02014'),
-                                 'everything else by mean. See Notes/Caveats tab for more'),
-                    enc2native('\U2753')
-                )
-            ),
-            # div(paste('Aggregation', enc2native('\U2753')),
-            #     class='widget-title text-center',
-            #     title=paste0('Daily aggregation requires that ',
-            #     # title=paste('Instantaneous and Daily aggregation require that',
-            #         'Unit is set to "Concentration" or "Flux". ',
-            #         # 'and "Show rain chemistry" is off."',
-            #         'Precipitation aggregates by sum',
-            #         enc2native('\U02014'),
-            #         'everything else by mean.')),
+
+            div(id="aggregation"),
+
+            # div(style = "white-space: nowrap",
+            #     class = 'widget-title text-center',
+            #     div(style = "display: inline-block; vertical-align: middle; white-space: normal",
+            #         div('Aggregation')
+            #     ),
+            #     div(class = 'ms-tooltip',
+            #         style = "display: inline-block; vertical-align: middle",
+            #         title = paste0('Daily aggregation requires that ',
+            #         # title=paste('Instantaneous and Daily aggregation require that',
+            #                      'Unit is set to "Concentration" or "Flux". ',
+            #                      # 'and "Show rain chemistry" is off."',
+            #                      'Precipitation aggregates by sum',
+            #                      enc2native('\U02014'),
+            #                      'everything else by mean. See Notes/Caveats tab for more'),
+            #                      div(id="id1"),
+            #     )
+            # ),
+
             radioButtons('AGG3', label=NULL, selected='Monthly',
                 # choices=c('Instantaneous', 'Daily', 'Monthly', 'Yearly')),
                 choices=c('Daily', 'Monthly', 'Yearly')),

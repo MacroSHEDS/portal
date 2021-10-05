@@ -25,7 +25,7 @@ shinyjs.init = function() {
    //         callback($(this).find(selector));
    //     });
    // }
-   
+
    function debounce(func, wait, immediate){
        var timeout;
        return function(){
@@ -80,7 +80,26 @@ shinyjs.init = function() {
         'title = "Total flux divided by total discharge (or precip), over the aggregation period. Only available when aggregation > daily. See Notes/Caveats tab for more.">&#x2753;</div>' +
         '</div>'
     );
-    
+
+    // adding (?) tooltip to Show Q-C checkbox
+    $('#showqc').append(
+        '</div>' +
+        '<div class = "ms-tooltip" style = "display: inline-block; vertical-align: middle"' +
+        'title = "Discharge vs. concentration or flux, (precip and precip chem excluded); the y-axis reflects all selections made in the Unit section below.">&#x2753;</div>' +
+        '</div>'
+    );
+
+    // adding (?) tooltip to Aggregation block 
+    $('#aggregation').replaceWith(
+        '<div style = "white-space: nowrap" class = "widget-title text-center",>' +
+        '<div style = "display: inline-block; vertical-align: middle; white-space: normal">' +
+        '<div>  Aggregation  </div>' +
+        '</div>' +
+        '<div class = "ms-tooltip" style = "display: inline-block; vertical-align: middle"' +
+        'title = "Daily aggregation requires that Unit is set to "Concentration" or "Flux". Precipitation aggregates by sum everything else by mean. See Notes/Caveats tab for more.">&#x2753;</div>' +
+        '</div>'
+    );
+
     //if somebody clicks a question mark, tell them to hover on it instead
     //(this is done separately for tooltips within modals)
     $(document).ready(function(){
@@ -235,7 +254,7 @@ shinyjs.init = function() {
     $('body').ready(function(){
         $('#GEN_PLOTS3').click(govern_qc3);
     });
-  
+
     //BIPLOT: disable X-axis selection when aggregation == 'Yearly'
     function govern_xvar_section(){
         if( ['MONTHLY2', 'YEARLY2'].includes($('input[name=AGG2]:checked').val()) ){
@@ -515,7 +534,7 @@ shinyjs.init = function() {
             var modal_id = modl.attr('id');
 
             modl.find('td').each(set_td_titles);
-            
+
             //set up listeners for all button elements inside table cells (uses partial application)
             modl.find('td button').each(partial(function(index, value){
                 set_tablebutton_listener(btn = arguments[2], modal_id_ = arguments[0]);
@@ -533,7 +552,7 @@ shinyjs.init = function() {
             var modal_id = modl.attr('id');
 
             modl.find('td').each(set_td_titles);
-            
+
             //set up listeners for all button elements inside table cells (uses partial application)
             modl.find('td button').each(partial(function(index, value){
                 set_tablebutton_listener(btn = arguments[2], modal_id_ = arguments[0]);
@@ -551,7 +570,7 @@ shinyjs.init = function() {
             var modal_id = modl.attr('id');
 
             modl.find('td').each(set_td_titles);
-            
+
             //set up listeners for all button elements inside table cells (uses partial application)
             modl.find('td button').each(partial(function(index, value){
                 set_tablebutton_listener(btn = arguments[2], modal_id_ = arguments[0]);
@@ -575,8 +594,8 @@ shinyjs.init = function() {
 
     //all this crap (and associated CSS) is necessary just to make "macrosheds.org"
     //appear (and STAY appeared) in the bottom of each dygraph as an annotation
-    
-    window.enable_attribution = false 
+
+    window.enable_attribution = false
 
    // $('body').on('change', '#DATES3', debounce(function(){
    //     if(enable_attribution){
@@ -609,7 +628,7 @@ shinyjs.init = function() {
    //         $('#GRAPH_Q3').css('position', 'relative').append($('<p class="ms-attribution-high">macrosheds.org</p>'));
    //     }, 3000);
    // });
-    
+
     $(document).on('shiny:idle', function(event){
         enable_attribution = true
     });
@@ -638,4 +657,3 @@ shinyjs.init = function() {
 //shinyjs.getHeight50 = function() {
 //  Shiny.onInputChange('height50', $(window).height() * .5);
 //}
-
