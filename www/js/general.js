@@ -464,16 +464,19 @@ shinyjs.init = function() {
                     $('.loading-container').hide();
                     $('#landing #DISMISS_MODAL').show();
                     $('#landing #TAKE_TOUR').show();
+                    $('#DATA_TOUR').removeAttr('disabled');
                 }, 1000);
                 window.setTimeout(function(){
                     $('.loading-container').hide();
                     $('#landing #DISMISS_MODAL').show();
                     $('#landing #TAKE_TOUR').show();
+                    $('#DATA_TOUR').removeAttr('disabled');
                 }, 3000);
                 window.setTimeout(function(){
                     $('.loading-container').hide();
                     $('#landing #DISMISS_MODAL').show();
                     $('#landing #TAKE_TOUR').show();
+                    $('#DATA_TOUR').removeAttr('disabled');
                 }, 8000);
 
                 return;
@@ -563,11 +566,11 @@ shinyjs.init = function() {
     });
     $('body').on('click', '.cicerone1 .driver-next-btn', function(i, v){
         $('a[data-value="biplot"]').trigger('click');
-        Shiny.setInputValue('CONTINUE_TOUR', ' ');
+        Shiny.setInputValue('CONTINUE_TOUR', '' + new Date());
     });
     $('body').on('click', '#DATA_TOUR', function(i, v){
         $('a[data-value="multisite_exploration"]').trigger('click');
-        Shiny.setInputValue('START_DATA_TOUR', ' ');
+        Shiny.setInputValue('START_DATA_TOUR', '' + new Date());
     });
 
     //all this crap (and associated CSS) is necessary just to make "macrosheds.org"
