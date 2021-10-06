@@ -252,10 +252,12 @@ site_info_tib <- reactive({
                 pivot_longer(cols = starts_with('lg')) %>%
                 filter(value == max(value))
             
+            dom_cover_name <- variables[variables$variable_code == dom_cover$name, ]$variable_name
+            
             if(nrow(dom_cover) == 0){
                 dom_cover <- NA
             } else {
-                dom_cover <- substr(dom_cover$name, 1, 3)
+                dom_cover <- dom_cover_name
             }
             
             fin_tib <- sw(tibble(var = c('Site Code', 'Full Name', 'Domain', 'Site Type', 'Stream',
