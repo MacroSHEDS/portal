@@ -5,120 +5,98 @@
 ## govern showing/hiding of facets ####
 
 reactive_vals = reactiveValues()
-reactive_vals$facet3a = 0
-reactive_vals$facet3b = 0
-reactive_vals$facet3c = 0
+# reactive_vals$facet3a = 0
+# reactive_vals$facet3b = 0
+# reactive_vals$facet3c = 0
 reactive_vals$update_basedata = 0
 
-#main facets
-observeEvent(input$REFRESH, {
-    print('REFRESH')
-    reactive_vals$facet3a = reactive_vals$facet3a + 1
-    reactive_vals$facet3b = reactive_vals$facet3b + 1
-    reactive_vals$facet3c = reactive_vals$facet3c + 1
-})
-
-observeEvent({
-    if(
-        ! is.null(input$SITES3) &&
-        ! is.null(get_domains3()) &&
-        ! is.null(input$CONC_FLUX3) &&
-        ! is.null(input$FLUX_UNIT3) &&
-        ! is.null(input$CONC_UNIT3) &&
-        ! is.null(input$SHOW_PCHEM3) &&
-        ! is.null(input$AGG3) &&
-        is.null(timeSliderUpdate()) &&
-        # ! is.null(input$DATES3) &&
-        ! is.null(input$SHOW_QC3) &&
-        ! is.null(input$INSTALLED_V_GRAB3) &&
-        ! is.null(input$SENSOR_V_NONSENSOR3) &&
-        ! is.null(input$SHOW_UNCERT3) &&
-        ! is.null(input$FLAGS3) &&
-        ! is.null(input$INTERP3) &&
-        length(input$VARS3) == 1
-    ){ TRUE } else NULL
-}, {
-    print('rvalA')
-    reactive_vals$facet3a = reactive_vals$facet3a + 1
-})
-
-observeEvent({
-    if(
-        ! is.null(input$SITES3) &&
-        ! is.null(get_domains3()) &&
-        ! is.null(input$CONC_FLUX3) &&
-        ! is.null(input$FLUX_UNIT3) &&
-        ! is.null(input$CONC_UNIT3) &&
-        ! is.null(input$SHOW_PCHEM3) &&
-        ! is.null(input$AGG3) &&
-        # ! is.null(input$DATES3) &&
-        is.null(timeSliderUpdate()) &&
-        ! is.null(input$SHOW_QC3) &&
-        ! is.null(input$INSTALLED_V_GRAB3) &&
-        ! is.null(input$SENSOR_V_NONSENSOR3) &&
-        ! is.null(input$SHOW_UNCERT3) &&
-        ! is.null(input$FLAGS3) &&
-        ! is.null(input$INTERP3) &&
-        length(input$VARS3) == 2
-    ){ TRUE } else NULL
-    # if(length(input$VARS3) == 2){
-    #     TRUE
-    # } else return()
-}, {
-    print('rvalB')
-    reactive_vals$facet3a = reactive_vals$facet3a + 1
-    reactive_vals$facet3b = reactive_vals$facet3b + 1
-})
-
-observeEvent({
-    if(
-        ! is.null(input$SITES3) &&
-        ! is.null(get_domains3()) &&
-        ! is.null(input$CONC_FLUX3) &&
-        ! is.null(input$FLUX_UNIT3) &&
-        ! is.null(input$CONC_UNIT3) &&
-        ! is.null(input$SHOW_PCHEM3) &&
-        ! is.null(input$AGG3) &&
-        # ! is.null(input$DATES3) &&
-        is.null(timeSliderUpdate()) &&
-        ! is.null(input$SHOW_QC3) &&
-        ! is.null(input$INSTALLED_V_GRAB3) &&
-        ! is.null(input$SENSOR_V_NONSENSOR3) &&
-        ! is.null(input$SHOW_UNCERT3) &&
-        ! is.null(input$FLAGS3) &&
-        ! is.null(input$INTERP3) &&
-        length(input$VARS3) == 3
-    ){ TRUE } else NULL
-    # if(length(input$VARS3) == 3){
-    #     TRUE
-    # } else return()
-}, {
-    print('rvalC')
-    reactive_vals$facet3a = reactive_vals$facet3a + 1
-    reactive_vals$facet3b = reactive_vals$facet3b + 1
-    reactive_vals$facet3c = reactive_vals$facet3c + 1
-})
-
-# #precip facets
-# observeEvent({
-#     if(length(input$SITES3) >= 1){ TRUE } else return()
-# }, {
-#     reactive_vals$facet3aP = reactive_vals$facet3aP + 1
+# #main facets
+# observeEvent(input$REFRESH, {
+#     print('REFRESH')
+#     reactive_vals$facet3a = reactive_vals$facet3a + 1
+#     reactive_vals$facet3b = reactive_vals$facet3b + 1
+#     reactive_vals$facet3c = reactive_vals$facet3c + 1
 # })
 #
 # observeEvent({
-#     if(length(input$SITES3) >= 2){ TRUE } else return()
+#     if(
+#         ! is.null(input$SITES3) &&
+#         ! is.null(get_domains3()) &&
+#         ! is.null(input$CONC_FLUX3) &&
+#         ! is.null(input$FLUX_UNIT3) &&
+#         ! is.null(input$CONC_UNIT3) &&
+#         ! is.null(input$SHOW_PCHEM3) &&
+#         ! is.null(input$AGG3) &&
+#         is.null(timeSliderUpdate()) &&
+#         # ! is.null(input$DATES3) &&
+#         ! is.null(input$SHOW_QC3) &&
+#         ! is.null(input$INSTALLED_V_GRAB3) &&
+#         ! is.null(input$SENSOR_V_NONSENSOR3) &&
+#         ! is.null(input$SHOW_UNCERT3) &&
+#         ! is.null(input$FLAGS3) &&
+#         ! is.null(input$INTERP3) &&
+#         length(input$VARS3) == 1
+#     ){ TRUE } else NULL
 # }, {
-#     reactive_vals$facet3aP = reactive_vals$facet3aP + 1
-#     reactive_vals$facet3bP = reactive_vals$facet3bP + 1
+#     print('rvalA')
+#     reactive_vals$facet3a = reactive_vals$facet3a + 1
 # })
 #
 # observeEvent({
-#     if(length(input$SITES3) == 3){ TRUE } else return()
+#     if(
+#         ! is.null(input$SITES3) &&
+#         ! is.null(get_domains3()) &&
+#         ! is.null(input$CONC_FLUX3) &&
+#         ! is.null(input$FLUX_UNIT3) &&
+#         ! is.null(input$CONC_UNIT3) &&
+#         ! is.null(input$SHOW_PCHEM3) &&
+#         ! is.null(input$AGG3) &&
+#         # ! is.null(input$DATES3) &&
+#         is.null(timeSliderUpdate()) &&
+#         ! is.null(input$SHOW_QC3) &&
+#         ! is.null(input$INSTALLED_V_GRAB3) &&
+#         ! is.null(input$SENSOR_V_NONSENSOR3) &&
+#         ! is.null(input$SHOW_UNCERT3) &&
+#         ! is.null(input$FLAGS3) &&
+#         ! is.null(input$INTERP3) &&
+#         length(input$VARS3) == 2
+#     ){ TRUE } else NULL
+#     # if(length(input$VARS3) == 2){
+#     #     TRUE
+#     # } else return()
 # }, {
-#     reactive_vals$facet3aP = reactive_vals$facet3aP + 1
-#     reactive_vals$facet3bP = reactive_vals$facet3bP + 1
-#     reactive_vals$facet3cP = reactive_vals$facet3cP + 1
+#     print('rvalB')
+#     reactive_vals$facet3a = reactive_vals$facet3a + 1
+#     reactive_vals$facet3b = reactive_vals$facet3b + 1
+# })
+#
+# observeEvent({
+#     if(
+#         ! is.null(input$SITES3) &&
+#         ! is.null(get_domains3()) &&
+#         ! is.null(input$CONC_FLUX3) &&
+#         ! is.null(input$FLUX_UNIT3) &&
+#         ! is.null(input$CONC_UNIT3) &&
+#         ! is.null(input$SHOW_PCHEM3) &&
+#         ! is.null(input$AGG3) &&
+#         # ! is.null(input$DATES3) &&
+#         is.null(timeSliderUpdate()) &&
+#         ! is.null(input$SHOW_QC3) &&
+#         ! is.null(input$INSTALLED_V_GRAB3) &&
+#         ! is.null(input$SENSOR_V_NONSENSOR3) &&
+#         ! is.null(input$SHOW_UNCERT3) &&
+#         ! is.null(input$FLAGS3) &&
+#         ! is.null(input$INTERP3) &&
+#         length(input$VARS3) == 3
+#     ){ TRUE } else NULL
+#     # if(length(input$VARS3) == 3){
+#     #     TRUE
+#     # } else return()
+# }, {
+#     print('rvalC')
+#     reactive_vals$facet3a = reactive_vals$facet3a + 1
+#     reactive_vals$facet3b = reactive_vals$facet3b + 1
+#     reactive_vals$facet3c = reactive_vals$facet3c + 1
 # })
 
 ## reactivity flow control ####
@@ -131,7 +109,7 @@ get_domains3 <- eventReactive(eventExpr = input$DOMAINS3,
     domains <- input$DOMAINS3
     sites <- input$SITES3
 
-    # reactive_vals$update_basedata <- reactive_vals$update_basedata + 1
+    reactive_vals$update_basedata <- reactive_vals$update_basedata + 1
 
     site_opts <- generate_dropdown_sitelist(domains)
     selection <- if(is.null(site_opts)) '' else sites
@@ -146,29 +124,18 @@ get_domains3 <- eventReactive(eventExpr = input$DOMAINS3,
     return(domains)
 })
 
-
-# #when domain(s) change and SHOW_PCHEM3==TRUE, update basedata reactive value
-# observeEvent({
-#     if(
-#         ! is.null(get_domains3()) &&
-#         input$SHOW_PCHEM3
-#     ){ TRUE } else return()
-# }, {
-#     reactive_vals$update_basedata = reactive_vals$update_basedata + 1
-# })
-
 #when site(s) change or basedata reactive value updates, basedata changes
 load_basedata <- eventReactive({
 
-    input$DOMAINS3
+    # input$DOMAINS3
     input$SITES3
-    # reactive_vals$update_basedata
-    input$TIME_SCHEME3
-    input$INSTALLED_V_GRAB3
-    input$SENSOR_V_NONSENSOR3
-    # input$SHOW_UNCERT3
-    input$FLAGS3
-    input$INTERP3
+    reactive_vals$update_basedata
+    # input$TIME_SCHEME3
+    # input$INSTALLED_V_GRAB3
+    # input$SENSOR_V_NONSENSOR3
+    # # input$SHOW_UNCERT3
+    # input$FLAGS3
+    # input$INTERP3
 
 }, {
 
@@ -234,19 +201,20 @@ load_basedata <- eventReactive({
 })
 
 #when basedata changes, variable list changes, but not selections
-observe({
+#when sites change, update variable list (but not selection)
+observeEvent(input$SITES3,
 
-    print('basedata change')
+    # print('basedata change')
     # basedata <<- load_basedata()
     # agg <<- input$AGG3
     # vars_ <<- isolate(input$VARS3)
     # dates <<- isolate(input$DATES3)
     # sites <<- isolate(input$SITES3)
-
+{
     basedata <- load_basedata()
-    agg <- input$AGG3
-    vars_ <- isolate(input$VARS3)
-    sites <- isolate(input$SITES3)
+    # agg <- input$AGG3
+    vars_ <- input$VARS3
+    # sites <- isolate(input$SITES3)
 
     chemvars_display_subset <- filter_dropdown_varlist(basedata$chem)
 
@@ -900,14 +868,14 @@ dataQ <- reactive({
 ## plot generators ####
 #these should only update when prerequisite reactive data or facets change
 #def could use better abstraction, efficiency measures
-plot_triger <- reactiveValues()
-observeEvent(input$GEN_PLOTS3, {
-    gc()
-    if(length(plot_triger$fire) == 0){
-        plot_triger$fire <- 0
-    }
-    plot_triger$fire <- plot_triger$fire + 1
-})
+# plot_triger <- reactiveValues()
+# observeEvent(input$GEN_PLOTS3, {
+#     gc()
+#     if(length(plot_triger$fire) == 0){
+#         plot_triger$fire <- 0
+#     }
+#     plot_triger$fire <- plot_triger$fire + 1
+# })
 
 output$GRAPH_PRECIP3 <- renderDygraph({
 
