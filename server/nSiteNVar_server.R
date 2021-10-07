@@ -2,7 +2,6 @@ reactive_vals <- reactiveValues()
 reactive_vals$update_basedata <- 0
 reactive_vals$basedata <- list()
 reactive_vals$slider_updates_plots <- TRUE
-reactive_vals$reload_plots <- 0
 
 ## reactivity flow control ####
 
@@ -97,14 +96,17 @@ observeEvent(eventExpr = reactive_vals$basedata,
 
     if(! length(vars_)) vars_ <- chemvars_vec[1]
 
-    updateSelectizeInput(session = session,
-                         inputId = 'VARS3',
-                         choices = chemvars_display_subset,
-                         selected = vars_)
-
     if(init_vals$basedata_change_reloads_plots){
-        reactive_vals$reload_plots <- runif(1, 0, 1)
+
+        shinyjs::click('GEN_PLOTS3')
         init_vals$basedata_change_reloads_plots <- FALSE
+
+    } else {
+
+        updateSelectizeInput(session = session,
+                             inputId = 'VARS3',
+                             choices = chemvars_display_subset,
+                             selected = vars_)
     }
 })
 
@@ -181,7 +183,6 @@ updatePlots <- eventReactive(input$GEN_PLOTS3,
 dataChem <- eventReactive({
     updatePlots()
     timeSliderChanged()
-    reactive_vals$reload_plots
 }, {
 
     print('dataChem')
@@ -249,7 +250,6 @@ dataChem <- eventReactive({
 dataVWC <- eventReactive({
     updatePlots()
     timeSliderChanged()
-    reactive_vals$reload_plots
 }, {
 
     print('dataVWC')
@@ -371,7 +371,6 @@ dataVWC <- eventReactive({
 dataPchem <- eventReactive({
     updatePlots()
     timeSliderChanged()
-    reactive_vals$reload_plots
 }, {
 
     print('dataPchem')
@@ -425,7 +424,6 @@ dataPchem <- eventReactive({
 dataPVWC <- eventReactive({
     updatePlots()
     timeSliderChanged()
-    reactive_vals$reload_plots
 }, {
 
     print('dataPVWC')
@@ -528,7 +526,6 @@ dataPVWC <- eventReactive({
 dataPrecip <- eventReactive({
     updatePlots()
     timeSliderChanged()
-    reactive_vals$reload_plots
 }, {
 
     print('dataPrecip')
@@ -566,7 +563,6 @@ dataPrecip <- eventReactive({
 dataQ <- eventReactive({
     updatePlots()
     timeSliderChanged()
-    reactive_vals$reload_plots
 }, {
 
     print('dataQ')
@@ -1639,16 +1635,3 @@ outputOptions(output,
               name = 'SHOW_QC_GEN3',
               suspendWhenHidden = FALSE,
               priority = 100)
-
-# #update plots in response to clicking of map "Go to" buttons,
-# #AFTER domain, site, and var inputs and basedata have updated
-# observeEvent(mapUpdate(), {
-#
-#     print('here')
-#     # Sys.sleep(4)
-#     # shinyjs::click('GEN_PLOTS3')
-#
-#     # shinyjs::click('REFRESH')
-#     session$sendCustomMessage('flash_plot',
-#                               jsonlite::toJSON('placeholder'))
-# })

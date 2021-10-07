@@ -657,11 +657,6 @@ shinyjs.init = function() {
 
     });
 
-    //click Update Plots once inputs and basedata have changed in response to a map "Go to" link
-    $('#MAP_UPDATE_READY').on('click', function(event){
-        $('#GEN_PLOTS3').trigger('click');
-    });
-
 };
 
 //shinyjs.calcHeight = function(propHeight) {

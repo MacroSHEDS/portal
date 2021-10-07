@@ -85,7 +85,6 @@ server <- function(input, output, session){
                  handlerExpr = {
 
         init_vals$basedata_change_reloads_plots <- TRUE
-        # freezeReactiveValue(input, 'GEN_PLOTS3')
 
         map_selection <- str_match(input$MAPDATA, '(.+?)__(.+?)_goto.*$')[,2:3]
 
@@ -119,22 +118,10 @@ server <- function(input, output, session){
                              choices = chemvars_display_subset,
                              selected = chemvars_vec[1])
 
-        # shinyjs::click('GEN_PLOTS3')
-        # shinyjs::click('REFRESH')
-        # init_vals$map_update_ready <- runif(1, 0, 1)
-
         print('here')
-        shinyjs::click('MAP_UPDATE_READY')
-
-        # session$sendCustomMessage('flash_plot',
-        #                           jsonlite::toJSON('placeholder'))
+        session$sendCustomMessage('flash_plot',
+                                  jsonlite::toJSON('placeholder'))
     })
-
-    # output$MAP_UPDATE_READY <- renderText({
-    #     init_vals$map_update_ready
-    #     print('here')
-    #     return(runif(1, 0, 1))
-    # })
 
     observeEvent(
         eventExpr = {
