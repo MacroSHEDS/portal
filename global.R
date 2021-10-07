@@ -99,8 +99,21 @@ site_data <- filter(site_data,
 # raincolors <- c('#8ab5de', '#36486b', '#618685') #blues
 # linecolors <- c('#36486b', '#008040', '#800080') #blue, green, purple
 # pchemcolors <- c('#4a6292', '#1bff8c', '#ff1bff') #lighter shades of linecolors (Blu, G, P)
-linecolors <- c('#1f49c7', '#006600', '#4d0099') #from royalblue (4169e1), green, purple
-pchemcolors <- c('#7b97ea', '#00b300', '#8000ff') #lighter shades of linecolors
+# linecolors <- c('#1f49c7', '#006600', '#4d0099') #from royalblue (4169e1), green, purple
+# pchemcolors <- c('#7b97ea', '#00b300', '#8000ff') #lighter shades of linecolors
+
+# alternative color pallete (color blind safe)
+# based on same pallete as site comparison
+
+# Color blind safe palette
+linecolors <- c('#2a6a99', '#d88546', '#b2b1ff') # light blue, purple, light yellow
+pchemcolors <- c('#2a6a9970', '#d8854655', '#b2b1ff55') 
+pchemcolors_strong <- c('#2a6a99', '#d88546', '#b2b1ff') 
+
+# good third color: (purple: #cbc2ff )
+
+# safe_cols <- c("#88CCEE", "#CC6677", "#DDCC77", "#117733", "#332288", "#AA4499",
+#                "#44AA99", "#999933", "#882255", "#661100", "#6699CC", "#888888")
 
 ## 2. populate nSiteNVar defaults, which determine data shown when user lands ####
 

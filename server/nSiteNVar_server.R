@@ -689,7 +689,7 @@ output$GRAPH_PRECIP3 <- renderDygraph({
                       colors = selection_color_match(
                           sites_selected = sites,
                           sites_all = displabs[displabs %in% sites],
-                          colorvec = pchemcolors
+                          colorvec = pchemcolors_strong
                       ),
                       drawGapEdgePoints = TRUE
 
@@ -711,7 +711,7 @@ output$GRAPH_PRECIP3 <- renderDygraph({
                      labelsSeparateLines = FALSE,
                      labelsDiv = 'P3') %>%
             dyAxis('y',
-                   label = 'P (mm)',
+                   label = 'PPT (mm)',
                    valueRange = c(ymax + ymax * 0.1,
                                   0),
                    labelWidth = 16,
@@ -892,6 +892,7 @@ output$GRAPH_MAIN3a <- renderDygraph({
                 sites_selected = rainsites,
                 sites_all = rainsites,
                 sites_missing = rainsites[! rainsites %in% colnms],
+                # jump
                 colorvec = pchemcolors
             )
 
