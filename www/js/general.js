@@ -89,7 +89,7 @@ shinyjs.init = function() {
         '</div>'
     );
 
-    // adding (?) tooltip to Aggregation block 
+    // adding (?) tooltip to Aggregation block
     $('#aggregation').replaceWith(
         '<div style = "white-space: nowrap" class = "widget-title text-center",>' +
         '<div style = "display: inline-block; vertical-align: middle; white-space: normal">' +

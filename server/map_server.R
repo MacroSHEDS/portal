@@ -49,10 +49,11 @@ output$MAP <- renderLeaflet({
                                                 fill = '#228B22',
                                                 opacity=1),
             group = 'Catchments') %>%
+        # rain gauge
         addCircleMarkers(lng = rg$longitude,
                          lat = rg$latitude,
-                         color = '#0000FF',
-                         fillColor = '#0000FF',
+                         color = '#8fc5f6',
+                         fillColor = '#8fc5f6',
                          layerId = paste0(rg$site_code, '_*_rain'),
                          stroke = TRUE,
                          opacity = 0.5,
@@ -75,16 +76,17 @@ output$MAP <- renderLeaflet({
                                           minWidth = 200,
                                           maxWidth = 500),
                          data = rg) %>%
+        # chemistry gauge
         addCircleMarkers(lng = sg$longitude,
                          lat = sg$latitude,
-                         color = '#228B22',
+                         color = '#8856a7',
                          layerId = sg$site_code,
                          stroke = TRUE,
                          opacity = 0.5,
                          radius = 4,
                          weight = 10,
                          fillOpacity = 1,
-                         fillColor = '#228B22',
+                         fillColor = '#8856a7',
                     popup = glue(stream_gauge_buttons,
                                  domain = sg$domain,
                                  # pretty_domain = sg$pretty_domain,
