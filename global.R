@@ -68,20 +68,21 @@ source('function_aliases.R')
 #                         use_oob = TRUE)
 load_portal_config(from_where = 'local')
 
-# sites_with_Q <- sm(read_csv('data/general/sites_with_discharge.csv')) %>%
-#     select(-network) %>%
-#     tidyr::unite(col = 'nds',
-#                  domain, site_code,
-#                  remove = TRUE) %>%
-#     pull(nds)
-
-sites_with_Q <- site_data %>%
-    filter(site_type == 'stream_gauge') %>%
+#some stream_gauge sites do not have discharge, like calhoun - weir_3
+sites_with_Q <- sm(read_csv('data/general/sites_with_discharge.csv')) %>%
     select(-network) %>%
     tidyr::unite(col = 'nds',
                  domain, site_code,
                  remove = TRUE) %>%
     pull(nds)
+
+# sites_with_Q <- site_data %>%
+#     filter(site_type == 'stream_gauge') %>%
+#     select(-network) %>%
+#     tidyr::unite(col = 'nds',
+#                  domain, site_code,
+#                  remove = TRUE) %>%
+#     pull(nds)
 
 site_data_copy <- site_data
 site_data <- filter(site_data,

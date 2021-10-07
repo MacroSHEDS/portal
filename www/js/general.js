@@ -45,8 +45,8 @@ shinyjs.init = function() {
     $('body').ready(function(){
         $('body').on('click', '[id$="_goto"]', function(){
             var goto_id = $(this).attr('id') + new Date(); //trigger reactivity
-            Shiny.setInputValue('MAPDATA', goto_id);
             $('#SITE_EXPLORE').trigger('click');
+            Shiny.setInputValue('MAPDATA', goto_id);
         });
     });
 
@@ -253,6 +253,7 @@ shinyjs.init = function() {
 
     $('body').ready(function(){
         $('#GEN_PLOTS3').click(govern_qc3);
+        //$('#SHOW_QC3').click(govern_qc3);
     });
 
     //BIPLOT: disable X-axis selection when aggregation == 'Yearly'
@@ -484,18 +485,21 @@ shinyjs.init = function() {
                     $('#landing #DISMISS_MODAL').show();
                     $('#landing #TAKE_TOUR').show();
                     $('#DATA_TOUR').removeAttr('disabled');
+                    $('#GEN_PLOTS3').removeClass('disabled').removeAttr('disabled');
                 }, 1000);
                 window.setTimeout(function(){
                     $('.loading-container').hide();
                     $('#landing #DISMISS_MODAL').show();
                     $('#landing #TAKE_TOUR').show();
                     $('#DATA_TOUR').removeAttr('disabled');
+                    $('#GEN_PLOTS3').removeClass('disabled').removeAttr('disabled');
                 }, 3000);
                 window.setTimeout(function(){
                     $('.loading-container').hide();
                     $('#landing #DISMISS_MODAL').show();
                     $('#landing #TAKE_TOUR').show();
                     $('#DATA_TOUR').removeAttr('disabled');
+                    $('#GEN_PLOTS3').removeClass('disabled').removeAttr('disabled');
                 }, 8000);
 
                 return;
@@ -630,10 +634,13 @@ shinyjs.init = function() {
    // });
 
     $(document).on('shiny:idle', function(event){
-        enable_attribution = true
+        enable_attribution = true;
     });
 
     $('div[id^="GRAPH_"]').on('shiny:value', function(event){
+
+        $('#GEN_PLOTS3').removeClass('disabled').removeAttr('disabled');
+
         if(enable_attribution){
             let $this = $(this)
             window.setTimeout(function(){
@@ -647,7 +654,14 @@ shinyjs.init = function() {
                 };
             }, 500);
         };
+
     });
+
+    //click Update Plots once inputs and basedata have changed in response to a map "Go to" link
+    $('#MAP_UPDATE_READY').on('click', function(event){
+        $('#GEN_PLOTS3').trigger('click');
+    });
+
 };
 
 //shinyjs.calcHeight = function(propHeight) {

@@ -11,6 +11,11 @@ nSiteNVar_tab <- tabPanel("Time Series",
             ),
             br(),
 
+            #needed for triggering a click of GEN_PLOTS3 via JQuery
+            actionButton('MAP_UPDATE_READY',
+                         label = NULL,
+                         style = 'display: none'),
+
             #domain selector
             div('Domains',
                 class = 'widget-title text-center'),
@@ -440,7 +445,7 @@ nSiteNVar_tab <- tabPanel("Time Series",
                             ),
                             div(id = 'inlineQC3c',
                                 style = 'width: 0%; display: inline-block; vertical-align: top',
-                                #conditionalPanel('input.SHOW_QC3 == true',
+                                # conditionalPanel('input.SHOW_QC3 == true',
                                 conditionalPanel('output.SHOW_QC_GEN3 == true',
                                     plotOutput('GRAPH_QC3c', height='125px')
                                 )

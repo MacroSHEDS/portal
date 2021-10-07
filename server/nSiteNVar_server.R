@@ -1,6 +1,8 @@
 reactive_vals <- reactiveValues()
 reactive_vals$update_basedata <- 0
 reactive_vals$basedata <- list()
+reactive_vals$slider_updates_plots <- TRUE
+reactive_vals$reload_plots <- 0
 
 ## reactivity flow control ####
 
@@ -87,77 +89,117 @@ observeEvent(eventExpr = reactive_vals$basedata,
     vars_ <- input$VARS3
 
     chemvars_display_subset <- filter_dropdown_varlist(basedata$chem)
+    chemvars_vec <- unlist(chemvars_display_subset,
+                           recursive = TRUE,
+                           use.names = FALSE)
 
-    vars_ <- vars_[vars_ %in% unlist(chemvars_display_subset,
-                                     recursive = TRUE,
-                                     use.names = FALSE)]
+    vars_ <- vars_[vars_ %in% chemvars_vec]
 
-    if(! length(vars_)) vars_ <- chemvars_display_subset[[1]][[1]]
+    if(! length(vars_)) vars_ <- chemvars_vec[1]
 
     updateSelectizeInput(session = session,
                          inputId = 'VARS3',
                          choices = chemvars_display_subset,
                          selected = vars_)
+
+    if(init_vals$basedata_change_reloads_plots){
+        reactive_vals$reload_plots <- runif(1, 0, 1)
+        init_vals$basedata_change_reloads_plots <- FALSE
+    }
 })
 
-# # Only update time slider on update plot
-# observe({
-#
-#     input$GEN_PLOTS3
-#     basedata <- isolate(load_basedata())
-#     agg <- isolate(input$AGG3)
-#     vars_ <- isolate(input$VARS3)
-#     dates <- isolate(input$DATES3)
-#     sites <- isolate(input$SITES3)
-#
-#     dtrng <- get_timeslider_extent(basedata, dates)
-#
-#     if(nrow(basedata$chem)){
-#         vardates <- filter(basedata$chem, drop_var_prefix(var) %in% vars_)$datetime
-#     } else {
-#         vardates <- dtrng
-#     }
-#
-#     if(length(sites) == 1 && ! dt_ranges_overlap(vardates, dates)){
-#
-#         if(agg == 'Yearly'){
-#             selected_dtrng <- dtrng
-#         } else {
-#             selected_dtrng <- as.Date(most_recent_year(range(vardates)))
-#         }
-#
-#     } else {
-#         selected_dtrng <- dates
-#     }
-#
-#     updateSliderInput(session = session,
-#                       inputId = 'DATES3',
-#                       min = dtrng[1],
-#                       max = dtrng[2],
-#                       value = selected_dtrng,
-#                       timeFormat = '%b %Y')
-# })
+#update timeslider when Update Plots is clicked
+observeEvent(eventExpr = input$GEN_PLOTS3,
+             priority = 90,
+             handlerExpr = {
 
+    basedata <- reactive_vals$basedata
+    agg <- input$AGG3
+    vars_ <- input$VARS3
+    dates <- input$DATES3
+    sites <- input$SITES3
+
+    dtrng <- get_timeslider_extent(basedata, dates)
+
+    if(nrow(basedata$chem)){
+        vardates <- filter(basedata$chem, drop_var_prefix(var) %in% vars_)$datetime
+    } else {
+        vardates <- dtrng
+    }
+
+    if(length(sites) == 1 && ! dt_ranges_overlap(vardates, dates)){
+
+        if(agg == 'Yearly'){
+            selected_dtrng <- dtrng
+        } else {
+            selected_dtrng <- as.Date(most_recent_year(range(vardates)))
+        }
+
+    } else {
+        selected_dtrng <- dates
+    }
+
+    reactive_vals$slider_updates_plots <- FALSE
+    print('slider update triggering from update button click')
+    updateSliderInput(session = session,
+                      inputId = 'DATES3',
+                      min = dtrng[1],
+                      max = dtrng[2],
+                      value = selected_dtrng,
+                      timeFormat = '%b %Y')
+})
 
 #reduce the reactivity sensitivity of the timeslider, so that intermediate inputs
 #don't trigger plot updates
 timeSliderChanged <- reactive({
-    return(input$DATES3)
+
+    if(reactive_vals$slider_updates_plots){
+        print('slider update')
+        return(input$DATES3)
+    }
+
 }) %>%
     debounce(1000)
 
+observeEvent(timeSliderChanged(), {
+    reactive_vals$slider_updates_plots <- TRUE
+})
 
-## data preppers ####
-
+#update plots in response to a click of Update Plots
 updatePlots <- eventReactive(input$GEN_PLOTS3,
                              ignoreNULL = FALSE,
                              valueExpr = {
+
+    print('Update Plots')
+    shinyjs::disable('GEN_PLOTS3')
+
     return(runif(1, 0, 1))
 })
 
-dataChem <- eventReactive(updatePlots(), {
+## data preppers ####
+
+dataChem <- eventReactive({
+    updatePlots()
+    timeSliderChanged()
+    reactive_vals$reload_plots
+}, {
 
     print('dataChem')
+
+    # vars_ <<- input$VARS3
+    # conc_flux <<- input$CONC_FLUX3
+    # conc_unit <<- input$CONC_UNIT3
+    # flux_unit <<- input$FLUX_UNIT3
+    # agg <<- input$AGG3
+    # sites <<- input$SITES3
+    # time_scheme <<- input$TIME_SCHEME3
+    # igsn <<- c(input$INSTALLED_V_GRAB3, input$SENSOR_V_NONSENSOR3)
+    # show_uncert <<- input$SHOW_UNCERT3
+    # show_flagged <<- input$FLAGS3
+    # show_imputed <<- input$INTERP3
+    # dates <<- input$DATES3
+    # enable_unitconvert <<- init_vals$enable_unitconvert
+    # basedata <<- reactive_vals$basedata
 
     vars_ <- input$VARS3
     conc_flux <- input$CONC_FLUX3
@@ -204,7 +246,11 @@ dataChem <- eventReactive(updatePlots(), {
     return(datachem)
 })
 
-dataVWC <- eventReactive(updatePlots(), {
+dataVWC <- eventReactive({
+    updatePlots()
+    timeSliderChanged()
+    reactive_vals$reload_plots
+}, {
 
     print('dataVWC')
 
@@ -322,7 +368,11 @@ dataVWC <- eventReactive(updatePlots(), {
     return(datavwc)
 })
 
-dataPchem <- eventReactive(updatePlots(), {
+dataPchem <- eventReactive({
+    updatePlots()
+    timeSliderChanged()
+    reactive_vals$reload_plots
+}, {
 
     print('dataPchem')
 
@@ -372,7 +422,11 @@ dataPchem <- eventReactive(updatePlots(), {
     return(dataPchem)
 })
 
-dataPVWC <- eventReactive(updatePlots(), {
+dataPVWC <- eventReactive({
+    updatePlots()
+    timeSliderChanged()
+    reactive_vals$reload_plots
+}, {
 
     print('dataPVWC')
 
@@ -471,7 +525,11 @@ dataPVWC <- eventReactive(updatePlots(), {
     return(dataPvwc)
 })
 
-dataPrecip <- eventReactive(updatePlots(), {
+dataPrecip <- eventReactive({
+    updatePlots()
+    timeSliderChanged()
+    reactive_vals$reload_plots
+}, {
 
     print('dataPrecip')
 
@@ -505,7 +563,11 @@ dataPrecip <- eventReactive(updatePlots(), {
     return(dataP)
 })
 
-dataQ <- eventReactive(updatePlots(), {
+dataQ <- eventReactive({
+    updatePlots()
+    timeSliderChanged()
+    reactive_vals$reload_plots
+}, {
 
     print('dataQ')
 
@@ -544,9 +606,12 @@ dataQ <- eventReactive(updatePlots(), {
 
 output$GRAPH_PRECIP3 <- renderDygraph({
 
+
     dataP <- dataPrecip()
     dates <- timeSliderChanged()
     sites <- isolate(input$SITES3)
+
+    print('plot P')
 
     # if(reactive_vals$precip3 == 0) return()
 
@@ -663,6 +728,7 @@ output$GRAPH_PRECIP3 <- renderDygraph({
                      labelsDiv = 'P3')
     }
 
+    # shinyjs::enable('GEN_PLOTS3')
     return(dg)
 })
 
@@ -678,9 +744,6 @@ output$GRAPH_MAIN3a <- renderDygraph({
     show_uncert <- isolate(input$SHOW_UNCERT3)
     dmns <- isolate(input$DOMAINS3)
     dates <- timeSliderChanged()
-
-    # if(isolate(reactive_vals$facet3a == 0)) return()
-    print('mainA')
 
     if(conc_flux == 'VWC'){
         streamdata <- dataVWC()
@@ -699,6 +762,9 @@ output$GRAPH_MAIN3a <- renderDygraph({
     } else {
         raindata <- tibble()
     }
+
+    print(reactive_vals$basedata$chem, n=1)
+    print('plot main A')
 
     alldata <- pad_widen_join(v = varA,#
                               sites = sites,
@@ -863,16 +929,16 @@ output$GRAPH_MAIN3a <- renderDygraph({
                      labelsDiv = 'main3a')
     }
 
+    # shinyjs::enable('GEN_PLOTS3')
     return(dg)
 })
 
 output$GRAPH_QC3a <- renderPlot({
 
-    print('QC3a')
-
     show_qc <- isolate(input$SHOW_QC3)
     sites <- na.omit(isolate(input$SITES3[1:3]))
-    varA <- isolate(input$VARS3[1])
+    vars_ <- isolate(input$VARS3)
+    varA <- vars_[1]
     conc_flux <- isolate(input$CONC_FLUX3)
     conc_unit <- isolate(input$CONC_UNIT3)
     flux_unit <- isolate(input$FLUX_UNIT3)
@@ -880,11 +946,14 @@ output$GRAPH_QC3a <- renderPlot({
     agg <- isolate(input$AGG3)
     show_uncert <- isolate(input$SHOW_UNCERT3)
     dates <- timeSliderChanged()
+    input$REFRESH
 
     dataq <- dataQ()
     datachem <- if(conc_flux == 'VWC') dataVWC() else dataChem()
 
-    if(reactive_vals$facet3a == 0 || ! show_qc) return()
+    print('plot QC A')
+
+    if(length(vars_) == 0 || ! show_qc) return()
 
     alldata <- datachem %>%
         select(c('datetime', 'site_code', ends_with(varA))) %>%
@@ -958,9 +1027,6 @@ output$GRAPH_MAIN3b <- renderDygraph({
     dates <- timeSliderChanged()
     show_uncert <- isolate(input$SHOW_UNCERT3)
 
-    # if(isolate(reactive_vals$facet3b == 0)) return()#
-    print('mainB')
-
     if(conc_flux == 'VWC'){
         streamdata <- dataVWC()
     } else {
@@ -978,6 +1044,8 @@ output$GRAPH_MAIN3b <- renderDygraph({
     } else {
         raindata <- tibble()
     }
+
+    print('plot main B')
 
     alldata <- pad_widen_join(v = varB,
                               sites = sites,
@@ -1117,16 +1185,16 @@ output$GRAPH_MAIN3b <- renderDygraph({
                      labelsDiv = 'main3b')
     }
 
+    # shinyjs::enable('GEN_PLOTS3')
     return(dg)
 })
 
 output$GRAPH_QC3b <- renderPlot({
 
-    print('QC3b')
-
     show_qc <- isolate(input$SHOW_QC3)
     sites <- na.omit(isolate(input$SITES3[1:3]))
-    varB <- isolate(input$VARS3[2])
+    vars_ <- isolate(input$VARS3)
+    varB <- vars_[2]
     conc_flux <- isolate(input$CONC_FLUX3)
     conc_unit <- isolate(input$CONC_UNIT3)
     flux_unit <- isolate(input$FLUX_UNIT3)
@@ -1134,11 +1202,14 @@ output$GRAPH_QC3b <- renderPlot({
     agg <- isolate(input$AGG3)
     show_uncert <- isolate(input$SHOW_UNCERT3)
     dates <- timeSliderChanged()
+    input$REFRESH
 
     dataq <- dataQ()
     datachem <- if(conc_flux == 'VWC') dataVWC() else dataChem()
 
-    if(isolate(reactive_vals$facet3b) == 0 || ! show_qc) return()
+    print('plot QC B')
+
+    if(length(vars_) <= 1 || ! show_qc) return()
 
     alldata <- datachem %>%
         select(c('datetime', 'site_code', ends_with(varB))) %>%
@@ -1202,8 +1273,6 @@ output$GRAPH_QC3b <- renderPlot({
 
 output$GRAPH_MAIN3c <- renderDygraph({
 
-    print('mainC')
-
     sites <- na.omit(isolate(input$SITES3))
     varC <- isolate(input$VARS3[3])#
     conc_flux <- isolate(input$CONC_FLUX3)
@@ -1213,8 +1282,6 @@ output$GRAPH_MAIN3c <- renderDygraph({
     agg <- isolate(input$AGG3)
     show_uncert <- isolate(input$SHOW_UNCERT3)
     dates <- timeSliderChanged()
-
-    # if(isolate(reactive_vals$facet3c == 0)) return()#
 
     if(conc_flux == 'VWC'){
         streamdata <- dataVWC()
@@ -1233,6 +1300,8 @@ output$GRAPH_MAIN3c <- renderDygraph({
     } else {
         raindata <- tibble()
     }
+
+    print('plot main C')
 
     alldata <- pad_widen_join(v = varC,
                               sites = sites,
@@ -1372,16 +1441,16 @@ output$GRAPH_MAIN3c <- renderDygraph({
                      labelsDiv = 'main3c')
     }
 
+    # shinyjs::enable('GEN_PLOTS3')
     return(dg)
 })
 
 output$GRAPH_QC3c <- renderPlot({
 
-    print('QC3a')
-
     show_qc <- isolate(input$SHOW_QC3)
     sites <- na.omit(isolate(input$SITES3[1:3]))
-    varC <- isolate(input$VARS3[3])
+    vars_ <- isolate(input$VARS3)
+    varC <- vars_[3]
     conc_flux <- isolate(input$CONC_FLUX3)
     conc_unit <- isolate(input$CONC_UNIT3)
     flux_unit <- isolate(input$FLUX_UNIT3)
@@ -1389,11 +1458,14 @@ output$GRAPH_QC3c <- renderPlot({
     agg <- isolate(input$AGG3)
     show_uncert <- isolate(input$SHOW_UNCERT3)
     dates <- timeSliderChanged()
+    input$REFRESH
 
     dataq <- dataQ()
     datachem <- if(conc_flux == 'VWC') dataVWC() else dataChem()
 
-    if(isolate(reactive_vals$facet3a) == 0 || ! show_qc) return()
+    print('plot QC C')
+
+    if(length(vars_) <= 2 || ! show_qc) return()
 
     alldata <- datachem %>%
         select(c('datetime', 'site_code', ends_with(varC))) %>%
@@ -1461,6 +1533,8 @@ output$GRAPH_Q3 <- renderDygraph({
     dates <- timeSliderChanged()
     sites <- isolate(input$SITES3)
 
+    print('plot Q')
+
     tryCatch(
         {
             dataq <- dataq %>%
@@ -1523,10 +1597,17 @@ output$GRAPH_Q3 <- renderDygraph({
                      labelsDiv = 'Q3')
     }
 
+    # shinyjs::enable('GEN_PLOTS3')
     return(dg)
 })
 
 ## other ####
+
+# #re-enable the Update Plots button
+# eventReactive(eventExpr = {
+#     if(reactive_vals$disable_update_btn) TRUE
+# }, {
+#     shinyjs(
 
 #allows ui to control hide/show of plot facets
 output$n_plots3 <- reactive({
@@ -1542,3 +1623,32 @@ outputOptions(output,
               name = 'n_plots3',
               suspendWhenHidden = FALSE,
               priority = 100)
+
+
+#allows ui to control hide/show of QC/QF plots
+output$SHOW_QC_GEN3 <- reactive({
+
+    input$GEN_PLOTS3
+
+    show_QC <- isolate(input$SHOW_QC3)
+
+    return(show_QC)
+})
+
+outputOptions(output,
+              name = 'SHOW_QC_GEN3',
+              suspendWhenHidden = FALSE,
+              priority = 100)
+
+# #update plots in response to clicking of map "Go to" buttons,
+# #AFTER domain, site, and var inputs and basedata have updated
+# observeEvent(mapUpdate(), {
+#
+#     print('here')
+#     # Sys.sleep(4)
+#     # shinyjs::click('GEN_PLOTS3')
+#
+#     # shinyjs::click('REFRESH')
+#     session$sendCustomMessage('flash_plot',
+#                               jsonlite::toJSON('placeholder'))
+# })

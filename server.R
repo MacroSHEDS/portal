@@ -21,9 +21,10 @@ server <- function(input, output, session){
     # js$getHeight50()
 
     init_vals <- reactiveValues()
-    # init_vals$enable_facets = FALSE
     init_vals$enable_unitconvert <- FALSE
     init_vals$recent_domain <- 'hbef'
+    # init_vals$map_update_ready <- 0
+    init_vals$basedata_change_reloads_plots <- FALSE
 
     observeEvent(input$COLLAPSE_SIDEBAR, {
 
@@ -46,10 +47,10 @@ server <- function(input, output, session){
 
     #register clicking of map popup links
     observeEvent(input$SITE_EXPLORE, {
-        #updateTabsetPanel(session, "right_tabs", selected="site_exploration")
+
         updateTabsetPanel(session,
-                          "right_tabs",
-                          selected = "multisite_exploration")
+                          'right_tabs',
+                          selected = 'multisite_exploration')
     })
 
     output$NSTREAMS <- renderText({
@@ -77,17 +78,14 @@ server <- function(input, output, session){
                  ignoreInit = FALSE,
                  eventExpr = TRUE,
                  handler.quoted = TRUE,
-                 handlerExpr = landing_page
-                    # init_vals$enable_unitconvert = TRUE
-                # }
-        )
+                 handlerExpr = landing_page)
 
-    # observeEvent(once=TRUE, ignoreNULL=FALSE, ignoreInit=TRUE,
-    #         eventExpr=input$VARS3, handlerExpr = {
-    #     init_vals$enable_facets = TRUE
-    # })
+    observeEvent(eventExpr = input$MAPDATA,
+                 priority = 110,
+                 handlerExpr = {
 
-    observeEvent(input$MAPDATA, {
+        init_vals$basedata_change_reloads_plots <- TRUE
+        # freezeReactiveValue(input, 'GEN_PLOTS3')
 
         map_selection <- str_match(input$MAPDATA, '(.+?)__(.+?)_goto.*$')[,2:3]
 
@@ -110,21 +108,37 @@ server <- function(input, output, session){
                              selected = site_sel,
                              choices = dmn_sitelist)
 
-        click('GEN_PLOTS3')
+        basedata <- reactive_vals$basedata
+        chemvars_display_subset <- filter_dropdown_varlist(basedata$chem)
+        chemvars_vec <- unlist(chemvars_display_subset,
+                               recursive = TRUE,
+                               use.names = FALSE)
 
-        session$sendCustomMessage('flash_plot',
-                                  jsonlite::toJSON('placeholder'))
-        # input_vals$flash_plot = input_vals$flash_plot + 1
+        updateSelectizeInput(session = session,
+                             inputId = 'VARS3',
+                             choices = chemvars_display_subset,
+                             selected = chemvars_vec[1])
+
+        # shinyjs::click('GEN_PLOTS3')
+        # shinyjs::click('REFRESH')
+        # init_vals$map_update_ready <- runif(1, 0, 1)
+
+        print('here')
+        shinyjs::click('MAP_UPDATE_READY')
+
+        # session$sendCustomMessage('flash_plot',
+        #                           jsonlite::toJSON('placeholder'))
     })
+
+    # output$MAP_UPDATE_READY <- renderText({
+    #     init_vals$map_update_ready
+    #     print('here')
+    #     return(runif(1, 0, 1))
+    # })
 
     observeEvent(
         eventExpr = {
             input$DISMISS_MODAL
-            # input$DISMISS_VARIABLE_CATALOG
-            # input$DISMISS_VARIABLE_SUBCATALOG
-            # input$DISMISS_SITE_CATALOG
-            # input$DISMISS_SITE_SUBCATALOG
-            # input$DISMISS_LANDING
         },
         handlerExpr = {
             removeModal(session)
