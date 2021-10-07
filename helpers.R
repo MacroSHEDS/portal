@@ -221,7 +221,6 @@ convert_flux_units = function(d,
         'g/ha/d' = 1000,
         'mg/ha/d' = 1000000)
 
-    print(colnames(d))
     varnames <- strip_colname_clutter(colnames(d))
     varnames = varnames[varnames %in% conc_vars]
 
@@ -643,9 +642,12 @@ pad_widen_join <- function(v,
 
     streamdata_exist <- as.logical(nrow(streamdata))
     raindata_exist <- ! missing(raindata) && as.logical(nrow(raindata))
-    v_present <- any(grepl(glue('_{vv}$',
-                                vv = v),
-                           colnames(streamdata)))
+    v_present_stream <- any(grepl(glue('_{vv}$',
+                                       vv = v),
+                                  colnames(streamdata)))
+    v_present_rain <- any(grepl(glue('_{vv}$',
+                                     vv = v),
+                                colnames(raindata)))
 
     #TEMP: TODO: find out if we need to highlight interp/status points.
     #if so, remove the above and fix either pad_widen_join or filter_agg_widen_unprefix
@@ -658,7 +660,7 @@ pad_widen_join <- function(v,
     raindata <- select(raindata,
                        -starts_with(c('ms_interp', 'ms_status')))
 
-    if(streamdata_exist && v_present){
+    if(streamdata_exist && v_present_stream){
 
         streamdata <- streamdata %>%
             select(- ! ends_with(paste0('_', v)),
@@ -673,7 +675,7 @@ pad_widen_join <- function(v,
 
     if(show_input_concentration){
 
-        if(raindata_exist){
+        if(raindata_exist && v_present_rain){
 
             raindata <- raindata %>%
                 select(- ! ends_with(paste0('_', v)),
@@ -1155,7 +1157,7 @@ get_default_site <- function(domain){
         filter(domain == !!domain) %>%
                # network == !!network) %>% #TODO: observe network level in portal
         pull(default_site)
-    
+
     if(domain == 'hbef'){
         site <- 'w6'
     }
@@ -1318,31 +1320,31 @@ dt_ranges_overlap <- function(range1, range2){
     return(ranges_overlap)
 }
 
-read_combine_ws_traits <- function(ws_prod, ws_var, new_var_name, dmns, 
+read_combine_ws_traits <- function(ws_prod, ws_var, new_var_name, dmns,
                        sites = NULL, aggregate = FALSE){
 
     dmn_sites <- site_data %>%
         filter(domain %in% dmns, site_type %in% c('stream_gauge', 'stream_sampling_point')) %>%
         filter(site_code %in% sites) %>%
         select(domain, site_code)
-    
-    if(aggregate){ 
-        agg <- 'sum_' 
-    } else { 
-            agg <- 'raw_' 
+
+    if(aggregate){
+        agg <- 'sum_'
+    } else {
+            agg <- 'raw_'
     }
-    
+
     combined_data <- tibble()
     for(i in 1:nrow(dmn_sites)){
-        
+
         filestr <- glue('data/{d}/{v}/{s}.feather',
                         d = dmn_sites$domain[i],
                         v = paste0('ws_traits/', ws_prod),
                         s = paste0(agg, dmn_sites$site_code[i]))
-        
+
         ws_file <- try(feather::read_feather(filestr),
                        silent = TRUE)
-        
+
         if('try-error' %in% class(ws_file)){
             ws_file <- tibble()
         } else {
@@ -1352,11 +1354,11 @@ read_combine_ws_traits <- function(ws_prod, ws_var, new_var_name, dmns,
                        ms_status = 0,
                        ms_interp = 0) %>%
                 mutate(val = errors::set_errors(val,
-                                                0)) 
+                                                0))
         }
-        
+
         # if(var %in% c('precip', 'pchem')) data_part$domain = dmn_sites$domain[i]
-        
+
         combined_data <- bind_rows(combined_data,
                                    ws_file)
     }

@@ -1,7 +1,6 @@
 reactive_vals <- reactiveValues()
 reactive_vals$update_basedata <- 0
 reactive_vals$basedata <- list()
-reactive_vals$slider_updates_plots <- TRUE
 
 ## reactivity flow control ####
 
@@ -9,7 +8,8 @@ reactive_vals$slider_updates_plots <- TRUE
 observeEvent(eventExpr = input$DOMAINS3,
              ignoreNULL = FALSE,
              handlerExpr = {
-                 print('domain change (update sitelist)')
+
+    print('domain change (update sitelist)')
 
     dmns <- input$DOMAINS3
     sites <- input$SITES3
@@ -27,7 +27,8 @@ observeEvent(eventExpr = input$DOMAINS3,
 #when site(s) change, basedata changes
 observeEvent(eventExpr = input$SITES3,
              handlerExpr = {
-                 print('site change (update basedata)')
+
+    print('site change (update basedata)')
 
     time_scheme <- input$TIME_SCHEME3
     agg <- input$AGG3
@@ -78,10 +79,13 @@ observeEvent(eventExpr = input$SITES3,
 })
 
 #when basedata changes, variable list changes, but not variable selections,
-#unless the previous selections are not available for the newly selected sites(s)
+#unless the previous selections are not available for the newly selected sites(s).
+#if basedata is changing as a result of clicking a map "Go to" link, Update
+#Plots is triggered AFTER variables update
 observeEvent(eventExpr = reactive_vals$basedata,
              handlerExpr = {
-                 print('basedata change (update varlist)')
+
+    print('basedata change (update varlist)')
 
     #DISABLE var dropdown until basedata is loaded
     basedata <- reactive_vals$basedata
@@ -96,27 +100,43 @@ observeEvent(eventExpr = reactive_vals$basedata,
 
     if(! length(vars_)) vars_ <- chemvars_vec[1]
 
+    print('updating var dropdown')
+    updateSelectizeInput(session = session,
+                         inputId = 'VARS3',
+                         choices = chemvars_display_subset,
+                         selected = vars_)
+
     if(init_vals$basedata_change_reloads_plots){
 
-        shinyjs::click('GEN_PLOTS3')
-        init_vals$basedata_change_reloads_plots <- FALSE
+        #only possible to get here from input$MAPDATA
 
-    } else {
-
+        #probably unnecessary for this to be an updateSelectizeInput, when all it's
+        #doing is invalidating to ensure GEN_PLOTS3 fires after VARS3
+        #has updated. but i wanted to ensure VARS_INVISIBLE3 would have
+        #the same priority as VARS3, to ensure no timing funny business
+        #would be nice if we could directly invalidate VARS3
+        invis_choices <- sample(letters, 10)
         updateSelectizeInput(session = session,
-                             inputId = 'VARS3',
-                             choices = chemvars_display_subset,
-                             selected = vars_)
+                             inputId = 'VARS_INVISIBLE3',
+                             choices = invis_choices,
+                             selected = sample(invis_choices, 3))
     }
 })
 
-#update plots and timeslider when Update Plots is clicked
-updatePlots <- eventReactive(eventExpr = input$GEN_PLOTS3,
-                             # priority = 90,
-                             ignoreNULL = FALSE,
-                             valueExpr = {
+#for triggering Update Plots click from map go-to buttons AFTER updating var selection
+observeEvent(input$VARS_INVISIBLE3, {
+    shinyjs::click('GEN_PLOTS3')
+    init_vals$basedata_change_reloads_plots <- FALSE
+})
+
+#update timeslider when Update Plots is clicked
+observeEvent(eventExpr = input$GEN_PLOTS3,
+             priority = 90,
+             ignoreNULL = FALSE,
+             handlerExpr = {
 
     basedata <- reactive_vals$basedata
+    if(length(basedata) == 0) return()
     agg <- input$AGG3
     vars_ <- input$VARS3
     dates <- input$DATES3
@@ -145,9 +165,7 @@ updatePlots <- eventReactive(eventExpr = input$GEN_PLOTS3,
         selected_dtrng <- dates
     }
 
-    print('slider_updates_plots == FALSE')
-    reactive_vals$slider_updates_plots <- FALSE
-    print('plot update triggering from update button slider change?')
+    print('plot update triggering from update button slider change')
     updateSliderInput(session = session,
                       inputId = 'DATES3',
                       min = dtrng[1],
@@ -155,53 +173,49 @@ updatePlots <- eventReactive(eventExpr = input$GEN_PLOTS3,
                       value = selected_dtrng,
                       timeFormat = '%b %Y')
 
+    #probably unnecessary for this to be an updateSliderInput, when all it's
+    #doing is invalidating to ensure timeSliderChanged fires after DATES3
+    #has updated., but i wanted to ensure DATES_INVISIBLE3 would have
+    #the same priority as DATES3, to ensure no timing funny business.
+    #would be nice if we could directly invalidate DATES3
+    invdate <- as.Date('1900-01-01')
+    invdate2 <- invdate + runif(1, 1, 100000)
+    updateSliderInput(session = session,
+                      inputId = 'DATES_INVISIBLE3',
+                      min = invdate,
+                      max = invdate2,
+                      value = c(invdate2 - 1, invdate2),
+                      timeFormat = '%b %Y')
+
     # session$sendCustomMessage('flash_plot',
     #                           jsonlite::toJSON('placeholder'))
-
-    return(runif(1, 0, 1))
-    # return(selected_dtrng)
 })
 
 #reduce the reactivity sensitivity of the timeslider, so that intermediate inputs
 #don't trigger plot updates
-timeSliderChanged <- reactive({
+timeSliderChanged <- eventReactive({
 
-    if(reactive_vals$slider_updates_plots){
-        print('slider update for plots.')
-        return(input$DATES3)
-    }
+    #ensures that this reactive invalidates even when input$DATES3 hasn't changed
+    input$DATES_INVISIBLE3
+    input$DATES3
+}, {
+
+    #this is the ultimate gatekeeper for plot rendering. it can be triggered by
+    #the Update Plots button or by the user directly. to ensure that the plots
+    #still update if the dates selected don't change, a random date is appended
+    #to input$DATES3. this random date is then ignored in all the data preppers
+
+    print('slider update for plots.')
+
+    datevec_rando_append <- c(input$DATES3, as.Date(runif(1, 0, 10000)))
+    return(datevec_rando_append)
 
 }) %>%
     debounce(1000)
 
-# observeEvent(timeSliderChanged(), {
-#     print('slider_updates_plots == TRUE')
-#     reactive_vals$slider_updates_plots <- TRUE
-# })
-
-observeEvent(input$SLIDER_UPDATES_PLOTS, {
-    print('slider_updates_plots == TRUE')
-    reactive_vals$slider_updates_plots <- TRUE
-})
-
-#update plots in response to a click of Update Plots
-# updatePlots <- eventReactive(input$GEN_PLOTS3,
-#                              ignoreNULL = FALSE,
-#                              valueExpr = {
-#
-#     print('Update Plots')
-#     shinyjs::disable('GEN_PLOTS3')
-#
-#     session$sendCustomMessage('flash_plot',
-#                               jsonlite::toJSON('placeholder'))
-#
-#     return(runif(1, 0, 1))
-# })
-
 ## data preppers ####
 
 dataChem <- eventReactive({
-    updatePlots()
     timeSliderChanged()
 }, {
 
@@ -233,7 +247,7 @@ dataChem <- eventReactive({
     show_uncert <- input$SHOW_UNCERT3
     show_flagged <- input$FLAGS3
     show_imputed <- input$INTERP3
-    dates <- input$DATES3
+    dates <- timeSliderChanged()[1:2]
 
     enable_unitconvert <- init_vals$enable_unitconvert
     basedata <- reactive_vals$basedata
@@ -268,7 +282,6 @@ dataChem <- eventReactive({
 })
 
 dataVWC <- eventReactive({
-    updatePlots()
     timeSliderChanged()
 }, {
 
@@ -283,7 +296,7 @@ dataVWC <- eventReactive({
     show_uncert <- input$SHOW_UNCERT3
     show_flagged <- input$FLAGS3
     show_imputed <- input$INTERP3
-    dates <- input$DATES3
+    dates <- timeSliderChanged()[1:2]
 
     enable_unitconvert <- init_vals$enable_unitconvert
     basedata <- reactive_vals$basedata
@@ -389,7 +402,6 @@ dataVWC <- eventReactive({
 })
 
 dataPchem <- eventReactive({
-    updatePlots()
     timeSliderChanged()
 }, {
 
@@ -407,7 +419,7 @@ dataPchem <- eventReactive({
     show_uncert <- input$SHOW_UNCERT3
     show_flagged <- input$FLAGS3
     show_imputed <- input$INTERP3
-    dates <- input$DATES3
+    dates <- timeSliderChanged()[1:2]
 
     enable_unitconvert <- init_vals$enable_unitconvert
     basedata <- reactive_vals$basedata
@@ -442,7 +454,6 @@ dataPchem <- eventReactive({
 })
 
 dataPVWC <- eventReactive({
-    updatePlots()
     timeSliderChanged()
 }, {
 
@@ -457,7 +468,7 @@ dataPVWC <- eventReactive({
     show_uncert <- input$SHOW_UNCERT3
     show_flagged <- input$FLAGS3
     show_imputed <- input$INTERP3
-    dates <- input$DATES3
+    dates <- timeSliderChanged()[1:2]
 
     enable_unitconvert <- init_vals$enable_unitconvert
     basedata <- reactive_vals$basedata
@@ -544,7 +555,6 @@ dataPVWC <- eventReactive({
 })
 
 dataPrecip <- eventReactive({
-    updatePlots()
     timeSliderChanged()
 }, {
 
@@ -556,7 +566,7 @@ dataPrecip <- eventReactive({
     show_uncert <- input$SHOW_UNCERT3
     show_flagged <- input$FLAGS3
     show_imputed <- input$INTERP3
-    dates <- input$DATES3
+    dates <- timeSliderChanged()[1:2]
 
     basedata <- reactive_vals$basedata
 
@@ -581,7 +591,6 @@ dataPrecip <- eventReactive({
 })
 
 dataQ <- eventReactive({
-    updatePlots()
     timeSliderChanged()
 }, {
 
@@ -593,7 +602,7 @@ dataQ <- eventReactive({
     show_flagged <- input$FLAGS3
     show_imputed <- input$INTERP3
     conc_flux <- input$CONC_FLUX3
-    dates <- input$DATES3
+    dates <- timeSliderChanged()[1:2]
 
     basedata <- reactive_vals$basedata
 
@@ -624,8 +633,7 @@ output$GRAPH_PRECIP3 <- renderDygraph({
 
 
     dataP <- dataPrecip()
-    # dates <- timeSliderChanged()
-    dates <- isolate(input$DATES3)
+    dates <- isolate(timeSliderChanged()[1:2])
     sites <- isolate(input$SITES3)
 
     print('plot P')
@@ -759,7 +767,7 @@ output$GRAPH_MAIN3a <- renderDygraph({
     agg <- isolate(input$AGG3)
     show_uncert <- isolate(input$SHOW_UNCERT3)
     dmns <- isolate(input$DOMAINS3)
-    dates <- timeSliderChanged()
+    dates <- isolate(timeSliderChanged()[1:2])
 
     if(conc_flux == 'VWC'){
         streamdata <- dataVWC()
@@ -779,7 +787,9 @@ output$GRAPH_MAIN3a <- renderDygraph({
         raindata <- tibble()
     }
 
-    print(paste('plot main A:', reactive_vals$basedata$chem$site_code[1]))
+    print(paste('plot main A:',
+                isolate(reactive_vals$basedata$chem$site_code[1]),
+                Sys.time()))
 
     alldata <- pad_widen_join(v = varA,#
                               sites = sites,
@@ -959,13 +969,13 @@ output$GRAPH_QC3a <- renderPlot({
     show_pchem <- isolate(input$SHOW_PCHEM3)
     agg <- isolate(input$AGG3)
     show_uncert <- isolate(input$SHOW_UNCERT3)
-    dates <- timeSliderChanged()
-    input$REFRESH
+    dates <- isolate(timeSliderChanged()[1:2])
+    # input$REFRESH
 
     dataq <- dataQ()
     datachem <- if(conc_flux == 'VWC') dataVWC() else dataChem()
 
-    print('plot QC A')
+    print(paste('plot QC A', Sys.time()))
 
     if(length(vars_) == 0 || ! show_qc) return()
 
@@ -1038,7 +1048,7 @@ output$GRAPH_MAIN3b <- renderDygraph({
     conc_unit <- isolate(input$CONC_UNIT3)
     show_pchem <- isolate(input$SHOW_PCHEM3)
     agg <- isolate(input$AGG3)
-    dates <- timeSliderChanged()
+    dates <- isolate(timeSliderChanged()[1:2])
     show_uncert <- isolate(input$SHOW_UNCERT3)
 
     if(conc_flux == 'VWC'){
@@ -1214,8 +1224,8 @@ output$GRAPH_QC3b <- renderPlot({
     show_pchem <- isolate(input$SHOW_PCHEM3)
     agg <- isolate(input$AGG3)
     show_uncert <- isolate(input$SHOW_UNCERT3)
-    dates <- timeSliderChanged()
-    input$REFRESH
+    dates <- isolate(timeSliderChanged()[1:2])
+    # input$REFRESH
 
     dataq <- dataQ()
     datachem <- if(conc_flux == 'VWC') dataVWC() else dataChem()
@@ -1294,7 +1304,7 @@ output$GRAPH_MAIN3c <- renderDygraph({
     show_pchem <- isolate(input$SHOW_PCHEM3)
     agg <- isolate(input$AGG3)
     show_uncert <- isolate(input$SHOW_UNCERT3)
-    dates <- timeSliderChanged()
+    dates <- isolate(timeSliderChanged()[1:2])
 
     if(conc_flux == 'VWC'){
         streamdata <- dataVWC()
@@ -1469,13 +1479,13 @@ output$GRAPH_QC3c <- renderPlot({
     show_pchem <- isolate(input$SHOW_PCHEM3)
     agg <- isolate(input$AGG3)
     show_uncert <- isolate(input$SHOW_UNCERT3)
-    dates <- timeSliderChanged()
-    input$REFRESH
+    dates <- isolate(timeSliderChanged()[1:2])
+    # input$REFRESH
 
     dataq <- dataQ()
     datachem <- if(conc_flux == 'VWC') dataVWC() else dataChem()
 
-    print('plot QC C')
+    print(paste('plot QC C', Sys.time()))
 
     if(length(vars_) <= 2 || ! show_qc) return()
 
@@ -1542,7 +1552,7 @@ output$GRAPH_QC3c <- renderPlot({
 output$GRAPH_Q3 <- renderDygraph({
 
     dataq <- dataQ()
-    dates <- timeSliderChanged()
+    dates <- isolate(timeSliderChanged()[1:2])
     sites <- isolate(input$SITES3)
 
     print('plot Q')
@@ -1614,16 +1624,10 @@ output$GRAPH_Q3 <- renderDygraph({
 
 ## other ####
 
-# #re-enable the Update Plots button
-# eventReactive(eventExpr = {
-#     if(reactive_vals$disable_update_btn) TRUE
-# }, {
-#     shinyjs(
-
 #allows ui to control hide/show of plot facets
 output$n_plots3 <- reactive({
 
-    input$GEN_PLOTS3
+    timeSliderChanged()
 
     n_plots <- length(isolate(input$VARS3))
 
@@ -1639,7 +1643,7 @@ outputOptions(output,
 #allows ui to control hide/show of QC/QF plots
 output$SHOW_QC_GEN3 <- reactive({
 
-    input$GEN_PLOTS3
+    timeSliderChanged()
 
     show_QC <- isolate(input$SHOW_QC3)
 

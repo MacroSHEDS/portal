@@ -107,18 +107,7 @@ server <- function(input, output, session){
                              selected = site_sel,
                              choices = dmn_sitelist)
 
-        basedata <- reactive_vals$basedata
-        chemvars_display_subset <- filter_dropdown_varlist(basedata$chem)
-        chemvars_vec <- unlist(chemvars_display_subset,
-                               recursive = TRUE,
-                               use.names = FALSE)
-
-        updateSelectizeInput(session = session,
-                             inputId = 'VARS3',
-                             choices = chemvars_display_subset,
-                             selected = chemvars_vec[1])
-
-        print('here')
+        print('MAPDATA')
     })
 
     observeEvent(

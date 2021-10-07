@@ -11,10 +11,27 @@ nSiteNVar_tab <- tabPanel("Time Series",
             ),
             br(),
 
-            #needed for enabling direct slider-plot reactivity via JQuery
-            actionButton('SLIDER_UPDATES_PLOTS',
-                         label = NULL,
-                         style = 'display: none'),
+            div(style = 'display: none',
+
+                #these are ineligant alternatives to an "invalidateInput" function
+                #that must exist to accompany updateSelectizeInput, etc., but
+                #seemingly doesn't
+                sliderInput('DATES_INVISIBLE3',
+                            label = NULL,
+                            min = dtrng[1],
+                            max = dtrng[2],
+                            value = dtrng),
+                selectizeInput('VARS_INVISIBLE3',
+                               label = NULL,
+                               selected = 'a',
+                               multiple = TRUE,
+                               choices = c('a', 'b'),
+                               options = list(maxItems = 3))
+            ),
+            # #needed for enabling direct slider-plot reactivity via JQuery
+            # actionButton('SLIDER_UPDATES_PLOTS',
+            #              label = NULL,
+            #              style = 'display: none'),
 
             #domain selector
             div('Domains',

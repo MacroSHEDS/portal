@@ -194,22 +194,6 @@ shinyjs.init = function() {
         $('input[name=AGG3]').change(govern_VWC3);
     });
 
-   // //disable flux if precip viz selected (why??)
-   // function govern_flux3(){
-   //     if( $('#SHOW_PCHEM3').is(':checked') ){
-   //         $('input[name=CONC_FLUX3][value=Flux]').attr('disabled', 'disabled').siblings().css('color', 'gray');
-   //         $('input[name=AGG3][value=Instantaneous]').attr('disabled', 'disabled').siblings().css('color', 'gray');
-   //         $('input[name=AGG3][value=Daily]').attr('disabled', 'disabled').siblings().css('color', 'gray');
-   //     } else {
-   //         $('input[name=CONC_FLUX3][value=Flux]').removeAttr('disabled').siblings().css('color', '#485580');
-
-   //         if( $('input[name=CONC_FLUX3]:checked').val() !== 'VWC' ){
-   //             $('input[name=AGG3][value=Instantaneous]').removeAttr('disabled').siblings().css('color', '#485580');
-   //             $('input[name=AGG3][value=Daily]').removeAttr('disabled').siblings().css('color', '#485580');
-   //         }
-   //     }
-   // };
-
    // $('body').ready(function(){
    //     $('#SHOW_PCHEM3').click(govern_flux3);
    // });
@@ -217,57 +201,27 @@ shinyjs.init = function() {
     //only show QC plots when their box is checked
     function govern_qc3(){
         if( $('#SHOW_QC3').is(':checked')){
-            //$('#inlineQC3a').css('display', 'inline-block');
-
-            //$('[id^="inlineQC3"').attr('style', 'width: 25% !important; display: inline-block; vertical-align: top');
-            //$('[id^="inlineMAIN3"').attr('style', 'width: 75% !important; display: inline-block; vertical-align: top');
-            //if($('output[name=SHOW_QCa3][value=true]')){
-            //              $('[id="inlineQC3a"').css('width', '25%');
-            //              $('[id="inlineMAIN3a"').css('width', '75%');
-            //}
             $('[id^="inlineQC3"').css('width', '25%');
             $('[id^="inlineMAIN3"').css('width', '75%');
-            //$("inlineQC3a").css('width', '25%');
-            //$("inlineMAIN3a").css('width', '75%');
         } else {
-            //$('#inlineQC3a').css('display', 'none');
-
-            //$('[id^="inlineQC3"').attr('style', 'width: 0% !important; display: inline-block; vertical-align: top');
-            //$('[id^="inlineMAIN3"').attr('style', 'width: 100% !important; display: inline-block; vertical-align: top');
             $('[id^="inlineQC3"]').css('width', '0%');
             $('[id^="inlineMAIN3"]').css('width', '100%');
-            //$('inlineQC3a').css('width', '0%');
-            //$('inlineMAIN3a').css('width', '100%');
-
-            //$('#inlineMAIN3a').css('width', 'auto');
         }
 
-        //$('#GEN_PLOTS3').trigger('click');
         $('#REFRESH').trigger('click');
-        //$('#inlineQC3a').offsetHeight
-        //$('#inlineMAIN3a').offsetHeight
-        //$('#inlineContainerA').offsetHeight
-        //$('#inlineQC3a').hide().show(0);
-        //$('#inlineQC3a').css('transform', 'translateZ(0)');
     };
 
     $('body').ready(function(){
         $('#GEN_PLOTS3').click(govern_qc3);
-        //$('#SHOW_QC3').click(govern_qc3);
     });
 
     //BIPLOT: disable X-axis selection when aggregation == 'Yearly'
     function govern_xvar_section(){
         if( ['MONTHLY2', 'YEARLY2'].includes($('input[name=AGG2]:checked').val()) ){
             $('#X_TYPE2').selectize()[0].selectize.disable();
-            //hiding/showing of VAR and UNIT now governed by govern_tier2_dropdown() and govern_tier3_dropdown
-            //$('#X_VAR2').parent().hide();
-            //$('#X_UNIT2').parent().hide();
             $('#LOG_X2').hide();
         } else {
             $('#X_TYPE2').selectize()[0].selectize.enable();
-            //$('#X_VAR2').parent().show();
-            //$('#X_UNIT2').parent().show();
             $('#LOG_X2').show();
         }
     };
@@ -641,9 +595,9 @@ shinyjs.init = function() {
 
         $('#GEN_PLOTS3').removeClass('disabled').removeAttr('disabled');
 
-        window.setTimeout(function(){
-            $('#SLIDER_UPDATES_PLOTS').trigger('click');
-        }, 1000); //wait for timeslider debounce
+        //window.setTimeout(function(){
+        //    $('#SLIDER_UPDATES_PLOTS').trigger('click');
+        //}, 1000); //wait for timeslider debounce
 
         if(enable_attribution){
             let $this = $(this)
