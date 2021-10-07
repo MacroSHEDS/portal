@@ -11,8 +11,8 @@ nSiteNVar_tab <- tabPanel("Time Series",
             ),
             br(),
 
-            #needed for triggering a click of GEN_PLOTS3 via JQuery
-            actionButton('MAP_UPDATE_READY',
+            #needed for enabling direct slider-plot reactivity via JQuery
+            actionButton('SLIDER_UPDATES_PLOTS',
                          label = NULL,
                          style = 'display: none'),
 

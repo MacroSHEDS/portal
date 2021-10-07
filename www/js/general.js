@@ -641,6 +641,10 @@ shinyjs.init = function() {
 
         $('#GEN_PLOTS3').removeClass('disabled').removeAttr('disabled');
 
+        window.setTimeout(function(){
+            $('#SLIDER_UPDATES_PLOTS').trigger('click');
+        }, 1000); //wait for timeslider debounce
+
         if(enable_attribution){
             let $this = $(this)
             window.setTimeout(function(){

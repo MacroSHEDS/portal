@@ -110,16 +110,20 @@ observeEvent(eventExpr = reactive_vals$basedata,
     }
 })
 
-#update timeslider when Update Plots is clicked
-observeEvent(eventExpr = input$GEN_PLOTS3,
-             priority = 90,
-             handlerExpr = {
+#update plots and timeslider when Update Plots is clicked
+updatePlots <- eventReactive(eventExpr = input$GEN_PLOTS3,
+                             # priority = 90,
+                             ignoreNULL = FALSE,
+                             valueExpr = {
 
     basedata <- reactive_vals$basedata
     agg <- input$AGG3
     vars_ <- input$VARS3
     dates <- input$DATES3
     sites <- input$SITES3
+
+    print('Update Plots')
+    shinyjs::disable('GEN_PLOTS3')
 
     dtrng <- get_timeslider_extent(basedata, dates)
 
@@ -141,14 +145,21 @@ observeEvent(eventExpr = input$GEN_PLOTS3,
         selected_dtrng <- dates
     }
 
+    print('slider_updates_plots == FALSE')
     reactive_vals$slider_updates_plots <- FALSE
-    print('slider update triggering from update button click')
+    print('plot update triggering from update button slider change?')
     updateSliderInput(session = session,
                       inputId = 'DATES3',
                       min = dtrng[1],
                       max = dtrng[2],
                       value = selected_dtrng,
                       timeFormat = '%b %Y')
+
+    # session$sendCustomMessage('flash_plot',
+    #                           jsonlite::toJSON('placeholder'))
+
+    return(runif(1, 0, 1))
+    # return(selected_dtrng)
 })
 
 #reduce the reactivity sensitivity of the timeslider, so that intermediate inputs
@@ -156,27 +167,36 @@ observeEvent(eventExpr = input$GEN_PLOTS3,
 timeSliderChanged <- reactive({
 
     if(reactive_vals$slider_updates_plots){
-        print('slider update')
+        print('slider update for plots.')
         return(input$DATES3)
     }
 
 }) %>%
     debounce(1000)
 
-observeEvent(timeSliderChanged(), {
+# observeEvent(timeSliderChanged(), {
+#     print('slider_updates_plots == TRUE')
+#     reactive_vals$slider_updates_plots <- TRUE
+# })
+
+observeEvent(input$SLIDER_UPDATES_PLOTS, {
+    print('slider_updates_plots == TRUE')
     reactive_vals$slider_updates_plots <- TRUE
 })
 
 #update plots in response to a click of Update Plots
-updatePlots <- eventReactive(input$GEN_PLOTS3,
-                             ignoreNULL = FALSE,
-                             valueExpr = {
-
-    print('Update Plots')
-    shinyjs::disable('GEN_PLOTS3')
-
-    return(runif(1, 0, 1))
-})
+# updatePlots <- eventReactive(input$GEN_PLOTS3,
+#                              ignoreNULL = FALSE,
+#                              valueExpr = {
+#
+#     print('Update Plots')
+#     shinyjs::disable('GEN_PLOTS3')
+#
+#     session$sendCustomMessage('flash_plot',
+#                               jsonlite::toJSON('placeholder'))
+#
+#     return(runif(1, 0, 1))
+# })
 
 ## data preppers ####
 
@@ -604,7 +624,8 @@ output$GRAPH_PRECIP3 <- renderDygraph({
 
 
     dataP <- dataPrecip()
-    dates <- timeSliderChanged()
+    # dates <- timeSliderChanged()
+    dates <- isolate(input$DATES3)
     sites <- isolate(input$SITES3)
 
     print('plot P')
@@ -724,7 +745,6 @@ output$GRAPH_PRECIP3 <- renderDygraph({
                      labelsDiv = 'P3')
     }
 
-    # shinyjs::enable('GEN_PLOTS3')
     return(dg)
 })
 
@@ -759,8 +779,7 @@ output$GRAPH_MAIN3a <- renderDygraph({
         raindata <- tibble()
     }
 
-    print(reactive_vals$basedata$chem, n=1)
-    print('plot main A')
+    print(paste('plot main A:', reactive_vals$basedata$chem$site_code[1]))
 
     alldata <- pad_widen_join(v = varA,#
                               sites = sites,
@@ -925,7 +944,6 @@ output$GRAPH_MAIN3a <- renderDygraph({
                      labelsDiv = 'main3a')
     }
 
-    # shinyjs::enable('GEN_PLOTS3')
     return(dg)
 })
 
@@ -1181,7 +1199,6 @@ output$GRAPH_MAIN3b <- renderDygraph({
                      labelsDiv = 'main3b')
     }
 
-    # shinyjs::enable('GEN_PLOTS3')
     return(dg)
 })
 
@@ -1437,7 +1454,6 @@ output$GRAPH_MAIN3c <- renderDygraph({
                      labelsDiv = 'main3c')
     }
 
-    # shinyjs::enable('GEN_PLOTS3')
     return(dg)
 })
 
@@ -1593,7 +1609,6 @@ output$GRAPH_Q3 <- renderDygraph({
                      labelsDiv = 'Q3')
     }
 
-    # shinyjs::enable('GEN_PLOTS3')
     return(dg)
 })
 

@@ -119,8 +119,6 @@ server <- function(input, output, session){
                              selected = chemvars_vec[1])
 
         print('here')
-        session$sendCustomMessage('flash_plot',
-                                  jsonlite::toJSON('placeholder'))
     })
 
     observeEvent(
