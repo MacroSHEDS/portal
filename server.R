@@ -23,7 +23,6 @@ server <- function(input, output, session){
     init_vals <- reactiveValues()
     init_vals$enable_unitconvert <- FALSE
     init_vals$recent_domain <- 'hbef'
-    # init_vals$map_update_ready <- 0
     init_vals$basedata_change_reloads_plots <- FALSE
 
     observeEvent(input$COLLAPSE_SIDEBAR, {

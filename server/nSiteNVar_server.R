@@ -115,11 +115,10 @@ observeEvent(eventExpr = reactive_vals$basedata,
         #has updated. but i wanted to ensure VARS_INVISIBLE3 would have
         #the same priority as VARS3, to ensure no timing funny business
         #would be nice if we could directly invalidate VARS3
-        invis_choices <- sample(letters, 10)
         updateSelectizeInput(session = session,
                              inputId = 'VARS_INVISIBLE3',
-                             choices = invis_choices,
-                             selected = sample(invis_choices, 3))
+                             choices = letters,
+                             selected = sample(letters, 3, TRUE))
     }
 })
 
@@ -195,9 +194,9 @@ observeEvent(eventExpr = input$GEN_PLOTS3,
 #don't trigger plot updates
 timeSliderChanged <- eventReactive({
 
-    #ensures that this reactive invalidates even when input$DATES3 hasn't changed
     input$DATES_INVISIBLE3
     input$DATES3
+
 }, {
 
     #this is the ultimate gatekeeper for plot rendering. it can be triggered by

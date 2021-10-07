@@ -593,19 +593,23 @@ shinyjs.init = function() {
 
     $('div[id^="GRAPH_"]').on('shiny:value', function(event){
 
-        $('#GEN_PLOTS3').removeClass('disabled').removeAttr('disabled');
+        let $this = $(this)
+        let is_qc_plot = /GRAPH_QC3./.test( $this.attr('id') )
+
+        if(! is_qc_plot){
+            $('#GEN_PLOTS3').removeClass('disabled').removeAttr('disabled');
+        }
 
         //window.setTimeout(function(){
         //    $('#SLIDER_UPDATES_PLOTS').trigger('click');
         //}, 1000); //wait for timeslider debounce
 
         if(enable_attribution){
-            let $this = $(this)
             window.setTimeout(function(){
                 $this.children('[class^="ms-attribution"]').remove()
                 if($this.attr('id') === 'GRAPH_Q3'){
                     $this.css('position', 'relative').append($('<p class="ms-attribution-high">macrosheds.org</p>'));
-                } else if(/GRAPH_QC3./.test( $this.attr('id') )){
+                } else if(s_qc_plot){
                     console.log($this.attr('id'));
                 } else {
                     $this.css('position', 'relative').append($('<p class="ms-attribution-low">macrosheds.org</p>'));
