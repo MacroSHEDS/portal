@@ -2086,8 +2086,7 @@ output$GRAPH_Q3 <- renderDygraph({
                         datetime, any_of(sites)) #preserve order
 
         colnms <- colnames(dataq)
-        # jump
-        # print(colnms)
+
         
         displabs <- colnms[! colnms == 'datetime']
 
