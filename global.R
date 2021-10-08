@@ -106,7 +106,7 @@ site_data <- filter(site_data,
 
 # Color blind safe palette
 linecolors <- c('#2a6a99', '#d88546', '#b2b1ff') # light blue, purple, light yellow
-pchemcolors <- c('#2a6a9970', '#d8854655', '#b2b1ff55') 
+pchemcolors <- c('#2a6a99', '#d88546', '#b2b1ff') 
 pchemcolors_strong <- c('#2a6a99', '#d88546', '#b2b1ff') 
 
 # good third color: (purple: #cbc2ff )
