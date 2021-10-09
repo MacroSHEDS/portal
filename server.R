@@ -172,11 +172,6 @@ server <- function(input, output, session){
 
                  click('GEN_PLOTS3')
                  show_loading_dots('LOADING_POPUP')
-                 # showNotification(loading_dots,
-                 #                  id = 'LOADING_POPUP',
-                 #                  duration = NULL,
-                 #                  closeButton = FALSE,
-                 #                  type = 'message')
              }
          },
          autoDestroy = FALSE,

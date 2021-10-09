@@ -6,11 +6,7 @@ reactive_vals$basedata <- list()
 
 #when domain(s) change, site options change (but not site selections)
 observeEvent(
-    eventExpr = {
-        input$DOMAINS3
-        if(! is.null(input$JS_OPERATING_PLZ_CHILL) &&
-           as.logical(input$JS_OPERATING_PLZ_CHILL)) NULL
-    },
+    eventExpr = input$DOMAINS3,
     ignoreNULL = FALSE,
     handlerExpr = {
 
@@ -23,10 +19,10 @@ observeEvent(
         selection <- if(is.null(site_opts)) '' else sites
 
         updateSelectizeInput(session,
-                           'SITES3',
-                           choices = site_opts,
-                           selected = selection,
-                           options = list(maxItems = 3))
+                             'SITES3',
+                             choices = site_opts,
+                             selected = selection,
+                             options = list(maxItems = 3))
 })
 
 #when site(s) change, basedata changes
@@ -80,13 +76,17 @@ observeEvent(eventExpr = input$SITES3,
                                    .y = time_scheme)
     }
 
+    print('AA')
+    print(dmns)
+    print(sites)
+    print(basedata[[1]][1, ])
     reactive_vals$basedata <- basedata
 })
 
 #when basedata changes, variable list changes, but not variable selections,
 #unless the previous selections are not available for the newly selected sites(s).
-#if basedata is changing as a result of clicking a map "Go to" link, Update
-#Plots is triggered AFTER variables update
+#if basedata is changing as a result of clicking a map "Go to" link
+#or advancing the data tour, Update Plots is triggered AFTER variables update
 observeEvent(eventExpr = reactive_vals$basedata,
              handlerExpr = {
 
@@ -105,15 +105,22 @@ observeEvent(eventExpr = reactive_vals$basedata,
 
     if(! length(vars_)) vars_ <- chemvars_vec[1]
 
-    print('updating var dropdown')
-    updateSelectizeInput(session = session,
-                         inputId = 'VARS3',
-                         choices = chemvars_display_subset,
-                         selected = vars_)
+    bcrp1 <- (! is.null(input$basedata_change_reloads_plots) &&
+        input$basedata_change_reloads_plots)
+    bcrp2 <- init_vals$basedata_change_reloads_plots
 
-    if(init_vals$basedata_change_reloads_plots){
+    if(! bcrp1){
 
-        #only possible to get here from input$MAPDATA
+        #this will always occur unless we're here because of set_tour_location
+        updateSelectizeInput(session = session,
+                             inputId = 'VARS3',
+                             choices = chemvars_display_subset,
+                             selected = vars_)
+    }
+
+    if(bcrp1 || bcrp2){
+
+        #only possible to get here from input$MAPDATA or set_tour_location
 
         #probably unnecessary for this to be an updateSelectizeInput, when all it's
         #doing is invalidating to ensure GEN_PLOTS3 fires after VARS3
@@ -129,6 +136,7 @@ observeEvent(eventExpr = reactive_vals$basedata,
 
 #for triggering Update Plots click from map go-to buttons AFTER updating var selection
 observeEvent(input$VARS_INVISIBLE3, {
+    print('Update from VARS_INVISIBLE3')
     shinyjs::click('GEN_PLOTS3')
     init_vals$basedata_change_reloads_plots <- FALSE
 })

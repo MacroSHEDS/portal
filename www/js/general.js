@@ -548,56 +548,86 @@ shinyjs.init = function() {
     });
 
     //conduct data tour
-    var set_tour_location = function(dmns, sites, vars){
-        //dmns, sites, and vars are all arrays of up to 3 string elements
 
-        //prevent shiny from clearing SITES3 when it catches up
-        Shiny.setInputValue('JS_OPERATING_PLZ_CHILL', 1);
+    //var poll_for_opts = function(elem, opt, then){
+    //    //elem: a selectize dropdown element selector
+    //    //opt: an option to poll for
+    //    //then: a function to execute if opt is among the options of elem
+    //    
+    //    try{
+    //        var opts = $(elem).selectize()[0].selectize.options;
+    //        opts = Object.keys(opts);
+    //    } catch(error) {
+    //        setTimeout(poll_for_opts, 100);
+    //    };
+
+    //    if(opts.includes(opt)){
+    //        then()
+    //    } else {
+    //        setTimeout(poll_for_opts, 100);
+    //    }
+    //}
+
+    var set_tour_location = function(dmns, sites, vars){
+        //dmns: array of up to 3 string elements
+        //sites: array of up to 3 string elements
+        //vars: array of up to 3 objects e.g. {value: 'SO4_S', label: 'Sulfate-S (mg/L)'}
 
         var dmn_ctrl = $('#DOMAINS3').selectize()[0].selectize;
         var sit_ctrl = $('#SITES3').selectize()[0].selectize;
         var var_ctrl = $('#VARS3').selectize()[0].selectize;
 
-        try{ sit_ctrl.clear(); } catch(error) { }; 
-        try{ dmn_ctrl.clear(); } catch(error) { };
-        try{ var_ctrl.clear(); } catch(error) { };
+        dmn_ctrl.clear(silent=true);
+        sit_ctrl.clearOptions(silent=true);
+        var_ctrl.clearOptions(silent=true);
 
         for(e of dmns){
-            dmn_ctrl.addItem(e);
+            dmn_ctrl.addItem(e, silent=true);
         };
 
-        for(e of sites){
-            sit_ctrl.addItem(e);
+        Shiny.setInputValue('DOMAINS3', dmns);
+
+        for(var i = 0; i < sites.length; i++){
+
+            var st = sites[i]
+            sit_ctrl.addOption({value: st, label: st}, silent=true);
+
+            if(i == sites.length - 1){
+                sit_ctrl.addItem(st, silent=true);
+            } else {
+                sit_ctrl.addItem(st, silent=false);
+            };
         };
+
+        Shiny.setInputValue('SITES3', sites);
 
         for(e of vars){
-            var_ctrl.addItem(e);
+            var_ctrl.addOption(e, silent=true);
+            var_ctrl.addItem(e.value, silent=true);
         };
-    };
 
-    $('body').on('click', '#DOMAINS3', function(){
-        //re-enable normal DOMAINS3 reactivity
-        Shiny.setInputValue('JS_OPERATING_PLZ_CHILL', 0);
-    });
+        Shiny.setInputValue('VARS3', vars.map(x => x.value));
+    };
 
     window.enable_data_tour = false;
     window.next_tour_id = 'a';
 
     $('body').on('click', '.driver-close-btn', function(){
 
-        if(! /cicerone[0-9]z/.test( $(this).parent().parent().attr('class') )){
+        //** modify this when adding tour stops
+        if(/cicerone[0-9][a]/.test( $(this).parent().parent().attr('class') )){
             Shiny.setInputValue('TRIGGER_LOADING_DOTS', '' + new Date());
         }
     });
 
-
     $('body').on('click', '#DATA_TOUR', function(i, v){
 
         enable_data_tour = true;
+        next_tour_id = 'a';
 
         $('a[data-value="multisite_exploration"]').trigger('click');
 
-        set_tour_location(['hbef'], ['w6'], ['SO4_S'])
+        set_tour_location(['hbef'], ['w6'], [{value: 'SO4_S', label: 'Sulfate-S (mg/L)'}])
 
         $('#SHOW_PCHEM3').prop('checked', false);
         $('#showqc').prop('checked', false);
@@ -610,17 +640,33 @@ shinyjs.init = function() {
         $('#FLAGS3').prop('checked', true);
         $('#INTERP3').prop('checked', true);
 
+        Shiny.setInputValue('SHOW_PCHEM3:logical', 'false');
+        Shiny.setInputValue('showqc:logical', 'false');
+        Shiny.setInputValue('CONC_FLUX3', 'Concentration');
+        Shiny.setInputValue('AGG3', 'Monthly');
+        Shiny.setInputValue('INSTALLED_V_GRAB3', ['G', 'I']);
+        Shiny.setInputValue('SENSOR_v_NONSENSOR3', ['S', 'N']);
+        Shiny.setInputValue('FLAGS3:logical', 'true');
+        Shiny.setInputValue('INTERP3:logical', 'true');
+
         Shiny.setInputValue('START_DATA_TOUR', '' + new Date());
     });
 
     $('body').on('click', '.cicerone2a .driver-close-btn', function(i, v){
 
-        set_tour_location(['hjandrews'], ['GSWS09', 'GSWS10'], ['NO3_N']);
+        Shiny.setInputValue('basedata_change_reloads_plots', 1);
         $('input[name="AGG3"][value="Daily"]').prop('checked', true);
+        Shiny.setInputValue('AGG3', 'Daily');
         next_tour_id = 'b';
-        $('#GEN_PLOTS3').trigger('click');
+        set_tour_location(['hjandrews'], ['GSWS09', 'GSWS10'], [{value: 'NO3_N', label: 'Nitrate-N (mg/L)'}]);
+        //$('#GEN_PLOTS3').trigger('click');
 
     });
+
+    $('#VARS_INVISIBLE3').on('shiny:inputchanged', function(event){
+        Shiny.setInputValue('basedata_change_reloads_plots', 0);
+    });
+
 
     //all this crap (and associated CSS) is necessary just to make "macrosheds.org"
     //appear (and STAY appeared) in the bottom of each dygraph as an annotation

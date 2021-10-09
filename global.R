@@ -252,6 +252,9 @@ ws_traits_names <- unlist(ws_traits)
 
 ## 5. "Take a tour" and "Take a data tour" guide setup ####
 
+js_to_R_TRUE <- function(x, session, inputname) as.logical(toupper(x))
+registerInputHandler('logical', js_to_R_TRUE)
+
 guide1a <- Cicerone$
     new(
         keyboard_control = FALSE,
@@ -333,7 +336,7 @@ guide2a <- Cicerone$
         el = 'GRAPH_MAIN3a',
         class = 'cicerone2a',
         title = ' ',
-        description = paste("Streams at Hubbard Brook Experimental Forest have",
+        description = paste("Hubbard Brook Experimental Forest in New Hampshire has",
                             "seen a multi-decade decline in stream sulfate due",
                             "in part to reductions in acid rain.")
                             #include pub
@@ -344,7 +347,11 @@ guide2b <- Cicerone$
     step(
         el = 'GRAPH_MAIN3a',
         title = ' ',
-        description = paste("next")
+        description = HTML("<p>H.J. Andrews Experimental Forest in Oregon:</p>",
+                           "<p>Watershed GSWS10 was experimentally clearcut in ",
+                           "1975, and nitrate export was elevated for years after. ",
+                           "Export is stable for GSWS09 (a reference watershed)",
+                           "during this period.</p>")
                             #include pub
     )$
     step(
@@ -355,3 +362,7 @@ guide2b <- Cicerone$
         title = ' ',
         description = paste("More tour stops coming soon. For now, happy exploring!")
     )
+
+#NOTE: when adding tour stops, the class of the last one must be 'cicerone2z',
+#and the regex after "//** modify this when adding tour stops" must be modified to
+#any stops before z.
