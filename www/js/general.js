@@ -537,23 +537,95 @@ shinyjs.init = function() {
         }, 400);
     }, 1000));
 
-    //conduct tour
+    //conduct site tour
     $('body').on('click', '#TAKE_TOUR', function(i, v){
         $('#DISMISS_MODAL').trigger('click');
     });
-    $('body').on('click', '.cicerone1 .driver-next-btn', function(i, v){
+
+    $('body').on('click', '.cicerone1a .driver-next-btn', function(i, v){
         $('a[data-value="biplot"]').trigger('click');
         Shiny.setInputValue('CONTINUE_TOUR', '' + new Date());
     });
+
+    //conduct data tour
+    var set_tour_location = function(dmns, sites, vars){
+        //dmns, sites, and vars are all arrays of up to 3 string elements
+
+        //prevent shiny from clearing SITES3 when it catches up
+        Shiny.setInputValue('JS_OPERATING_PLZ_CHILL', 1);
+
+        var dmn_ctrl = $('#DOMAINS3').selectize()[0].selectize;
+        var sit_ctrl = $('#SITES3').selectize()[0].selectize;
+        var var_ctrl = $('#VARS3').selectize()[0].selectize;
+
+        try{ sit_ctrl.clear(); } catch(error) { }; 
+        try{ dmn_ctrl.clear(); } catch(error) { };
+        try{ var_ctrl.clear(); } catch(error) { };
+
+        for(e of dmns){
+            dmn_ctrl.addItem(e);
+        };
+
+        for(e of sites){
+            sit_ctrl.addItem(e);
+        };
+
+        for(e of vars){
+            var_ctrl.addItem(e);
+        };
+    };
+
+    $('body').on('click', '#DOMAINS3', function(){
+        //re-enable normal DOMAINS3 reactivity
+        Shiny.setInputValue('JS_OPERATING_PLZ_CHILL', 0);
+    });
+
+    window.enable_data_tour = false;
+    window.next_tour_id = 'a';
+
+    $('body').on('click', '.driver-close-btn', function(){
+
+        if(! /cicerone[0-9]z/.test( $(this).parent().parent().attr('class') )){
+            Shiny.setInputValue('TRIGGER_LOADING_DOTS', '' + new Date());
+        }
+    });
+
+
     $('body').on('click', '#DATA_TOUR', function(i, v){
+
+        enable_data_tour = true;
+
         $('a[data-value="multisite_exploration"]').trigger('click');
+
+        set_tour_location(['hbef'], ['w6'], ['SO4_S'])
+
+        $('#SHOW_PCHEM3').prop('checked', false);
+        $('#showqc').prop('checked', false);
+        $('input[name="CONC_FLUX3"][value="Concentration"]').prop('checked', true);
+        $('input[name="AGG3"][value="Monthly"]').prop('checked', true);
+        $('input[name="INSTALLED_V_GRAB3"][value="G"]').prop('checked', true);
+        $('input[name="INSTALLED_V_GRAB3"][value="I"]').prop('checked', true);
+        $('input[name="SENSOR_V_NONSENSOR3"][value="S"]').prop('checked', true);
+        $('input[name="SENSOR_V_NONSENSOR3"][value="N"]').prop('checked', true);
+        $('#FLAGS3').prop('checked', true);
+        $('#INTERP3').prop('checked', true);
+
         Shiny.setInputValue('START_DATA_TOUR', '' + new Date());
+    });
+
+    $('body').on('click', '.cicerone2a .driver-close-btn', function(i, v){
+
+        set_tour_location(['hjandrews'], ['GSWS09', 'GSWS10'], ['NO3_N']);
+        $('input[name="AGG3"][value="Daily"]').prop('checked', true);
+        next_tour_id = 'b';
+        $('#GEN_PLOTS3').trigger('click');
+
     });
 
     //all this crap (and associated CSS) is necessary just to make "macrosheds.org"
     //appear (and STAY appeared) in the bottom of each dygraph as an annotation
 
-    window.enable_attribution = false
+    window.enable_attribution = false;
 
    // $('body').on('change', '#DATES3', debounce(function(){
    //     if(enable_attribution){
@@ -598,6 +670,9 @@ shinyjs.init = function() {
 
         if(! is_qc_plot){
             $('#GEN_PLOTS3').removeClass('disabled').removeAttr('disabled');
+            if(enable_data_tour){
+                Shiny.setInputValue('CONTINUE_DATA_TOUR', next_tour_id);
+            };
         }
 
         //window.setTimeout(function(){
@@ -609,7 +684,7 @@ shinyjs.init = function() {
                 $this.children('[class^="ms-attribution"]').remove()
                 if($this.attr('id') === 'GRAPH_Q3'){
                     $this.css('position', 'relative').append($('<p class="ms-attribution-high">macrosheds.org</p>'));
-                } else if(s_qc_plot){
+                } else if(is_qc_plot){
                     console.log($this.attr('id'));
                 } else {
                     $this.css('position', 'relative').append($('<p class="ms-attribution-low">macrosheds.org</p>'));

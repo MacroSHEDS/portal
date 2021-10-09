@@ -10,9 +10,10 @@ hyetograph_js <- readChar(con = hyetograph_file,
 
 server <- function(input, output, session){
 
-    guide1$init()
-    guide2$init()
-    guide3$init()
+    guide1a$init()
+    guide1b$init()
+    guide2a$init()
+    guide2b$init()
 
     # #hacky way to specify div height by % with js
     # height50 = reactive({
@@ -24,6 +25,8 @@ server <- function(input, output, session){
     init_vals$enable_unitconvert <- FALSE
     init_vals$recent_domain <- 'hbef'
     init_vals$basedata_change_reloads_plots <- FALSE
+    init_vals$initial_plots_loaded <- FALSE
+    init_vals$ts_tab_is_pristine <- TRUE
 
     observeEvent(input$COLLAPSE_SIDEBAR, {
 
@@ -36,6 +39,17 @@ server <- function(input, output, session){
 
     stream_gauge_buttons <- read_file('ui/stream_gauge_buttons.html')
     rain_gauge_buttons <- read_file('ui/rain_gauge_buttons.html')
+    loading_dots <- HTML(read_file('ui/loading_dots.html'))
+
+    show_loading_dots <- function(id, duration = NULL){
+
+        showNotification(loading_dots,
+                         id = id,
+                         duration = duration,
+                         closeButton = FALSE,
+                         type = 'message')
+    }
+
     source('ui/landing_page_ui.R', local = TRUE)
     source('server/summary_biplot_server.R', local = TRUE)
     # source('server/oneSiteNVar_server.R', local=TRUE)
@@ -123,7 +137,7 @@ server <- function(input, output, session){
      observeEvent(
          eventExpr = input$TAKE_TOUR,
          handlerExpr = {
-             guide1$start()
+             guide1a$start()
          },
          autoDestroy = FALSE,
          ignoreInit = TRUE
@@ -131,19 +145,73 @@ server <- function(input, output, session){
      observeEvent(
          eventExpr = input$CONTINUE_TOUR,
          handlerExpr = {
-             guide2$start()
+             guide1b$start()
          },
          autoDestroy = FALSE,
          ignoreInit = TRUE
      )
+
+     # observeEvent(
+     #     eventExpr = init_vals$loading_modal,
+     #     handlerExpr = {
+     #         # showModal(p('oi'))
+     #     },
+     #     autoDestroy = FALSE,
+     #     ignoreInit = TRUE
+     # )
+
      observeEvent(
          eventExpr = input$START_DATA_TOUR,
          handlerExpr = {
-             guide3$start()
+
+             if(init_vals$ts_tab_is_pristine){
+
+                 guide2a$start()
+
+             } else {
+
+                 click('GEN_PLOTS3')
+                 show_loading_dots('LOADING_POPUP')
+                 # showNotification(loading_dots,
+                 #                  id = 'LOADING_POPUP',
+                 #                  duration = NULL,
+                 #                  closeButton = FALSE,
+                 #                  type = 'message')
+             }
          },
          autoDestroy = FALSE,
          ignoreInit = TRUE
      )
+
+     observeEvent(
+         eventExpr = input$TRIGGER_LOADING_DOTS,
+         handlerExpr = show_loading_dots('LOADING_POPUP')
+     )
+
+     observeEvent(
+         eventExpr = input$CONTINUE_DATA_TOUR,
+         handlerExpr = {
+
+             removeNotification('LOADING_POPUP')
+
+             if(input$CONTINUE_DATA_TOUR == 'a'){
+                 guide2a$start()
+             } else if(input$CONTINUE_DATA_TOUR == 'b'){
+                 guide2b$start()
+             }
+
+         },
+         autoDestroy = FALSE,
+         ignoreInit = TRUE
+     )
+     # observeEvent(
+     #     eventExpr = input$CONTINUE_DATA_TOUR,
+     #     handlerExpr = {
+     #         guide2b$start()
+     #     },
+     #     autoDestroy = FALSE,
+     #     ignoreInit = TRUE
+     # )
 
     observeEvent(
         eventExpr = input$BACK_TO_VARIABLE_CATALOG,

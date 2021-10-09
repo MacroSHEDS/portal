@@ -5,23 +5,28 @@ reactive_vals$basedata <- list()
 ## reactivity flow control ####
 
 #when domain(s) change, site options change (but not site selections)
-observeEvent(eventExpr = input$DOMAINS3,
-             ignoreNULL = FALSE,
-             handlerExpr = {
+observeEvent(
+    eventExpr = {
+        input$DOMAINS3
+        if(! is.null(input$JS_OPERATING_PLZ_CHILL) &&
+           as.logical(input$JS_OPERATING_PLZ_CHILL)) NULL
+    },
+    ignoreNULL = FALSE,
+    handlerExpr = {
 
-    print('domain change (update sitelist)')
+        print('domain change (update sitelist)')
 
-    dmns <- input$DOMAINS3
-    sites <- input$SITES3
+        dmns <- input$DOMAINS3
+        sites <- input$SITES3
 
-    site_opts <- generate_dropdown_sitelist(dmns)
-    selection <- if(is.null(site_opts)) '' else sites
+        site_opts <- generate_dropdown_sitelist(dmns)
+        selection <- if(is.null(site_opts)) '' else sites
 
-    updateSelectizeInput(session,
-                       'SITES3',
-                       choices = site_opts,
-                       selected = selection,
-                       options = list(maxItems = 3))
+        updateSelectizeInput(session,
+                           'SITES3',
+                           choices = site_opts,
+                           selected = selection,
+                           options = list(maxItems = 3))
 })
 
 #when site(s) change, basedata changes
@@ -126,6 +131,16 @@ observeEvent(eventExpr = reactive_vals$basedata,
 observeEvent(input$VARS_INVISIBLE3, {
     shinyjs::click('GEN_PLOTS3')
     init_vals$basedata_change_reloads_plots <- FALSE
+})
+
+observeEvent(eventExpr = input$GEN_PLOTS3,
+             handlerExpr = {
+
+                 if(init_vals$initial_plots_loaded){
+                     init_vals$ts_tab_is_pristine <- FALSE
+                 } else {
+                     init_vals$initial_plots_loaded <- TRUE
+                 }
 })
 
 #update timeslider when Update Plots is clicked

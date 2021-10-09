@@ -107,8 +107,8 @@ site_data <- filter(site_data,
 
 # Color blind safe palette
 linecolors <- c('#2a6a99', '#d88546', '#b2b1ff') # light blue, purple, light yellow
-pchemcolors <- c('#2a6a9970', '#d8854655', '#b2b1ff55') 
-pchemcolors_strong <- c('#2a6a99', '#d88546', '#b2b1ff') 
+pchemcolors <- c('#2a6a9970', '#d8854655', '#b2b1ff55')
+pchemcolors_strong <- c('#2a6a99', '#d88546', '#b2b1ff')
 
 # good third color: (purple: #cbc2ff )
 
@@ -252,11 +252,10 @@ ws_traits_names <- unlist(ws_traits)
 
 ## 5. "Take a tour" and "Take a data tour" guide setup ####
 
-guide1 <- Cicerone$
+guide1a <- Cicerone$
     new(
-        id = 'cicerone1',
         keyboard_control = FALSE,
-        done_btn_text = 'Next',
+        done_btn_text = 'Next'
         # next_btn_text = paste0('Next (', enc2native('\U2192'), ')'),
         # prev_btn_text = paste0('Previous (', enc2native('\U2190'), ')'),
         # close_btn_text = paste0('Close (Esc)'),
@@ -286,15 +285,14 @@ guide1 <- Cicerone$
                             "on the Notes/Caveats page.")
     )$
     step(
-        class = 'cicerone1',
+        class = 'cicerone1a',
         el = 'addtl_div',
         title = 'You can filter',
         description = 'by sampling regime and/or data quality here. You can also include uncertainty bounds.'
     )
 
-guide2 <- Cicerone$
-    new(id = 'cicerone2',
-        keyboard_control = FALSE)$
+guide1b <- Cicerone$
+    new(keyboard_control = FALSE)$
     step(
         el = 'a[data-value="biplot"]',
         is_id = FALSE,
@@ -328,13 +326,32 @@ guide2 <- Cicerone$
         description = 'Click here to see some of the stories these data tell us.'
     )
 
-guide3 <- Cicerone$
-    new(id = 'cicerone3',
-        keyboard_control = FALSE)$
+guide2a <- Cicerone$
+    new(keyboard_control = FALSE,
+        close_btn_text = 'Next')$
     step(
         el = 'GRAPH_MAIN3a',
+        class = 'cicerone2a',
         title = ' ',
         description = paste("Streams at Hubbard Brook Experimental Forest have",
                             "seen a multi-decade decline in stream sulfate due",
-                            "in part to reductions in acid rain")
+                            "in part to reductions in acid rain.")
+                            #include pub
+    )
+
+guide2b <- Cicerone$
+    new(keyboard_control = FALSE)$
+    step(
+        el = 'GRAPH_MAIN3a',
+        title = ' ',
+        description = paste("next")
+                            #include pub
+    )$
+    step(
+        el = '.container-fluid',
+        is_id = FALSE,
+        class = 'cicerone2z',
+        position = 'mid-center',
+        title = ' ',
+        description = paste("More tour stops coming soon. For now, happy exploring!")
     )
