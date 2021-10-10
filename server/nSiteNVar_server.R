@@ -76,10 +76,6 @@ observeEvent(eventExpr = input$SITES3,
                                    .y = time_scheme)
     }
 
-    print('AA')
-    print(dmns)
-    print(sites)
-    print(basedata[[1]][1, ])
     reactive_vals$basedata <- basedata
 })
 
@@ -144,11 +140,11 @@ observeEvent(input$VARS_INVISIBLE3, {
 observeEvent(eventExpr = input$GEN_PLOTS3,
              handlerExpr = {
 
-                 if(init_vals$initial_plots_loaded){
-                     init_vals$ts_tab_is_pristine <- FALSE
-                 } else {
-                     init_vals$initial_plots_loaded <- TRUE
-                 }
+    if(init_vals$initial_plots_loaded){
+        init_vals$ts_tab_is_pristine <- FALSE
+    } else {
+        init_vals$initial_plots_loaded <- TRUE
+    }
 })
 
 #update timeslider when Update Plots is clicked

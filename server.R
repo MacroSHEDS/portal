@@ -41,9 +41,12 @@ server <- function(input, output, session){
     rain_gauge_buttons <- read_file('ui/rain_gauge_buttons.html')
     loading_dots <- HTML(read_file('ui/loading_dots.html'))
 
-    show_loading_dots <- function(id, duration = NULL){
+    show_loading_dots <- function(id, duration = NULL, message = NULL){
+
+        msg <- if(is.null(message)) '' else message
 
         showNotification(loading_dots,
+                         ui = message,
                          id = id,
                          duration = duration,
                          closeButton = FALSE,
@@ -134,79 +137,81 @@ server <- function(input, output, session){
         ignoreInit = TRUE
     )
 
-     observeEvent(
-         eventExpr = input$TAKE_TOUR,
-         handlerExpr = {
-             guide1a$start()
-         },
-         autoDestroy = FALSE,
-         ignoreInit = TRUE
-     )
-     observeEvent(
-         eventExpr = input$CONTINUE_TOUR,
-         handlerExpr = {
-             guide1b$start()
-         },
-         autoDestroy = FALSE,
-         ignoreInit = TRUE
-     )
+    observeEvent(
+        eventExpr = input$TAKE_TOUR,
+        handlerExpr = {
+            guide1a$start()
+        },
+        autoDestroy = FALSE,
+        ignoreInit = TRUE
+    )
+    observeEvent(
+        eventExpr = input$CONTINUE_TOUR,
+        handlerExpr = {
+            guide1b$start()
+        },
+        autoDestroy = FALSE,
+        ignoreInit = TRUE
+    )
 
-     # observeEvent(
-     #     eventExpr = init_vals$loading_modal,
-     #     handlerExpr = {
-     #         # showModal(p('oi'))
-     #     },
-     #     autoDestroy = FALSE,
-     #     ignoreInit = TRUE
-     # )
+    # observeEvent(
+    #     eventExpr = init_vals$loading_modal,
+    #     handlerExpr = {
+    #         # showModal(p('oi'))
+    #     },
+    #     autoDestroy = FALSE,
+    #     ignoreInit = TRUE
+    # )
 
-     observeEvent(
-         eventExpr = input$START_DATA_TOUR,
-         handlerExpr = {
+    observeEvent(
+        eventExpr = input$START_DATA_TOUR,
+        handlerExpr = {
 
-             if(init_vals$ts_tab_is_pristine){
+            if(init_vals$ts_tab_is_pristine){
 
-                 guide2a$start()
+                guide2a$start()
 
-             } else {
+            } else {
 
-                 click('GEN_PLOTS3')
-                 show_loading_dots('LOADING_POPUP')
-             }
-         },
-         autoDestroy = FALSE,
-         ignoreInit = TRUE
-     )
+                click('GEN_PLOTS3')
+                show_loading_dots('LOADING_POPUP',
+                                  message = 'Loading first stop')
+            }
+        },
+        autoDestroy = FALSE,
+        ignoreInit = TRUE
+    )
 
-     observeEvent(
-         eventExpr = input$TRIGGER_LOADING_DOTS,
-         handlerExpr = show_loading_dots('LOADING_POPUP')
-     )
+    observeEvent(
+        eventExpr = input$TRIGGER_LOADING_DOTS,
+        handlerExpr = show_loading_dots('LOADING_POPUP',
+                                        message = input$TRIGGER_LOADING_DOTS)
+    )
 
-     observeEvent(
-         eventExpr = input$CONTINUE_DATA_TOUR,
-         handlerExpr = {
+    observeEvent(
+        eventExpr = input$CONTINUE_DATA_TOUR,
+        handlerExpr = {
 
-             removeNotification('LOADING_POPUP')
+            removeNotification('LOADING_POPUP')
 
-             if(input$CONTINUE_DATA_TOUR == 'a'){
-                 guide2a$start()
-             } else if(input$CONTINUE_DATA_TOUR == 'b'){
-                 guide2b$start()
-             }
+            if(input$CONTINUE_DATA_TOUR == 'a'){
+                guide2a$start()
+            } else if(input$CONTINUE_DATA_TOUR == 'b'){
+                guide2b$start()
+            }
 
-         },
-         autoDestroy = FALSE,
-         ignoreInit = TRUE
-     )
-     # observeEvent(
-     #     eventExpr = input$CONTINUE_DATA_TOUR,
-     #     handlerExpr = {
-     #         guide2b$start()
-     #     },
-     #     autoDestroy = FALSE,
-     #     ignoreInit = TRUE
-     # )
+        },
+        autoDestroy = FALSE,
+        ignoreInit = TRUE
+    )
+    # observeEvent(
+    #     eventExpr = input$CONTINUE_DATA_TOUR,
+    #     handlerExpr = {
+    #         guide2b$start()
+    #     },
+    #     autoDestroy = FALSE,
+    #     ignoreInit = TRUE
+    # )
 
     observeEvent(
         eventExpr = input$BACK_TO_VARIABLE_CATALOG,

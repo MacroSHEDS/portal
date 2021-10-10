@@ -217,16 +217,30 @@ shinyjs.init = function() {
 
     //BIPLOT: disable X-axis selection when aggregation == 'Yearly'
     function govern_xvar_section(){
-        if( ['MONTHLY2', 'YEARLY2'].includes($('input[name=AGG2]:checked').val()) ){
-            $('#X_TYPE2').selectize()[0].selectize.disable();
+
+        var xtype_ctrl = $('#X_TYPE2').selectize()[0].selectize;
+        var agg2_val = $('input[name=AGG2]:checked').val();
+        var input_val_mapping = {'MONTHLY2': 'Month', 'YEARLY2': 'Year'};
+
+        if( ['MONTHLY2', 'YEARLY2'].includes(agg2_val) ){    
+
+            var xval = input_val_mapping[agg2_val];
+
+            xtype_ctrl.addOption({value: xval, label: xval}, silent=true);
+            xtype_ctrl.addItem(xval);
+            Shiny.setInputValue('X_TYPE2', xval);
+
+            xtype_ctrl.disable();
             $('#LOG_X2').hide();
         } else {
-            $('#X_TYPE2').selectize()[0].selectize.enable();
+            xtype_ctrl.removeOption('Year');
+            xtype_ctrl.enable();
             $('#LOG_X2').show();
         }
     };
 
-    $(document).one('shiny:sessioninitialized', function(event){
+    //$(document).one('shiny:sessioninitialized', function(event){
+    $(document).one('shiny:idle', function(event){
         govern_xvar_section();
     });
 
@@ -616,7 +630,7 @@ shinyjs.init = function() {
 
         //** modify this when adding tour stops
         if(/cicerone[0-9][a]/.test( $(this).parent().parent().attr('class') )){
-            Shiny.setInputValue('TRIGGER_LOADING_DOTS', '' + new Date());
+            Shiny.setInputValue('TRIGGER_LOADING_DOTS', 'Loading next stop', {priority: 'event'});
         }
     });
 
