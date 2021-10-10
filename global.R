@@ -253,6 +253,7 @@ ws_traits_names <- unlist(ws_traits)
 ## 5. "Take a tour" and "Take a data tour" guide setup ####
 
 js_to_R_TRUE <- function(x, session, inputname) as.logical(toupper(x))
+try(removeInputHandler('logical'), silent = TRUE)
 registerInputHandler('logical', js_to_R_TRUE)
 
 guide1a <- Cicerone$
