@@ -563,25 +563,6 @@ shinyjs.init = function() {
 
     //conduct data tour
 
-    //var poll_for_opts = function(elem, opt, then){
-    //    //elem: a selectize dropdown element selector
-    //    //opt: an option to poll for
-    //    //then: a function to execute if opt is among the options of elem
-    //    
-    //    try{
-    //        var opts = $(elem).selectize()[0].selectize.options;
-    //        opts = Object.keys(opts);
-    //    } catch(error) {
-    //        setTimeout(poll_for_opts, 100);
-    //    };
-
-    //    if(opts.includes(opt)){
-    //        then()
-    //    } else {
-    //        setTimeout(poll_for_opts, 100);
-    //    }
-    //}
-
     var set_tour_location = function(dmns, sites, vars){
         //dmns: array of up to 3 string elements
         //sites: array of up to 3 string elements
