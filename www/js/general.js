@@ -45,8 +45,8 @@ shinyjs.init = function() {
     $('body').ready(function(){
         $('body').on('click', '[id$="_goto"]', function(){
             var goto_id = $(this).attr('id') + new Date(); //trigger reactivity
-            Shiny.setInputValue('MAPDATA', goto_id);
             $('#SITE_EXPLORE').trigger('click');
+            Shiny.setInputValue('MAPDATA', goto_id);
         });
     });
 
@@ -194,22 +194,6 @@ shinyjs.init = function() {
         $('input[name=AGG3]').change(govern_VWC3);
     });
 
-   // //disable flux if precip viz selected (why??)
-   // function govern_flux3(){
-   //     if( $('#SHOW_PCHEM3').is(':checked') ){
-   //         $('input[name=CONC_FLUX3][value=Flux]').attr('disabled', 'disabled').siblings().css('color', 'gray');
-   //         $('input[name=AGG3][value=Instantaneous]').attr('disabled', 'disabled').siblings().css('color', 'gray');
-   //         $('input[name=AGG3][value=Daily]').attr('disabled', 'disabled').siblings().css('color', 'gray');
-   //     } else {
-   //         $('input[name=CONC_FLUX3][value=Flux]').removeAttr('disabled').siblings().css('color', '#485580');
-
-   //         if( $('input[name=CONC_FLUX3]:checked').val() !== 'VWC' ){
-   //             $('input[name=AGG3][value=Instantaneous]').removeAttr('disabled').siblings().css('color', '#485580');
-   //             $('input[name=AGG3][value=Daily]').removeAttr('disabled').siblings().css('color', '#485580');
-   //         }
-   //     }
-   // };
-
    // $('body').ready(function(){
    //     $('#SHOW_PCHEM3').click(govern_flux3);
    // });
@@ -217,38 +201,14 @@ shinyjs.init = function() {
     //only show QC plots when their box is checked
     function govern_qc3(){
         if( $('#SHOW_QC3').is(':checked')){
-            //$('#inlineQC3a').css('display', 'inline-block');
-
-            //$('[id^="inlineQC3"').attr('style', 'width: 25% !important; display: inline-block; vertical-align: top');
-            //$('[id^="inlineMAIN3"').attr('style', 'width: 75% !important; display: inline-block; vertical-align: top');
-            //if($('output[name=SHOW_QCa3][value=true]')){
-            //              $('[id="inlineQC3a"').css('width', '25%');
-            //              $('[id="inlineMAIN3a"').css('width', '75%');
-            //}
             $('[id^="inlineQC3"').css('width', '25%');
             $('[id^="inlineMAIN3"').css('width', '75%');
-            //$("inlineQC3a").css('width', '25%');
-            //$("inlineMAIN3a").css('width', '75%');
         } else {
-            //$('#inlineQC3a').css('display', 'none');
-
-            //$('[id^="inlineQC3"').attr('style', 'width: 0% !important; display: inline-block; vertical-align: top');
-            //$('[id^="inlineMAIN3"').attr('style', 'width: 100% !important; display: inline-block; vertical-align: top');
             $('[id^="inlineQC3"]').css('width', '0%');
             $('[id^="inlineMAIN3"]').css('width', '100%');
-            //$('inlineQC3a').css('width', '0%');
-            //$('inlineMAIN3a').css('width', '100%');
-
-            //$('#inlineMAIN3a').css('width', 'auto');
         }
 
-        //$('#GEN_PLOTS3').trigger('click');
         $('#REFRESH').trigger('click');
-        //$('#inlineQC3a').offsetHeight
-        //$('#inlineMAIN3a').offsetHeight
-        //$('#inlineContainerA').offsetHeight
-        //$('#inlineQC3a').hide().show(0);
-        //$('#inlineQC3a').css('transform', 'translateZ(0)');
     };
 
     $('body').ready(function(){
@@ -257,21 +217,30 @@ shinyjs.init = function() {
 
     //BIPLOT: disable X-axis selection when aggregation == 'Yearly'
     function govern_xvar_section(){
-        if( ['MONTHLY2', 'YEARLY2'].includes($('input[name=AGG2]:checked').val()) ){
-            $('#X_TYPE2').selectize()[0].selectize.disable();
-            //hiding/showing of VAR and UNIT now governed by govern_tier2_dropdown() and govern_tier3_dropdown
-            //$('#X_VAR2').parent().hide();
-            //$('#X_UNIT2').parent().hide();
+
+        var xtype_ctrl = $('#X_TYPE2').selectize()[0].selectize;
+        var agg2_val = $('input[name=AGG2]:checked').val();
+        var input_val_mapping = {'MONTHLY2': 'Month', 'YEARLY2': 'Year'};
+
+        if( ['MONTHLY2', 'YEARLY2'].includes(agg2_val) ){    
+
+            var xval = input_val_mapping[agg2_val];
+
+            xtype_ctrl.addOption({value: xval, label: xval}, silent=true);
+            xtype_ctrl.addItem(xval);
+            Shiny.setInputValue('X_TYPE2', xval);
+
+            xtype_ctrl.disable();
             $('#LOG_X2').hide();
         } else {
-            $('#X_TYPE2').selectize()[0].selectize.enable();
-            //$('#X_VAR2').parent().show();
-            //$('#X_UNIT2').parent().show();
+            xtype_ctrl.removeOption('Year');
+            xtype_ctrl.enable();
             $('#LOG_X2').show();
         }
     };
 
-    $(document).one('shiny:sessioninitialized', function(event){
+    //$(document).one('shiny:sessioninitialized', function(event){
+    $(document).one('shiny:idle', function(event){
         govern_xvar_section();
     });
 
@@ -484,18 +453,21 @@ shinyjs.init = function() {
                     $('#landing #DISMISS_MODAL').show();
                     $('#landing #TAKE_TOUR').show();
                     $('#DATA_TOUR').removeAttr('disabled');
+                    $('#GEN_PLOTS3').removeClass('disabled').removeAttr('disabled');
                 }, 1000);
                 window.setTimeout(function(){
                     $('.loading-container').hide();
                     $('#landing #DISMISS_MODAL').show();
                     $('#landing #TAKE_TOUR').show();
                     $('#DATA_TOUR').removeAttr('disabled');
+                    $('#GEN_PLOTS3').removeClass('disabled').removeAttr('disabled');
                 }, 3000);
                 window.setTimeout(function(){
                     $('.loading-container').hide();
                     $('#landing #DISMISS_MODAL').show();
                     $('#landing #TAKE_TOUR').show();
                     $('#DATA_TOUR').removeAttr('disabled');
+                    $('#GEN_PLOTS3').removeClass('disabled').removeAttr('disabled');
                 }, 8000);
 
                 return;
@@ -579,23 +551,122 @@ shinyjs.init = function() {
         }, 400);
     }, 1000));
 
-    //conduct tour
+    //conduct site tour
     $('body').on('click', '#TAKE_TOUR', function(i, v){
         $('#DISMISS_MODAL').trigger('click');
     });
-    $('body').on('click', '.cicerone1 .driver-next-btn', function(i, v){
+
+    $('body').on('click', '.cicerone1a .driver-next-btn', function(i, v){
         $('a[data-value="biplot"]').trigger('click');
         Shiny.setInputValue('CONTINUE_TOUR', '' + new Date());
     });
+
+    //conduct data tour
+
+    var set_tour_location = function(dmns, sites, vars){
+        //dmns: array of up to 3 string elements
+        //sites: array of up to 3 string elements
+        //vars: array of up to 3 objects e.g. {value: 'SO4_S', label: 'Sulfate-S (mg/L)'}
+
+        var dmn_ctrl = $('#DOMAINS3').selectize()[0].selectize;
+        var sit_ctrl = $('#SITES3').selectize()[0].selectize;
+        var var_ctrl = $('#VARS3').selectize()[0].selectize;
+
+        dmn_ctrl.clear(silent=true);
+        sit_ctrl.clearOptions(silent=true);
+        var_ctrl.clearOptions(silent=true);
+
+        for(e of dmns){
+            dmn_ctrl.addItem(e, silent=true);
+        };
+
+        Shiny.setInputValue('DOMAINS3', dmns);
+
+        for(var i = 0; i < sites.length; i++){
+
+            var st = sites[i]
+            sit_ctrl.addOption({value: st, label: st}, silent=true);
+
+            if(i == sites.length - 1){
+                sit_ctrl.addItem(st, silent=true);
+            } else {
+                sit_ctrl.addItem(st, silent=false);
+            };
+        };
+
+        Shiny.setInputValue('SITES3', sites);
+
+        for(e of vars){
+            var_ctrl.addOption(e, silent=true);
+            var_ctrl.addItem(e.value, silent=true);
+        };
+
+        Shiny.setInputValue('VARS3', vars.map(x => x.value));
+    };
+
+    window.enable_data_tour = false;
+    window.next_tour_id = 'a';
+
+    $('body').on('click', '.driver-close-btn', function(){
+
+        //** modify this when adding tour stops
+        if(/cicerone[0-9][a]/.test( $(this).parent().parent().attr('class') )){
+            Shiny.setInputValue('TRIGGER_LOADING_DOTS', 'Loading next stop', {priority: 'event'});
+        }
+    });
+
     $('body').on('click', '#DATA_TOUR', function(i, v){
+
+        enable_data_tour = true;
+        next_tour_id = 'a';
+
         $('a[data-value="multisite_exploration"]').trigger('click');
+
+        set_tour_location(['hbef'], ['w6'], [{value: 'SO4_S', label: 'Sulfate-S (mg/L)'}])
+
+        $('#SHOW_PCHEM3').prop('checked', false);
+        $('#showqc').prop('checked', false);
+        $('input[name="CONC_FLUX3"][value="Concentration"]').prop('checked', true);
+        $('input[name="AGG3"][value="Monthly"]').prop('checked', true);
+        $('input[name="INSTALLED_V_GRAB3"][value="G"]').prop('checked', true);
+        $('input[name="INSTALLED_V_GRAB3"][value="I"]').prop('checked', true);
+        $('input[name="SENSOR_V_NONSENSOR3"][value="S"]').prop('checked', true);
+        $('input[name="SENSOR_V_NONSENSOR3"][value="N"]').prop('checked', true);
+        $('#FLAGS3').prop('checked', true);
+        $('#INTERP3').prop('checked', true);
+
+        Shiny.setInputValue('SHOW_PCHEM3:logical', 'false');
+        Shiny.setInputValue('showqc:logical', 'false');
+        Shiny.setInputValue('CONC_FLUX3', 'Concentration');
+        Shiny.setInputValue('AGG3', 'Monthly');
+        Shiny.setInputValue('INSTALLED_V_GRAB3', ['G', 'I']);
+        Shiny.setInputValue('SENSOR_v_NONSENSOR3', ['S', 'N']);
+        Shiny.setInputValue('FLAGS3:logical', 'true');
+        Shiny.setInputValue('INTERP3:logical', 'true');
+
         Shiny.setInputValue('START_DATA_TOUR', '' + new Date());
     });
+
+    $('body').on('click', '.cicerone2a .driver-close-btn', function(i, v){
+
+        Shiny.setInputValue('basedata_change_reloads_plots', 1);
+        $('input[name="AGG3"][value="Daily"]').prop('checked', true);
+        Shiny.setInputValue('AGG3', 'Daily');
+        next_tour_id = 'b';
+        set_tour_location(['hjandrews'], ['GSWS09', 'GSWS10'], [{value: 'NO3_N', label: 'Nitrate-N (mg/L)'}]);
+        //$('#GEN_PLOTS3').trigger('click');
+
+    });
+
+    $('#VARS_INVISIBLE3').on('shiny:inputchanged', function(event){
+        Shiny.setInputValue('basedata_change_reloads_plots', 0);
+    });
+
 
     //all this crap (and associated CSS) is necessary just to make "macrosheds.org"
     //appear (and STAY appeared) in the bottom of each dygraph as an annotation
 
-    window.enable_attribution = false
+    window.enable_attribution = false;
 
    // $('body').on('change', '#DATES3', debounce(function(){
    //     if(enable_attribution){
@@ -630,24 +701,40 @@ shinyjs.init = function() {
    // });
 
     $(document).on('shiny:idle', function(event){
-        enable_attribution = true
+        enable_attribution = true;
     });
 
     $('div[id^="GRAPH_"]').on('shiny:value', function(event){
+
+        let $this = $(this)
+        let is_qc_plot = /GRAPH_QC3./.test( $this.attr('id') )
+
+        if(! is_qc_plot){
+            $('#GEN_PLOTS3').removeClass('disabled').removeAttr('disabled');
+            if(enable_data_tour){
+                Shiny.setInputValue('CONTINUE_DATA_TOUR', next_tour_id);
+            };
+        }
+
+        //window.setTimeout(function(){
+        //    $('#SLIDER_UPDATES_PLOTS').trigger('click');
+        //}, 1000); //wait for timeslider debounce
+
         if(enable_attribution){
-            let $this = $(this)
             window.setTimeout(function(){
                 $this.children('[class^="ms-attribution"]').remove()
                 if($this.attr('id') === 'GRAPH_Q3'){
                     $this.css('position', 'relative').append($('<p class="ms-attribution-high">macrosheds.org</p>'));
-                } else if(/GRAPH_QC3./.test( $this.attr('id') )){
+                } else if(is_qc_plot){
                     console.log($this.attr('id'));
                 } else {
                     $this.css('position', 'relative').append($('<p class="ms-attribution-low">macrosheds.org</p>'));
                 };
             }, 500);
         };
+
     });
+
 };
 
 //shinyjs.calcHeight = function(propHeight) {

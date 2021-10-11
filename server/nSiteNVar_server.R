@@ -1,193 +1,39 @@
-
-#TODO: add a line like this to all renderers to attempt popout windows again
-# output$GRAPH_PRECIP3a = output$GRAPH_PRECIP3aEXP = renderDygraph({
-
-## govern showing/hiding of facets ####
-
-reactive_vals = reactiveValues()
-reactive_vals$facet3a = 0
-reactive_vals$facet3b = 0
-reactive_vals$facet3c = 0
-reactive_vals$update_basedata = 0
-
-#main facets
-observeEvent(input$REFRESH, {
-    print('REFRESH')
-    reactive_vals$facet3a = reactive_vals$facet3a + 1
-    reactive_vals$facet3b = reactive_vals$facet3b + 1
-    reactive_vals$facet3c = reactive_vals$facet3c + 1
-})
-
-observeEvent({
-    if(
-        ! is.null(input$SITES3) &&
-        ! is.null(get_domains3()) &&
-        ! is.null(input$CONC_FLUX3) &&
-        ! is.null(input$FLUX_UNIT3) &&
-        ! is.null(input$CONC_UNIT3) &&
-        ! is.null(input$SHOW_PCHEM3) &&
-        ! is.null(input$AGG3) &&
-        is.null(timeSliderUpdate()) &&
-        # ! is.null(input$DATES3) &&
-        ! is.null(input$SHOW_QC3) &&
-        ! is.null(input$INSTALLED_V_GRAB3) &&
-        ! is.null(input$SENSOR_V_NONSENSOR3) &&
-        ! is.null(input$SHOW_UNCERT3) &&
-        ! is.null(input$FLAGS3) &&
-        ! is.null(input$INTERP3) &&
-        length(input$VARS3) == 1
-    ){ TRUE } else NULL
-}, {
-    print('rvalA')
-    reactive_vals$facet3a = reactive_vals$facet3a + 1
-})
-
-observeEvent({
-    if(
-        ! is.null(input$SITES3) &&
-        ! is.null(get_domains3()) &&
-        ! is.null(input$CONC_FLUX3) &&
-        ! is.null(input$FLUX_UNIT3) &&
-        ! is.null(input$CONC_UNIT3) &&
-        ! is.null(input$SHOW_PCHEM3) &&
-        ! is.null(input$AGG3) &&
-        # ! is.null(input$DATES3) &&
-        is.null(timeSliderUpdate()) &&
-        ! is.null(input$SHOW_QC3) &&
-        ! is.null(input$INSTALLED_V_GRAB3) &&
-        ! is.null(input$SENSOR_V_NONSENSOR3) &&
-        ! is.null(input$SHOW_UNCERT3) &&
-        ! is.null(input$FLAGS3) &&
-        ! is.null(input$INTERP3) &&
-        length(input$VARS3) == 2
-    ){ TRUE } else NULL
-    # if(length(input$VARS3) == 2){
-    #     TRUE
-    # } else return()
-}, {
-    print('rvalB')
-    reactive_vals$facet3a = reactive_vals$facet3a + 1
-    reactive_vals$facet3b = reactive_vals$facet3b + 1
-})
-
-observeEvent({
-    if(
-        ! is.null(input$SITES3) &&
-        ! is.null(get_domains3()) &&
-        ! is.null(input$CONC_FLUX3) &&
-        ! is.null(input$FLUX_UNIT3) &&
-        ! is.null(input$CONC_UNIT3) &&
-        ! is.null(input$SHOW_PCHEM3) &&
-        ! is.null(input$AGG3) &&
-        # ! is.null(input$DATES3) &&
-        is.null(timeSliderUpdate()) &&
-        ! is.null(input$SHOW_QC3) &&
-        ! is.null(input$INSTALLED_V_GRAB3) &&
-        ! is.null(input$SENSOR_V_NONSENSOR3) &&
-        ! is.null(input$SHOW_UNCERT3) &&
-        ! is.null(input$FLAGS3) &&
-        ! is.null(input$INTERP3) &&
-        length(input$VARS3) == 3
-    ){ TRUE } else NULL
-    # if(length(input$VARS3) == 3){
-    #     TRUE
-    # } else return()
-}, {
-    print('rvalC')
-    reactive_vals$facet3a = reactive_vals$facet3a + 1
-    reactive_vals$facet3b = reactive_vals$facet3b + 1
-    reactive_vals$facet3c = reactive_vals$facet3c + 1
-})
-
-# #precip facets
-# observeEvent({
-#     if(length(input$SITES3) >= 1){ TRUE } else return()
-# }, {
-#     reactive_vals$facet3aP = reactive_vals$facet3aP + 1
-# })
-#
-# observeEvent({
-#     if(length(input$SITES3) >= 2){ TRUE } else return()
-# }, {
-#     reactive_vals$facet3aP = reactive_vals$facet3aP + 1
-#     reactive_vals$facet3bP = reactive_vals$facet3bP + 1
-# })
-#
-# observeEvent({
-#     if(length(input$SITES3) == 3){ TRUE } else return()
-# }, {
-#     reactive_vals$facet3aP = reactive_vals$facet3aP + 1
-#     reactive_vals$facet3bP = reactive_vals$facet3bP + 1
-#     reactive_vals$facet3cP = reactive_vals$facet3cP + 1
-# })
+reactive_vals <- reactiveValues()
+reactive_vals$update_basedata <- 0
+reactive_vals$basedata <- list()
 
 ## reactivity flow control ####
 
-#when domain(s) change, site options and basedata change, but not site selections
-get_domains3 <- eventReactive(eventExpr = input$DOMAINS3,
-                              ignoreNULL = FALSE,
-                              valueExpr = {
+#when domain(s) change, site options change (but not site selections)
+observeEvent(
+    eventExpr = input$DOMAINS3,
+    ignoreNULL = FALSE,
+    handlerExpr = {
 
-    domains <- input$DOMAINS3
-    sites <- input$SITES3
+        print('domain change (update sitelist)')
 
-    # reactive_vals$update_basedata <- reactive_vals$update_basedata + 1
+        dmns <- input$DOMAINS3
+        sites <- input$SITES3
 
-    site_opts <- generate_dropdown_sitelist(domains)
-    selection <- if(is.null(site_opts)) '' else sites
+        site_opts <- generate_dropdown_sitelist(dmns)
+        selection <- if(is.null(site_opts)) '' else sites
 
-    updateSelectizeInput(session,
-                         'SITES3',
-                         choices = site_opts,
-                         selected = selection,
-                         options = list(maxItems = 3))
-
-
-    return(domains)
+        updateSelectizeInput(session,
+                             'SITES3',
+                             choices = site_opts,
+                             selected = selection,
+                             options = list(maxItems = 3))
 })
 
+#when site(s) change, basedata changes
+observeEvent(eventExpr = input$SITES3,
+             handlerExpr = {
 
-# #when domain(s) change and SHOW_PCHEM3==TRUE, update basedata reactive value
-# observeEvent({
-#     if(
-#         ! is.null(get_domains3()) &&
-#         input$SHOW_PCHEM3
-#     ){ TRUE } else return()
-# }, {
-#     reactive_vals$update_basedata = reactive_vals$update_basedata + 1
-# })
-
-#when site(s) change or basedata reactive value updates, basedata changes
-load_basedata <- eventReactive({
-
-    input$DOMAINS3
-    input$SITES3
-    # reactive_vals$update_basedata
-    input$TIME_SCHEME3
-    input$INSTALLED_V_GRAB3
-    input$SENSOR_V_NONSENSOR3
-    # input$SHOW_UNCERT3
-    input$FLAGS3
-    input$INTERP3
-
-}, {
-
-    # #NOTICE: may not behave as expected (might have to globally define the datasets below)
-    # time_scheme <<- input$TIME_SCHEME3
-    # agg <<- isolate(input$AGG3)
-    # dmns <<- get_domains3()
-    # precip_source <<- input$PRECIP_S3
-    #
-    # if(is.null(dmns)){ #for empty domain dropdown
-    #     dmns <<- init_vals$recent_domain
-    #     sites <<- get_default_site(domain = dmns[1])
-    # } else {
-    #     sites <<- input$SITES3
-    # }
+    print('site change (update basedata)')
 
     time_scheme <- input$TIME_SCHEME3
-    agg <- isolate(input$AGG3)
-    dmns <- get_domains3()
+    agg <- input$AGG3
+    dmns <- input$DOMAINS3
 
     if(is.null(dmns)){ #for empty domain dropdown
         dmns <- init_vals$recent_domain
@@ -225,58 +71,98 @@ load_basedata <- eventReactive({
                      pchem = pchem,
                      pflux = pflux)
 
-    if(time_scheme != 'UTC' && agg == 'Instantaneous') {
+    if(time_scheme != 'UTC' && agg == 'Instantaneous'){
         basedata <- purrr::modify2(basedata,
                                    get_local_solar_time,
                                    .y = time_scheme)
     }
 
-    return(basedata)
+    reactive_vals$basedata <- basedata
 })
 
-#when basedata changes, variable list changes, but not selections
-observe({
+#when basedata changes, variable list changes, but not variable selections,
+#unless the previous selections are not available for the newly selected sites(s).
+#if basedata is changing as a result of clicking a map "Go to" link
+#or advancing the data tour, Update Plots is triggered AFTER variables update
+observeEvent(eventExpr = reactive_vals$basedata,
+             handlerExpr = {
 
-    print('basedata change')
-    # basedata <<- load_basedata()
-    # agg <<- input$AGG3
-    # vars_ <<- isolate(input$VARS3)
-    # dates <<- isolate(input$DATES3)
-    # sites <<- isolate(input$SITES3)
+    print('basedata change (update varlist)')
 
-    basedata <- load_basedata()
-    agg <- input$AGG3
-    vars_ <- isolate(input$VARS3)
-    sites <- isolate(input$SITES3)
+    #DISABLE var dropdown until basedata is loaded
+    basedata <- reactive_vals$basedata
+    vars_ <- input$VARS3
 
     chemvars_display_subset <- filter_dropdown_varlist(basedata$chem)
+    chemvars_vec <- unlist(chemvars_display_subset,
+                           recursive = TRUE,
+                           use.names = FALSE)
 
-    # if(is.null(vars_)){
-    #     vars_ <- chemvars_display_subset[[1]][1]
-    # }
-    updateSelectizeInput(session = session,
-                         inputId = 'VARS3',
-                         choices = chemvars_display_subset,
-                         selected = vars_)
+    vars_ <- vars_[vars_ %in% chemvars_vec]
 
+    if(! length(vars_)) vars_ <- chemvars_vec[1]
+
+    bcrp1 <- (! is.null(input$basedata_change_reloads_plots) &&
+        input$basedata_change_reloads_plots)
+    bcrp2 <- init_vals$basedata_change_reloads_plots
+
+    if(! bcrp1){
+
+        #this will always occur unless we're here because of set_tour_location
+        updateSelectizeInput(session = session,
+                             inputId = 'VARS3',
+                             choices = chemvars_display_subset,
+                             selected = vars_)
+    }
+
+    if(bcrp1 || bcrp2){
+
+        #only possible to get here from input$MAPDATA or set_tour_location
+
+        #probably unnecessary for this to be an updateSelectizeInput, when all it's
+        #doing is invalidating to ensure GEN_PLOTS3 fires after VARS3
+        #has updated. but i wanted to ensure VARS_INVISIBLE3 would have
+        #the same priority as VARS3, to ensure no timing funny business
+        #would be nice if we could directly invalidate VARS3
+        updateSelectizeInput(session = session,
+                             inputId = 'VARS_INVISIBLE3',
+                             choices = letters,
+                             selected = sample(letters, 3, TRUE))
+    }
 })
 
-# Only update time slider on update plot
-observe({
+#for triggering Update Plots click from map go-to buttons AFTER updating var selection
+observeEvent(input$VARS_INVISIBLE3, {
+    print('Update from VARS_INVISIBLE3')
+    shinyjs::click('GEN_PLOTS3')
+    init_vals$basedata_change_reloads_plots <- FALSE
+})
 
-    # print('basedata change')
-    # basedata <<- load_basedata()
-    # agg <<- input$AGG3
-    # vars_ <<- isolate(input$VARS3)
-    # dates <<- isolate(input$DATES3)
-    # sites <<- isolate(input$SITES3)
+observeEvent(eventExpr = input$GEN_PLOTS3,
+             handlerExpr = {
 
-    input$GEN_PLOTS3
-    basedata <- isolate(load_basedata())
-    agg <- isolate(input$AGG3)
-    vars_ <- isolate(input$VARS3)
-    dates <- isolate(input$DATES3)
-    sites <- isolate(input$SITES3)
+    if(init_vals$initial_plots_loaded){
+        init_vals$ts_tab_is_pristine <- FALSE
+    } else {
+        init_vals$initial_plots_loaded <- TRUE
+    }
+})
+
+#update timeslider when Update Plots is clicked
+observeEvent(eventExpr = input$GEN_PLOTS3,
+             priority = 90,
+             ignoreNULL = FALSE,
+             handlerExpr = {
+
+    basedata <- reactive_vals$basedata
+    if(length(basedata) == 0) return()
+    agg <- input$AGG3
+    vars_ <- input$VARS3
+    dates <- input$DATES3
+    sites <- input$SITES3
+
+    print('Update Plots')
+    shinyjs::disable('GEN_PLOTS3')
 
     dtrng <- get_timeslider_extent(basedata, dates)
 
@@ -298,118 +184,93 @@ observe({
         selected_dtrng <- dates
     }
 
+    print('plot update triggering from update button slider change')
     updateSliderInput(session = session,
                       inputId = 'DATES3',
                       min = dtrng[1],
                       max = dtrng[2],
                       value = selected_dtrng,
                       timeFormat = '%b %Y')
+
+    #probably unnecessary for this to be an updateSliderInput, when all it's
+    #doing is invalidating to ensure timeSliderChanged fires after DATES3
+    #has updated., but i wanted to ensure DATES_INVISIBLE3 would have
+    #the same priority as DATES3, to ensure no timing funny business.
+    #would be nice if we could directly invalidate DATES3
+    invdate <- as.Date('1900-01-01')
+    invdate2 <- invdate + runif(1, 1, 100000)
+    updateSliderInput(session = session,
+                      inputId = 'DATES_INVISIBLE3',
+                      min = invdate,
+                      max = invdate2,
+                      value = c(invdate2 - 1, invdate2),
+                      timeFormat = '%b %Y')
+
+    # session$sendCustomMessage('flash_plot',
+    #                           jsonlite::toJSON('placeholder'))
 })
 
-#reduce the reactivity sensitivity of the slider, so that intermediate inputs
+#reduce the reactivity sensitivity of the timeslider, so that intermediate inputs
 #don't trigger plot updates
-timeSliderUpdate <- reactive({
+timeSliderChanged <- eventReactive({
+
+    input$DATES_INVISIBLE3
     input$DATES3
-    return()
+
+}, {
+
+    #this is the ultimate gatekeeper for plot rendering. it can be triggered by
+    #the Update Plots button or by the user directly. to ensure that the plots
+    #still update if the dates selected don't change, a random date is appended
+    #to input$DATES3. this random date is then ignored in all the data preppers
+
+    print('slider update for plots.')
+
+    datevec_rando_append <- c(input$DATES3, as.Date(runif(1, 0, 10000)))
+    return(datevec_rando_append)
+
 }) %>%
     debounce(1000)
 
+## data preppers ####
 
-#if variables(s), aggregation, units, site, or time window change, re-filter datasets
-ploting_info <- reactive({
-
-    input$GEN_PLOTS3
-    # input$REFRESH
-
-    sites <- na.omit(isolate(input$SITES3))
-    varA <- isolate(input$VARS3)#
-    conc_flux <- isolate(input$CONC_FLUX3)
-    flux_unit <- isolate(input$FLUX_UNIT3)
-    conc_unit <- isolate(input$CONC_UNIT3)
-    show_pchem <- isolate(input$SHOW_PCHEM3)
-    agg <- isolate(input$AGG3)
-    dates <- isolate(input$DATES3)
-    show_uncert <- isolate(input$SHOW_UNCERT3)
-    dmns <- isolate(get_domains3())
-    igsn <- c(isolate(input$INSTALLED_V_GRAB3), isolate(input$SENSOR_V_NONSENSOR3))
-    show_uncert <- isolate(input$SHOW_UNCERT3)
-    show_flagged <- isolate(input$FLAGS3)
-    show_imputed <- isolate(input$INTERP3)
-    enable_unitconvert <- isolate(init_vals$enable_unitconvert)
-    time_scheme <- isolate(input$TIME_SCHEME3)
-    show_qc <- isolate(input$SHOW_QC3)
-
-    ploting_info <- list(sites = sites,
-                        vars = varA,
-                        conc_flux = conc_flux,
-                        flux_unit = flux_unit,
-                        conc_unit = conc_unit,
-                        show_pchem = show_pchem,
-                        agg = agg,
-                        dates = dates,
-                        show_uncert = show_uncert,
-                        dmns = dmns,
-                        igsn = igsn,
-                        show_uncert = show_uncert,
-                        show_flagged = show_flagged,
-                        show_imputed = show_imputed,
-                        enable_unitconvert = enable_unitconvert,
-                        time_scheme = time_scheme,
-                        show_qc = show_qc)
-
-    return(ploting_info)
-})
-
-dataChem <- reactive({
-# dataChem <- observeEvent(input$GEN_PLOTS3, {
+dataChem <- eventReactive({
+    timeSliderChanged()
+}, {
 
     print('dataChem')
 
-    # basedata <<- load_basedata()
-    # dates <<- isolate(input$DATES3)
-    # timeSliderUpdate()
     # vars_ <<- input$VARS3
     # conc_flux <<- input$CONC_FLUX3
-    # conc_unit <<- input$CONC_UNIT3 #
-    # flux_unit <<- input$FLUX_UNIT3 #
+    # conc_unit <<- input$CONC_UNIT3
+    # flux_unit <<- input$FLUX_UNIT3
     # agg <<- input$AGG3
-    # # sites <<- input$SITES3
-    # #time_scheme <<- input$TIME_SCHEME3
+    # sites <<- input$SITES3
+    # time_scheme <<- input$TIME_SCHEME3
     # igsn <<- c(input$INSTALLED_V_GRAB3, input$SENSOR_V_NONSENSOR3)
     # show_uncert <<- input$SHOW_UNCERT3
     # show_flagged <<- input$FLAGS3
     # show_imputed <<- input$INTERP3
+    # dates <<- input$DATES3
     # enable_unitconvert <<- init_vals$enable_unitconvert
+    # basedata <<- reactive_vals$basedata
 
-    # vars_ <- isolate(input$VARS3)
-    # conc_flux <- isolate(input$CONC_FLUX3)
-    # conc_unit <- isolate(input$CONC_UNIT3)
-    # flux_unit <- isolate(input$FLUX_UNIT3)
-    # agg <- isolate(input$AGG3)
-    # sites <- input$SITES3
-    # time_scheme <- input$TIME_SCHEME3
-    # igsn <- c(isolate(input$INSTALLED_V_GRAB3), isolate(input$SENSOR_V_NONSENSOR3))
-    # show_uncert <- isolate(input$SHOW_UNCERT3)
-    # show_flagged <- isolate(input$FLAGS3)
-    # show_imputed <- isolate(input$INTERP3)
-    # enable_unitconvert <- isolate(init_vals$enable_unitconvert)
+    vars_ <- input$VARS3
+    conc_flux <- input$CONC_FLUX3
+    conc_unit <- input$CONC_UNIT3
+    flux_unit <- input$FLUX_UNIT3
+    agg <- input$AGG3
+    sites <- input$SITES3
+    time_scheme <- input$TIME_SCHEME3
+    igsn <- c(input$INSTALLED_V_GRAB3, input$SENSOR_V_NONSENSOR3)
+    show_uncert <- input$SHOW_UNCERT3
+    show_flagged <- input$FLAGS3
+    show_imputed <- input$INTERP3
+    dates <- timeSliderChanged()[1:2]
 
-    basedata <- isolate(load_basedata())
-    dates <- isolate(input$DATES3)
-    timeSliderUpdate()
+    enable_unitconvert <- init_vals$enable_unitconvert
+    basedata <- reactive_vals$basedata
 
-    ploting_info <- ploting_info()
-    vars_ <- ploting_info$vars
-    conc_flux <- ploting_info$conc_flux
-    conc_unit <- ploting_info$conc_unit
-    flux_unit <- ploting_info$flux_unit
-    agg <- ploting_info$agg
-    time_scheme <- ploting_info$time_scheme
-    igsn <- ploting_info$igsn
-    show_uncert <- ploting_info$show_uncert
-    show_flagged <- ploting_info$show_flagged
-    show_imputed <- ploting_info$show_imputed
-    enable_unitconvert <- ploting_info$enable_unitconvert
 
     datachem <- if(conc_flux == 'Flux') basedata$flux else basedata$chem
 
@@ -439,49 +300,25 @@ dataChem <- reactive({
     return(datachem)
 })
 
-dataVWC <- reactive({
+dataVWC <- eventReactive({
+    timeSliderChanged()
+}, {
 
-    # basedata <<- load_basedata()
-    # dates <<- isolate(input$DATES3)
-    # timeSliderUpdate()
-    # vars_ <<- input$VARS3
-    # conc_flux <<- input$CONC_FLUX3
-    # conc_unit <<- input$CONC_UNIT3
-    # flux_unit <<- input$FLUX_UNIT3
-    # agg <<- input$AGG3
-    # igsn <<- c(input$INSTALLED_V_GRAB3, input$SENSOR_V_NONSENSOR3)
-    # show_uncert <<- input$SHOW_UNCERT3
-    # show_flagged <<- input$FLAGS3
-    # show_imputed <<- input$INTERP3
-    # enable_unitconvert <<- init_vals$enable_unitconvert
+    print('dataVWC')
 
-    # vars_ <- isolate(input$VARS3)
-    # conc_flux <- isolate(input$CONC_FLUX3)
-    # conc_unit <- isolate(input$CONC_UNIT3)
-    # flux_unit <- isolate(input$FLUX_UNIT3)
-    # agg <- isolate(input$AGG3)
-    # igsn <- c(isolate(input$INSTALLED_V_GRAB3), isolate(input$SENSOR_V_NONSENSOR3))
-    # show_uncert <- isolate(input$SHOW_UNCERT3)
-    # show_flagged <- isolate(input$FLAGS3)
-    # show_imputed <- isolate(input$INTERP3)
-
-    basedata <- isolate(load_basedata())
-    dates <- isolate(input$DATES3)
-    timeSliderUpdate()
-    ploting_info <- ploting_info()
-    vars_ <- ploting_info$vars
-    conc_flux <- ploting_info$conc_flux
-    conc_unit <- ploting_info$conc_unit
-    flux_unit <- ploting_info$flux_unit
-    agg <- ploting_info$agg
-    time_scheme <- ploting_info$time_scheme
-    igsn <- ploting_info$igsn
-    show_uncert <- ploting_info$show_uncert
-    show_flagged <- ploting_info$show_flagged
-    show_imputed <- ploting_info$show_imputed
-    enable_unitconvert <- ploting_info$enable_unitconvert
+    vars_ <- input$VARS3
+    conc_flux <- input$CONC_FLUX3
+    conc_unit <- input$CONC_UNIT3
+    flux_unit <- input$FLUX_UNIT3
+    agg <- input$AGG3
+    igsn <- c(input$INSTALLED_V_GRAB3, input$SENSOR_V_NONSENSOR3)
+    show_uncert <- input$SHOW_UNCERT3
+    show_flagged <- input$FLAGS3
+    show_imputed <- input$INTERP3
+    dates <- timeSliderChanged()[1:2]
 
     enable_unitconvert <- init_vals$enable_unitconvert
+    basedata <- reactive_vals$basedata
 
     agg_unit <- ifelse(agg == 'Monthly', 'month', 'year') #this won't run if agg < monthly
 
@@ -493,7 +330,7 @@ dataVWC <- reactive({
                                  show_uncert = show_uncert,
                                  show_flagged = show_flagged,
                                  show_imputed = show_imputed)
-                                 # conc_or_flux = conc_flux)
+    # conc_or_flux = conc_flux)
 
     first_two_rows <- dataq[1:2,]
     if(first_two_rows$site_code[1] == first_two_rows$site_code[2]){
@@ -583,57 +420,28 @@ dataVWC <- reactive({
     return(datavwc)
 })
 
-dataPchem <- reactive({
+dataPchem <- eventReactive({
+    timeSliderChanged()
+}, {
 
     print('dataPchem')
 
-    # basedata <<- load_basedata()
-    # dates <<- isolate(input$DATES3)
-    # timeSliderUpdate()
-    # vars_ <<- input$VARS3
-    # conc_flux <<- input$CONC_FLUX3
-    # conc_unit <<- input$CONC_UNIT3 #
-    # flux_unit <<- input$FLUX_UNIT3 #
-    # agg <<- input$AGG3
-    # # sites <<- input$SITES3
-    # #time_scheme <<- input$TIME_SCHEME3
-    # igsn <<- c(input$INSTALLED_V_GRAB3, input$SENSOR_V_NONSENSOR3)
-    # show_uncert <<- input$SHOW_UNCERT3
-    # show_flagged <<- input$FLAGS3
-    # show_imputed <<- input$INTERP3
-    # enable_unitconvert <<- init_vals$enable_unitconvert
-
-    # vars_ <- isolate(input$VARS3)
-    # conc_flux <- isolate(input$CONC_FLUX3)
-    # conc_unit <- isolate(input$CONC_UNIT3)
-    # flux_unit <- isolate(input$FLUX_UNIT3)
-    # agg <- isolate(input$AGG3)
-    # agg <- isolate(input$AGG3)
-    # sites <- input$SITES3
-    #time_scheme <- input$TIME_SCHEME3
-    # igsn <- c(isolate(input$INSTALLED_V_GRAB3), isolate(input$SENSOR_V_NONSENSOR3))
-    # show_uncert <- isolate(input$SHOW_UNCERT3)
-    # show_flagged <- isolate(input$FLAGS3)
-    # show_imputed <- isolate(input$INTERP3)
-
-    basedata <- isolate(load_basedata())
-    dates <- isolate(input$DATES3)
-    timeSliderUpdate()
-    ploting_info <- ploting_info()
-
-    vars_ <- ploting_info$vars
-    conc_flux <- ploting_info$conc_flux
-    conc_unit <- ploting_info$conc_unit
-    flux_unit <- ploting_info$flux_unit
-    agg <- ploting_info$agg
-    time_scheme <- ploting_info$time_scheme
-    igsn <- ploting_info$igsn
-    show_uncert <- ploting_info$show_uncert
-    show_flagged <- ploting_info$show_flagged
-    show_imputed <- ploting_info$show_imputed
-    enable_unitconvert <- ploting_info$enable_unitconvert
+    vars_ <- input$VARS3
+    conc_flux <- input$CONC_FLUX3
+    conc_unit <- input$CONC_UNIT3
+    flux_unit <- input$FLUX_UNIT3
+    agg <- input$AGG3
+    agg <- input$AGG3
+    sites <- input$SITES3
+    time_scheme <- input$TIME_SCHEME3
+    igsn <- c(input$INSTALLED_V_GRAB3, input$SENSOR_V_NONSENSOR3)
+    show_uncert <- input$SHOW_UNCERT3
+    show_flagged <- input$FLAGS3
+    show_imputed <- input$INTERP3
+    dates <- timeSliderChanged()[1:2]
 
     enable_unitconvert <- init_vals$enable_unitconvert
+    basedata <- reactive_vals$basedata
 
     dataPchem <- if(conc_flux == 'Flux') basedata$pflux else basedata$pchem
 
@@ -651,8 +459,8 @@ dataPchem <- reactive({
     if(nrow(dataPchem) == 0) return(dataPchem)
 
     dataPchem <- pivot_wider(dataPchem,
-                          names_from = var,
-                          values_from = c('val', 'ms_status', 'ms_interp'))
+                             names_from = var,
+                             values_from = c('val', 'ms_status', 'ms_interp'))
 
     dataPchem <- convert_portal_units(d = dataPchem,
                                       conversion_enabled = enable_unitconvert,
@@ -664,49 +472,25 @@ dataPchem <- reactive({
     return(dataPchem)
 })
 
-dataPVWC <- reactive({
+dataPVWC <- eventReactive({
+    timeSliderChanged()
+}, {
 
-    # basedata <<- load_basedata()
-    # dates <<- isolate(input$DATES3)
-    # timeSliderUpdate()
-    # vars_ <<- input$VARS3
-    # conc_flux <<- input$CONC_FLUX3
-    # conc_unit <<- input$CONC_UNIT3
-    # flux_unit <<- input$FLUX_UNIT3
-    # agg <<- input$AGG3
-    # igsn <<- c(input$INSTALLED_V_GRAB3, input$SENSOR_V_NONSENSOR3)
-    # show_uncert <<- input$SHOW_UNCERT3
-    # show_flagged <<- input$FLAGS3
-    # show_imputed <<- input$INTERP3
-    # enable_unitconvert <<- init_vals$enable_unitconvert
+    print('dataPVWC')
 
-    # vars_ <- isolate(input$VARS3)
-    # conc_flux <- isolate(input$CONC_FLUX3)
-    # conc_unit <- isolate(input$CONC_UNIT3)
-    # flux_unit <- isolate(input$FLUX_UNIT3)
-    # agg <- isolate(input$AGG3)
-    # igsn <- c(isolate(input$INSTALLED_V_GRAB3), isolate(input$SENSOR_V_NONSENSOR3))
-    # show_uncert <- isolate(input$SHOW_UNCERT3)
-    # show_flagged <- isolate(input$FLAGS3)
-    # show_imputed <- isolate(input$INTERP3)
+    vars_ <- input$VARS3
+    conc_flux <- input$CONC_FLUX3
+    conc_unit <- input$CONC_UNIT3
+    flux_unit <- input$FLUX_UNIT3
+    agg <- input$AGG3
+    igsn <- c(input$INSTALLED_V_GRAB3, input$SENSOR_V_NONSENSOR3)
+    show_uncert <- input$SHOW_UNCERT3
+    show_flagged <- input$FLAGS3
+    show_imputed <- input$INTERP3
+    dates <- timeSliderChanged()[1:2]
 
     enable_unitconvert <- init_vals$enable_unitconvert
-
-    basedata <- isolate(load_basedata())
-    dates <- isolate(input$DATES3)
-    timeSliderUpdate()
-    ploting_info <- ploting_info()
-    vars_ <- ploting_info$vars
-    conc_flux <- ploting_info$conc_flux
-    conc_unit <- ploting_info$conc_unit
-    flux_unit <- ploting_info$flux_unit
-    agg <- ploting_info$agg
-    time_scheme <- ploting_info$time_scheme
-    igsn <- ploting_info$igsn
-    show_uncert <- ploting_info$show_uncert
-    show_flagged <- ploting_info$show_flagged
-    show_imputed <- ploting_info$show_imputed
-    enable_unitconvert <- ploting_info$enable_unitconvert
+    basedata <- reactive_vals$basedata
 
     #NOTE: the "traditional" way to compute VWC is:
     #VWC = sum(concentrations * volumes) / sum(volumes)
@@ -768,7 +552,7 @@ dataPVWC <- reactive({
         left_join(period_sum_P,
                   by = c('datetime', 'site_code'),
                   suffix = c('.flux', '.P')) %>%
-             #mg/L = kg/ha/d  /  mm (~ per month or per year) * 1e6 / 1e4 * d
+        #mg/L = kg/ha/d  /  mm (~ per month or per year) * 1e6 / 1e4 * d
         mutate(val = val.flux / val.P * 100 * period_complete_n,
                ms_status = numeric_any_v(ms_status.flux, ms_status.P),
                ms_interp = numeric_any_v(ms_interp.flux, ms_interp.P)) %>%
@@ -789,40 +573,21 @@ dataPVWC <- reactive({
     return(dataPvwc)
 })
 
-dataPrecip <- reactive({
+dataPrecip <- eventReactive({
+    timeSliderChanged()
+}, {
 
-    print('Precip')
+    print('dataPrecip')
 
-    # basedata <<- load_basedata()
-    # dates <<- isolate(input$DATES3)
-    # timeSliderUpdate()
-    # agg <<- input$AGG3
-    # conc_flux <<- input$CONC_FLUX3
-    # igsn <<- c(input$INSTALLED_V_GRAB3, input$SENSOR_V_NONSENSOR3)
-    # show_uncert <<- input$SHOW_UNCERT3
-    # show_flagged <<- input$FLAGS3
-    # show_imputed <<- input$INTERP3
+    agg <- input$AGG3
+    conc_flux <- input$CONC_FLUX3
+    igsn <- c(input$INSTALLED_V_GRAB3, input$SENSOR_V_NONSENSOR3)
+    show_uncert <- input$SHOW_UNCERT3
+    show_flagged <- input$FLAGS3
+    show_imputed <- input$INTERP3
+    dates <- timeSliderChanged()[1:2]
 
-    # timeSliderUpdate()
-    # agg <- isolate(input$AGG3)
-    # conc_flux <- isolate(input$CONC_FLUX3)
-    # igsn <- c(isolate(input$INSTALLED_V_GRAB3), isolate(input$SENSOR_V_NONSENSOR3))
-    # show_uncert <- isolate(input$SHOW_UNCERT3)
-    # show_flagged <- isolate(input$FLAGS3)
-    # show_imputed <- isolate(input$INTERP3)
-
-    basedata <- isolate(load_basedata())
-    dates <- isolate(input$DATES3)
-    timeSliderUpdate()
-    ploting_info <- ploting_info()
-    agg <- ploting_info$agg
-    conc_flux <- ploting_info$conc_flux
-    time_scheme <- ploting_info$time_scheme
-    igsn <- ploting_info$igsn
-    show_uncert <- ploting_info$show_uncert
-    show_flagged <- ploting_info$show_flagged
-    show_imputed <- ploting_info$show_imputed
-    enable_unitconvert <- ploting_info$enable_unitconvert
+    basedata <- reactive_vals$basedata
 
     dataP <- filter_and_unprefix(d = basedata$P,
                                  selected_vars = 'precipitation',
@@ -844,39 +609,21 @@ dataPrecip <- reactive({
     return(dataP)
 })
 
-dataQ <- reactive({
+dataQ <- eventReactive({
+    timeSliderChanged()
+}, {
 
     print('dataQ')
 
-    # basedata <<- load_basedata()
-    # dates <<- isolate(input$DATES3)
-    # timeSliderUpdate()
-    # agg <<- input$AGG3
-    # igsn <<- c(input$INSTALLED_V_GRAB3, input$SENSOR_V_NONSENSOR3)
-    # show_uncert <<- input$SHOW_UNCERT3
-    # show_flagged <<- input$FLAGS3
-    # show_imputed <<- input$INTERP3
-    # conc_flux <<- input$CONC_FLUX3
+    agg <- input$AGG3
+    igsn <- c(input$INSTALLED_V_GRAB3, input$SENSOR_V_NONSENSOR3)
+    show_uncert <- input$SHOW_UNCERT3
+    show_flagged <- input$FLAGS3
+    show_imputed <- input$INTERP3
+    conc_flux <- input$CONC_FLUX3
+    dates <- timeSliderChanged()[1:2]
 
-    # agg <- isolate(input$AGG3)
-    # igsn <- c(isolate(input$INSTALLED_V_GRAB3), isolate(input$SENSOR_V_NONSENSOR3))
-    # show_uncert <- isolate(input$SHOW_UNCERT3)
-    # show_flagged <- isolate(input$FLAGS3)
-    # show_imputed <- isolate(input$INTERP3)
-    # conc_flux <- isolate(input$CONC_FLUX3)
-
-    basedata <- isolate(load_basedata())
-    dates <- isolate(input$DATES3)
-    timeSliderUpdate()
-    ploting_info <- ploting_info()
-    conc_unit <- ploting_info$conc_unit
-    agg <- ploting_info$agg
-    time_scheme <- ploting_info$time_scheme
-    igsn <- ploting_info$igsn
-    show_uncert <- ploting_info$show_uncert
-    show_flagged <- ploting_info$show_flagged
-    show_imputed <- ploting_info$show_imputed
-
+    basedata <- reactive_vals$basedata
 
     dataQ <- filter_and_unprefix(d = basedata$Q,
                                  selected_vars = 'discharge',
@@ -898,41 +645,22 @@ dataQ <- reactive({
     return(dataQ)
 })
 
+
 ## plot generators ####
-#these should only update when prerequisite reactive data or facets change
-#def could use better abstraction, efficiency measures
-plot_triger <- reactiveValues()
-observeEvent(input$GEN_PLOTS3, {
-    gc()
-    if(length(plot_triger$fire) == 0){
-        plot_triger$fire <- 0
-    }
-    plot_triger$fire <- plot_triger$fire + 1
-})
 
 output$GRAPH_PRECIP3 <- renderDygraph({
 
-    # input$GEN_PLOTS3
-    # sites <- isolate(input$SITES3)
-    # dates <- input$DATES3
-    # dataP <- isolate(dataPrecip())
     dataP <- dataPrecip()
-    
-    ploting_info <- isolate(ploting_info())
-    sites <- ploting_info$sites
-    dates <- ploting_info$dates
+    dates <- isolate(timeSliderChanged()[1:2])
+    sites <- isolate(input$SITES3)
 
-    # sites <<- input$SITES3[1]
-    # dates <<- isolate(input$DATES3)
-    # dataP <<- dataPrecip()
+    print('plot P')
 
     # if(reactive_vals$precip3 == 0) return()
 
     tryCatch(
         {
             dataP <- dataP %>%
-                # filter(datetime >= dates[1],
-                #        datetime <= dates[2]) %>%
                 dplyr::rename_with(~ gsub('_precipitation', '', .x)) %>%
                 tidyr::pivot_wider(names_from = site_code,
                                    values_from = c('val', 'ms_status',
@@ -956,14 +684,10 @@ output$GRAPH_PRECIP3 <- renderDygraph({
                      tzone = lubridate::tz(dataP$datetime[1]))
 
         dimnames(dydat) <- list(NULL, displabs)
-        # dimnames(dydat) <- list(NULL, site)
 
         ymax <- max(dydat,
                     na.rm = TRUE)
 
-        # watermark_specs <- get_watermark_specs(dydat = dydat,
-        #                                        displabs = displabs)
-        
         dg <- dygraph(dydat,
                       group = 'nSiteNVar') %>%
             dyOptions(useDataTimezone = TRUE,
@@ -1014,15 +738,15 @@ output$GRAPH_PRECIP3 <- renderDygraph({
                    labelHeight = 10,
                    pixelsPerLabel = 10,
                    rangePad = 10)
-            # # dyCSS('~/git/macrosheds/portal/www/dygraph.css') %>%
-            # dyAnnotation(x = watermark_specs$dt,
-            #              text = 'macrosheds.org',
-            #              attachAtBottom = TRUE,
-            #              # cssClass = 'dygraph-watermark',
-            #              tickHeight = 0,
-            #              width = 0,
-            #              series = watermark_specs$series,
-            #              tooltip = '')
+        # # dyCSS('~/git/macrosheds/portal/www/dygraph.css') %>%
+        # dyAnnotation(x = watermark_specs$dt,
+        #              text = 'macrosheds.org',
+        #              attachAtBottom = TRUE,
+        #              # cssClass = 'dygraph-watermark',
+        #              tickHeight = 0,
+        #              width = 0,
+        #              series = watermark_specs$series,
+        #              tooltip = '')
 
         #alternative way to show points in different color? also needs work)
         # dg2 <- dySeries(dg,
@@ -1053,75 +777,38 @@ output$GRAPH_PRECIP3 <- renderDygraph({
 
 output$GRAPH_MAIN3a <- renderDygraph({
 
-    # sites <<- na.omit(isolate(input$SITES3))
-    # varA <<- isolate(input$VARS3[1])
-    # conc_flux <<- isolate(input$CONC_FLUX3)
-    # flux_unit <<- isolate(input$FLUX_UNIT3)
-    # conc_unit <<- isolate(input$CONC_UNIT3)
-    # show_pchem <<- isolate(input$SHOW_PCHEM3)
-    # agg <<- isolate(input$AGG3)
-    # dates <<- input$DATES3
-    # show_uncert <<- isolate(input$SHOW_UNCERT3)
-    # dmns <<- isolate(get_domains3())
-
-    # sites <- na.omit(isolate(input$SITES3))
-    # varA <- isolate(input$VARS3[1])#
-    # conc_flux <- isolate(input$CONC_FLUX3)
-    # flux_unit <- isolate(input$FLUX_UNIT3)
-    # conc_unit <- isolate(input$CONC_UNIT3)
-    # show_pchem <- isolate(input$SHOW_PCHEM3)
-    # agg <- isolate(input$AGG3)
-    # dates <- input$DATES3
-    # show_uncert <- isolate(input$SHOW_UNCERT3)
-    # dmns <- isolate(get_domains3())
-
-
-    ploting_info  <- isolate(ploting_info())
-    sites <- ploting_info$sites
-    varA <- ploting_info$vars[1]
-    conc_flux <- ploting_info$conc_flux
-    flux_unit <- ploting_info$flux_unit
-    conc_unit <- ploting_info$conc_unit
-    show_pchem <- ploting_info$show_pchem
-    agg <- ploting_info$agg
-    dates <- isolate(input$DATES3)
-    show_uncert <- ploting_info$show_uncert
-    dmns <- ploting_info$dmns
-
-    # if(any(is.na(ploting_info))) return()
-    # if(isolate(reactive_vals$facet3a == 0)) return()
-    print('mainA')
+    sites <- na.omit(isolate(input$SITES3))
+    varA <- isolate(input$VARS3[1])#
+    conc_flux <- isolate(input$CONC_FLUX3)
+    flux_unit <- isolate(input$FLUX_UNIT3)
+    conc_unit <- isolate(input$CONC_UNIT3)
+    show_pchem <- isolate(input$SHOW_PCHEM3)
+    agg <- isolate(input$AGG3)
+    show_uncert <- isolate(input$SHOW_UNCERT3)
+    dmns <- isolate(input$DOMAINS3)
+    dates <- isolate(timeSliderChanged()[1:2])
 
     if(conc_flux == 'VWC'){
         streamdata <- dataVWC()
-            # filter(datetime >= dates[1],
-            #        datetime <= dates[2])
     } else {
         streamdata <- dataChem()
-            # filter(datetime >= dates[1],
-            #        datetime <= dates[2])
     }
 
     if(show_pchem){
 
         if(conc_flux == 'VWC'){
             raindata <- dataPVWC()
-                # filter(datetime >= dates[1],
-                #        datetime <= dates[2])
         } else {
             raindata <- dataPchem()
-                # filter(datetime >= dates[1],
-                #        datetime <= dates[2])
         }
 
     } else {
         raindata <- tibble()
     }
 
-    # streamdata <<- streamdata
-    # raindata <<- raindata
-    # print(head(streamdata))
-    # print(head(raindata))
+    print(paste('plot main A:',
+                isolate(reactive_vals$basedata$chem$site_code[1]),
+                Sys.time()))
 
     alldata <- pad_widen_join(v = varA,#
                               sites = sites,
@@ -1149,11 +836,11 @@ output$GRAPH_MAIN3a <- renderDygraph({
 
             alldata <- alldata %>%
                 mutate(across(any_of(included_cols),
-                       .fns = list(errhi = ~(errors::drop_errors(.) +
-                                                 errors::errors(.))))) %>%
+                              .fns = list(errhi = ~(errors::drop_errors(.) +
+                                                        errors::errors(.))))) %>%
                 mutate(across(any_of(included_cols),
-                       .fns = list(errlo = ~(errors::drop_errors(.) -
-                                                 errors::errors(.)))))
+                              .fns = list(errlo = ~(errors::drop_errors(.) -
+                                                        errors::errors(.)))))
 
             included_cols <- c(included_cols,
                                paste0(included_cols, '_errhi'),
@@ -1207,6 +894,7 @@ output$GRAPH_MAIN3a <- renderDygraph({
                    labelHeight = 10,
                    pixelsPerLabel = 20,
                    rangePad = 10)
+
             # # dyCSS('~/git/macrosheds/portal/www/dygraph.css') %>%
             # # dyCSS('www/dygraph.css') %>%
             # dyAnnotation(x = watermark_specs$dt,
@@ -1220,8 +908,7 @@ output$GRAPH_MAIN3a <- renderDygraph({
             #              tooltip = '')
         
         rainsites <- paste0('PPT_', sites)
-        
-        
+
         if(show_pchem && any(rainsites %in% colnms)){
 
             rain_or_pchem_colors <- selection_color_match(
@@ -1295,55 +982,27 @@ output$GRAPH_MAIN3a <- renderDygraph({
 
 output$GRAPH_QC3a <- renderPlot({
 
-    print('QC3a')
-
-    # show_qc <<- input$SHOW_QC3
-    # sites <<- na.omit(isolate(input$SITES3[1:3]))
-    # varA <<- isolate(input$VARS3[1])
-    # # dmns <<- isolate(get_domains3())
-    # conc_flux <<- isolate(input$CONC_FLUX3)
-    # conc_unit <<- isolate(input$CONC_UNIT3)
-    # flux_unit <<- isolate(input$FLUX_UNIT3)
-    # show_pchem <<- isolate(input$SHOW_PCHEM3)
-    # show_uncert <<- isolate(input$SHOW_UNCERT3)
-    # agg <<- isolate(input$AGG3)
-    # dates <<- isolate(input$DATES3)
-    # datachem <<- if(conc_flux == 'VWC') dataVWC() else dataChem()
-    # dataq <<- dataQ()
-
-    # input$GEN_PLOTS3
-    # show_qc <- isolate(input$SHOW_QC3)
-    # sites <- na.omit(isolate(input$SITES3[1:3]))
-    # varA <- isolate(input$VARS3[1])
-    # conc_flux <- isolate(input$CONC_FLUX3)
-    # conc_unit <- isolate(input$CONC_UNIT3)
-    # flux_unit <- isolate(input$FLUX_UNIT3)
-    # show_pchem <- isolate(input$SHOW_PCHEM3)
-    # agg <- isolate(input$AGG3)
-    # dates <- input$DATES3
-    # show_uncert <- isolate(input$SHOW_UNCERT3)
-
-    ploting_info  <- isolate(ploting_info())
-    sites <- ploting_info$sites
-    varA <- ploting_info$vars[1]
-    conc_flux <- ploting_info$conc_flux
-    flux_unit <- ploting_info$flux_unit
-    conc_unit <- ploting_info$conc_unit
-    show_pchem <- ploting_info$show_pchem
-    agg <- ploting_info$agg
-    dates <- isolate(input$DATES3)
-    show_uncert <- ploting_info$show_uncert
-    dmns <- ploting_info$dmns
-    show_qc <- ploting_info$show_qc
+    show_qc <- isolate(input$SHOW_QC3)
+    sites <- na.omit(isolate(input$SITES3[1:3]))
+    vars_ <- isolate(input$VARS3)
+    varA <- vars_[1]
+    conc_flux <- isolate(input$CONC_FLUX3)
+    conc_unit <- isolate(input$CONC_UNIT3)
+    flux_unit <- isolate(input$FLUX_UNIT3)
+    show_pchem <- isolate(input$SHOW_PCHEM3)
+    agg <- isolate(input$AGG3)
+    show_uncert <- isolate(input$SHOW_UNCERT3)
+    dates <- isolate(timeSliderChanged()[1:2])
+    # input$REFRESH
 
     dataq <- dataQ()
     datachem <- if(conc_flux == 'VWC') dataVWC() else dataChem()
 
-    if(reactive_vals$facet3a == 0 || ! show_qc) return()
+    print(paste('plot QC A', Sys.time()))
+
+    if(length(vars_) == 0 || ! show_qc) return()
 
     alldata <- datachem %>%
-        # filter(datetime >= dates[1],
-        #        datetime <= dates[2]) %>%
         select(c('datetime', 'site_code', ends_with(varA))) %>%
         inner_join(dataq,
                    by = c("datetime", "site_code"))
@@ -1405,73 +1064,35 @@ output$GRAPH_QC3a <- renderPlot({
 
 output$GRAPH_MAIN3b <- renderDygraph({
 
-    # input$GEN_PLOT3
-    # sites <<- na.omit(isolate(input$SITES3))
-    # varB <<- isolate(input$VARS3[2])
-    # conc_flux <<- isolate(input$CONC_FLUX3)
-    # flux_unit <<- isolate(input$FLUX_UNIT3)
-    # conc_unit <<- isolate(input$CONC_UNIT3)
-    # show_pchem <<- isolate(input$SHOW_PCHEM3)
-    # agg <<- isolate(input$AGG3)
-    # dates <<- isolate(input$DATES3)
-    # show_uncert <<- isolate(input$SHOW_UNCERT3)
-
-    # input$GEN_PLOTS3
-    # sites <- na.omit(isolate(input$SITES3))
-    # varB <- isolate(input$VARS3[2])#
-    # conc_flux <- isolate(input$CONC_FLUX3)
-    # flux_unit <- isolate(input$FLUX_UNIT3)
-    # conc_unit <- isolate(input$CONC_UNIT3)
-    # show_pchem <- isolate(input$SHOW_PCHEM3)
-    # agg <- isolate(input$AGG3)
-    # dates <- input$DATES3
-    # show_uncert <- isolate(input$SHOW_UNCERT3)
-
-    ploting_info  <- isolate(ploting_info())
-    sites <- ploting_info$sites
-    varB <- ploting_info$vars[2]
-    conc_flux <- ploting_info$conc_flux
-    flux_unit <- ploting_info$flux_unit
-    conc_unit <- ploting_info$conc_unit
-    show_pchem <- ploting_info$show_pchem
-    agg <- ploting_info$agg
-    dates <- isolate(input$DATES3)
-    show_uncert <- ploting_info$show_uncert
-    dmns <- ploting_info$dmns
-
-    # if(any(is.na(ploting_info))) return()
-    # if(isolate(reactive_vals$facet3b == 0)) return()#
-    print('mainB')
+    sites <- na.omit(isolate(input$SITES3))
+    varB <- isolate(input$VARS3[2])#
+    conc_flux <- isolate(input$CONC_FLUX3)
+    flux_unit <- isolate(input$FLUX_UNIT3)
+    conc_unit <- isolate(input$CONC_UNIT3)
+    show_pchem <- isolate(input$SHOW_PCHEM3)
+    agg <- isolate(input$AGG3)
+    dates <- isolate(timeSliderChanged()[1:2])
+    show_uncert <- isolate(input$SHOW_UNCERT3)
 
     if(conc_flux == 'VWC'){
         streamdata <- dataVWC()
-            # filter(datetime >= dates[1],
-            #        datetime <= dates[2])
     } else {
         streamdata <- dataChem()
-            # filter(datetime >= dates[1],
-            #        datetime <= dates[2])
     }
 
     if(show_pchem){
 
         if(conc_flux == 'VWC'){
             raindata <- dataPVWC()
-                # filter(datetime >= dates[1],
-                #        datetime <= dates[2])
         } else {
             raindata <- dataPchem()
-                # filter(datetime >= dates[1],
-                #        datetime <= dates[2])
         }
 
     } else {
         raindata <- tibble()
     }
 
-    # streamdata <<- streamdata
-    # raindata <<- raindata
-    # print(head(streamdata))
+    print('plot main B')
 
     alldata <- pad_widen_join(v = varB,
                               sites = sites,
@@ -1619,55 +1240,27 @@ output$GRAPH_MAIN3b <- renderDygraph({
 
 output$GRAPH_QC3b <- renderPlot({
 
-    print('QC3b')
-
-    # show_qc <<- input$SHOW_QC3
-    # sites <<- na.omit(isolate(input$SITES3[1:3]))
-    # varB <<- isolate(input$VARS3[1])
-    # # dmns <<- isolate(get_domains3())
-    # conc_flux <<- isolate(input$CONC_FLUX3)
-    # conc_unit <<- isolate(input$CONC_UNIT3)
-    # flux_unit <<- isolate(input$FLUX_UNIT3)
-    # show_pchem <<- isolate(input$SHOW_PCHEM3)
-    # show_uncert <<- isolate(input$SHOW_UNCERT3)
-    # agg <<- isolate(input$AGG3)
-    # dates <<- isolate(input$DATES3)
-    # datachem <<- if(conc_flux == 'VWC') dataVWC() else dataChem()
-    # dataq <<- dataQ()
-
-    # input$GEN_PLOTS3
-    # show_qc <- isolate(input$SHOW_QC3)
-    # sites <- na.omit(isolate(input$SITES3[1:3]))
-    # varB <- isolate(input$VARS3[2])
-    # conc_flux <- isolate(input$CONC_FLUX3)
-    # conc_unit <- isolate(input$CONC_UNIT3)
-    # flux_unit <- isolate(input$FLUX_UNIT3)
-    # show_pchem <- isolate(input$SHOW_PCHEM3)
-    # agg <- isolate(input$AGG3)
-    # dates <- input$DATES3
-    # show_uncert <- isolate(input$SHOW_UNCERT3)
-
-    ploting_info  <- isolate(ploting_info())
-    sites <- ploting_info$sites
-    varB <- ploting_info$vars[2]
-    conc_flux <- ploting_info$conc_flux
-    flux_unit <- ploting_info$flux_unit
-    conc_unit <- ploting_info$conc_unit
-    show_pchem <- ploting_info$show_pchem
-    agg <- ploting_info$agg
-    dates <- isolate(input$DATES3)
-    show_uncert <- ploting_info$show_uncert
-    dmns <- ploting_info$dmns
-    show_qc <- ploting_info$show_qc
+    show_qc <- isolate(input$SHOW_QC3)
+    sites <- na.omit(isolate(input$SITES3[1:3]))
+    vars_ <- isolate(input$VARS3)
+    varB <- vars_[2]
+    conc_flux <- isolate(input$CONC_FLUX3)
+    conc_unit <- isolate(input$CONC_UNIT3)
+    flux_unit <- isolate(input$FLUX_UNIT3)
+    show_pchem <- isolate(input$SHOW_PCHEM3)
+    agg <- isolate(input$AGG3)
+    show_uncert <- isolate(input$SHOW_UNCERT3)
+    dates <- isolate(timeSliderChanged()[1:2])
+    # input$REFRESH
 
     dataq <- dataQ()
     datachem <- if(conc_flux == 'VWC') dataVWC() else dataChem()
 
-    if(isolate(reactive_vals$facet3b) == 0 || ! show_qc) return()
+    print('plot QC B')
+
+    if(length(vars_) <= 1 || ! show_qc) return()
 
     alldata <- datachem %>%
-        # filter(datetime >= dates[1],
-        #        datetime <= dates[2]) %>%
         select(c('datetime', 'site_code', ends_with(varB))) %>%
         inner_join(dataq,
                    by = c("datetime", "site_code"))
@@ -1729,75 +1322,35 @@ output$GRAPH_QC3b <- renderPlot({
 
 output$GRAPH_MAIN3c <- renderDygraph({
 
-    # sites <<- na.omit(isolate(input$SITES3))
-    # varC <<- isolate(input$VARS3[1])
-    # conc_flux <<- isolate(input$CONC_FLUX3)
-    # flux_unit <<- isolate(input$FLUX_UNIT3)
-    # conc_unit <<- isolate(input$CONC_UNIT3)
-    # show_pchem <<- isolate(input$SHOW_PCHEM3)
-    # agg <<- isolate(input$AGG3)
-    # dates <<- isolate(input$DATES3)
-    # show_uncert <<- isolate(input$SHOW_UNCERT3)
-
-    # input$GEN_PLOTS3
-    # sites <- na.omit(isolate(input$SITES3))
-    # varC <- isolate(input$VARS3[3])#
-    # conc_flux <- isolate(input$CONC_FLUX3)
-    # flux_unit <- isolate(input$FLUX_UNIT3)
-    # conc_unit <- isolate(input$CONC_UNIT3)
-    # show_pchem <- isolate(input$SHOW_PCHEM3)
-    # agg <- isolate(input$AGG3)
-    # dates <- input$DATES3
-    # show_uncert <- isolate(input$SHOW_UNCERT3)
-
-    ploting_info  <- isolate(ploting_info())
-    sites <- ploting_info$sites
-    varC <- ploting_info$vars[3]
-    conc_flux <- ploting_info$conc_flux
-    flux_unit <- ploting_info$flux_unit
-    conc_unit <- ploting_info$conc_unit
-    show_pchem <- ploting_info$show_pchem
-    agg <- ploting_info$agg
-    dates <- isolate(input$DATES3)
-    show_uncert <- ploting_info$show_uncert
-    dmns <- ploting_info$dmns
-    show_qc <- ploting_info$show_qc
-
-    # if(any(is.na(ploting_info))) return()
-    # if(isolate(reactive_vals$facet3c == 0)) return()#
-
-
-    print('mainC')
+    sites <- na.omit(isolate(input$SITES3))
+    varC <- isolate(input$VARS3[3])#
+    conc_flux <- isolate(input$CONC_FLUX3)
+    flux_unit <- isolate(input$FLUX_UNIT3)
+    conc_unit <- isolate(input$CONC_UNIT3)
+    show_pchem <- isolate(input$SHOW_PCHEM3)
+    agg <- isolate(input$AGG3)
+    show_uncert <- isolate(input$SHOW_UNCERT3)
+    dates <- isolate(timeSliderChanged()[1:2])
 
     if(conc_flux == 'VWC'){
         streamdata <- dataVWC()
-            # filter(datetime >= dates[1],
-            #        datetime <= dates[2])
     } else {
         streamdata <- dataChem()
-            # filter(datetime >= dates[1],
-            #        datetime <= dates[2])
     }
 
     if(show_pchem){
 
         if(conc_flux == 'VWC'){
             raindata <- dataPVWC()
-                # filter(datetime >= dates[1],
-                #        datetime <= dates[2])
         } else {
             raindata <- dataPchem()
-                # filter(datetime >= dates[1],
-                #        datetime <= dates[2])
         }
 
     } else {
         raindata <- tibble()
     }
 
-    # streamdata <<- streamdata
-    # raindata <<- raindata
-    # print(head(streamdata))
+    print('plot main C')
 
     alldata <- pad_widen_join(v = varC,
                               sites = sites,
@@ -1944,55 +1497,27 @@ output$GRAPH_MAIN3c <- renderDygraph({
 
 output$GRAPH_QC3c <- renderPlot({
 
-    print('QC3a')
-
-    # show_qc <<- input$SHOW_QC3
-    # sites <<- na.omit(isolate(input$SITES3[1:3]))
-    # varC <<- isolate(input$VARS3[1])
-    # # dmns <<- isolate(get_domains3())
-    # conc_flux <<- isolate(input$CONC_FLUX3)
-    # conc_unit <<- isolate(input$CONC_UNIT3)
-    # flux_unit <<- isolate(input$FLUX_UNIT3)
-    # show_pchem <<- isolate(input$SHOW_PCHEM3)
-    # show_uncert <<- isolate(input$SHOW_UNCERT3)
-    # agg <<- isolate(input$AGG3)
-    # dates <<- isolate(input$DATES3)
-    # datachem <<- if(conc_flux == 'VWC') dataVWC() else dataChem()
-    # dataq <<- dataQ()
-
-    # input$GEN_PLOTS3
-    # show_qc <- isolate(input$SHOW_QC3)
-    # sites <- na.omit(isolate(input$SITES3[1:3]))
-    # varC <- isolate(input$VARS3[3])
-    # conc_flux <- isolate(input$CONC_FLUX3)
-    # conc_unit <- isolate(input$CONC_UNIT3)
-    # flux_unit <- isolate(input$FLUX_UNIT3)
-    # show_pchem <- isolate(input$SHOW_PCHEM3)
-    # agg <- isolate(input$AGG3)
-    # dates <- (input$DATES3)
-    # show_uncert <- isolate(input$SHOW_UNCERT3)
-
-    ploting_info  <- isolate(ploting_info())
-    sites <- ploting_info$sites
-    varC <- ploting_info$vars[3]
-    conc_flux <- ploting_info$conc_flux
-    flux_unit <- ploting_info$flux_unit
-    conc_unit <- ploting_info$conc_unit
-    show_pchem <- ploting_info$show_pchem
-    agg <- ploting_info$agg
-    dates <- isolate(input$DATES3)
-    show_uncert <- ploting_info$show_uncert
-    dmns <- ploting_info$dmns
-    show_qc <- ploting_info$show_qc
+    show_qc <- isolate(input$SHOW_QC3)
+    sites <- na.omit(isolate(input$SITES3[1:3]))
+    vars_ <- isolate(input$VARS3)
+    varC <- vars_[3]
+    conc_flux <- isolate(input$CONC_FLUX3)
+    conc_unit <- isolate(input$CONC_UNIT3)
+    flux_unit <- isolate(input$FLUX_UNIT3)
+    show_pchem <- isolate(input$SHOW_PCHEM3)
+    agg <- isolate(input$AGG3)
+    show_uncert <- isolate(input$SHOW_UNCERT3)
+    dates <- isolate(timeSliderChanged()[1:2])
+    # input$REFRESH
 
     dataq <- dataQ()
     datachem <- if(conc_flux == 'VWC') dataVWC() else dataChem()
 
-    if(isolate(reactive_vals$facet3a) == 0 || ! show_qc) return()
+    print(paste('plot QC C', Sys.time()))
+
+    if(length(vars_) <= 2 || ! show_qc) return()
 
     alldata <- datachem %>%
-        # filter(datetime >= dates[1],
-        #        datetime <= dates[2]) %>%
         select(c('datetime', 'site_code', ends_with(varC))) %>%
         inner_join(dataq,
                    by = c("datetime", "site_code"))
@@ -2054,19 +1579,15 @@ output$GRAPH_QC3c <- renderPlot({
 
 output$GRAPH_Q3 <- renderDygraph({
 
-    # input$GEN_PLOTS3
-
     dataq <- dataQ()
-    ploting_info  <- isolate(ploting_info())
-    sites <- ploting_info$sites
-    dates <- isolate(input$DATES3)
+    dates <- isolate(timeSliderChanged()[1:2])
+    sites <- isolate(input$SITES3)
 
+    print('plot Q')
 
     tryCatch(
         {
             dataq <- dataq %>%
-                # filter(datetime >= dates[1],
-                #        datetime <= dates[2]) %>%
                 dplyr::rename_with(~ gsub('_discharge', '', .x)) %>%
                 tidyr::pivot_wider(names_from = site_code,
                                    values_from = c('val', 'ms_status',
@@ -2077,15 +1598,6 @@ output$GRAPH_Q3 <- renderDygraph({
     )
 
     if(nrow(dataq)){
-
-        # d0 = filter(dataq, datetime <= as.POSIXct('2001-10-01', tz='UTC'))
-        # d1 = tibble(datetime = c(as.POSIXct('2001-10-02', tz='UTC'),
-        #                          as.POSIXct('2002-07-09', tz='UTC')),
-        #             C2 = c(NA, NA),
-        #             ms_status_C2 = c(0, 0),
-        #             ms_interp_C2 = c(0, 0))
-        # d2 = filter(dataq, datetime >= as.POSIXct('2002-07-10', tz='UTC'))
-        # dataq = rbind(d0, d1, d2)
 
         dataq <- select(dataq,
                         datetime, any_of(sites)) #preserve order
@@ -2140,101 +1652,35 @@ output$GRAPH_Q3 <- renderDygraph({
     return(dg)
 })
 
-# create outputs that can be referenced in ui to show plots
+## other ####
+
+#allows ui to control hide/show of plot facets
 output$n_plots3 <- reactive({
-    input$GEN_PLOTS3
+
+    timeSliderChanged()
 
     n_plots <- length(isolate(input$VARS3))
 
     return(n_plots)
 })
-outputOptions(output, "n_plots3", suspendWhenHidden = FALSE)
 
+outputOptions(output,
+              name = 'n_plots3',
+              suspendWhenHidden = FALSE,
+              priority = 100)
+
+
+#allows ui to control hide/show of QC/QF plots
 output$SHOW_QC_GEN3 <- reactive({
-    input$GEN_PLOTS3
+
+    timeSliderChanged()
 
     show_QC <- isolate(input$SHOW_QC3)
-    return(show_QC)
 
+    return(show_QC)
 })
 
-outputOptions(output, "SHOW_QC_GEN3", suspendWhenHidden = FALSE)
-
-## Create captions ####
-# plot_captions <- reactive({
-#
-#     ploting_info  <- ploting_info()
-#
-#     sites <- ploting_info$sites
-#     vars <- ploting_info$vars
-#     conc_flux <- ploting_info$conc_flux
-#     flux_unit <- ploting_info$flux_unit
-#     conc_unit <- ploting_info$conc_unit
-#     show_pchem <- ploting_info$show_pchem
-#     agg <- ploting_info$agg
-#     dates <- isolate(input$DATES3)
-#     show_uncert <- ploting_info$show_uncert
-#     dmns <- ploting_info$dmns
-#
-#     if('hbef' %in% dmns && 'SO4_S' %in% vars){
-#         return("Hubbard Brook's streams have seen a multi-decade decline in stream sulfate due in part to reductions in acid rain")
-#     }
-#
-#     return(' ')
-# })
-#
-# output$PLOT_CAPTION3 <- renderText({
-#     return(plot_captions())
-# })
-
-
-# #manage popout windows. currently buggy. disabled.
-# observeEvent(input$EXPAND_PRECIP3, {
-#     showModal(
-#         modalDialog(title=NULL, size='l', id='modal3precip', easyClose=TRUE,
-#             footer=NULL,
-#             fluidRow(class='text-center',
-#                 div(id='precip3DUPE'),
-#                 dygraphOutput('GRAPH_PRECIP3aEXP'),
-#                 br()
-#             )
-#         )
-#     )
-#     runjs("$('#precip3').clone().appendTo('#precip3DUPE')")
-# })
-#
-# observeEvent(input$EXPAND_MAIN3a, {
-#     showModal(
-#         modalDialog(title=NULL, size='l', id='modal3a', easyClose=TRUE,
-#             footer=NULL,
-#             fluidRow(class='text-center',
-#                 div(id='main3aDUPE'),
-#                 dygraphOutput('GRAPH_MAIN3aEXP'),
-#                 br()
-#             )
-#         )
-#     )
-#     runjs("$('#main3a').clone().appendTo('#main3aDUPE')")
-# }) #must be duplicated for b and c if reinstating
-#
-# observeEvent(input$EXPAND_FLOW3, {
-#     showModal(
-#         modalDialog(title=NULL, size='l', id='Q3', easyClose=TRUE,
-#             footer=NULL,
-#             fluidRow(class='text-center',
-#                 div(id='flow3DUPE'),
-#                 dygraphOutput('GRAPH_FLOW3EXP'),
-#                 br()
-#             )
-#         )
-#     )
-#     runjs("$('#Q3').clone().appendTo('#flow3DUPE')")
-# })
-
-# observe({
-#     input$DEBUG
-#     print(rlang::last_error())
-#     print(traceback())
-# })
-
-
+outputOptions(output,
+              name = 'SHOW_QC_GEN3',
+              suspendWhenHidden = FALSE,
+              priority = 100)

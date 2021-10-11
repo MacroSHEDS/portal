@@ -68,20 +68,21 @@ source('function_aliases.R')
 #                         use_oob = TRUE)
 load_portal_config(from_where = 'local')
 
-# sites_with_Q <- sm(read_csv('data/general/sites_with_discharge.csv')) %>%
-#     select(-network) %>%
-#     tidyr::unite(col = 'nds',
-#                  domain, site_code,
-#                  remove = TRUE) %>%
-#     pull(nds)
-
-sites_with_Q <- site_data %>%
-    filter(site_type == 'stream_gauge') %>%
+#some stream_gauge sites do not have discharge, like calhoun - weir_3
+sites_with_Q <- sm(read_csv('data/general/sites_with_discharge.csv')) %>%
     select(-network) %>%
     tidyr::unite(col = 'nds',
                  domain, site_code,
                  remove = TRUE) %>%
     pull(nds)
+
+# sites_with_Q <- site_data %>%
+#     filter(site_type == 'stream_gauge') %>%
+#     select(-network) %>%
+#     tidyr::unite(col = 'nds',
+#                  domain, site_code,
+#                  remove = TRUE) %>%
+#     pull(nds)
 
 site_data_copy <- site_data
 site_data <- filter(site_data,
@@ -250,11 +251,14 @@ ws_traits_names <- unlist(ws_traits)
 
 ## 5. "Take a tour" and "Take a data tour" guide setup ####
 
-guide1 <- Cicerone$
+js_to_R_TRUE <- function(x, session, inputname) as.logical(toupper(x))
+try(removeInputHandler('logical'), silent = TRUE)
+registerInputHandler('logical', js_to_R_TRUE)
+
+guide1a <- Cicerone$
     new(
-        id = 'cicerone1',
         keyboard_control = FALSE,
-        done_btn_text = 'Next',
+        done_btn_text = 'Next'
         # next_btn_text = paste0('Next (', enc2native('\U2192'), ')'),
         # prev_btn_text = paste0('Previous (', enc2native('\U2190'), ')'),
         # close_btn_text = paste0('Close (Esc)'),
@@ -284,15 +288,14 @@ guide1 <- Cicerone$
                             "on the Notes/Caveats page.")
     )$
     step(
-        class = 'cicerone1',
+        class = 'cicerone1a',
         el = 'addtl_div',
         title = 'You can filter',
         description = 'by sampling regime and/or data quality here. You can also include uncertainty bounds.'
     )
 
-guide2 <- Cicerone$
-    new(id = 'cicerone2',
-        keyboard_control = FALSE)$
+guide1b <- Cicerone$
+    new(keyboard_control = FALSE)$
     step(
         el = 'a[data-value="biplot"]',
         is_id = FALSE,
@@ -326,13 +329,40 @@ guide2 <- Cicerone$
         description = 'Click here to see some of the stories these data tell us.'
     )
 
-guide3 <- Cicerone$
-    new(id = 'cicerone3',
-        keyboard_control = FALSE)$
+guide2a <- Cicerone$
+    new(keyboard_control = FALSE,
+        close_btn_text = 'Next')$
+    step(
+        el = 'GRAPH_MAIN3a',
+        class = 'cicerone2a',
+        title = ' ',
+        description = paste("Hubbard Brook Experimental Forest in New Hampshire has",
+                            "seen a multi-decade decline in stream sulfate due",
+                            "in part to reductions in acid rain.")
+                            #include pub
+    )
+
+guide2b <- Cicerone$
+    new(keyboard_control = FALSE)$
     step(
         el = 'GRAPH_MAIN3a',
         title = ' ',
-        description = paste("Streams at Hubbard Brook Experimental Forest have",
-                            "seen a multi-decade decline in stream sulfate due",
-                            "in part to reductions in acid rain")
+        description = HTML("<p>H.J. Andrews Experimental Forest in Oregon:</p>",
+                           "<p>Watershed GSWS10 was experimentally clearcut in ",
+                           "1975, and nitrate export was elevated for years after. ",
+                           "Export is stable for GSWS09 (a reference watershed)",
+                           "during this period.</p>")
+                            #include pub
+    )$
+    step(
+        el = '.container-fluid',
+        is_id = FALSE,
+        class = 'cicerone2z',
+        position = 'mid-center',
+        title = ' ',
+        description = paste("More tour stops coming soon. For now, happy exploring!")
     )
+
+#NOTE: when adding tour stops, the class of the last one must be 'cicerone2z',
+#and the regex after "//** modify this when adding tour stops" must be modified to
+#any stops before z.
