@@ -1228,7 +1228,7 @@ output$GRAPH_MAIN3a <- renderDygraph({
                 sites_selected = rainsites,
                 sites_all = rainsites,
                 sites_missing = rainsites[! rainsites %in% colnms],
-                colorvec = pchemcolors
+                colorvec = raincolors
             )
 
             rainsites <- rainsites[rainsites %in% colnms]
@@ -1252,9 +1252,10 @@ output$GRAPH_MAIN3a <- renderDygraph({
                                color = rain_or_pchem_colors[i],
                                axis = 'y',
                                drawPoints = FALSE,
-                               strokeWidth = 2,
+                               strokeWidth = 1,
                                pointSize = 2,
-                               strokePattern = 'dashed')
+                               strokePattern = 'dashed'
+                               )
             }
         }
 
@@ -1487,12 +1488,14 @@ output$GRAPH_MAIN3b <- renderDygraph({
 
     if(nrow(alldata)){
 
-        streamsites_rainsites <- c(sites, paste0('P_', sites))
-        colnms <- colnames(alldata)
+        streamsites_rainsites <- c(sites, paste0('PPT_', sites))
+        colnms <- str_replace(colnames(alldata), 'P_', 'PPT_')
+        colnames(alldata) <- colnms
+        
         included_cols <- streamsites_rainsites[streamsites_rainsites %in% colnms]
         alldata <- select(alldata,
                           datetime, any_of(streamsites_rainsites)) #preserve order
-
+        
         if(show_uncert){
 
             alldata <- alldata %>%
@@ -1543,7 +1546,7 @@ output$GRAPH_MAIN3b <- renderDygraph({
                    pixelsPerLabel = 20,
                    rangePad = 10)
 
-        rainsites <- paste0('P_', sites)
+        rainsites <- paste0('PPT_', sites)
 
         if(show_pchem && any(rainsites %in% colnms)){
 
@@ -1551,7 +1554,7 @@ output$GRAPH_MAIN3b <- renderDygraph({
                 sites_selected = rainsites,
                 sites_all = rainsites,
                 sites_missing = rainsites[! rainsites %in% colnms],
-                colorvec = pchemcolors
+                colorvec = raincolors
             )
 
             rainsites <- rainsites[rainsites %in% colnms]
@@ -1575,7 +1578,7 @@ output$GRAPH_MAIN3b <- renderDygraph({
                                color = rain_or_pchem_colors[i],
                                axis = 'y',
                                drawPoints = FALSE,
-                               strokeWidth = 2,
+                               strokeWidth = 1,
                                pointSize = 2,
                                strokePattern = 'dashed')
             }
@@ -1810,12 +1813,14 @@ output$GRAPH_MAIN3c <- renderDygraph({
 
     if(nrow(alldata)){
 
-        streamsites_rainsites <- c(sites, paste0('P_', sites))
-        colnms <- colnames(alldata)
-        included_cols <- streamsites_rainsites[streamsites_rainsites %in% colnms]
-        alldata <- select(alldata,
-                          datetime, any_of(streamsites_rainsites)) #preserve order
-
+      streamsites_rainsites <- c(sites, paste0('PPT_', sites))
+      colnms <- str_replace(colnames(alldata), 'P_', 'PPT_')
+      colnames(alldata) <- colnms
+      
+      included_cols <- streamsites_rainsites[streamsites_rainsites %in% colnms]
+      alldata <- select(alldata,
+                        datetime, any_of(streamsites_rainsites)) #preserve order
+      
         if(show_uncert){
 
             alldata <- alldata %>%
@@ -1866,7 +1871,7 @@ output$GRAPH_MAIN3c <- renderDygraph({
                    pixelsPerLabel = 20,
                    rangePad = 10)
 
-        rainsites <- paste0('P_', sites)
+        rainsites <- paste0('PPT_', sites)
 
         if(show_pchem && any(rainsites %in% colnms)){
 
@@ -1874,7 +1879,7 @@ output$GRAPH_MAIN3c <- renderDygraph({
                 sites_selected = rainsites,
                 sites_all = rainsites,
                 sites_missing = rainsites[! rainsites %in% colnms],
-                colorvec = pchemcolors
+                colorvec = raincolors
             )
 
             rainsites <- rainsites[rainsites %in% colnms]
@@ -1898,7 +1903,7 @@ output$GRAPH_MAIN3c <- renderDygraph({
                                color = rain_or_pchem_colors[i],
                                axis = 'y',
                                drawPoints = FALSE,
-                               strokeWidth = 2,
+                               strokeWidth = 1,
                                pointSize = 2,
                                strokePattern = 'dashed')
             }
