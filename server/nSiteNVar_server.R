@@ -650,22 +650,9 @@ dataQ <- eventReactive({
 
 output$GRAPH_PRECIP3 <- renderDygraph({
 
-<<<<<<< HEAD
-
     dataP <- dataPrecip()
     dates <- isolate(timeSliderChanged()[1:2])
     sites <- isolate(input$SITES3)
-=======
-    # input$GEN_PLOTS3
-    # sites <- isolate(input$SITES3)
-    # dates <- input$DATES3
-    # dataP <- isolate(dataPrecip())
-    dataP <- dataPrecip()
-    
-    ploting_info <- isolate(ploting_info())
-    sites <- ploting_info$sites
-    dates <- ploting_info$dates
->>>>>>> pr56
 
     print('plot P')
 
@@ -701,12 +688,6 @@ output$GRAPH_PRECIP3 <- renderDygraph({
         ymax <- max(dydat,
                     na.rm = TRUE)
 
-<<<<<<< HEAD
-=======
-        # watermark_specs <- get_watermark_specs(dydat = dydat,
-        #                                        displabs = displabs)
-        
->>>>>>> pr56
         dg <- dygraph(dydat,
                       group = 'nSiteNVar') %>%
             dyOptions(useDataTimezone = TRUE,
@@ -913,22 +894,7 @@ output$GRAPH_MAIN3a <- renderDygraph({
                    labelHeight = 10,
                    pixelsPerLabel = 20,
                    rangePad = 10)
-<<<<<<< HEAD
-        # # dyCSS('~/git/macrosheds/portal/www/dygraph.css') %>%
-        # # dyCSS('www/dygraph.css') %>%
-        # dyAnnotation(x = watermark_specs$dt,
-        #              text = 'macrosheds.org',
-        #              attachAtBottom = TRUE,
-        #              # cssClass = 'dygraphDefaultAnnotation',
-        #              # cssClass = 'dygraph-watermark',
-        #              tickHeight = 0,
-        #              width = 0,
-        #              series = watermark_specs$series,
-        #              tooltip = '')
 
-        rainsites <- paste0('P_', sites)
-
-=======
             # # dyCSS('~/git/macrosheds/portal/www/dygraph.css') %>%
             # # dyCSS('www/dygraph.css') %>%
             # dyAnnotation(x = watermark_specs$dt,
@@ -942,9 +908,7 @@ output$GRAPH_MAIN3a <- renderDygraph({
             #              tooltip = '')
         
         rainsites <- paste0('PPT_', sites)
-        
-        
->>>>>>> pr56
+
         if(show_pchem && any(rainsites %in% colnms)){
 
             rain_or_pchem_colors <- selection_color_match(
