@@ -192,6 +192,7 @@ load_basedata <- eventReactive({
     if(is.null(dmns)){ #for empty domain dropdown
         dmns <- init_vals$recent_domain
         sites <- get_default_site(domain = dmns[1])
+        
     } else {
         sites <- input$SITES3
     }
@@ -916,7 +917,7 @@ output$GRAPH_PRECIP3 <- renderDygraph({
     # dates <- input$DATES3
     # dataP <- isolate(dataPrecip())
     dataP <- dataPrecip()
-
+    
     ploting_info <- isolate(ploting_info())
     sites <- ploting_info$sites
     dates <- ploting_info$dates
@@ -942,11 +943,12 @@ output$GRAPH_PRECIP3 <- renderDygraph({
     )
 
     if(nrow(dataP)){
-
+        
         dataP <- select(dataP,
                         datetime, any_of(sites)) #preserve order
-
+        
         colnms <- colnames(dataP)
+      
         displabs <- colnms[! colnms == 'datetime']
 
         dydat <- xts(dataP[, displabs],
@@ -961,7 +963,7 @@ output$GRAPH_PRECIP3 <- renderDygraph({
 
         # watermark_specs <- get_watermark_specs(dydat = dydat,
         #                                        displabs = displabs)
-
+        
         dg <- dygraph(dydat,
                       group = 'nSiteNVar') %>%
             dyOptions(useDataTimezone = TRUE,
@@ -983,7 +985,7 @@ output$GRAPH_PRECIP3 <- renderDygraph({
                       colors = selection_color_match(
                           sites_selected = sites,
                           sites_all = displabs[displabs %in% sites],
-                          colorvec = pchemcolors_strong
+                          colorvec = pchemcolors
                       ),
                       drawGapEdgePoints = TRUE
 
@@ -1127,20 +1129,22 @@ output$GRAPH_MAIN3a <- renderDygraph({
                               streamdata = streamdata,
                               raindata = raindata,
                               show_input_concentration = show_pchem)
-
+    
     ylabel <- get_ylab(v = varA,#
                        conc_flux = conc_flux,
                        conc_unit = conc_unit,
                        flux_unit = flux_unit)
 
     if(nrow(alldata)){
-
-        streamsites_rainsites <- c(sites, paste0('P_', sites))
-        colnms <- colnames(alldata)
+      
+        streamsites_rainsites <- c(sites, paste0('PPT_', sites))
+        colnms <- str_replace(colnames(alldata), 'P_', 'PPT_')
+        colnames(alldata) <- colnms
+        
         included_cols <- streamsites_rainsites[streamsites_rainsites %in% colnms]
         alldata <- select(alldata,
                           datetime, any_of(streamsites_rainsites)) #preserve order
-
+        
         if(show_uncert){
 
             alldata <- alldata %>%
@@ -1214,17 +1218,17 @@ output$GRAPH_MAIN3a <- renderDygraph({
             #              width = 0,
             #              series = watermark_specs$series,
             #              tooltip = '')
-
-        rainsites <- paste0('P_', sites)
-
+        
+        rainsites <- paste0('PPT_', sites)
+        
+        
         if(show_pchem && any(rainsites %in% colnms)){
 
             rain_or_pchem_colors <- selection_color_match(
                 sites_selected = rainsites,
                 sites_all = rainsites,
                 sites_missing = rainsites[! rainsites %in% colnms],
-                # jump
-                colorvec = pchemcolors
+                colorvec = raincolors
             )
 
             rainsites <- rainsites[rainsites %in% colnms]
@@ -1248,9 +1252,10 @@ output$GRAPH_MAIN3a <- renderDygraph({
                                color = rain_or_pchem_colors[i],
                                axis = 'y',
                                drawPoints = FALSE,
-                               strokeWidth = 2,
+                               strokeWidth = 1,
                                pointSize = 2,
-                               strokePattern = 'dashed')
+                               strokePattern = 'dashed'
+                               )
             }
         }
 
@@ -1479,15 +1484,18 @@ output$GRAPH_MAIN3b <- renderDygraph({
                        conc_flux = conc_flux,
                        conc_unit = conc_unit,
                        flux_unit = flux_unit)
+    
 
     if(nrow(alldata)){
 
-        streamsites_rainsites <- c(sites, paste0('P_', sites))
-        colnms <- colnames(alldata)
+        streamsites_rainsites <- c(sites, paste0('PPT_', sites))
+        colnms <- str_replace(colnames(alldata), 'P_', 'PPT_')
+        colnames(alldata) <- colnms
+        
         included_cols <- streamsites_rainsites[streamsites_rainsites %in% colnms]
         alldata <- select(alldata,
                           datetime, any_of(streamsites_rainsites)) #preserve order
-
+        
         if(show_uncert){
 
             alldata <- alldata %>%
@@ -1538,7 +1546,7 @@ output$GRAPH_MAIN3b <- renderDygraph({
                    pixelsPerLabel = 20,
                    rangePad = 10)
 
-        rainsites <- paste0('P_', sites)
+        rainsites <- paste0('PPT_', sites)
 
         if(show_pchem && any(rainsites %in% colnms)){
 
@@ -1546,7 +1554,7 @@ output$GRAPH_MAIN3b <- renderDygraph({
                 sites_selected = rainsites,
                 sites_all = rainsites,
                 sites_missing = rainsites[! rainsites %in% colnms],
-                colorvec = pchemcolors
+                colorvec = raincolors
             )
 
             rainsites <- rainsites[rainsites %in% colnms]
@@ -1570,7 +1578,7 @@ output$GRAPH_MAIN3b <- renderDygraph({
                                color = rain_or_pchem_colors[i],
                                axis = 'y',
                                drawPoints = FALSE,
-                               strokeWidth = 2,
+                               strokeWidth = 1,
                                pointSize = 2,
                                strokePattern = 'dashed')
             }
@@ -1805,12 +1813,14 @@ output$GRAPH_MAIN3c <- renderDygraph({
 
     if(nrow(alldata)){
 
-        streamsites_rainsites <- c(sites, paste0('P_', sites))
-        colnms <- colnames(alldata)
-        included_cols <- streamsites_rainsites[streamsites_rainsites %in% colnms]
-        alldata <- select(alldata,
-                          datetime, any_of(streamsites_rainsites)) #preserve order
-
+      streamsites_rainsites <- c(sites, paste0('PPT_', sites))
+      colnms <- str_replace(colnames(alldata), 'P_', 'PPT_')
+      colnames(alldata) <- colnms
+      
+      included_cols <- streamsites_rainsites[streamsites_rainsites %in% colnms]
+      alldata <- select(alldata,
+                        datetime, any_of(streamsites_rainsites)) #preserve order
+      
         if(show_uncert){
 
             alldata <- alldata %>%
@@ -1861,7 +1871,7 @@ output$GRAPH_MAIN3c <- renderDygraph({
                    pixelsPerLabel = 20,
                    rangePad = 10)
 
-        rainsites <- paste0('P_', sites)
+        rainsites <- paste0('PPT_', sites)
 
         if(show_pchem && any(rainsites %in% colnms)){
 
@@ -1869,7 +1879,7 @@ output$GRAPH_MAIN3c <- renderDygraph({
                 sites_selected = rainsites,
                 sites_all = rainsites,
                 sites_missing = rainsites[! rainsites %in% colnms],
-                colorvec = pchemcolors
+                colorvec = raincolors
             )
 
             rainsites <- rainsites[rainsites %in% colnms]
@@ -1893,7 +1903,7 @@ output$GRAPH_MAIN3c <- renderDygraph({
                                color = rain_or_pchem_colors[i],
                                axis = 'y',
                                drawPoints = FALSE,
-                               strokeWidth = 2,
+                               strokeWidth = 1,
                                pointSize = 2,
                                strokePattern = 'dashed')
             }
@@ -2081,6 +2091,8 @@ output$GRAPH_Q3 <- renderDygraph({
                         datetime, any_of(sites)) #preserve order
 
         colnms <- colnames(dataq)
+
+        
         displabs <- colnms[! colnms == 'datetime']
 
         dydat <- xts(dataq[, displabs],

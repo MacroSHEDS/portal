@@ -104,12 +104,11 @@ site_data <- filter(site_data,
 # alternative color pallete (color blind safe)
 # based on same pallete as site comparison
 
-# Color blind safe palette
-linecolors <- c('#2a6a99', '#d88546', '#b2b1ff') # light blue, purple, light yellow
-pchemcolors <- c('#2a6a9970', '#d8854655', '#b2b1ff55') 
-pchemcolors_strong <- c('#2a6a99', '#d88546', '#b2b1ff') 
-
-# good third color: (purple: #cbc2ff )
+# Color blind safe palettes
+# blue, purple, orange
+linecolors <- c('#2a6a99', '#b66397', '#d88546')
+pchemcolors <- c('#2a6a99','#b66397', '#d88546')
+raincolors <- c('#6ba9d6', '#d3a1c1', '#e8b690') # 40% lightness version
 
 # safe_cols <- c("#88CCEE", "#CC6677", "#DDCC77", "#117733", "#332288", "#AA4499",
 #                "#44AA99", "#999933", "#882255", "#661100", "#6699CC", "#888888")
