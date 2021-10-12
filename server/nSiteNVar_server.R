@@ -38,7 +38,7 @@ observeEvent(eventExpr = input$SITES3,
     if(is.null(dmns)){ #for empty domain dropdown
         dmns <- init_vals$recent_domain
         sites <- get_default_site(domain = dmns[1])
-        
+
     } else {
         sites <- input$SITES3
     }
@@ -129,6 +129,15 @@ observeEvent(eventExpr = reactive_vals$basedata,
                              choices = letters,
                              selected = sample(letters, 3, TRUE))
     }
+})
+
+
+# disable site dropdown during basedata reload after variable change
+observeEvent(input$SITES3, {
+    shinyjs::disable("VARS3")
+})
+observeEvent(reactive_vals$basedata, {
+    shinyjs::enable("VARS3")
 })
 
 #for triggering Update Plots click from map go-to buttons AFTER updating var selection
@@ -671,12 +680,12 @@ output$GRAPH_PRECIP3 <- renderDygraph({
     )
 
     if(nrow(dataP)){
-        
+
         dataP <- select(dataP,
                         datetime, any_of(sites)) #preserve order
-        
+
         colnms <- colnames(dataP)
-      
+
         displabs <- colnms[! colnms == 'datetime']
 
         dydat <- xts(dataP[, displabs],
@@ -816,22 +825,22 @@ output$GRAPH_MAIN3a <- renderDygraph({
                               streamdata = streamdata,
                               raindata = raindata,
                               show_input_concentration = show_pchem)
-    
+
     ylabel <- get_ylab(v = varA,#
                        conc_flux = conc_flux,
                        conc_unit = conc_unit,
                        flux_unit = flux_unit)
 
     if(nrow(alldata)){
-      
+
         streamsites_rainsites <- c(sites, paste0('PPT_', sites))
         colnms <- str_replace(colnames(alldata), 'P_', 'PPT_')
         colnames(alldata) <- colnms
-        
+
         included_cols <- streamsites_rainsites[streamsites_rainsites %in% colnms]
         alldata <- select(alldata,
                           datetime, any_of(streamsites_rainsites)) #preserve order
-        
+
         if(show_uncert){
 
             alldata <- alldata %>%
@@ -906,7 +915,7 @@ output$GRAPH_MAIN3a <- renderDygraph({
             #              width = 0,
             #              series = watermark_specs$series,
             #              tooltip = '')
-        
+
         rainsites <- paste0('PPT_', sites)
 
         if(show_pchem && any(rainsites %in% colnms)){
@@ -1105,18 +1114,18 @@ output$GRAPH_MAIN3b <- renderDygraph({
                        conc_flux = conc_flux,
                        conc_unit = conc_unit,
                        flux_unit = flux_unit)
-    
+
 
     if(nrow(alldata)){
 
         streamsites_rainsites <- c(sites, paste0('PPT_', sites))
         colnms <- str_replace(colnames(alldata), 'P_', 'PPT_')
         colnames(alldata) <- colnms
-        
+
         included_cols <- streamsites_rainsites[streamsites_rainsites %in% colnms]
         alldata <- select(alldata,
                           datetime, any_of(streamsites_rainsites)) #preserve order
-        
+
         if(show_uncert){
 
             alldata <- alldata %>%
@@ -1369,11 +1378,11 @@ output$GRAPH_MAIN3c <- renderDygraph({
       streamsites_rainsites <- c(sites, paste0('PPT_', sites))
       colnms <- str_replace(colnames(alldata), 'P_', 'PPT_')
       colnames(alldata) <- colnms
-      
+
       included_cols <- streamsites_rainsites[streamsites_rainsites %in% colnms]
       alldata <- select(alldata,
                         datetime, any_of(streamsites_rainsites)) #preserve order
-      
+
         if(show_uncert){
 
             alldata <- alldata %>%
@@ -1604,7 +1613,7 @@ output$GRAPH_Q3 <- renderDygraph({
 
         colnms <- colnames(dataq)
 
-        
+
         displabs <- colnms[! colnms == 'datetime']
 
         dydat <- xts(dataq[, displabs],
