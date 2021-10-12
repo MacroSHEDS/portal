@@ -133,7 +133,7 @@ observeEvent(eventExpr = reactive_vals$basedata,
 
 
 # disable site dropdown during basedata reload after variable change
-observeEvent(input$VARS3, {
+observeEvent(input$SITES3, {
     shinyjs::disable("VARS3")
 })
 observeEvent(reactive_vals$basedata, {
