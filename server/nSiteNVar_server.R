@@ -121,7 +121,7 @@ observeEvent(eventExpr = reactive_vals$basedata,
 
         #probably unnecessary for this to be an updateSelectizeInput, when all it's
         #doing is invalidating to ensure GEN_PLOTS3 fires after VARS3
-        #has updated. but i wanted to ensure VARS_INVISIBLE3 would have
+        #has updated. but i wanted to en/plotsure VARS_INVISIBLE3 would have
         #the same priority as VARS3, to ensure no timing funny business
         #would be nice if we could directly invalidate VARS3
         updateSelectizeInput(session = session,
@@ -135,10 +135,17 @@ observeEvent(eventExpr = reactive_vals$basedata,
 # disable site dropdown during basedata reload after variable change
 observeEvent(input$SITES3, {
     shinyjs::disable("VARS3")
-})
+}
+)
 observeEvent(reactive_vals$basedata, {
     shinyjs::enable("VARS3")
 })
+
+# disable timeslider on click 'update plots'
+observeEvent(input$GEN_PLOTS3,{
+    shinyjs::disable("DATES3")
+}
+)
 
 #for triggering Update Plots click from map go-to buttons AFTER updating var selection
 observeEvent(input$VARS_INVISIBLE3, {
@@ -147,17 +154,7 @@ observeEvent(input$VARS_INVISIBLE3, {
     init_vals$basedata_change_reloads_plots <- FALSE
 })
 
-observeEvent(eventExpr = input$GEN_PLOTS3,
-             handlerExpr = {
-
-    if(init_vals$initial_plots_loaded){
-        init_vals$ts_tab_is_pristine <- FALSE
-    } else {
-        init_vals$initial_plots_loaded <- TRUE
-    }
-})
-
-#update timeslider when Update Plots is clicked
+# update timeslider when Update Plots is clicked
 observeEvent(eventExpr = input$GEN_PLOTS3,
              priority = 90,
              ignoreNULL = FALSE,
@@ -218,6 +215,8 @@ observeEvent(eventExpr = input$GEN_PLOTS3,
     # session$sendCustomMessage('flash_plot',
     #                           jsonlite::toJSON('placeholder'))
 })
+
+
 
 #reduce the reactivity sensitivity of the timeslider, so that intermediate inputs
 #don't trigger plot updates

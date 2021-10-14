@@ -222,7 +222,7 @@ shinyjs.init = function() {
         var agg2_val = $('input[name=AGG2]:checked').val();
         var input_val_mapping = {'MONTHLY2': 'Month', 'YEARLY2': 'Year'};
 
-        if( ['MONTHLY2', 'YEARLY2'].includes(agg2_val) ){    
+        if( ['MONTHLY2', 'YEARLY2'].includes(agg2_val) ){
 
             var xval = input_val_mapping[agg2_val];
 
@@ -704,21 +704,24 @@ shinyjs.init = function() {
         enable_attribution = true;
     });
 
-    $('div[id^="GRAPH_"]').on('shiny:value', function(event){
-
-        let $this = $(this)
-        let is_qc_plot = /GRAPH_QC3./.test( $this.attr('id') )
-
-        if(! is_qc_plot){
-            $('#GEN_PLOTS3').removeClass('disabled').removeAttr('disabled');
-            if(enable_data_tour){
-                Shiny.setInputValue('CONTINUE_DATA_TOUR', next_tour_id);
-            };
-        }
-
         //window.setTimeout(function(){
         //    $('#SLIDER_UPDATES_PLOTS').trigger('click');
         //}, 1000); //wait for timeslider debounce
+
+        $('div[id^="GRAPH_"]').on('shiny:value', function(event){
+            let $this = $(this)
+            let is_qc_plot = /GRAPH_QC3./.test( $this.attr('id') )
+            let is_plot = /GRAPH_MAIN3./.test( $this.attr('id') )
+
+            if(! is_qc_plot){
+                $('#GEN_PLOTS3').removeClass('disabled').removeAttr('disabled');
+                if(enable_data_tour){
+                    Shiny.setInputValue('CONTINUE_DATA_TOUR', next_tour_id);
+                };
+            if(is_plot){
+                shinyjs.enable("DATES3")
+                };
+            }
 
         if(enable_attribution){
             window.setTimeout(function(){
