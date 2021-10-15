@@ -6,8 +6,9 @@ nSiteNVar_tab <- tabPanel("Time Series",
 
             div(class = 'text-center',
                 actionButton('GEN_PLOTS3',
-                             label = 'Update Plots',
-                             class = 'text-center, btn btn-block btn-primary')
+                             "Update Plots",
+                             class = 'text-center, btn btn-block btn-primary',
+                             )
             ),
             br(),
 
@@ -228,7 +229,8 @@ nSiteNVar_tab <- tabPanel("Time Series",
 
                     #precip facets (just one now)
                     div(id='P3'),
-                    dygraphOutput("GRAPH_PRECIP3", height='75px'),
+                    dygraphOutput("GRAPH_PRECIP3", height='75px') %>%
+                                        withSpinner(),
                     br(),
 
                     #facet A
@@ -240,16 +242,17 @@ nSiteNVar_tab <- tabPanel("Time Series",
                             style = 'font-size: 0px',
                             div(id = 'inlineMAIN3a',
                                 style = 'width: 100%; display: inline-block; vertical-align: top',
-                                dygraphOutput("GRAPH_MAIN3a", height='125px')
+                                dygraphOutput("GRAPH_MAIN3a", height='125px') %>%
+                                        withSpinner()
                             ),
                             div(id = 'inlineQC3a',
                                 style = 'width: 0%; display: inline-block; vertical-align: top',
                                 conditionalPanel('output.SHOW_QC_GEN3 == true',
-                                    plotOutput('GRAPH_QC3a', height='125px')
+                                    plotOutput('GRAPH_QC3a', height='125px') %>%
+                                        withSpinner()
                                  )
                             )
                         ),
-                        br()
                     ),
 
                     #facet B
@@ -259,12 +262,14 @@ nSiteNVar_tab <- tabPanel("Time Series",
                             style = 'font-size: 0px',
                             div(id = 'inlineMAIN3b',
                                 style = 'width: 100%; display: inline-block; vertical-align: top',
-                                dygraphOutput("GRAPH_MAIN3b", height='125px')
+                                dygraphOutput("GRAPH_MAIN3b", height='125px') %>%
+                                        withSpinner()
                             ),
                             div(id = 'inlineQC3b',
                                 style = 'width: 0%; display: inline-block; vertical-align: top',
                                 conditionalPanel('output.SHOW_QC_GEN3 == true',
-                                    plotOutput('GRAPH_QC3b', height='125px')
+                                    plotOutput('GRAPH_QC3b', height='125px') %>%
+                                        withSpinner()
                                 )
                             )
                         )
@@ -277,12 +282,14 @@ nSiteNVar_tab <- tabPanel("Time Series",
                             style = 'font-size: 0px',
                             div(id = 'inlineMAIN3c',
                                 style = 'width: 100%; display: inline-block; vertical-align: top',
-                                dygraphOutput("GRAPH_MAIN3c", height='125px')
+                                dygraphOutput("GRAPH_MAIN3c", height='125px') %>%
+                                        withSpinner()
                             ),
                             div(id = 'inlineQC3c',
                                 style = 'width: 0%; display: inline-block; vertical-align: top',
                                 conditionalPanel('output.SHOW_QC_GEN3 == true',
-                                    plotOutput('GRAPH_QC3c', height='125px')
+                                    plotOutput('GRAPH_QC3c', height='125px') %>%
+                                        withSpinner()
                                 )
                             )
                         )
@@ -290,7 +297,8 @@ nSiteNVar_tab <- tabPanel("Time Series",
 
                     #discharge plot
                     div(id='Q3'),
-                    dygraphOutput("GRAPH_Q3", height='75px'),
+                    dygraphOutput("GRAPH_Q3", height='75px') %>%
+                                        withSpinner(),
                     br(),
 
                     HTML(paste0('<p style="color: blue; font-size: 0.75em">',
