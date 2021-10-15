@@ -216,7 +216,6 @@ observeEvent(eventExpr = input$GEN_PLOTS3,
     #                           jsonlite::toJSON('placeholder'))
 })
 
-
 #reduce the reactivity sensitivity of the timeslider, so that intermediate inputs
 #don't trigger plot updates
 timeSliderChanged <- eventReactive({
