@@ -136,8 +136,15 @@ observeEvent(eventExpr = reactive_vals$basedata,
 observeEvent(input$SITES3, {
     shinyjs::disable("VARS3")
 })
+
 observeEvent(reactive_vals$basedata, {
     shinyjs::enable("VARS3")
+})
+
+# disable timeslider on click 'update plots'
+# re-enabling handled in generaljs
+observeEvent(input$GEN_PLOTS3,{
+    shinyjs::disable("DATES3")
 })
 
 #for triggering Update Plots click from map go-to buttons AFTER updating var selection
@@ -147,17 +154,7 @@ observeEvent(input$VARS_INVISIBLE3, {
     init_vals$basedata_change_reloads_plots <- FALSE
 })
 
-observeEvent(eventExpr = input$GEN_PLOTS3,
-             handlerExpr = {
-
-    if(init_vals$initial_plots_loaded){
-        init_vals$ts_tab_is_pristine <- FALSE
-    } else {
-        init_vals$initial_plots_loaded <- TRUE
-    }
-})
-
-#update timeslider when Update Plots is clicked
+# update timeslider when Update Plots is clicked
 observeEvent(eventExpr = input$GEN_PLOTS3,
              priority = 90,
              ignoreNULL = FALSE,
