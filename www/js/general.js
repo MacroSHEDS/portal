@@ -713,13 +713,15 @@ shinyjs.init = function() {
             let is_qc_plot = /GRAPH_QC3./.test( $this.attr('id') )
             let is_plot = /GRAPH_MAIN3./.test( $this.attr('id') )
 
+            // if not a qc_plot
             if(! is_qc_plot){
+                // enable visualization of non-qc plots
                 $('#GEN_PLOTS3').removeClass('disabled').removeAttr('disabled');
+                // enable time slider
+                shinyjs.enable("DATES3")
+
                 if(enable_data_tour){
                     Shiny.setInputValue('CONTINUE_DATA_TOUR', next_tour_id);
-                };
-            if(is_plot){
-                shinyjs.enable("DATES3")
                 };
             }
 
