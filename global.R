@@ -7,7 +7,6 @@ suppressPackageStartupMessages({
     library(shiny)
     library(shinydashboard)
     library(shinycssloaders)
-    library(shinybusy)
     # library(shinyWidgets)
     library(plotly)
     library(dygraphs)
