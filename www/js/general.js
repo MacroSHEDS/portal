@@ -611,7 +611,7 @@ shinyjs.init = function() {
 
         //** modify this when adding tour stops
         if(/cicerone[0-9][a]/.test( $(this).parent().parent().attr('class') )){
-            Shiny.setInputValue('TRIGGER_LOADING_DOTS', 'Loading next stop', {priority: 'event'});
+            Shiny.setInputValue('TRIGGER_LOADING_DOTS', 'loading', {priority: 'event'});
         }
     });
 
@@ -746,6 +746,3 @@ shinyjs.init = function() {
 //shinyjs.getHeight50 = function() {
 //  Shiny.onInputChange('height50', $(window).height() * .5);
 //}
-
-
-
