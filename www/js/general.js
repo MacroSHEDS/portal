@@ -745,6 +745,3 @@ shinyjs.init = function() {
 //shinyjs.getHeight50 = function() {
 //  Shiny.onInputChange('height50', $(window).height() * .5);
 //}
-
-
-
