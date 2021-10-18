@@ -611,7 +611,7 @@ shinyjs.init = function() {
 
         //** modify this when adding tour stops
         if(/cicerone[0-9][a]/.test( $(this).parent().parent().attr('class') )){
-            Shiny.setInputValue('TRIGGER_LOADING_DOTS', 'Loading next stop', {priority: 'event'});
+            Shiny.setInputValue('TRIGGER_LOADING_DOTS', 'loading', {priority: 'event'});
         }
     });
 
@@ -716,7 +716,6 @@ shinyjs.init = function() {
             if(! is_qc_plot){
                 $('#GEN_PLOTS3').removeClass('disabled').removeAttr('disabled');
                 shinyjs.enable("DATES3")
-
                 if(enable_data_tour){
                     Shiny.setInputValue('CONTINUE_DATA_TOUR', next_tour_id);
                 };
