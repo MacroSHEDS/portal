@@ -6,6 +6,7 @@ suppressPackageStartupMessages({
     # library(dtplyr)
     library(shiny)
     library(shinydashboard)
+    library(shinycssloaders)
     # library(shinyWidgets)
     library(plotly)
     library(dygraphs)
@@ -366,3 +367,6 @@ guide2b <- Cicerone$
 #NOTE: when adding tour stops, the class of the last one must be 'cicerone2z',
 #and the regex after "//** modify this when adding tour stops" must be modified to
 #any stops before z.
+
+# spinner options
+options(spinner.color="#2a6a99", spinner.type=8, spinner.size=.5)
