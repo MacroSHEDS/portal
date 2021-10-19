@@ -25,11 +25,17 @@ observeEvent(
                              options = list(maxItems = 3))
 })
 
-#when site(s) change, basedata changes
-observeEvent(eventExpr = input$SITES3,
-             handlerExpr = {
+siteChanged <- eventReactive({
+    input$SITES3
+    }, {
+        shinyjs::disable("GEN_PLOTS3")
+        print("debouncing basedata reload")
+        }) %>% debounce(700)
 
+observeEvent(eventExpr = siteChanged(),
+             handlerExpr = {
     print('site change (update basedata)')
+    shinyjs::enable("GEN_PLOTS3")
 
     time_scheme <- input$TIME_SCHEME3
     agg <- input$AGG3
@@ -134,6 +140,11 @@ observeEvent(eventExpr = reactive_vals$basedata,
 # disable site dropdown during basedata reload after variable change
 observeEvent(input$SITES3, {
     shinyjs::disable("VARS3")
+})
+
+# genplots will always automatically disable itself
+observeEvent(input$GEN_PLOTS3, {
+    shinyjs::disable("GEN_PLOTS3")
 })
 
 observeEvent(reactive_vals$basedata, {
