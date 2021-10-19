@@ -162,7 +162,6 @@ server <- function(input, output, session){
     #     autoDestroy = FALSE,
     #     ignoreInit = TRUE
     # )
-
     observeEvent(
         eventExpr = input$START_DATA_TOUR,
         handlerExpr = {
@@ -175,7 +174,7 @@ server <- function(input, output, session){
 
                 click('GEN_PLOTS3')
                 show_loading_dots('LOADING_POPUP',
-                                  message = 'Loading first stop')
+                                  message = 'loading')
             }
         },
         autoDestroy = FALSE,
@@ -191,9 +190,7 @@ server <- function(input, output, session){
     observeEvent(
         eventExpr = input$CONTINUE_DATA_TOUR,
         handlerExpr = {
-
             removeNotification('LOADING_POPUP')
-
             if(input$CONTINUE_DATA_TOUR == 'a'){
                 guide2a$start()
             } else if(input$CONTINUE_DATA_TOUR == 'b'){

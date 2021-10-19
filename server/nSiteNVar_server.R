@@ -146,6 +146,15 @@ observeEvent(input$GEN_PLOTS3,{
     shinyjs::disable("DATES3")
 })
 
+observeEvent(eventExpr = input$GEN_PLOTS3,
+             handlerExpr = {
+                 if(init_vals$initial_plots_loaded){
+                     init_vals$ts_tab_is_pristine <- FALSE
+                 } else {
+                     init_vals$initial_plots_loaded <- TRUE
+                 }
+             })
+
 #for triggering Update Plots click from map go-to buttons AFTER updating var selection
 observeEvent(input$VARS_INVISIBLE3, {
     print('Update from VARS_INVISIBLE3')
