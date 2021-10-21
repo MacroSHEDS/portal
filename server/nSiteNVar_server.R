@@ -159,6 +159,8 @@ observeEvent(input$GEN_PLOTS3,{
 
 observeEvent(eventExpr = input$GEN_PLOTS3,
              handlerExpr = {
+                 shinyjs::disable("DATES3")
+
                  if(init_vals$initial_plots_loaded){
                      init_vals$ts_tab_is_pristine <- FALSE
                  } else {
@@ -1673,7 +1675,6 @@ output$GRAPH_Q3 <- renderDygraph({
                      labelsSeparateLines = FALSE,
                      labelsDiv = 'Q3')
     }
-
     return(dg)
 })
 

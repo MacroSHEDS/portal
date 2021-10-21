@@ -300,6 +300,8 @@ nSiteNVar_tab <- tabPanel("Time Series",
                     dygraphOutput("GRAPH_Q3", height='75px') %>%
                                         withSpinner(),
                     br(),
+                    HTML('<div>  ----  precipitation chemistry line  </div>'),
+                    br(),
 
                     HTML(paste0('<p style="color: blue; font-size: 0.75em">',
                                 'Click and drag to zoom. Double-click to reset view.</p>'))
