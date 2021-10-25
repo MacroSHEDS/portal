@@ -45,19 +45,20 @@ output$MAP <- renderLeaflet({
             fillOpacity = 0.2,
             color = '#000000',
             layerId = sheds$site_code,
-            highlightOptions = highlightOptions(color = '#228B22',
-                                                fill = '#228B22',
-                                                opacity=1),
+            highlightOptions = highlightOptions(color = '#b66397',
+                                                fill = '#b66397',
+                                                opacity=.9),
             group = 'Catchments') %>%
         # rain gauge
+        # purple #8856a7  lightgrey #A2A7A9 darkgrey #222d32 grey #82898B
         addCircleMarkers(lng = rg$longitude,
                          lat = rg$latitude,
-                         color = '#8fc5f6',
-                         fillColor = '#8fc5f6',
+                         color = '#69D9FE80',
+                         fillColor = '#4a565cc50',
                          layerId = paste0(rg$site_code, '_*_rain'),
                          stroke = TRUE,
                          opacity = 0.5,
-                         radius = 4,
+                         radius = 3,
                          weight = 10,
                          fillOpacity = 1,
                          popup = glue(rain_gauge_buttons,
@@ -79,14 +80,14 @@ output$MAP <- renderLeaflet({
         # chemistry gauge
         addCircleMarkers(lng = sg$longitude,
                          lat = sg$latitude,
-                         color = '#8856a7',
+                         color = '#69D9FE80',
                          layerId = sg$site_code,
                          stroke = TRUE,
                          opacity = 0.5,
-                         radius = 4,
-                         weight = 10,
+                         radius = 3,
+                         weight = 4.5,
                          fillOpacity = 1,
-                         fillColor = '#8856a7',
+                         fillColor = '#FF75D5',
                     popup = glue(stream_gauge_buttons,
                                  domain = sg$domain,
                                  # pretty_domain = sg$pretty_domain,
@@ -108,7 +109,23 @@ output$MAP <- renderLeaflet({
                     label = ~site_code,
                     clusterId = sg$domain,
                     clusterOptions = markerClusterOptions(zoomToBoundsOnClick = TRUE,
-                                                          maxClusterRadius = 4.5),
+                                                          maxClusterRadius = 4.5,
+                                                          iconCreateFunction=JS("function (cluster) {
+                                                                                    var childCount = cluster.getChildCount();
+                                                                                    if (childCount < 3) {
+                                                                                      c = '#69D9FE60;'
+                                                                                    } else if (childCount < 5) {
+                                                                                      c = '#59bce460;'
+                                                                                    } else if (childCount < 7) {
+                                                                                      c = '#4aa0ca60;'
+                                                                                    } else if (childCount < 9) {
+                                                                                      c = '#3a84b160;'
+                                                                                    } else {
+                                                                                      c = '#2a6a9960;'
+                                                                                    }
+                                                                                    return new L.DivIcon({ html: '<div style=\"background-color:'+c+'\"><span>' + childCount + '</span></div>', className: 'marker-cluster', iconSize: new L.Point(40, 40) });
+
+                                                                                  }")),
                     data = sg) %>%
     addLayersControl(position = 'topright',
                      baseGroups = c('Topo Map', 'Aerial Imagery'),
@@ -134,7 +151,7 @@ observeEvent({
 
         site_id <- input$MAP_shape_click$id
         code_temp_check <- str_split_fixed(site_id, '-', n = Inf)[1,]
-        
+
         if(code_temp_check[length(code_temp_check)] == 'temp'){
             code <- substr(site_id, 1, nchar(site_id)-5)
         } else{
@@ -180,13 +197,13 @@ observeEvent(ignoreNULL = FALSE,{
 
         site_id <- input$MAP_marker_click$id
         code_temp_check <- str_split_fixed(site_id, '-', n = Inf)[1,]
-        
+
         if(code_temp_check[length(code_temp_check)] == 'temp'){
             code_ <- substr(site_id, 1, nchar(site_id)-5)
         } else{
             code_ <- site_id
         }
-        
+
         shed <- sheds %>%
             filter(site_code == code_)
 
@@ -210,58 +227,58 @@ observeEvent(ignoreNULL = FALSE,{
     }
 })
 
-# Display table below map when a gauge is clicked 
+# Display table below map when a gauge is clicked
 site_info_tib <- reactive({
 
         site_id <- input$MAP_marker_click$id
-        
+
         if(is.na(site_id) || is.null(site_id)){
             return()
         }
 
         code_temp_check <- str_split_fixed(site_id, '-', n = Inf)[1,]
-        
+
         if(code_temp_check[length(code_temp_check)] == 'temp'){
             code <- substr(site_id, 1, nchar(site_id)-5)
         } else{
             code <- site_id
         }
-        
+
         rain <- str_split_fixed(code, '_[*]_', n = Inf)[2]
-        
+
         if(rain == 'rain' & !is.na(rain)) {
-            
+
             site_code <- str_split_fixed(code, '_[*]_', n = Inf)[1]
-            
+
             shed <- site_data %>%
                 filter(site_code == !!site_code) %>%
                 filter(site_type == 'rain_gauge')
-            
+
             fin_tib <- tibble(var = c('Site Code', 'Full Name', 'Domain', 'Site Type'),
-                              val = c(site_code, shed$full_name, shed$pretty_domain, 'Rain Gauge')) 
+                              val = c(site_code, shed$full_name, shed$pretty_domain, 'Rain Gauge'))
         } else {
-            
-            
+
+
             shed <- site_data %>%
                 filter(site_code == !!code) %>%
                 filter(site_type == 'stream_gauge')
-            
+
             shed_summary <- watershed_summaries %>%
                 filter(site_code == !!code)
-            
+
             dom_cover <- shed_summary %>%
                 select(starts_with('lg')) %>%
                 pivot_longer(cols = starts_with('lg')) %>%
                 filter(value == max(value))
-            
+
             dom_cover_name <- variables[variables$variable_code == dom_cover$name, ]$variable_name
-            
+
             if(nrow(dom_cover) == 0){
                 dom_cover <- NA
             } else {
                 dom_cover <- dom_cover_name
             }
-            
+
             fin_tib <- sw(tibble(var = c('Site Code', 'Full Name', 'Domain', 'Site Type', 'Stream',
                                       'Area (ha)', 'Mean Slope (%)', 'Annual Mean Precip (mm)', 'Annual Mean Temp (C)',
                                       'Dominant  Land Cover'),
@@ -273,11 +290,11 @@ site_info_tib <- reactive({
                 mutate(qua = ifelse(as.numeric(val) < bb, 'Bottom 25%', NA),
                        qua = ifelse(as.numeric(val) >= tt, 'Top 25%', qua)) %>%
                 select(-bb, -tt))
-            
+
         }
-        
+
         fin_tib[is.na(fin_tib)] <- ''
-        
+
         return(fin_tib)
     })
 
@@ -286,11 +303,11 @@ output$MAP_SITE_INFO <- renderTable(colnames = FALSE,
                                     {
     expr = {
         tib <- site_info_tib()
-        
+
         return(tib)
 
     }
-    
+
 })
 
 output$MAP_SITE_INFO_TITLE <- renderText({
@@ -300,8 +317,8 @@ output$MAP_SITE_INFO_TITLE <- renderText({
     } else {
         return('Site Information')
     }
-    
-    
+
+
 })
 
 ## Add site as a class

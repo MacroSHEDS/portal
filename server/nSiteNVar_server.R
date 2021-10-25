@@ -25,11 +25,17 @@ observeEvent(
                              options = list(maxItems = 3))
 })
 
-#when site(s) change, basedata changes
-observeEvent(eventExpr = input$SITES3,
-             handlerExpr = {
+siteChanged <- eventReactive({
+    input$SITES3
+    }, {
+        shinyjs::disable("GEN_PLOTS3")
+        print("debouncing basedata reload")
+        }) %>% debounce(700)
 
+observeEvent(eventExpr = siteChanged(),
+             handlerExpr = {
     print('site change (update basedata)')
+    shinyjs::enable("GEN_PLOTS3")
 
     time_scheme <- input$TIME_SCHEME3
     agg <- input$AGG3
@@ -136,6 +142,11 @@ observeEvent(input$SITES3, {
     shinyjs::disable("VARS3")
 })
 
+# genplots will always automatically disable itself
+observeEvent(input$GEN_PLOTS3, {
+    shinyjs::disable("GEN_PLOTS3")
+})
+
 observeEvent(reactive_vals$basedata, {
     shinyjs::enable("VARS3")
 })
@@ -148,6 +159,8 @@ observeEvent(input$GEN_PLOTS3,{
 
 observeEvent(eventExpr = input$GEN_PLOTS3,
              handlerExpr = {
+                 shinyjs::disable("DATES3")
+
                  if(init_vals$initial_plots_loaded){
                      init_vals$ts_tab_is_pristine <- FALSE
                  } else {
@@ -1662,7 +1675,6 @@ output$GRAPH_Q3 <- renderDygraph({
                      labelsSeparateLines = FALSE,
                      labelsDiv = 'Q3')
     }
-
     return(dg)
 })
 
