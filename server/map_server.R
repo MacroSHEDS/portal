@@ -1,324 +1,433 @@
+sheds <- sf::st_read("data/general/shed_boundary") %>%
+  sf::st_transform(4326)
 
+sg <- filter(
+  site_data,
+  site_type == "stream_gauge"
+)
 
-sheds <- sf::st_read('data/general/shed_boundary') %>%
-    sf::st_transform(4326)
-
-sg <- filter(site_data,
-             site_type == 'stream_gauge')
-
-watershed_summaries <- sm(read_csv('data/general/spatial_downloadables/watershed_summaries.csv'))
+watershed_summaries <- sm(read_csv("data/general/spatial_downloadables/watershed_summaries.csv"))
 
 watershed_quar <- watershed_summaries %>%
-    summarise('Annual Mean Precip (mm)_bb' = quantile(cc_mean_annual_precip, .25, na.rm = T),
-              'Annual Mean Precip (mm)_tt' = quantile(cc_mean_annual_precip, .75, na.rm = T),
-              'Annual Mean Temp (C)_bb' = quantile(cc_mean_annual_temp, .25, na.rm = T),
-              'Annual Mean Temp (C)_tt' = quantile(cc_mean_annual_temp, .75, na.rm = T),
-              'Mean Slope (%)_bb' = quantile(te_slope_mean, .25, na.rm = T),
-              'Mean Slope (%)_tt' = quantile(te_slope_mean, .75, na.rm = T),
-              'Area (ha)_bb' = quantile(ws_area_ha, .25, na.rm = T),
-              'Area (ha)_tt' = quantile(ws_area_ha, .75, na.rm = T)) %>%
-    pivot_longer(cols = everything()) %>%
-    mutate(var = str_split_fixed(name, '_', n = Inf)[,1],
-           quan = str_split_fixed(name, '_', n = Inf)[,2]) %>%
-    select(-name) %>%
-    pivot_wider(names_from = quan, values_from = value)
+  summarise(
+    "Annual Mean Precip (mm)_bb" = quantile(cc_mean_annual_precip, .25, na.rm = T),
+    "Annual Mean Precip (mm)_tt" = quantile(cc_mean_annual_precip, .75, na.rm = T),
+    "Annual Mean Temp (C)_bb" = quantile(cc_mean_annual_temp, .25, na.rm = T),
+    "Annual Mean Temp (C)_tt" = quantile(cc_mean_annual_temp, .75, na.rm = T),
+    "Mean Slope (%)_bb" = quantile(te_slope_mean, .25, na.rm = T),
+    "Mean Slope (%)_tt" = quantile(te_slope_mean, .75, na.rm = T),
+    "Area (ha)_bb" = quantile(ws_area_ha, .25, na.rm = T),
+    "Area (ha)_tt" = quantile(ws_area_ha, .75, na.rm = T)
+  ) %>%
+  pivot_longer(cols = everything()) %>%
+  mutate(
+    var = str_split_fixed(name, "_", n = Inf)[, 1],
+    quan = str_split_fixed(name, "_", n = Inf)[, 2]
+  ) %>%
+  select(-name) %>%
+  pivot_wider(names_from = quan, values_from = value)
 
 sheds <- sheds %>%
-    filter(site_code %in% sg$site_code)
+  filter(site_code %in% sg$site_code)
+
+rg <- filter(
+  site_data,
+  site_type == "rain_gauge"
+)
+
+# ALL the mapbox code
+# rg_geo <- sf::st_as_sf(rg, coords = c("longitude", "latitude"), crs = 4326) %>% sf::st_transform(4326)
+#
+# output$MAP <- renderMapdeck({
+#   mapdeck(
+#     token = paste0(
+#       "pk.eyJ1Ijoid3NsYXVnaHRlciIsImEiOiJja3Y4ZjRsN",
+#       "mI4aXFqMnZ0OWRsZzdyMTlkIn0.U3CM1N4EGL2Yj8-vi89YhQ"
+#     ),
+#     style = mapdeck_style("dark"),
+#   ) %>%
+# add_polygon(
+# data = sheds,
+# layer = "polygon_layer",
+# stroke_colour = "#b6639750",
+# stroke_width = 180,
+# stroke_opacity = .2,
+# fill_colour = "#d3d3d320",
+# fill_opacity = 0.9,
+# auto_highlight = TRUE,
+# highlight_colour = "#b6639750",
+# focus_layer = TRUE,
+# id = sheds$site_code
+# ) %>%
+#     add_scatterplot(
+#       data = rg_geo,
+#       layer_id = "scatter_layer",
+#       lon = "longitude",
+#       lat = "latitude",
+#       radius_min_pixels = 5,
+#       radius_max_pixels = 15,
+#       radius = 10,
+#       fill_colour = "b19cd9"
+#     )
 
 output$MAP <- renderLeaflet({
+  leaflet() %>%
+    mapboxapi::addMapboxTiles(
+      style_id = "ckvctd9at07qk14qrirm7m6nz",
+      username = "wslaughter",
+      group = "Plain"
+    ) %>%
+    mapboxapi::addMapboxTiles(
+      style_id = "ckvh2vbn22i4k14p6vri1pvfa",
+      username = "wslaughter",
+      group = "Simple"
+    ) %>%
+    addProviderTiles("Esri.WorldTopoMap",
+      group = paste0(
+        "Topo Mahttps://www.dropbox.com/s/kjkhw",
+        "ip0t8erh3a/MTM_PQ_data.csv?dl=0p"
+      )
+    ) %>%
+    addProviderTiles("Esri.WorldImagery",
+      group = "Aerial Imagery"
+    ) %>%
+    mapboxapi::addMapboxTiles(
+      style_id = "ckvh270o93lon14ohwd7im4xl",
+      username = "wslaughter",
+      group = "EPA Ecoregions"
+    ) %>%
+    mapboxapi::addMapboxTiles(
+      style_id = "ckvgtv89o68vw14pbg3ycuo61",
+      username = "wslaughter",
+      group = "Soils"
+    ) %>%
+    mapboxapi::addMapboxTiles(
+      style_id = "ckvcs4e6o0wi214o0uogacuvg",
+      username = "wslaughter",
+      group = "Hazardous Sites"
+    ) %>%
+    addPolygons(
+      data = sheds,
+      weight = 3,
+      smooth = 0,
+      stroke = TRUE,
+      fillOpacity = 0.2,
+      color = "#000000",
+      layerId = sheds$site_code,
+      highlightOptions = highlightOptions(
+        color = "#b66397",
+        fill = "#b66397",
+        opacity = .9
+      ),
+      group = "Catchments"
+    ) %>%
+    # rain gauge
+    # purple #8856a7  lightgrey #A2A7A9 darkgrey #222d32 grey #82898B
+    addCircleMarkers(
+      lng = rg$longitude,
+      lat = rg$latitude,
+      color = "#69D9FE80",
+      fillColor = "#4a565cc50",
+      layerId = paste0(rg$site_code, "_*_rain"),
+      stroke = TRUE,
+      opacity = 0.5,
+      radius = 3,
+      weight = 10,
+      fillOpacity = 1,
+      popup = glue(rain_gauge_buttons,
+        domain = rg$domain,
+        # pretty_domain = rg$pretty_domain,
+        # site_type = rg$site_type,
+        site_code = rg$site_code,
+        # full_name = rg$full_name,
+        # latitude = rg$latitude,
+        # longitude = rg$longitude
+      ),
+      popupOptions = c(
+        className = paste0(
+          rg$domain,
+          "__",
+          rg$site_code,
+          "_popup"
+        ),
+        minWidth = 200,
+        maxWidth = 500
+      ),
+      data = rg
+    ) %>%
+    # chemistry gauge
+    addCircleMarkers(
+      lng = sg$longitude,
+      lat = sg$latitude,
+      color = "#69D9FE80",
+      layerId = sg$site_code,
+      stroke = TRUE,
+      opacity = 0.5,
+      radius = 3,
+      weight = 4.5,
+      fillOpacity = 1,
+      fillColor = "#FF75D5",
+      popup = glue(stream_gauge_buttons,
+        domain = sg$domain,
+        # pretty_domain = sg$pretty_domain,
+        # stream = sg$stream,
+        site_code = sg$site_code,
+        # full_name = sg$full_name,
+        # site_type = sg$site_type,
+        # latitude = sg$latitude,
+        # longitude = sg$longitude,
+        attribution = paste0(
+          sg$domain,
+          "__",
+          sg$site_code
+        )
+      ),
+      popupOptions = c(
+        className = paste0(
+          sg$domain,
+          "__",
+          sg$site_code,
+          "_popup"
+        ),
+        minWidth = 200,
+        maxWidth = 500
+      ),
+      label = ~site_code,
+      clusterId = sg$domain,
+      clusterOptions = markerClusterOptions(
+        zoomToBoundsOnClick = TRUE,
+        maxClusterRadius = 4.5,
+        iconCreateFunction = JS("function (cluster) {
+                                                                                  var childCount = cluster.getChildCount();
+                                                                                  if (childCount < 3) {
+                                                                                    c = '#69D9FE60;'
+                                                                                  } else if (childCount < 5) {
+                                                                                    c = '#59bce460;'
+                                                                                  } else if (childCount < 7) {
+                                                                                    c = '#4aa0ca60;'
+                                                                                  } else if (childCount < 9) {
+                                                                                    c = '#3a84b160;'
+                                                                                  } else {
+                                                                                    c = '#2a6a9960;'
+                                                                                  }
+                                                                                  return new L.DivIcon({ html: '<div style=\"background-color:'+c+'\"><span>' + childCount + '</span></div>', className: 'marker-cluster', iconSize: new L.Point(40, 40) });
 
-    rg <- filter(site_data,
-                 site_type == 'rain_gauge')
-
-    leaflet() %>%
-        addProviderTiles("Esri.WorldTopoMap",
-                         group = paste0('Topo Mahttps://www.dropbox.com/s/kjkhw',
-                                        'ip0t8erh3a/MTM_PQ_data.csv?dl=0p')) %>%
-        addProviderTiles('Esri.WorldImagery',
-                         group = 'Aerial Imagery') %>%
-        addPolygons(
-            data = sheds,
-            weight = 3,
-            smooth = 0,
-            stroke = TRUE,
-            fillOpacity = 0.2,
-            color = '#000000',
-            layerId = sheds$site_code,
-            highlightOptions = highlightOptions(color = '#b66397',
-                                                fill = '#b66397',
-                                                opacity=.9),
-            group = 'Catchments') %>%
-        # rain gauge
-        # purple #8856a7  lightgrey #A2A7A9 darkgrey #222d32 grey #82898B
-        addCircleMarkers(lng = rg$longitude,
-                         lat = rg$latitude,
-                         color = '#69D9FE80',
-                         fillColor = '#4a565cc50',
-                         layerId = paste0(rg$site_code, '_*_rain'),
-                         stroke = TRUE,
-                         opacity = 0.5,
-                         radius = 3,
-                         weight = 10,
-                         fillOpacity = 1,
-                         popup = glue(rain_gauge_buttons,
-                                      domain = rg$domain,
-                                      # pretty_domain = rg$pretty_domain,
-                                      # site_type = rg$site_type,
-                                      site_code = rg$site_code,
-                                      # full_name = rg$full_name,
-                                      # latitude = rg$latitude,
-                                      # longitude = rg$longitude
-                                      ),
-                         popupOptions = c(className = paste0(rg$domain,
-                                                             '__',
-                                                             rg$site_code,
-                                                             '_popup'),
-                                          minWidth = 200,
-                                          maxWidth = 500),
-                         data = rg) %>%
-        # chemistry gauge
-        addCircleMarkers(lng = sg$longitude,
-                         lat = sg$latitude,
-                         color = '#69D9FE80',
-                         layerId = sg$site_code,
-                         stroke = TRUE,
-                         opacity = 0.5,
-                         radius = 3,
-                         weight = 4.5,
-                         fillOpacity = 1,
-                         fillColor = '#FF75D5',
-                    popup = glue(stream_gauge_buttons,
-                                 domain = sg$domain,
-                                 # pretty_domain = sg$pretty_domain,
-                                 # stream = sg$stream,
-                                 site_code = sg$site_code,
-                                 # full_name = sg$full_name,
-                                 # site_type = sg$site_type,
-                                 # latitude = sg$latitude,
-                                 # longitude = sg$longitude,
-                                 attribution = paste0(sg$domain,
-                                                      '__',
-                                                      sg$site_code)),
-                    popupOptions = c(className = paste0(sg$domain,
-                                                        '__',
-                                                        sg$site_code,
-                                                        '_popup'),
-                                     minWidth = 200,
-                                     maxWidth = 500),
-                    label = ~site_code,
-                    clusterId = sg$domain,
-                    clusterOptions = markerClusterOptions(zoomToBoundsOnClick = TRUE,
-                                                          maxClusterRadius = 4.5,
-                                                          iconCreateFunction=JS("function (cluster) {
-                                                                                    var childCount = cluster.getChildCount();
-                                                                                    if (childCount < 3) {
-                                                                                      c = '#69D9FE60;'
-                                                                                    } else if (childCount < 5) {
-                                                                                      c = '#59bce460;'
-                                                                                    } else if (childCount < 7) {
-                                                                                      c = '#4aa0ca60;'
-                                                                                    } else if (childCount < 9) {
-                                                                                      c = '#3a84b160;'
-                                                                                    } else {
-                                                                                      c = '#2a6a9960;'
-                                                                                    }
-                                                                                    return new L.DivIcon({ html: '<div style=\"background-color:'+c+'\"><span>' + childCount + '</span></div>', className: 'marker-cluster', iconSize: new L.Point(40, 40) });
-
-                                                                                  }")),
-                    data = sg) %>%
-    addLayersControl(position = 'topright',
-                     baseGroups = c('Topo Map', 'Aerial Imagery'),
-                     options = layersControlOptions(collapsed = FALSE,
-                                                    autoZIndex = TRUE)) %>%
-    setView(lng = -97.380979,
-            lat = 42.877742,
-            zoom = 2)  #center of lower 48
+                                                                                }")
+      ),
+      data = sg
+    ) %>%
+    addLayersControl(
+      position = "topright",
+      baseGroups = c("Plain", "Simple", "Topo Map", "Aerial Imagery", "EPA Ecoregions", "Soils", "Hazardous Sites"),
+      options = layersControlOptions(
+        collapsed = FALSE,
+        autoZIndex = TRUE
+      )
+    ) %>%
+    setView(
+      lng = -97.380979,
+      lat = 42.877742,
+      zoom = 2
+    ) # center of lower 48
 })
 
-#Highlight on click
+# Highlight on click
 proxy <- leafletProxy("MAP", session)
 
-#Highlight stream gauges when watersheds are clicked
+# Highlight stream gauges when watersheds are clicked
 prev_select <- reactiveVal()
 
-observeEvent({
-        input$MAP_shape_click
-        input$MAP_click
-    }, {
+observeEvent(
+  {
+    input$MAP_shape_click
+    input$MAP_click
+  },
+  {
+    if (is.null(prev_select()) && is.null(input$MAP_shape_click)) { } else {
+      site_id <- input$MAP_shape_click$id
+      code_temp_check <- str_split_fixed(site_id, "-", n = Inf)[1, ]
 
-    if(is.null(prev_select()) && is.null(input$MAP_shape_click)) { } else {
+      if (code_temp_check[length(code_temp_check)] == "temp") {
+        code <- substr(site_id, 1, nchar(site_id) - 5)
+      } else {
+        code <- site_id
+      }
 
-        site_id <- input$MAP_shape_click$id
-        code_temp_check <- str_split_fixed(site_id, '-', n = Inf)[1,]
+      sg <- filter(site_data, site_type == "stream_gauge") %>%
+        filter(site_code == code)
 
-        if(code_temp_check[length(code_temp_check)] == 'temp'){
-            code <- substr(site_id, 1, nchar(site_id)-5)
-        } else{
-            code <- site_id
-        }
+      selected <- list(id = code, lat = sg$latitude, lng = sg$longitude)
 
-        sg <- filter(site_data, site_type == 'stream_gauge') %>%
-            filter(site_code == code)
+      proxy %>%
+        addCircleMarkers(
+          layerId = paste0(code, "-temp"),
+          lng = sg$longitude,
+          lat = sg$latitude,
+          color = "#228B22", stroke = TRUE, opacity = 1, radius = 4,
+          weight = 10, fillOpacity = 1, fillColor = "#228B22",
+          popup = glue(stream_gauge_buttons,
+            domain = sg$domain,
+            pretty_domain = sg$pretty_domain, stream = sg$stream,
+            site_code = sg$site_code, full_name = sg$full_name,
+            site_type = sg$site_type, latitude = sg$latitude,
+            longitude = sg$longitude,
+            attribution = paste0(sg$domain, "__", sg$site_code)
+          ),
+          popupOptions = c(
+            className = paste0(sg$domain, "__", sg$site_code, "_popup"),
+            minWidth = 200, maxWidth = 500
+          ), label = sg$site_code,
+          data = sg
+        ) %>%
+        removeMarker(layerId = paste0(prev_select()$id, "-temp"))
 
-        selected <- list(id = code, lat = sg$latitude, lng = sg$longitude)
-
-        proxy %>%
-            addCircleMarkers(
-                layerId = paste0(code, '-temp'),
-                lng = sg$longitude,
-                lat = sg$latitude,
-                color = '#228B22', stroke = TRUE, opacity = 1, radius = 4,
-                weight = 10, fillOpacity = 1, fillColor = '#228B22',
-                popup = glue(stream_gauge_buttons, domain = sg$domain,
-                             pretty_domain = sg$pretty_domain, stream = sg$stream,
-                             site_code = sg$site_code, full_name = sg$full_name,
-                             site_type = sg$site_type, latitude = sg$latitude,
-                             longitude = sg$longitude,
-                             attribution = paste0(sg$domain, "__", sg$site_code)),
-                popupOptions = c(
-                    className = paste0(sg$domain, "__", sg$site_code, '_popup'),
-                    minWidth = 200, maxWidth = 500), label = sg$site_code,
-                data = sg)  %>%
-            removeMarker(layerId = paste0(prev_select()$id, '-temp'))
-
-        prev_select(selected)
+      prev_select(selected)
     }
-})
+  }
+)
 
 # Highlight watersheds when stream guages are clicked
 prev_select_m <- reactiveVal()
-observeEvent(ignoreNULL = FALSE,{
-        input$MAP_marker_click
-        input$MAP_click
-    }, {
+observeEvent(
+  ignoreNULL = FALSE,
+  {
+    input$MAP_marker_click
+    input$MAP_click
+  },
+  {
+    if (is.null(prev_select_m()) && is.null(input$MAP_marker_click)) { } else {
+      site_id <- input$MAP_marker_click$id
+      code_temp_check <- str_split_fixed(site_id, "-", n = Inf)[1, ]
 
-    if(is.null(prev_select_m()) && is.null(input$MAP_marker_click)) { } else {
+      if (code_temp_check[length(code_temp_check)] == "temp") {
+        code_ <- substr(site_id, 1, nchar(site_id) - 5)
+      } else {
+        code_ <- site_id
+      }
 
-        site_id <- input$MAP_marker_click$id
-        code_temp_check <- str_split_fixed(site_id, '-', n = Inf)[1,]
+      shed <- sheds %>%
+        filter(site_code == code_)
 
-        if(code_temp_check[length(code_temp_check)] == 'temp'){
-            code_ <- substr(site_id, 1, nchar(site_id)-5)
-        } else{
-            code_ <- site_id
-        }
+      selected <- list(id = code_)
 
-        shed <- sheds %>%
-            filter(site_code == code_)
+      site_remove <- prev_select_m()$id
 
-        selected <- list(id = code_)
-
-        site_remove <- prev_select_m()$id
-
-            proxy %>%
-                addPolygons(data = shed, weight = 3, smooth = 0, stroke = T,
-                            fillOpacity = 0.2, color = '#228B22',
-                            layerId = paste0(shed$site_code, '-temp'), group = 'Catchments')
+      proxy %>%
+        addPolygons(
+          data = shed, weight = 3, smooth = 0, stroke = T,
+          fillOpacity = 0.2, color = "#228B22",
+          layerId = paste0(shed$site_code, "-temp"), group = "Catchments"
+        )
 
 
-                proxy %>%
-                    addPolygons(data = shed, weight = 3, smooth = 0, stroke = T,
-                                fillOpacity = 0.2, color = '#228B22',
-                                layerId = paste0(shed$site_code, '-temp'), group = 'Catchments') %>%
-                    removeShape(layerId = paste0(site_remove, '-temp'))
+      proxy %>%
+        addPolygons(
+          data = shed, weight = 3, smooth = 0, stroke = T,
+          fillOpacity = 0.2, color = "#228B22",
+          layerId = paste0(shed$site_code, "-temp"), group = "Catchments"
+        ) %>%
+        removeShape(layerId = paste0(site_remove, "-temp"))
 
-        prev_select_m(selected)
+      prev_select_m(selected)
     }
-})
+  }
+)
 
 # Display table below map when a gauge is clicked
 site_info_tib <- reactive({
+  site_id <- input$MAP_marker_click$id
 
-        site_id <- input$MAP_marker_click$id
+  if (is.na(site_id) || is.null(site_id)) {
+    return()
+  }
 
-        if(is.na(site_id) || is.null(site_id)){
-            return()
-        }
+  code_temp_check <- str_split_fixed(site_id, "-", n = Inf)[1, ]
 
-        code_temp_check <- str_split_fixed(site_id, '-', n = Inf)[1,]
+  if (code_temp_check[length(code_temp_check)] == "temp") {
+    code <- substr(site_id, 1, nchar(site_id) - 5)
+  } else {
+    code <- site_id
+  }
 
-        if(code_temp_check[length(code_temp_check)] == 'temp'){
-            code <- substr(site_id, 1, nchar(site_id)-5)
-        } else{
-            code <- site_id
-        }
+  rain <- str_split_fixed(code, "_[*]_", n = Inf)[2]
 
-        rain <- str_split_fixed(code, '_[*]_', n = Inf)[2]
+  if (rain == "rain" & !is.na(rain)) {
+    site_code <- str_split_fixed(code, "_[*]_", n = Inf)[1]
 
-        if(rain == 'rain' & !is.na(rain)) {
+    shed <- site_data %>%
+      filter(site_code == !!site_code) %>%
+      filter(site_type == "rain_gauge")
 
-            site_code <- str_split_fixed(code, '_[*]_', n = Inf)[1]
+    fin_tib <- tibble(
+      var = c("Site Code", "Full Name", "Domain", "Site Type"),
+      val = c(site_code, shed$full_name, shed$pretty_domain, "Rain Gauge")
+    )
+  } else {
+    shed <- site_data %>%
+      filter(site_code == !!code) %>%
+      filter(site_type == "stream_gauge")
 
-            shed <- site_data %>%
-                filter(site_code == !!site_code) %>%
-                filter(site_type == 'rain_gauge')
+    shed_summary <- watershed_summaries %>%
+      filter(site_code == !!code)
 
-            fin_tib <- tibble(var = c('Site Code', 'Full Name', 'Domain', 'Site Type'),
-                              val = c(site_code, shed$full_name, shed$pretty_domain, 'Rain Gauge'))
-        } else {
+    dom_cover <- shed_summary %>%
+      select(starts_with("lg")) %>%
+      pivot_longer(cols = starts_with("lg")) %>%
+      filter(value == max(value))
 
+    dom_cover_name <- variables[variables$variable_code == dom_cover$name, ]$variable_name
 
-            shed <- site_data %>%
-                filter(site_code == !!code) %>%
-                filter(site_type == 'stream_gauge')
-
-            shed_summary <- watershed_summaries %>%
-                filter(site_code == !!code)
-
-            dom_cover <- shed_summary %>%
-                select(starts_with('lg')) %>%
-                pivot_longer(cols = starts_with('lg')) %>%
-                filter(value == max(value))
-
-            dom_cover_name <- variables[variables$variable_code == dom_cover$name, ]$variable_name
-
-            if(nrow(dom_cover) == 0){
-                dom_cover <- NA
-            } else {
-                dom_cover <- dom_cover_name
-            }
-
-            fin_tib <- sw(tibble(var = c('Site Code', 'Full Name', 'Domain', 'Site Type', 'Stream',
-                                      'Area (ha)', 'Mean Slope (%)', 'Annual Mean Precip (mm)', 'Annual Mean Temp (C)',
-                                      'Dominant  Land Cover'),
-                              val = c(code, shed$full_name, shed$pretty_domain, 'Stream Gauge',
-                                      shed$stream, round(shed$ws_area_ha, 1), round(shed_summary$te_slope_mean, 1),
-                                      round(shed_summary$cc_mean_annual_precip, 1),
-                                      round(shed_summary$cc_mean_annual_temp, 1), dom_cover)) %>%
-                left_join(watershed_quar, by = 'var') %>%
-                mutate(qua = ifelse(as.numeric(val) < bb, 'Bottom 25%', NA),
-                       qua = ifelse(as.numeric(val) >= tt, 'Top 25%', qua)) %>%
-                select(-bb, -tt))
-
-        }
-
-        fin_tib[is.na(fin_tib)] <- ''
-
-        return(fin_tib)
-    })
-
-output$MAP_SITE_INFO <- renderTable(colnames = FALSE,
-                                   # bordered = TRUE,
-                                    {
-    expr = {
-        tib <- site_info_tib()
-
-        return(tib)
-
+    if (nrow(dom_cover) == 0) {
+      dom_cover <- NA
+    } else {
+      dom_cover <- dom_cover_name
     }
 
+    fin_tib <- sw(tibble(
+      var = c(
+        "Site Code", "Full Name", "Domain", "Site Type", "Stream",
+        "Area (ha)", "Mean Slope (%)", "Annual Mean Precip (mm)", "Annual Mean Temp (C)",
+        "Dominant  Land Cover"
+      ),
+      val = c(
+        code, shed$full_name, shed$pretty_domain, "Stream Gauge",
+        shed$stream, round(shed$ws_area_ha, 1), round(shed_summary$te_slope_mean, 1),
+        round(shed_summary$cc_mean_annual_precip, 1),
+        round(shed_summary$cc_mean_annual_temp, 1), dom_cover
+      )
+    ) %>%
+      left_join(watershed_quar, by = "var") %>%
+      mutate(
+        qua = ifelse(as.numeric(val) < bb, "Bottom 25%", NA),
+        qua = ifelse(as.numeric(val) >= tt, "Top 25%", qua)
+      ) %>%
+      select(-bb, -tt))
+  }
+
+  fin_tib[is.na(fin_tib)] <- ""
+
+  return(fin_tib)
 })
 
-output$MAP_SITE_INFO_TITLE <- renderText({
-    site_tib <- site_info_tib()
-    if(nrow(site_tib) == 0 || is.null(site_tib) ) {
-        return(' ')
-    } else {
-        return('Site Information')
+output$MAP_SITE_INFO <- renderTable(
+  colnames = FALSE,
+  # bordered = TRUE,
+  {
+    expr <- {
+      tib <- site_info_tib()
+
+      return(tib)
     }
+  }
+)
 
-
+output$MAP_SITE_INFO_TITLE <- renderText({
+  site_tib <- site_info_tib()
+  if (nrow(site_tib) == 0 || is.null(site_tib)) {
+    return(" ")
+  } else {
+    return("Site Information")
+  }
 })
 
 ## Add site as a class
@@ -334,7 +443,7 @@ output$MAP_SITE_INFO_TITLE <- renderText({
 
 
 
-#Get id from map click
+# Get id from map click
 # test <- reactive({
 #     validate(
 #         need(
@@ -343,5 +452,4 @@ output$MAP_SITE_INFO_TITLE <- renderText({
 #         App may take a few seconds to load data after selecting data (depending on internet connection speed)."
 #         )
 #     )
-#     (input$MapMine_shape_click)
-# })
+#     (input$MapMine_shape_click) %>%
