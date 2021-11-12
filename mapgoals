@@ -1,5 +1,0 @@
-- basemap vs any other kind of layer
-- does mapbox vectorize our uploaded rasters
-- at what point in the pipiline could mapbox imprve speed?
-- compatibility w/ leaflet
-- make sweet raster layers!!

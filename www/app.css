@@ -493,3 +493,9 @@ MISC
     opacity: 0.5;
   }
 }
+
+/* leaflet */
+
+#wesmap {
+  height: 100vh;
+}

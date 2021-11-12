@@ -72,40 +72,109 @@ rg <- filter(
 
 output$MAP <- renderLeaflet({
   leaflet() %>%
-    mapboxapi::addMapboxTiles(
-      style_id = "ckvctd9at07qk14qrirm7m6nz",
-      username = "wslaughter",
-      group = "Plain"
+    # mapboxapi::addMapboxTiles(
+    #   style_id = "ckvctd9at07qk14qrirm7m6nz",
+    #   username = "wslaughter",
+    #   group = "Plain"
+    # ) %>%
+    # addWMSTiles(
+    #   "http://mesonet.agron.iastate.edu/cgi-bin/wms/nexrad/n0r.cgi",
+    #   layers = "nexrad-n0r-900913",
+    #   options = WMSTileOptions(format = "image/png", transparent = TRUE),
+    #   attribution = "Weather data © 2012 IEM Nexrad",
+    #   group = "Plain"
+    # ) %>%
+    # addWMSTiles(
+    #   "https://geowebservices.stanford.edu/geoserver/wms",
+    #   layers = "druid:sv709xw7113",
+    #   options = WMSTileOptions(format = "image/png", info_format = "text/html", transparent = TRUE),
+    #   # attribution = "Weather data © 2012 IEM Nexrad",
+    #   group = "Wetlands and Water Bodies"
+    # ) %>%
+    addWMSTiles(
+      "https://geowebservices.stanford.edu/geoserver/wms",
+      layers = "druid:nh022gd9639",
+      options = WMSTileOptions(format = "image/png", info_format = "text/html", transparent = TRUE),
+      group = "Tree Canopy"
+    ) %>%
+    # addWMSTiles(
+    #   "https://geowebservices.stanford.edu/geoserver/wms",
+    #   layers = "druid:nt481py7519",
+    #   options = WMSTileOptions(format = "image/png", info_format = "text/html", transparent = TRUE),
+    #   # attribution = "Weather data © 2012 IEM Nexrad",
+    #   group = "Shaded Relief"
+    # ) %>%
+    addWMSTiles(
+      "https://www.sciencebase.gov/arcgis/services/Catalog/5888bf4fe4b05ccb964bab9d/MapServer/WmsServer?",
+      layers = "0",
+      options = WMSTileOptions(format = "image/png", info_format = "text/html", transparent = TRUE),
+      attribution = "USGS- State Geologic Map Compilation",
+      group = "Geochemistry"
     ) %>%
     mapboxapi::addMapboxTiles(
       style_id = "ckvh2vbn22i4k14p6vri1pvfa",
       username = "wslaughter",
-      group = "Simple"
+      group = "Plain"
     ) %>%
+    addWMSTiles(
+      "https://geowebservices.stanford.edu/geoserver/wms",
+      layers = "druid:sw186vh2473",
+      options = WMSTileOptions(format = "image/png", info_format = "text/html", transparent = TRUE),
+      attribution = "Geological Survey (U.S.). 100-Meter Resolution Impervious Surface of the Conterminous United States, 2001. 100-Meter Resolution Impervious Surface of the Conterminous United States, 2001 - TexasGeoDataPortal.",
+      group = "Impervious Surfaces"
+    ) %>%
+    addTiles(
+      urlTemplate = "http://macrosheds.org/map_tiles/nlcd_30m/nlcd/{z}/{x}/{y}.png",
+      options = tileOptions(minZoom = 2, maxZoom = 10, tms = TRUE),
+      attribution = "USGS Multi-Resolution Land Characteristics Consortium",
+      group = "Landcover"    # NLCD (30m)
+    ) %>%
+    addWMSTiles(
+      "https://geowebservices.stanford.edu/geoserver/wms",
+      layers = "druid:fc050zj3595",
+      options = WMSTileOptions(format = "image/png", info_format = "text/html", transparent = TRUE),
+      attribution = "USGS",
+      group = "Streams"
+    ) %>%
+    # mapboxapi::addMapboxTiles(
+    #   style_id = "ckvij6fet2e4k15pey4yj3qlj",
+    #   username = "wslaughter",
+    #   group = "Landcover" # NLCD landcover (500m)
+    # ) %>%
+    # mapboxapi::addMapboxTiles(
+    #   style_id = "ckvgzj12521jj15mzp96ens8f",
+    #   username = "wslaughter",
+    #   group = "Pop. Density"
+    # ) %>%
+    # mapboxapi::addMapboxTiles(
+    #   style_id = "ckvh2vbn22i4k14p6vri1pvfa",
+    #   username = "wslaughter",
+    #   group = "Simple"
+    # ) %>%
     addProviderTiles("Esri.WorldTopoMap",
       group = paste0(
         "Topo Mahttps://www.dropbox.com/s/kjkhw",
         "ip0t8erh3a/MTM_PQ_data.csv?dl=0p"
       )
     ) %>%
-    addProviderTiles("Esri.WorldImagery",
-      group = "Aerial Imagery"
-    ) %>%
+    # addProviderTiles("Esri.WorldImagery",
+    #   group = "Aerial Imagery"
+    # ) %>%
     mapboxapi::addMapboxTiles(
       style_id = "ckvh270o93lon14ohwd7im4xl",
       username = "wslaughter",
       group = "EPA Ecoregions"
     ) %>%
-    mapboxapi::addMapboxTiles(
-      style_id = "ckvgtv89o68vw14pbg3ycuo61",
-      username = "wslaughter",
-      group = "Soils"
-    ) %>%
-    mapboxapi::addMapboxTiles(
-      style_id = "ckvcs4e6o0wi214o0uogacuvg",
-      username = "wslaughter",
-      group = "Hazardous Sites"
-    ) %>%
+    # mapboxapi::addMapboxTiles(
+    #   style_id = "ckvgtv89o68vw14pbg3ycuo61",
+    #   username = "wslaughter",
+    #   group = "Soils"
+    # ) %>%
+    # mapboxapi::addMapboxTiles(
+    #   style_id = "ckvcs4e6o0wi214o0uogacuvg",
+    #   username = "wslaughter",
+    #   group = "Hazardous Sites"
+    # ) %>%
     addPolygons(
       data = sheds,
       weight = 3,
@@ -218,7 +287,9 @@ output$MAP <- renderLeaflet({
     ) %>%
     addLayersControl(
       position = "topright",
-      baseGroups = c("Plain", "Simple", "Topo Map", "Aerial Imagery", "EPA Ecoregions", "Soils", "Hazardous Sites"),
+      baseGroups = c("Plain", "Landcover", "Impervious Surfaces", "Geochemistry", "EPA Ecoregions", "Streams", "Tree Canopy"),
+      # all maps
+      # baseGroups = c("Plain", "Simple", "Geochemistry", "Wetlands and Water Bodies", "Shaded Relief", "Impervious Surfaces", "Tree Canopy", "Streams", "Landcover", "Sulfur", "SO3 and NH3/NH4", "Pop. Density", "Topo Map", "Aerial Imagery", "EPA Ecoregions", "Soils", "Hazardous Sites"),
       options = layersControlOptions(
         collapsed = FALSE,
         autoZIndex = TRUE
@@ -452,4 +523,5 @@ output$MAP_SITE_INFO_TITLE <- renderText({
 #         App may take a few seconds to load data after selecting data (depending on internet connection speed)."
 #         )
 #     )
+#     (input$MapMine_shape_click) %>%#
 #     (input$MapMine_shape_click) %>%

@@ -1,6 +1,33 @@
 shinyjs.init = function() {
     //$(window).resize(shinyjs.getHeight50);
 
+    // // // MacroshedsServer Tiling Service Injectors (Scratch Pad)
+    // var map = L.map('wesmap', {
+    //   // Set latitude and longitude of the map center (required)
+    //       center: [42.87111,-97.39728],
+    //   // Set the initial zoom level, values 0-18, where 0 is most zoomed-out (required)
+    //       zoom: 8
+    //     });
+    //
+    // var mb = L.tileLayer.mbTiles('http://macrosheds.org/map_tiles/epa_ecoregions/eco_l1.mbtiles')
+    // map.addLayer(mb);
+    // googleSat = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',{
+    //       maxZoom: 20,
+    //       subdomains:['mt0','mt1','mt2','mt3']
+    //     }).addTo(map)
+    // var config = {
+    //   // url: "http://macrosheds.org/map_tiles/epa_ecoregions/{z}/{x}/{y}.mbtiles"
+    //   url: "http://spatialserver.spatialdev.com/services/vector-tiles/gaul_fsp_india/{z}/{x}/{y}.pbf"
+    // };
+    // var mapillarySource = new L.TileLayer.MVTSource(config);
+    // var url = 'https://d2munx5tg0hw47.cloudfront.net/tiles/{z}/{x}/{y}.mapbox';
+    // var mapillaryLayer = L.vectorGrid.protobuf(url).addTo(map);
+    //
+    // var tms_example = L.tileLayer('', {
+    //       tms: true
+    //     }).addTo(map);
+    //
+
     ////gotta style landing page this way because css can't uniquely reach it
     //var checkExist = setInterval(function() {
     //    if ($('#landing').length) {
