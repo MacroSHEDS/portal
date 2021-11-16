@@ -5,6 +5,23 @@ map_tab <- tabPanel(
   leafletOutput("MAP", height = 350),
   br(),
 
+  # shopping cart
+  fluidRow(
+    column(
+      width = 12,
+      tags$h2("Default, multi-drag and swapping behaviour"),
+      tabsetPanel(
+        type = "tabs",
+        tabPanel(
+          "Default",
+          tags$b("Exercise"),
+          rank_list_basic,
+          tags$b("Result"),
+          verbatimTextOutput("results_basic")
+        )
+      )
+    )
+  ),
   # this button opens the site exploration tab. the button is hidden and unclickable.
   # it's triggered by links in the popups on the map tab.
   actionButton("SITE_EXPLORE", "", style = "display: none"),

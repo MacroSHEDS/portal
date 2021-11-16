@@ -102,8 +102,8 @@ observeEvent(eventExpr = reactive_vals$basedata,
     chemvars_display_subset <- filter_dropdown_varlist(basedata$chem)
     chemvars_vec <- unlist(chemvars_display_subset,
                            recursive = TRUE,
-                           use.names = FALSE)
 
+                           use.names = FALSE)
     vars_ <- vars_[vars_ %in% chemvars_vec]
 
     if(! length(vars_)) vars_ <- chemvars_vec[1]

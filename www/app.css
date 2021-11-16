@@ -1,5 +1,3 @@
-@charset "UTF-8";
-
 /*
 GLOBALS
 */
@@ -363,6 +361,25 @@ COLLAPSE SECTION
     margin-left: 36px !important;
 }
 
+ /* Data Viz Collapser */
+.data-sub-gone {
+    display: none;
+}
+
+.data-wrapper-wide {
+    margin-left: 36px !important;
+}
+
+.main-sidebar-wide {
+    /* width: -webkit-calc(100% - 36px);
+    width:    -moz-calc(100% - 36px);
+    width:         calc(100% - 36px); */
+    width: calc(100% - 48px) !important;
+}
+
+div#data-toggler.data-toggled {
+    float: right !important;
+}
 
 /*
 DATATABLES
@@ -492,10 +509,4 @@ MISC
   50% {
     opacity: 0.5;
   }
-}
-
-/* leaflet */
-
-#wesmap {
-  height: 100vh;
 }
