@@ -47,10 +47,11 @@ conf <- jsonlite::fromJSON("config.json")
 #                           secret = conf$shinyapps_cuahsi_secret)
 #
 # #uncomment and run this (without saving script) to deploy app
-# options(rsconnect.max.bundle.size = 8 * 1024 * 1024 * 1024)
-# rsconnect::deployApp('/home/mike/git/macrosheds/portal',
-#                      appName = 'macrosheds',
-#                      account = 'cuahsi')
+options(rsconnect.max.bundle.size = 8 * 1024 * 1024 * 1024)
+rsconnect::deployApp("/home/weston/files/projects/macrosheds/portal",
+    appName = "macrosheds",
+    account = "cuahsi"
+)
 
 # options(dplyr.summarise.inform = FALSE)
 
