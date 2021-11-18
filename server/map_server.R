@@ -186,7 +186,7 @@ output$MAP <- renderLeaflet({
             layers = "NLCD_2001_2019_change_index_L48",
             options = WMSTileOptions(format = "image/png", info_format = "text/html", transparent = TRUE),
             attribution = "Multi-Resolution Land Characteristics (MRLC) consortium",
-            group = "Land Cover Change (2001-2019)"
+            group = "(DIYChange (2001-2019)"
         ) %>%
         # addWMSLegend(uri = paste0(
         #     "https://www.mrlc.gov/geoserver",
@@ -284,7 +284,7 @@ output$MAP <- renderLeaflet({
             color = "#000000",
             layerId = sheds$site_code,
             highlightOptions = highlightOptions(
-                color = "#01bffe90",
+                color = "#01bffe90",# 69D9FE
                 fill = "#b66397",
                 opacity = .9
             ),
