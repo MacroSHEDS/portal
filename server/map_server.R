@@ -267,6 +267,7 @@ output$MAP <- renderLeaflet({
         zoomToBoundsOnClick = TRUE,
         maxClusterRadius = 4.5,
         iconCreateFunction = JS("function (cluster) {
+
                                                                                   var childCount = cluster.getChildCount();
                                                                                   if (childCount < 3) {
                                                                                     c = '#69D9FE60;'
