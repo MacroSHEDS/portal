@@ -246,12 +246,14 @@ output$MAP <- renderLeaflet({
         #   username = "wslaughter",
         #   group = "Simple"
         # ) %>%
+        # Basemap behind other layers
         addProviderTiles("Esri.WorldTopoMap",
             group = paste0(
                 "Topo Mahttps://www.dropbox.com/s/kjkhw",
                 "ip0t8erh3a/MTM_PQ_data.csv?dl=0p"
             )
         ) %>%
+        # Basemap as its own group option
         addProviderTiles("Esri.WorldTopoMap",
             group = "Base Map"
         ) %>%
