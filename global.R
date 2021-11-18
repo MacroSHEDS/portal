@@ -27,6 +27,7 @@ suppressPackageStartupMessages({
   library(errors)
   library(cicerone)
   library(mapdeck)
+  library(mapboxapi)
   # library(rhandsontable)
   # library(shiny.router)
 })

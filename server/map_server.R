@@ -266,22 +266,23 @@ output$MAP <- renderLeaflet({
       clusterOptions = markerClusterOptions(
         zoomToBoundsOnClick = TRUE,
         maxClusterRadius = 4.5,
-        iconCreateFunction = JS("function (cluster) {
-                                                                                  var childCount = cluster.getChildCount();
-                                                                                  if (childCount < 3) {
-                                                                                    c = '#69D9FE60;'
-                                                                                  } else if (childCount < 5) {
-                                                                                    c = '#59bce460;'
-                                                                                  } else if (childCount < 7) {
-                                                                                    c = '#4aa0ca60;'
-                                                                                  } else if (childCount < 9) {
-                                                                                    c = '#3a84b160;'
-                                                                                  } else {
-                                                                                    c = '#2a6a9960;'
-                                                                                  }
-                                                                                  return new L.DivIcon({ html: '<div style=\"background-color:'+c+'\"><span>' + childCount + '</span></div>', className: 'marker-cluster', iconSize: new L.Point(40, 40) });
+        iconCreateFunction = JS(
+        "function (cluster) {
+          var childCount = cluster.getChildCount();
+          if (childCount < 3) {
+            c = '#69D9FE60;'
+          } else if (childCount < 5) {
+            c = '#59bce460;'
+          } else if (childCount < 7) {
+            c = '#4aa0ca60;'
+          } else if (childCount < 9) {
+            c = '#3a84b160;'
+          } else {
+            c = '#2a6a9960;'
+          }
+          return new L.DivIcon({ html: '<div style=\"background-color:'+c+'\"><span>' + childCount + '</span></div>', className: 'marker-cluster', iconSize: new L.Point(40, 40) });
 
-                                                                                }")
+        }")
       ),
       data = sg
     ) %>%
