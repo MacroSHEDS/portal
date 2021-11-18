@@ -58,8 +58,7 @@ rg <- filter(
 #       radius = 10,
 #       fill_colour = "b19cd9"
 #     )
-# }
-#
+
 output$MAP <- renderLeaflet({
     leaflet() %>%
         # MapBox (blue styled basemap)
@@ -163,16 +162,16 @@ output$MAP <- renderLeaflet({
             urlTemplate = "http://macrosheds.org/map_tiles/nlcd_30m/nlcd/{z}/{x}/{y}.png",
             options = tileOptions(minZoom = 0, maxZoom = 12, tms = TRUE),
             attribution = "USGS Multi-Resolution Land Characteristics Consortium",
-            group = "Land Cover (2019)" # NLCD (30m)
+            group = "Land Cover (DIY)" # NLCD (30m)
         ) %>%
         # USGS NLCD (2019)
-        # addWMSTiles(
-        #     "https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2019_Land_Cover_L48/ows?SERVICE=WMS&",
-        #     layers = "NLCD_2019_Land_Cover_L48",
-        #     options = WMSTileOptions(format = "image/png", info_format = "text/html", transparent = TRUE),
-        #     attribution = "Multi-Resolution Land Characteristics (MRLC) consortium",
-        #     group = "Land Cover USGS"
-        # ) %>%
+        addWMSTiles(
+            "https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2019_Land_Cover_L48/ows?SERVICE=WMS&",
+            layers = "NLCD_2019_Land_Cover_L48",
+            options = WMSTileOptions(format = "image/png", info_format = "text/html", transparent = TRUE),
+            attribution = "Multi-Resolution Land Characteristics (MRLC) consortium",
+            group = "Land Cover (2019)"
+        ) %>%
         # addWMSLegend(uri = paste0(
         #     "https://www.mrlc.gov/geoserver/",
         #     "mrlc_display/NLCD_2019_Land_Cover_L48/",
@@ -186,7 +185,7 @@ output$MAP <- renderLeaflet({
             layers = "NLCD_2001_2019_change_index_L48",
             options = WMSTileOptions(format = "image/png", info_format = "text/html", transparent = TRUE),
             attribution = "Multi-Resolution Land Characteristics (MRLC) consortium",
-            group = "(DIYChange (2001-2019)"
+            group = "Land Cover Change (2001-2019)"
         ) %>%
         # addWMSLegend(uri = paste0(
         #     "https://www.mrlc.gov/geoserver",
@@ -252,17 +251,13 @@ output$MAP <- renderLeaflet({
                 "ip0t8erh3a/MTM_PQ_data.csv?dl=0p"
             )
         ) %>%
-        addProviderTiles("Esri.WorldTopoMap",
-            group = "Base Map"
-        ) %>%
         # addProviderTiles("Esri.WorldImagery",
         #   group = "Aerial Imagery"
         # ) %>%
         mapboxapi::addMapboxTiles(
             style_id = "ckvh270o93lon14ohwd7im4xl",
             username = "wslaughter",
-            group = "EPA Ecoregions",
-            access_token = conf$mapboxapi_sk,
+            group = "EPA Ecoregions"
             # options = WMSTileOptions(legend = TRUE)
         ) %>%
         # mapboxapi::addMapboxTiles(
@@ -284,7 +279,7 @@ output$MAP <- renderLeaflet({
             color = "#000000",
             layerId = sheds$site_code,
             highlightOptions = highlightOptions(
-                color = "#01bffe90",# 69D9FE
+                color = "#b66397",
                 fill = "#b66397",
                 opacity = .9
             ),
@@ -296,7 +291,7 @@ output$MAP <- renderLeaflet({
             lng = rg$longitude,
             lat = rg$latitude,
             color = "#69D9FE80",
-            fillColor = "#FF75D5",
+            fillColor = "#4a565cc50",
             layerId = paste0(rg$site_code, "_*_rain"),
             stroke = TRUE,
             opacity = 0.5,
@@ -335,7 +330,7 @@ output$MAP <- renderLeaflet({
             radius = 3,
             weight = 4.5,
             fillOpacity = 1,
-            fillColor = "#4a565cc50",
+            fillColor = "#FF75D5",
             popup = glue(stream_gauge_buttons,
                 domain = sg$domain,
                 # pretty_domain = sg$pretty_domain,
@@ -387,7 +382,7 @@ output$MAP <- renderLeaflet({
         ) %>%
         addLayersControl(
             position = "topright",
-            baseGroups = c("Base Map", "Land Cover (2019)", "Land Cover Change (2001-2019)", "Impervious Surfaces", "Geology", "EPA Ecoregions", "3DEP Elevation", "Streams", "Tree Canopy (2016)", "Tree Canopy Change (2011-2016)"),
+            baseGroups = c("Land Cover (2019)", "Land Cover (DIY)", "Land Cover Change (2001-2019)", "Impervious Surfaces", "Geology", "EPA Ecoregions", "3DEP Elevation", "Streams", "Tree Canopy (2016)", "Tree Canopy Change (2011-2016)"),
             # all maps
             # baseGroups = c("Plain", "Simple", "Geochemistry", "Wetlands and Water Bodies", "Shaded Relief", "Impervious Surfaces", "Tree Canopy", "Streams", "Landcover", "Sulfur", "SO3 and NH3/NH4", "Pop. Density", "Topo Map", "Aerial Imagery", "EPA Ecoregions", "Soils", "Hazardous Sites"),
             options = layersControlOptions(
@@ -434,8 +429,8 @@ observeEvent(
                     layerId = paste0(code, "-temp"),
                     lng = sg$longitude,
                     lat = sg$latitude,
-                    color = "#d8854680", stroke = TRUE, opacity = 1, radius = 6,
-                    weight = 2.5, fillOpacity = .1, fillColor = "#018dbc20",
+                    color = "#228B22", stroke = TRUE, opacity = 1, radius = 4,
+                    weight = 10, fillOpacity = 1, fillColor = "#228B22",
                     popup = glue(stream_gauge_buttons,
                         domain = sg$domain,
                         pretty_domain = sg$pretty_domain, stream = sg$stream,
