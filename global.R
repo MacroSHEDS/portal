@@ -45,13 +45,14 @@ conf <- jsonlite::fromJSON("config.json")
 # rsconnect::setAccountInfo(name = 'cuahsi',
 #                           token = conf$shinyapps_cuahsi_token,
 #                           secret = conf$shinyapps_cuahsi_secret)
-#
+# #
 # #uncomment and run this (without saving script) to deploy app
-options(rsconnect.max.bundle.size = 8 * 1024 * 1024 * 1024)
-rsconnect::deployApp("/home/weston/files/projects/macrosheds/portal",
-    appName = "macrosheds",
-    account = "cuahsi"
-)
+# options(rsconnect.max.bundle.size = 8 * 1024 * 1024 * 1024)
+
+# rsconnect::deployApp("C:/Users/ws184/documents/projects/macrosheds/portal",
+#     appName = "macrosheds",
+#     account = "cuahsi"
+# )
 
 # options(dplyr.summarise.inform = FALSE)
 
@@ -420,3 +421,5 @@ guide2b <- Cicerone$
 
 # spinner options
 options(spinner.color = "#2a6a99", spinner.type = 8, spinner.size = .5)
+
+
