@@ -772,18 +772,19 @@ shinyjs.init = function() {
 //shinyjs.getHeight50 = function() {
 //  Shiny.onInputChange('height50', $(window).height() * .5);
 //}
-document.getElementById(iconID).className = "fa fa-chevron-up";
 // Extend/Collapse
 $(document).ready(function(){
     $('#COLLAPSE_DATA').click(function(){
         if ($('.data-sub').not('.data-sub-gone')) {
             $(".table").css("min-width", "95%");
-            // $(".glyphicon-circle-arrow-right").toggleClass("glyphicon-circle-arrow-left");
+            // $(".glyphicon-circle-arrow-left").toggleClass("non-arrow");
+            $(".glyphicon-circle-arrow-right").toggleClass("glyphicon-circle-arrow-left");
             console.log("expand: data table view");
         }
         if ($('.data-sub').hasClass('data-sub-gone')) {
             $(".table").css("min-width", "90%");
-            // $(".glyphicon-circle-arrow-left").toggleClass("glyphicon-circle-arrow-right");
+            // $(".glyphicon-circle-arrow-right").toggleClass("non-arrow");
+            $(".glyphicon-circle-arrow-left").toggleClass("glyphicon-circle-arrow-right");
             console.log("collapse: data table view");
         }
 
