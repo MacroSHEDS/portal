@@ -772,3 +772,19 @@ shinyjs.init = function() {
 //shinyjs.getHeight50 = function() {
 //  Shiny.onInputChange('height50', $(window).height() * .5);
 //}
+
+// Extend/Collapse
+$(document).ready(function(){
+    $('#COLLAPSE_DATA').click(function(){
+        if ($('.data-sub').not('.data-sub-gone')) {
+            $(".table").css("min-width", "95%");
+            console.log("expand: data table view");
+        }
+        if ($('.data-sub').hasClass('data-sub-gone')) {
+            $(".table").css("min-width", "90%");
+            console.log("collapse: data table view");
+        }
+
+    });
+});
+    // });

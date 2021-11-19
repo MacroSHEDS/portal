@@ -581,14 +581,17 @@ site_info_tib <- reactive({
             select(-bb, -tt))
     }
 
-    fin_tib[is.na(fin_tib)] <- ""
+    # fin_tib[is.na(fin_tib)] <- ""
 
+    fin_tib <- fin_tib %>%
+        unite("value", val:qua, remove = TRUE, sep = " | ", na.rm = TRUE)
     return(fin_tib)
 })
 
 output$MAP_SITE_INFO <- renderTable(
-    colnames = FALSE,
+    colnames = TRUE,
     # bordered = TRUE,
+    hover = TRUE,
     {
         expr <- {
             tib <- site_info_tib()
@@ -598,14 +601,14 @@ output$MAP_SITE_INFO <- renderTable(
     }
 )
 
-output$MAP_SITE_INFO_TITLE <- renderText({
-    site_tib <- site_info_tib()
-    if (nrow(site_tib) == 0 || is.null(site_tib)) {
-        return(" ")
-    } else {
-        return("Site Information")
-    }
-})
+# output$MAP_SITE_INFO_TITLE <- renderText({
+#     site_tib <- site_info_tib()
+#     if (nrow(site_tib) == 0 || is.null(site_tib)) {
+#         return(" ")
+#     } else {
+#         return("Site Information")
+#     }
+# })
 
 ## Add site as a class
 # htmlwidgets::onRender("

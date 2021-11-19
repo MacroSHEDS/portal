@@ -425,17 +425,11 @@ options(spinner.color = "#2a6a99", spinner.type = 8, spinner.size = .5)
 labels <- list(
     "one",
     "two",
-    "three",
-    htmltools::tags$div(
-        htmltools::em("Complex"), " html tag without a name"
-    ),
-    "five" = htmltools::tags$div(
-        htmltools::em("Complex"), " html tag with name: 'five'"
-    )
+    "three"
 )
 
 rank_list_basic <- rank_list(
-    text = "Drag the items in any desired order",
+    # text = "Drag the items in any desired order",
     labels = labels,
     input_id = "rank_list_basic"
 )
