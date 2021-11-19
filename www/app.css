@@ -582,9 +582,24 @@ tbody tr.active-row {
 
 /* tr:hover {background-color: #6C7A89;} */
 
-/* .rank-list-container {
-} */
+/* Tabs */
 
+.nav-tabs {
+    margin: 6px;
+}
+
+#right_tabs {
+    margin: 0px !important;
+}
+#data-toggler {
+    margin-top: 6px;
+}
+
+.container-fluid {
+    padding: 0px !important;
+}
+
+/* Bucket List */
 .default-sortable.rank-list-container {
     margin-top: 24px;
     border: 0px;

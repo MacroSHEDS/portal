@@ -14,7 +14,6 @@ source("ui/notes_ui.R")
 ui <- fluidPage(
     use_cicerone(),
     tags$head(includeHTML(("ui/google_analytics.html"))),
-
     # screen shouldn't go gray when plots are updating.
     # tags$style(type="text/css", ".recalculating { opacity: 1.0; }" ),
     tags$head(tags$style(HTML(
@@ -45,7 +44,7 @@ ui <- fluidPage(
             div(
                 style = "width: 36px; display: inline-block; float: right",
                 actionLink("COLLAPSE_SIDEBAR",
-                    label = "", icon = icon("arrows-h"),
+                    label = "", icon = icon("circle-arrow-left", lib = "glyphicon"),
                     class = "sidebar-toggle", `data-toggle` = "offcanvas",
                     style = "margin: 6px"
                 )
@@ -64,7 +63,7 @@ ui <- fluidPage(
                 id = "data-toggler",
                 style = "width: 36px; display: inline-block; float: left",
                 actionLink("COLLAPSE_DATA",
-                    label = "", icon = icon("arrows-h"),
+                    label = "", icon = icon("circle-arrow-right", lib = "glyphicon"),
                     class = "data-hider", # `data-toggle` = "offcanvas",
                     style = "margin: 6px"
                 )
