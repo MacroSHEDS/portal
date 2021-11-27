@@ -604,3 +604,43 @@ tbody tr.active-row {
     margin-top: 24px;
     border: 0px;
 }
+
+/* Notes  Panel  */
+.panel-heading .accordion-toggle:after {
+    /* symbol for "opening" panels */
+    font-family: 'Glyphicons Halflings';  /* essential for enabling glyphicon */
+    content: "\e114";    /* adjust as needed, taken from bootstrap.css */
+    float: right;        /* adjust as needed */
+    color: black;         /* adjust as needed */
+}
+
+.panel-heading .accordion-toggle.collapsed:after {
+    /* symbol for "collapsed" panels */
+    content: "\e080";    /* adjust as needed, taken from bootstrap.css */
+    color: black;
+}
+
+.accordion-toggle.collapsed {
+    color: #2a6a99 !important;
+}
+
+.accordion-toggle.collapsed:after {
+    color: #2a6a99 !important;
+}
+
+.accordion-toggle {
+    color: #2a6a99 !important;
+}
+
+.panel-title {
+    color: #2a6a99 !important;
+}
+
+.panel {
+    /* left: 6; */
+    /* right: 6; */
+    /* width: auto; */
+    color: black;
+    /* width: auto; */
+    /* max-width: calc(40% - 20px); */
+}

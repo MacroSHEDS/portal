@@ -1,4 +1,4 @@
-<h2>Notes/Caveats</h2>
+<!-- <h2>Notes/Caveats</h2>
 
 <h4>Limitations</h4>
 <ul>
@@ -59,4 +59,122 @@
     <li>
         The watershed boundaries on our map have been simplified (smoothed) for faster rendering, so their edges don't line up perfectly; however, the underlying boundary files tesselate as you would expect.
     </li>
-</ul>
+</ul> -->
+
+<div class = "notes">
+
+
+  <div class="panel-group" id="accordion">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+          Limitations
+        </a>
+      </h4>
+    </div>
+    <div id="collapseOne" class="panel-collapse collapse in">
+      <div class="panel-body">
+          <ul>
+              <li>Visualization of high-resolution sensor data is not yet possible on this portal, though such data are available for many sites. For now, all data herein are aggregated to daily intervals. We aim to include 15-minute data in a future version.</li>
+          </ul>
+      </div>
+    </div>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+            Interpolation
+        </a>
+      </h4>
+    </div>
+    <div id="collapseTwo" class="panel-collapse collapse">
+      <div class="panel-body">
+        <ul>
+            <li>
+                Discharge and precipitation time series gaps of up to 3 days are linearly interpolated.
+            </li>
+            <li>
+                Chemistry time series gaps of up to 15 days are linearly interpolated.
+            </li>
+            <li>
+                Any data point imputed this way is labeled (ms_interp == 1) within our dataset.
+            </li>
+            <li>
+                Flux is computed as the product of discharge (or precipitation) and solute concentration at a given time point. If an interpolated discharge or concentration value is used to compute a flux value, the latter is also given an ms_status of 1.
+            </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
+          Computing Monthly and Yearly Statistics
+        </a>
+      </h4>
+    </div>
+    <div id="collapseThree" class="panel-collapse collapse">
+      <div class="panel-body">
+        <ul>
+            <li>
+                On the Time Series tab of this portal, aggregation periods with fewer than 10% sampling coverage are omitted from display. This is only relevant when Aggregation is set to "Monthly" or "Yearly". Note that for volume-weighted concentration of precipitation, the cutoff is 50%, rather than 10%. See below for explanation.
+            </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseFour">
+            Uncertainty
+        </a>
+      </h4>
+    </div>
+    <div id="collapseFour" class="panel-collapse collapse">
+      <div class="panel-body">
+        <ul>
+            <li>
+                Every time-series data point retrieved from a data provider by MacroSheds is assigned an uncertainty value equal to the detection limit of the device/process that measured it. For example, a nitrate value may be recorded as 0.24 mg/L using a process accurate to 0.01 mg/L. The true value in this case could be anywhere from 0.2350000... to 0.2449999... mg/L. Therefore the detection limit and the uncertainty associated with the measured value are both 0.01 mg/L. Through all the operations MacroSheds performs (unit conversion, temporal aggregation, spatial/temporal interpolation, flux calculation, etc.), we propagate this uncertainty using the <a href="https://cran.r-project.org/web/packages/errors/index.html" target="_blank" rel="noopener"><u>errors package for R</u></a>. Wherever we leverage the data.table package, which is not compatible with the errors package, we implement uncertainty propagation according to <a href="https://journal.r-project.org/archive/2018/RJ-2018-075/RJ-2018-075.pdf" target="_blank" rel="noopener"><u>Ucar et al.</u></a>
+            </li>
+            <li>
+                We <strong>do not</strong> incporporate measurement uncertainty as reported by data providers. MacroSheds data are retrieved from many providers, only some of which report measurement uncertainty at all. By propagating uncertainty from detection limits, which can be inferred from all data values, we do not risk inflating the apparent uncertainty of data from those domains who happen to report measurement uncertainty vs. those who do not.
+            </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseFive">
+          Volume Weighted Concentration
+        </a>
+      </h4>
+    </div>
+    <div id="collapseFive" class="panel-collapse collapse">
+      <div class="panel-body">
+        <ul>
+            <li>
+                The "traditional" way to compute VWC is:<br>
+                [1] <code>VWC = (C<sub>1</sub>V<sub>1</sub> + C<sub>2</sub>V<sub>2</sub> + ... + C<sub>n</sub>V<sub>n</sub>) \ (V<sub>1</sub> + V<sub>2</sub> + ... + V<sub>n</sub>)</code><br>
+                where <code>C</code> is concentration, <code>V</code> is volume, and <code>n</code> is the number of samples over the period (monthly or yearly). For computational efficiency, we begin with flux (<code>F</code>; the numerator), which is precomputed as a rate. Our denominator is discharge (<code>Q</code>), which is also a rate. Thus, we use:<br>
+                [2] <code>VWC = mean(F<sub>1</sub>, F<sub>2</sub>, ..., F<sub>n</sub>) \ mean(Q<sub>1</sub>, Q<sub>2</sub>, ..., Q<sub>n</sub>)</code><br>
+                to compute stream VWC. To compute VWC of precipitation, which we do not store in rate units, the denominator from equation 1 is used, and the numerator is converted from a rate (per day) to a quantity by multiplying by the number of days in the aggregation period. <strong>NOTE</strong> that this approach can produce skewed VWCs in the case where sampling captures only a subset of an overall pattern. For this reason, we do not display precipitation VWC values for time periods with less than 50% sample coverage. Still, before you draw any conclusions from a precipitation VWC trend, be sure to switch the view back to "Daily" aggregation and verify that the trend is real, not just an artifact of uneven sampling.
+            </li>
+            <li>
+                Also <strong>NOTE</strong>, that for efficiency in computing VWC, we do not remove measurements from the denominator that are unmatched in the numerator (e.g. timepoints with a measured Q value, but no calculated F value). For some sites and time periods, this will produce a weighted mean (VWC) that is skewed. Such a mismatch is uncommon, and should rarely be of great consequence. Still, before you draw any conclusions from a VWC trend, be sure to switch the view back to "Daily" aggregation and verify that the trend is real, not just an artifact of there being more Q or precipitation measurements than there are flux estimates. In particular, this might be relevant if there was a large storm during a certain month, and that storm was captured in the discharge series, but not in the flux series.
+            </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  </div>
+
+</div> <!-- end container -->
