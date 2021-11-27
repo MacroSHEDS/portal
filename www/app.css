@@ -585,7 +585,7 @@ tbody tr.active-row {
 /* Tabs */
 
 .nav-tabs {
-    margin: 6px;
+    margin: 6px 6px 6px 18px;
 }
 
 #right_tabs {
@@ -605,7 +605,18 @@ tbody tr.active-row {
     border: 0px;
 }
 
-/* Notes  Panel  */
+/* Map Styling */
+#MAP {
+    border: 2px solid #367fa9;
+    /* margin: 24px 0px 12px 24px; */
+}
+
+.well {
+    padding: 2px !important;
+    margin: 24px 0px 12px 24px;
+}
+
+/* NOtes/Caveats */
 .panel-heading .accordion-toggle:after {
     /* symbol for "opening" panels */
     font-family: 'Glyphicons Halflings';  /* essential for enabling glyphicon */

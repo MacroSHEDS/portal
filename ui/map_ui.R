@@ -2,7 +2,11 @@ map_tab <- tabPanel(
     # "Map",
     # mapdeckOutput("MAP")
     "Map",
-    leafletOutput("MAP", height = 350),
+    div(
+        id = "mapcontainer",
+        class = "well",
+        leafletOutput("MAP", height = 350),
+    ),
     br(),
 
     # shopping cart
