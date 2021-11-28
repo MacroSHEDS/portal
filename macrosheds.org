@@ -1,0 +1,10 @@
+-*- mode: org -*-
+
+* /macrosheds/
+**
+- MacroSheds (fork@westonslaughter)
+
+    -  [TODO] Hacks 2021-11-15
+      SCHEDULED: <2021-11-16 Mon>
+        -  [TODO] full screen toggle
+        -  [TODO] add legends

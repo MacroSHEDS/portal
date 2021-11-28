@@ -1,0 +1,43 @@
+MacroSheds watershed summary time-series data
+Column names and their descriptions
+
+
+1. network
+
+Short name for the data network associated with a MacroSheds site.
+See "Site summary table" under the Data tab at macrosheds.org for more information.
+
+
+2. domain
+
+Short name for the data domain associated with a MacroSheds site.
+See "Site summary table" under the Data tab at macrosheds.org for more information.
+
+
+3. site_code
+
+Short name for MacroSheds site. See "Site summary table" under the Data tab at
+macrosheds.org for more information.
+
+
+4. var
+
+The category/source prefix and short name for each MacroSheds variable.
+See the README.txt included with this download for more information about variable
+prefixes.
+
+For details about all MacroSheds variables, see "Variable table" under the Data tab at
+macrosheds.org.
+
+
+5. val
+
+The data value.
+
+
+6. pctCellErr
+
+The percent of raster cells within the watershed for which no data was available. This
+includes both implicit (nothing reported for a particular cell) and explicit
+("missing data" code) values. MacroSheds does not report pctCellErr for products retrieved from
+Google Earth Engine, but we may in a future version

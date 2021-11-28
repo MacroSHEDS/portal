@@ -1,0 +1,88 @@
+MacroSheds time-series data
+Column names and their descriptions
+
+
+1. datetime
+
+Date and time in UTC
+
+
+2. site_code
+
+Short name for MacroSheds site. See "Site summary table" under the Data tab at
+macrosheds.org for more information.
+
+
+3. var
+
+The "sampling prefix" and short name for each MacroSheds variable. The sampling
+prefix makes up the first two characters of all elements of the "var" column, and
+is separated from the short name of the variable by an underscore. The first letter
+of the prefix is either "I" or "G", and the second letter is either "S" or "N".
+Prefixes can be interpreted as follows:
+
+    I = "installed", referring to data points that were recorded by some kind of
+        
+installed apparatus, e.g. a rain gauge or an in-stream sensor array.
+    G = "grab", referring to data points that were collected "by hand", either
+        as water samples or manual/visual point measurements.
+
+    S = "sensor", referring to data points that were recorded by an electronic
+        device in the field.
+    N = "non-sensor", referring to data points that were recorded by a human making
+        physical measurements, or as analytical samples in a lab
+
+Note that MacroSheds determines I vs. G automatically using a set of heuristics.
+S vs. N is determined from source metadata where possible, and inferred otherwise.
+Prefixes may therefore be incorrect in some cases.
+
+For more on MacroSheds variables, see "Variable table" under the Data tab at
+macrosheds.org.
+
+
+4. val
+
+The data value.
+
+
+5. ms_status
+
+A 0 in this column indicates that the corresponding data point is "clean" by MacroSheds standards.
+This means it was not flagged as problematic in any way by the data provider, and
+that it passed our QA/QC system. A value of 1 in this column indicates that the data
+point is "questionable", meaning the data provider flagged it with a note of mild-to-
+moderate concern. We do not include points in our dataset if they are flagged
+as "insufficient sample", "sensor out of water", "dead battery", "contaminated sample",
+or anything else indicating outright bad data. However, a flag stating e.g. "half
+sample volume" or "debris on sensor" would be included in our dataset with an ms_status
+of 1. Note that for sequences of points interpolated by MacroSheds, the ms_status value
+preceding the interpolated sequence is carried to all interpolated points within the sequence.
+
+
+6. ms_interp
+
+A 1 in this column indicates that the corresponding data point was imputed by MacroSheds.
+Currently, all imputation is done by linear interpolation, except for winter discharge at
+McMurdo LTER, where we assume discharge values of 0. In future versions, we will leverage
+additional imputation techniques and detail them here.
+
+
+7. val_err
+
+The combined standard uncertainty associated with the corresponding data point.
+Every time-series data point retrieved from a data provider by MacroSheds is assigned
+an uncertainty value equal to the detection limit of the device/process that measured it.
+For example, a nitrate value may be recorded as 0.24 mg/L using a process accurate to
+0.01 mg/L. The true value in this case could be anywhere from 0.2350000... to
+0.2449999... mg/L. Therefore the detection limit and the uncertainty associated with the
+measured value are both 0.01 mg/L. Through all the operations MacroSheds performs
+(unit conversion, temporal aggregation, spatial/temporal interpolation, flux calculation,
+etc.), we propagate this uncertainty using the errors package for R
+(https://cran.r-project.org/web/packages/errors/index.html). Wherever we leverage
+the data.table package, which is not compatible with the errors package, we implement
+uncertainty propagation according to doi:10.32614/RJ-2018-075. We DO NOT incporporate
+measurement uncertainty as reported by data providers. MacroSheds data are retrieved
+from many providers, only some of which report measurement uncertainty at all. By
+propagating uncertainty from detection limits, which can be inferred from all data values,
+we do not risk inflating the apparent uncertainty of data from those domains who happen to
+report measurement uncertainty vs. those who do not.

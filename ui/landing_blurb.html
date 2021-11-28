@@ -1,7 +1,64 @@
-This project will enable anyone with internet access to compare the flow and the chemistry of hundreds of streams throughout the United States and to explore their watersheds.
+Watershed ecosystem science has identified plenty of idiosyncrasy within watersheds, but hasn't produced many general theories about watersheds at large. A major reason has been the challenge of data access and integration across all the organizations that house watershed data.
+(<a href="https://lternet.edu/" target="_blank" rel="noopener"><u>LTER</u></a>,
+<a href="https://criticalzone.org/" target="_blank" rel="noopener"><u>CZO/CZ Net</u></a>,
+<a href="https://data.neonscience.org" target="_blank" rel="noopener"><u>NEON</u></a>,
+<a href="https://www.energy.gov/science/ber/biological-and-environmental-research" target="_blank" rel="noopener"><u>DOE</u></a>,
+<a href="https://www.fs.usda.gov/rds/archive/catalog" target="_blank" rel="noopener"><u>USFS</u></a>, etc.).
+MacroSheds unites stream and watershed data from all these sources on one platform, making it easy for anyone to explore the hydrology, water quality,
+and biogeochemistry of rivers across North America and beyond.
+
 <br><br>
-This will make it eaisy for scientists, resource managers, and students to generate questions about water quality and river flow patterns across the continent.
+
+This is <span style='color: white'>MacroSheds v1.0 <strong>alpha</strong></span>, so all our major features are in place, but there might still be some feature bugs or data errors. Please <a href='mailto: mail@macrosheds.org'><u>let us know</u></a> if you find any! Beta release will be early 2022.
+
 <br><br>
-Researchers will use these data to study what types of watersheds are best at retaining nutrients, are recovering most rapidly from decades of acid rain, have the highest erosion rates, and have flow patterns that are least sensitive to floods and droughts.
-<br><br>
-The lessons we learn from studying many watersheds and streams will contribute to more effective management of our nation’s water and forest resources.
+
+<div class='row'>
+    <div class='col-md-6 text-right'>
+        <button class="btn btn-primary btn-lg" data-toggle="collapse" data-target="#about_collapse">Toggle more</button>
+    </div>
+    <div class='col-md-6 text-left'>
+        <button id='DATA_TOUR' class="btn btn-success btn-lg" disabled>Take a data tour</button>
+    </div>
+</div>
+
+<div id="about_collapse" class="collapse">
+
+    <br>
+
+    Check out the Site Comparison tab to explore patterns across all sites within MacroSheds, or the Time Series page to closely compare time-series data for a few sites. When you're ready for analysis, head to the Data tab where you can download everything we've put together.
+
+    <br><br>
+
+    <p style='color: white'><strong>Dataset summary</strong> (see catalogues under the Data tab for more):</p>
+    <ul>
+        <li class='leftpanel'>Time series of concentration and flux for dozens of solutes, as well as water quality metrics, at hundreds of stream/river monitoring sites.</li>
+        <li class='leftpanel'>Time series of discharge (flow) for all sites.</li>
+        <li class='leftpanel'>Time series of watershed-average precipitation volume, chemistry, and chemical flux for most sites.</li>
+        <li class='leftpanel'>Terrain, landcover, vegetation, geology, and climate summary statistics for the watersheds contributing to all sites.</li>
+        <li class='leftpanel'>Sample type (sensor measurement, grab sample, etc.) identified for all stream data points.</li>
+        <li class='leftpanel'>Uncertainty propagated through all MacroSheds stream data processing operations.</li>
+        <li class='leftpanel'>All temporally imputed and flagged data points marked for easy filtering.</li>
+    </ul>
+
+    <br>
+
+    <p style='color: white'><strong>Future updates:</strong></p>
+    <ul>
+        <li class='leftpanel'>Up to 15-minute sensor data (for now all series are aggregated to daily intervals).</li>
+        <li class='leftpanel'>MacroSheds R package.</li>
+        <li class='leftpanel'>API for querying/downloading data.</li>
+        <li class='leftpanel'>Rain/snow partitioning of precipitation data.</li>
+    </ul>
+</div>
+
+<hr>
+
+<div class='text-center' style='color: white; font-size: 0.8em'>
+    <p style='margin-bottom: 0px'>
+        MacroSheds is funded by the U.S. National Science Foundation (Awd.
+        <a href='https://www.nsf.gov/awardsearch/showAward?AWD_ID=1926420' target="_blank"><u>1926420</u></a>).
+    </p>
+    &#8213;&#8213;&#8213;
+    <p>All MacroSheds aquatic data are collected and provided by U.S. federally funded projects.</p>
+</div>

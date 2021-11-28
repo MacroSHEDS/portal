@@ -1,10 +1,8 @@
-/data
+data/
 config.txt
 .Rhistory
 rsconnect
 temp_shinyappsio
-site_data.csv
-*.svg
 logs
 .Rproj.user
 portal.Rproj
@@ -15,3 +13,8 @@ portal.Rproj
 ui/.DS_Store
 server/.DS_Store
 *.Rapp.history 
+config.json
+googlesheet_service_accnt.json
+data.bak
+js/
+data.zip

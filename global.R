@@ -6,147 +6,430 @@ suppressPackageStartupMessages({
     # library(dtplyr)
     library(shiny)
     library(shinydashboard)
+    library(shinycssloaders)
+    library(sortable)
+    # library(shinyWidgets)
     library(plotly)
     library(dygraphs)
     # library(DBI)
     library(ggthemes)
     # library(ggplot2)
     # library(colorspace)
+    # library(shinythemes)
     library(jsonlite)
     library(lubridate)
     library(xts)
     library(leaflet)
+    library(leaflet.extras)
     library(tidyverse)
     library(glue)
     library(shinyjs)
+    library(googlesheets4)
+    library(DT)
+    library(errors)
+    library(cicerone)
+    library(mapdeck)
+    # library(rhandsontable)
+    # library(shiny.router)
 })
 
-#todo:
-#most of the variables created in this script can be automatically generated.
-    #those that can't should be read from a config file or spreadsheet eventually.
-#attend to trailing comments within this script
+# TODO:
+# most of the variables created in this script can be automatically generated.
+# those that can't should be read from a config file or spreadsheet eventually.
+# attend to trailing comments within this script
 
-#options(dplyr.summarise.inform = FALSE)
+## 0. setup ####
 
-#uncomment and execute (without saving script) to deploy demo app
+conf <- jsonlite::fromJSON("config.json")
+
+# #uncomment and run this (without saving script) to create initial connection to our shinyapps account
+# rsconnect::setAccountInfo(name = 'cuahsi',
+#                           token = conf$shinyapps_cuahsi_token,
+#                           secret = conf$shinyapps_cuahsi_secret)
+#
+# #uncomment and run this (without saving script) to deploy app
+# options(rsconnect.max.bundle.size = 8 * 1024 * 1024 * 1024)
 # rsconnect::deployApp('/home/mike/git/macrosheds/portal',
-#     appName='MacroSheds_demo')
-# rsconnect::deployApp('/home/mike/git/macrosheds/portal',
-#     appName='portal', account='macrosheds')
+#                      appName = 'macrosheds',
+#                      account = 'cuahsi')
 
-#for local testing (comment all before pushing live)
+# options(dplyr.summarise.inform = FALSE)
+
+# for local testing (comment all before pushing live)
 # setwd('~/git/macrosheds/portal')
 # setwd('~/desktop/macrosheds/portal')
 # options(shiny.trace = TRUE) #see every communication between ui and server
 # options(shiny.reactlog = TRUE) #see map of reactivity by running reactlogShow()
-# options(shiny.error=recover) #enter debugger when error occurs
+# options(shiny.error='recover') #enter debugger when error occurs
 # options(shiny.fullstacktrace=TRUE) #see stack traces for all errors (incl. dplyr)
 # options(shiny.sanitize.errors = TRUE) #hide errors in the app
 
-source('helpers.R') #maybe package these or put them in a namespace called "ms"
-source('function_aliases.R')
+source("helpers.R") # maybe package these or put them in a namespace called "ms"
+source("function_aliases.R")
 
-#load global datasets
-site_data = sm(readr::read_csv('data/site_data.csv')) %>%
-    filter(as.logical(in_workflow))
-if(any(duplicated(site_data$site_name))) stop('site_names must be unique, even across domains')
-variables = sm(readr::read_csv('data/variables.csv'))
+# load global datasets
+# googlesheets4::gs4_auth(path = '../data_acquisition/googlesheet_service_accnt.json')
+#                         use_oob = TRUE)
+load_portal_config(from_where = "local")
 
-#set defaults, which determine what data are shown when user lands
-default_domain = 'hbef'
-default_sites_by_domain = list(
-    'hbef'='w1',
-    'hjandrews'='GSLOOK',
-    'neon'='ARIK') #this can be generated automatically and overridden here
-default_sitelist = sitelist_from_domain(default_domain, type='stream_gauge')
-default_site = default_sites_by_domain[[default_domain]]
+# some stream_gauge sites do not have discharge, like calhoun - weir_3
+sites_with_Q <- sm(read_csv("data/general/sites_with_discharge.csv")) %>%
+    select(-network) %>%
+    tidyr::unite(
+        col = "nds",
+        domain, site_code,
+        remove = TRUE
+    ) %>%
+    pull(nds)
 
-#load base data for when user lands in app (could use convenience functions here)
-basedata = list(
-    Q = read_feather(glue('data/{d}/discharge/{s}.feather',
-        d=default_domain, s=default_site)),
-    chem = read_feather(glue('data/{d}/stream_chemistry/{s}.feather',
-        d=default_domain, s=default_site)),
-    flux = read_feather(glue('data/{d}/stream_flux_inst/{s}.feather',
-        d=default_domain, s=default_site)),
-    # P = read_feather(glue('data/{d}/precip.feather',
-    #     d=default_domain)), #update once rain gage interpolation is done
-    P = read_feather(glue('data/{d}/precipitation/{s}.feather',
-        d=default_domain, s=default_site)),
-    pchem = read_feather(glue('data/{d}/precip_chemistry/{s}.feather',
-        d=default_domain, s=default_site)),
-    pflux = read_feather(glue('data/{d}/precip_flux_inst/{s}.feather',
-        d=default_domain, s=default_site))
+# sites_with_Q <- site_data %>%
+#     filter(site_type == 'stream_gauge') %>%
+#     select(-network) %>%
+#     tidyr::unite(col = 'nds',
+#                  domain, site_code,
+#                  remove = TRUE) %>%
+#     pull(nds)
+
+site_data_copy <- site_data
+site_data <- filter(
+    site_data,
+    as.logical(in_workflow),
+    paste(domain, site_code, sep = "_") %in% sites_with_Q |
+        site_type == "rain_gauge"
 )
 
-#make vector of domain IDs and their pretty names
-domains_df = unique(site_data[, c('domain', 'pretty_domain', 'network')])
-domains_pretty = domains_df$domain
-names(domains_pretty) = domains_df$pretty_domain
 
-#create collections of variable types, some of them as menu-ready lists
-fluxvars = variables %>%
+# TODO: allow duplicate site_codes
+# if(any(duplicated(site_data$site_code))) stop('site_codes must be unique, even across domains')
+## 1. nSiteNVar page setup ####
+
+# establish color scheme for nSiteNVar plots
+# raincolors <- c('#8ab5de', '#36486b', '#618685') #blues
+# linecolors <- c('#36486b', '#008040', '#800080') #blue, green, purple
+# pchemcolors <- c('#4a6292', '#1bff8c', '#ff1bff') #lighter shades of linecolors (Blu, G, P)
+# linecolors <- c('#1f49c7', '#006600', '#4d0099') #from royalblue (4169e1), green, purple
+# pchemcolors <- c('#7b97ea', '#00b300', '#8000ff') #lighter shades of linecolors
+
+# alternative color pallete (color blind safe)
+# based on same pallete as site comparison
+
+# Color blind safe palettes
+# blue, purple, orange
+linecolors <- c("#2a6a99", "#b66397", "#d88546")
+pchemcolors <- c("#2a6a99", "#b66397", "#d88546")
+raincolors <- c("#6ba9d6", "#d3a1c1", "#e8b690") # 40% lightness version
+
+# safe_cols <- c("#88CCEE", "#CC6677", "#DDCC77", "#117733", "#332288", "#AA4499",
+#                "#44AA99", "#999933", "#882255", "#661100", "#6699CC", "#888888")
+
+## 2. populate nSiteNVar defaults, which determine data shown when user lands ####
+
+default_network <- "lter"
+default_domain <- "hbef"
+# default_network <- 'czo'
+# default_domain <- 'boulder'
+
+
+network_domain_default_sites <- site_data %>%
+    group_by(network, domain) %>%
+    summarize(
+        site_code = first(site_code),
+        pretty_domain = first(pretty_domain),
+        pretty_network = first(pretty_network),
+        .groups = "drop"
+    ) %>%
+    select(pretty_network, network, pretty_domain, domain,
+        default_site = site_code
+    )
+
+default_sitelist <- get_sitelist(
+    domain = default_domain,
+    # network = default_network, #TODO: observe network level within portal?
+    type = c("stream_gauge", "stream_sampling_point")
+)
+
+default_site <- get_default_site(domain = default_domain)
+# network = default_network)
+
+# default_site <- 'GGU'
+
+basedata <- list(
+    Q = ms_read_portalsite(
+        domain = default_domain,
+        site_code = default_site,
+        prodname = "discharge"
+    ),
+    chem = ms_read_portalsite(
+        domain = default_domain,
+        site_code = default_site,
+        prodname = "stream_chemistry"
+    ),
+    flux = ms_read_portalsite(
+        domain = default_domain,
+        site_code = default_site,
+        prodname = "stream_flux_inst_scaled"
+    ),
+    P = ms_read_portalsite(
+        domain = default_domain,
+        site_code = default_site,
+        prodname = "precipitation"
+    ),
+    pchem = ms_read_portalsite(
+        domain = default_domain,
+        site_code = default_site,
+        prodname = "precip_chemistry"
+    ),
+    pflux = ms_read_portalsite(
+        domain = default_domain,
+        site_code = default_site,
+        prodname = "precip_flux_inst_scaled"
+    )
+)
+
+# date range for date selector
+dtrng <- as.Date(range(basedata$chem$datetime,
+    na.rm = TRUE
+))
+
+## 3. populate nSiteNVar options for all selection widgets ####
+
+domains_pretty <- network_domain_default_sites$domain
+names(domains_pretty) <- network_domain_default_sites$pretty_domain
+
+fluxvars <- variables %>%
     filter(as.logical(flux_convertible)) %>%
     pull(variable_code)
 
-chemvars = variables %>%
-    filter(
-        #variable_type == 'grab',
-        ! variable_code %in% c('flowGageHt', 'P'))
-    # filter(variable_code %in% fluxvars) #might need this back temporarily
-chemvars_display = generate_dropdown_varlist(chemvars)
+chemvars <- filter(
+    variables,
+    variable_type %in% c("chem_discrete", "chem_mix", "gas")
+)
+# filter(variable_code %in% fluxvars) #might need this back temporarily
 
-pchemvars = list( #temporary: update this list as part of a daily scheduled task
-    hbef=c('pH', 'spCond', 'Ca', 'Mg', 'K', 'Na', 'TMAl', 'OMAl', 'Al_ICP',
-        'NH4', 'SO4', 'NO3', 'Cl', 'PO4', 'DOC', 'TDN', 'DON', 'SiO2', 'Mn', 'Fe',
-        'F', 'cationCharge', 'anionCharge', 'theoryCond', 'ionError', 'ionBalance'),
-    hjandrews=c('alk', 'Ca', 'Cl', 'spCond', 'DOC', 'K', 'Mg', 'Na', 'NH3_N',
-        'NO3_N', 'pH', 'PO4_P', 'SiO2', 'SO4_S', 'suspSed', 'TDN', 'TDP', 'TKN',
-        'UTKN', 'UTN', 'UTP'))
-pchemvars_display = generate_dropdown_varlist(chemvars,
-        filter_set=Reduce(union, pchemvars))
+chemvars_display <- generate_dropdown_varlist(chemvars)
 
-conc_vars = variables %>%
-    filter(
-        unit == 'mg/L', #all conc vars should be in this unit to begin with?
-        ! variable_code %in% c('alk', 'suspSed')) %>%
+pchemvars <- list( # TODO: program this list. dig into pchem files by domain and
+    # extract all available variable names. pchemvars_display should
+    # only reflect the available vars for the sites that are selected
+    hbef = c(
+        "pH", "spCond", "Ca", "Mg", "K", "Na", "TMAl", "OMAl", "Al_ICP",
+        "NH4", "SO4", "NO3", "Cl", "PO4", "DOC", "TDN", "DON", "SiO2", "Mn", "Fe",
+        "F", "cationCharge", "anionCharge", "theoryCond", "ionError", "ionBalance"
+    ),
+    hjandrews = c(
+        "alk", "Ca", "Cl", "spCond", "DOC", "K", "Mg", "Na", "NH3_N",
+        "NO3_N", "pH", "PO4_P", "SiO2", "SO4_S", "suspSed", "TDN", "TDP", "TKN",
+        "UTKN", "UTN", "UTP"
+    )
+)
+
+pchemvars_display <- generate_dropdown_varlist(chemvars,
+    filter_set = Reduce(
+        union,
+        pchemvars
+    )
+)
+
+conc_vars <- variables %>%
+    filter(variable_type %in% c("chem_discrete", "gas")) %>% # TODO: allow the 4 gas variables to be displayed in ppx OR x/L, xM, xeq
     pull(variable_code)
 
-conc_units = c('ng/L', 'ug/L', 'mg/L', 'g/L', 'nM', 'uM', 'mM', 'M',
-    'neq/L', 'ueq/L', 'meq/L', 'eq/L')
-flux_units = c('Mg/ha/d', 'kg/ha/d', 'g/ha/d', 'mg/ha/d')
+# these are the available selections for the unit conversion menus
+conc_units <- c("ng/L",
+    "\u03BCg/L" = "ug/L", "mg/L", "g/L", "nM", "\u03BCM" = "uM", "mM", "M",
+    "neq/L", "\u03BCeq/L" = "ueq/L", "meq/L", "eq/L"
+) # TODO: add ppt, ppm, ppb to this list (see TODO above)
+flux_units <- c("Mg/ha/d", "kg/ha/d", "g/ha/d", "mg/ha/d")
 
-#map pretty names (including mouseover ?s) to internal IDs for conc/flux metrics
-conc_flux_names = c('Concentration'='Concentration','x'='Flux', 'y'='VWC')
-names(conc_flux_names)[2] = paste('Flux (interpolated)', enc2native('\U2753'))
-names(conc_flux_names)[3] = paste('Flux (VWC)', enc2native('\U2753'))
+# map conc/flux display options to internal IDs for conc/flux metrics
+conc_flux_names <- c(
+    "Concentration" = "Concentration",
+    # '_x' = 'Flux',
+    "Flux" = "Flux",
+    "VWC" = "VWC"
+)
+# '_y' = 'VWC')
 
-raincolors = c('#8ab5de', '#36486b', '#618685') #blues
-linecolors = c('#323232', '#008040', '#800080') #black, green, purple
-pchemcolors = c('#585858', '#1bff8c', '#ff1bff') #lighter shades of the above
+# names(conc_flux_names)[2] <- paste('Flux (interpolated)',
+#                                    enc2native('\U2753'))
+# names(conc_flux_names)[3] <- paste('Flux (VWC)',
+# names(conc_flux_names)[3] <- paste('Volume-Weighted Concentration',
+#                                    enc2native('\U2753'))
 
-sites_with_P = sites_by_var('precip')
-sites_with_Q = sites_by_var('discharge')
-sites_with_pchem = sites_by_var('precipchem')
+# sites_with_P <- sites_by_var('precipitation')
+# sites_with_Q <- sites_by_var('discharge')
+# sites_with_pchem <- sites_by_var('precip_chemistry')
 
-#might need modification now that files are read site-by-site
-chemvars_display_subset = filter_dropdown_varlist(basedata$chem)
-pchemvars_display_subset = filter_dropdown_varlist(basedata$pchem)
+chemvars_display_subset <- filter_dropdown_varlist(basedata$chem)
+# pchemvars_display_subset <- filter_dropdown_varlist(basedata$pchem)
 
-dtrng = as.Date(range(basedata$chem$datetime, na.rm=TRUE))
+## 4. biplot page setup ####
 
-#biplot
 biplot_options <- chemvars_display_subset
-biplot_data_types <- c('Concentration', 'Flux', 'Discharge', 'Watershed Characteristics')
-flux_units_bi = c('Mg/ha', 'kg/ha', 'g/ha', 'mg/ha')
 
-ws_traits <- list('Bare Ground Cover' = list('Watershed Median (%)' = 'bare_cover_median', 'Watershed Standard Deviation' = 'bare_cover_sd'),
-                  'Tree Cover' = list('Watershed Median (%)' = 'tree_cover_median', 'Watershed Standard Deviation' = 'tree_cover_sd'),
-                  'Non-Tree Cover' = list('Watershed Median (%)' = 'veg_cover_median', 'Watershed Standard Deviation' = 'veg_cover_sd'),
-                  'Start of Growing Season' = list('Watershed Median (DOY)' = 'sos_mean', 'Watershed Standard Deviation' = 'sos_sd'),
-                  'End of Growing Season' = list('Watershed Median (DOY)' = 'eos_mean', 'Watershed Standard Deviation' = 'eos_sd'),
-                  'Leaf Area Index' = list('Annual Maximum' = 'lai_max', 'Annual Mean' = 'lai_mean', 'Annual Minimum' = 'lai_min', 'Annual Standard Deviation' = 'lai_sd_year', 'Watershed Standard Deviation' = 'lai_sd_space'),
-                  'Fraction of Absorbed Photosynthetically Active Radiation' = list('Annual Maximum' = 'fpar_max', 'Annual Mean' = 'fpar_mean', 'Annual Minimum' = 'fpar_min', 'Annual Standard Deviation' = 'fpar_sd_year', 'Watershed Standard Deviation' = 'fpar_sd_space'),
-                  'Gross Primary Production (kg*C/m^2)' = list('Annual Sum' = 'gpp_sum', 'Annual Standard Deviation' = 'gpp_sd_year', 'Watershed Standard Deviation' = 'gpp_sd_space'),
-                  'Net Primary Production  (kg*C/m^2)' = list('Annual Sum' = 'npp_median', 'Watershed Standard Deviation' = 'npp_sd'))
-ws_traits_sub <- lapply(ws_traits, `[[`, 1)
+biplot_data_types <- c(
+    "Stream Chemistry", "Stream Chemistry Flux", "Discharge",
+    "Watershed Characteristics", "Precipitation",
+    "Precipitation Chemistry", "Precipitation Chemistry Flux"
+)
+
+flux_units_bi <- c(
+    "Mg/ha/d", "kg/ha/d", "g/ha/d", "mg/ha/d",
+    "Mg/ha/year", "kg/ha/year", "g/ha/year", "mg/ha/year"
+    #' Mg/year', 'kg/year', 'g/year', 'mg/year'
+)
+
+conc_units_bi <- c("ng/L", "ug/L", "mg/L", "g/L")
+
+discharge_units_bi <- c("mm/year", "m^3", "mm/d")
+
+ws_trait_types <- variables %>%
+    filter(variable_type == "ws_char") %>%
+    pull(variable_subtype) %>%
+    unique()
+
+ws_traits <- generate_dropdown_varlist_ws(variables)
+
+ws_traits_names <- unlist(ws_traits)
+
+## 5. "Take a tour" and "Take a data tour" guide setup ####
+
+js_to_R_TRUE <- function(x, session, inputname) as.logical(toupper(x))
+try(removeInputHandler("logical"), silent = TRUE)
+registerInputHandler("logical", js_to_R_TRUE)
+
+guide1a <- Cicerone$
+    new(
+    keyboard_control = FALSE,
+    done_btn_text = "Next"
+    # next_btn_text = paste0('Next (', enc2native('\U2192'), ')'),
+    # prev_btn_text = paste0('Previous (', enc2native('\U2190'), ')'),
+    # close_btn_text = paste0('Close (Esc)'),
+    # done_btn_text = paste0('Next (', enc2native('\U2192'), ')')
+)$
+    step(
+    el = 'a[data-value="multisite_exploration"]',
+    is_id = FALSE,
+    title = "Examine",
+    description = "time-series of discharge, precipitation, chemistry, and flux."
+)$
+    step(
+    el = "domains_div",
+    title = "Domains",
+    description = "are organizations that manage watershed sites."
+)$
+    step(
+    el = "sites_div",
+    title = "Sites",
+    description = "include stream gauges and their associated watersheds. Choose up to 3 here."
+)$
+    step(
+    el = "cf_div",
+    title = "We're interested in chemistry",
+    description = paste(
+        "of precipitation and streams. It can be represented",
+        "as concentration or flux. See how our flux is calculated",
+        "on the Notes/Caveats page."
+    )
+)$
+    step(
+    class = "cicerone1a",
+    el = "addtl_div",
+    title = "You can filter",
+    description = "by sampling regime and/or data quality here. You can also include uncertainty bounds."
+)
+
+guide1b <- Cicerone$
+    new(keyboard_control = FALSE)$
+    step(
+    el = 'a[data-value="biplot"]',
+    is_id = FALSE,
+    title = "On the Site Comparison tab",
+    description = "you can compare chemistry, watershed attributes, and more across all sites."
+)$
+    step(
+    el = "axes_div",
+    title = "Set your variables",
+    description = "for each axis."
+)$
+    step(
+    el = "size_div",
+    title = "Add a third dimension",
+    description = "(optionally)."
+)$
+    step(
+    el = "agg_div",
+    title = " ",
+    description = "Plot points (all-time summaries), or lines (yearly summaries)"
+)$
+    step(
+    el = 'a[data-value="Data"]',
+    is_id = FALSE,
+    title = "Check out",
+    description = "the data catalogues, and download data here."
+)$
+    step(
+    el = "DATA_TOUR",
+    title = "The tour continues!",
+    description = "Click here to see some of the stories these data tell us."
+)
+
+guide2a <- Cicerone$
+    new(
+    keyboard_control = FALSE,
+    close_btn_text = "Next"
+)$
+    step(
+    el = "GRAPH_MAIN3a",
+    class = "cicerone2a",
+    title = " ",
+    description = paste(
+        "Hubbard Brook Experimental Forest in New Hampshire has",
+        "seen a multi-decade decline in stream sulfate due",
+        "in part to reductions in acid rain."
+    )
+    # include pub
+)
+
+guide2b <- Cicerone$
+    new(keyboard_control = FALSE)$
+    step(
+    el = "GRAPH_MAIN3a",
+    title = " ",
+    description = HTML(
+        "<p>H.J. Andrews Experimental Forest in Oregon:</p>",
+        "<p>Watershed GSWS10 was experimentally clearcut in ",
+        "1975, and nitrate export was elevated for years after. ",
+        "Export is stable for GSWS09 (a reference watershed)",
+        "during this period.</p>"
+    )
+    # include pub
+)$
+    step(
+    el = ".container-fluid",
+    is_id = FALSE,
+    class = "cicerone2z",
+    position = "mid-center",
+    title = " ",
+    description = paste("More tour stops coming soon. For now, happy exploring!")
+)
+
+# NOTE: when adding tour stops, the class of the last one must be 'cicerone2z',
+# and the regex after "//** modify this when adding tour stops" must be modified to
+# any stops before z.
+
+# spinner options
+options(spinner.color = "#2a6a99", spinner.type = 8, spinner.size = .5)
+
+# shopping cart
+labels <- list(
+    "one",
+    "two",
+    "three"
+)
+
+rank_list_basic <- rank_list(
+    # text = "Drag the items in any desired order",
+    labels = labels,
+    input_id = "rank_list_basic"
+)
