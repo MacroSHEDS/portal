@@ -611,7 +611,7 @@ tbody tr.active-row {
     /* margin: 24px 0px 12px 24px; */
 }
 
-.well {
+#mapcontainer {
     padding: 2px !important;
     margin: 24px 0px 12px 24px;
 }

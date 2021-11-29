@@ -772,22 +772,48 @@ shinyjs.init = function() {
 //shinyjs.getHeight50 = function() {
 //  Shiny.onInputChange('height50', $(window).height() * .5);
 //}
-// Extend/Collapse
+
+var vizToggle = 0;
+
 $(document).ready(function(){
     $('#COLLAPSE_DATA').click(function(){
-        if ($('.data-sub').not('.data-sub-gone')) {
+        vizToggle++
+
+        if (vizToggle%2 != 0) {
             $(".table").css("min-width", "95%");
-            // $(".glyphicon-circle-arrow-left").toggleClass("non-arrow");
-            $(".glyphicon-circle-arrow-right").toggleClass("glyphicon-circle-arrow-left");
+            $(".map-mode").css("opacity", "0");
+            $(".data-mode").toggleClass("glyphicon-circle-arrow-left glyphicon-circle-arrow-right");
             console.log("expand: data table view");
-        }
-        if ($('.data-sub').hasClass('data-sub-gone')) {
+        } else {
             $(".table").css("min-width", "90%");
-            // $(".glyphicon-circle-arrow-right").toggleClass("non-arrow");
-            $(".glyphicon-circle-arrow-left").toggleClass("glyphicon-circle-arrow-right");
+            $(".map-mode").css("opacity", "1");
+            $(".data-mode").toggleClass("glyphicon-circle-arrow-right glyphicon-circle-arrow-left");
             console.log("collapse: data table view");
         }
 
     });
 });
-    // });
+
+var mapsToggle = 0;
+
+$(document).ready(function(){
+    // on lcicking button to exp/collapse map
+    $('#COLLAPSE_SIDEBAR').click(function(){
+        //  map counter
+        mapsToggle++;
+
+        // if map is not expanded
+        if (mapsToggle%2 != 0) {
+            // make non-viz button invisible
+            $(".data-mode").css("opacity", "0");
+            $(".map-mode").toggleClass("glyphicon-circle-arrow-left glyphicon-circle-arrow-right");
+            console.log("expand: map mode")
+        } else {
+            $(".data-mode").css("opacity", "1");
+            $(".map-mode").toggleClass("glyphicon-circle-arrow-right glyphicon-circle-arrow-left");
+            // $(".map-mode-toggle").toggleClass("map-mode-toggle map-mode-toggle");
+            console.log("collapse: map-mode, return to hybrid mode");
+        }
+
+    });
+});

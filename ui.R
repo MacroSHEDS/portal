@@ -44,7 +44,7 @@ ui <- fluidPage(
             div(
                 style = "width: 36px; display: inline-block; float: right",
                 actionLink("COLLAPSE_SIDEBAR",
-                    label = "", icon = icon("circle-arrow-left", lib = "glyphicon"),
+                    label = "", icon = icon("circle-arrow-left", lib = "glyphicon", class = "map-mode"),
                     class = "sidebar-toggle", `data-toggle` = "offcanvas",
                     style = "margin: 6px"
                 )
@@ -63,7 +63,7 @@ ui <- fluidPage(
                 id = "data-toggler",
                 style = "width: 36px; display: inline-block; float: left",
                 actionLink("COLLAPSE_DATA",
-                    label = "", icon = icon("circle-arrow-right", lib = "glyphicon"),
+                    label = "", icon = icon("circle-arrow-right", lib = "glyphicon", class = "data-mode"),
                     class = "data-hider", # `data-toggle` = "offcanvas",
                     style = "margin: 6px"
                 )
