@@ -11,9 +11,20 @@ map_tab <- tabPanel(
 
     # shopping cart
     fluidRow(
+        id = "attribute-table",
         column(
             width = 12,
+            div(
+                style = "width: 36px; position: absolute; right: 1em",
+                actionLink("COLLAPSE_ATTRIBUTES",
+                    label = "", icon = icon("menu-down", lib = "glyphicon", class = "full-map-mode gi-semi-x"),
+                    class = "full-map-toggle",
+                    # `data-toggle` = "offcanvas",
+                    style = "margin: 6px"
+                )
+            ),
             tabsetPanel(
+                id = "attribute-content",
                 type = "tabs",
                 tabPanel(
                     "Selected Sites",
@@ -26,7 +37,7 @@ map_tab <- tabPanel(
                         tagAppendAttributes(class = "table") %>%
                         tagAppendAttributes(class = "horizontal-scroll"),
                 )
-            )
+            ),
         )
     ),
     # this button opens the site exploration tab. the button is hidden and unclickable.

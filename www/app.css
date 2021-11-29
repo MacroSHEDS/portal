@@ -591,12 +591,22 @@ tbody tr.active-row {
 #right_tabs {
     margin: 0px !important;
 }
+
+/* Toggled Reactivity */
+/* Data Visualization Expand/Collapse */
 #data-toggler {
     margin-top: 6px;
 }
-
+#COLLAPSE_DATA {
+    margin: -6px;
+}
 .container-fluid {
     padding: 0px !important;
+}
+
+/* Attribute Table Expand/Collapse */
+.fullmap {
+    height: 700px !important;
 }
 
 /* Bucket List */
@@ -655,3 +665,10 @@ tbody tr.active-row {
     /* width: auto; */
     /* max-width: calc(40% - 20px); */
 }
+
+/* Glyphicon Size Classes */
+.gi-2x{font-size: 2em;}
+.gi-semi-x{font-size: 1.5em}
+.gi-3x{font-size: 3em;}
+.gi-4x{font-size: 4em;}
+.gi-5x{font-size: 5em;}

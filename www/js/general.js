@@ -773,16 +773,23 @@ shinyjs.init = function() {
 //  Shiny.onInputChange('height50', $(window).height() * .5);
 //}
 
+// Map State Toggling: Map, Hybdrid, Data (and, map/fullmap toggling)
+
 var vizToggle = 0;
 
 $(document).ready(function(){
     $('#COLLAPSE_DATA').click(function(){
-        vizToggle++
+        vizToggle++;
 
         if (vizToggle%2 != 0) {
+
+            //  map and table stuff
             $(".table").css("min-width", "95%");
+
+            //  button stuff
             $(".map-mode").css("opacity", "0");
             $(".data-mode").toggleClass("glyphicon-circle-arrow-left glyphicon-circle-arrow-right");
+            $('#COLLAPSE_DATA').css({'margin': '6px'});
             console.log("expand: data table view");
         } else {
             $(".table").css("min-width", "90%");
@@ -813,6 +820,26 @@ $(document).ready(function(){
             $(".map-mode").toggleClass("glyphicon-circle-arrow-right glyphicon-circle-arrow-left");
             // $(".map-mode-toggle").toggleClass("map-mode-toggle map-mode-toggle");
             console.log("collapse: map-mode, return to hybrid mode");
+        }
+
+    });
+});
+
+// attribute toggle
+var attrToggle = 0;
+
+$(document).ready(function(){
+    $('#COLLAPSE_ATTRIBUTES').click(function(){
+        attrToggle++;
+
+        if (attrToggle%2 != 0) {
+
+            //  button stuff
+            $(".full-map-mode").toggleClass("glyphicon-menu-down glyphicon-menu-up");
+            console.log("expand: full map view");
+        } else {
+            $(".full-map-mode").toggleClass("glyphicon-menu-up glyphicon-menu-down");
+            console.log("collapse: small map, large attribute table view");
         }
 
     });
