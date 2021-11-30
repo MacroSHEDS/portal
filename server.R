@@ -59,6 +59,18 @@ server <- function(input, output, session) {
         )
     })
 
+    observeEvent(input$COLLAPSE_ATTRIBUTES, {
+        # shinyjs::toggleClass(
+        #     selector = "#attribute-content",
+        #     class = "hidden"
+        # )
+        shinyjs::toggleClass(
+            selector = "#MAP",
+            class = "fullmap"
+        )
+    })
+
+
     stream_gauge_buttons <- read_file("ui/stream_gauge_buttons.html")
     rain_gauge_buttons <- read_file("ui/rain_gauge_buttons.html")
     loading_dots <- HTML(read_file("ui/loading_dots.html"))
