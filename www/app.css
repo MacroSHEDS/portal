@@ -597,6 +597,12 @@ tbody tr.active-row {
 #data-toggler {
     margin-top: 6px;
 }
+.leaflet-control-zoom-in {
+    color: #000 !important;
+}
+.leaflet-control-zoom-out {
+    color: #000 !important;
+}
 #COLLAPSE_DATA {
     margin: -6px;
 }
