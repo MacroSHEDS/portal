@@ -49,7 +49,10 @@ map_tab <- tabPanel(
     div(
         class = "label",
         tags$footer(
-            p("go to 'Notes/Caveats' tab for more information"),
+            p(
+                id = "notes-footer",
+                "go to 'Notes/Caveats' tab for more information"
+            ),
             # class = "leftpanel-text"
         )
     )

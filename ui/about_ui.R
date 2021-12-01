@@ -10,7 +10,7 @@ about_tab <- tabPanel("About",
             #     style = "height: 100px; width: 300px"
             # ),
             div(includeHTML("ui/landing_blurb.html"),
-                style = "padding: 20px; color: #7b96b6; font-size: 1.2em;",
+                style = "padding: 0px 20px; color: #7b96b6; font-size: 1.2em;",
                 class = "text-left"
             )
         )

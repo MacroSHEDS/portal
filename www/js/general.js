@@ -837,26 +837,51 @@ $(document).ready(function(){
             //  button stuff
             $(".full-map-mode").toggleClass("glyphicon-menu-down glyphicon-menu-up");
             console.log("expand: full map view");
+            // dissapear attr table and footer
+            $(".rank-list-container").addClass("hidden")
+            $("#notes-footer").addClass("hidden")
+
         } else {
             $(".full-map-mode").toggleClass("glyphicon-menu-up glyphicon-menu-down");
             console.log("collapse: small map, large attribute table view");
+
+            // reappear attr table and footer
+            $(".rank-list-container").removeClass("hidden")
+            $("#notes-footer").removeClass("hidden")
         }
 
     });
 });
 
+// make sure data tab panel is matching map tab panel height, and, remove white space
+$(document).ready(function()
+    {
+       var resizeDelay = 200;
+       var doResize = true;
+       var resizer = function () {
+          if (doResize) {
 
+            //your code that needs to be executed goes here
+            $(".data-wrapper-wide").css("height", $(".wrapper").height());
+            //  check process
+            console.log($(".content-wrapper").height());
+            console.log($(".main-sidebar").height());
+            $(".content-wrapper").css("height", $(".main-sidebar").height());
+            console.log($(".content-wrapper").height());
+            console.log('RESIZE')
+
+
+            doResize = false;
+          }
+        };
+        var resizerInterval = setInterval(resizer, resizeDelay);
+        resizer();
+
+        $(window).resize(function() {
+          doResize = true;
+        });
+});
 // landing slideshow
-var slideIndex = 1;
-showSlides(slideIndex);
-
-function plusSlides(n) {
-  showSlides(slideIndex += n);
-}
-
-function currentSlide(n) {
-  showSlides(slideIndex = n);
-}
 
 function showSlides(n) {
   var i;
@@ -872,4 +897,18 @@ function showSlides(n) {
     }
   slides[slideIndex-1].style.display = "block";
   dots[slideIndex-1].className += " active";
+}
+
+var slideIndex = 1;
+
+$(document).ready(function() {
+    showSlides(slideIndex);
+});
+
+function plusSlides(n) {
+  showSlides(slideIndex += n);
+}
+
+function currentSlide(n) {
+  showSlides(slideIndex = n);
 }
