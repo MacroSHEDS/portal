@@ -87,7 +87,7 @@ server <- function(input, output, session) {
         )
     }
 
-    # source("ui/landing_page_ui.R", local = TRUE)
+    # source("ui/loading_dots_ui.R", local = TRUE)
     source("server/summary_biplot_server.R", local = TRUE)
     # source('server/oneSiteNVar_server.R', local=TRUE)
     source("server/nSiteNVar_server.R", local = TRUE)
@@ -122,14 +122,18 @@ server <- function(input, output, session) {
                 big.mark = ","
             )
     })
-    # 
+
     # observeEvent(
     #     once = TRUE,
     #     ignoreNULL = FALSE,
     #     ignoreInit = FALSE,
     #     eventExpr = TRUE,
     #     handler.quoted = TRUE,
-    #     handlerExpr = landing_page
+    #     handlerExpr = {
+    #         show_loading_dots("LOADING_POPUP",
+    #             message = "loading"
+    #         )
+    #     }
     # )
 
     observeEvent(
@@ -199,14 +203,15 @@ server <- function(input, output, session) {
         ignoreInit = TRUE
     )
 
-    # observeEvent(
-    #     eventExpr = init_vals$loading_modal,
-    #     handlerExpr = {
-    #         # showModal(p('oi'))
-    #     },
-    #     autoDestroy = FALSE,
-    #     ignoreInit = TRUE
-    # )
+    observeEvent(
+        eventExpr = init_vals$loading_modal,
+        handlerExpr = {
+            # showModal(p('oi'))
+        },
+        autoDestroy = FALSE,
+        ignoreInit = TRUE
+    )
+
     observeEvent(
         eventExpr = input$START_DATA_TOUR,
         handlerExpr = {

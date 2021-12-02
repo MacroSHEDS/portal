@@ -452,6 +452,8 @@ MISC
   position: relative;
   width: 80px;
   height: 80px;
+  top: 45%;
+  left: 45%;
 
 }
 .lds-grid div {
@@ -835,4 +837,17 @@ tbody tr.active-row {
     background-color: #2a6a99; /* purple: #b66397 */
 }
 
-/* fix all for white band in focus views issue */
+/* start loading dots */
+
+#loading-start {
+    opacity:0.8;
+    background-color:#ccc;
+    position:fixed;
+    width:100%;
+    height:100%;
+    top:0px;
+    left:0px;
+    z-index:1000;
+    top:0;
+    left:0;
+}

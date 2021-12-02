@@ -465,17 +465,15 @@ shinyjs.init = function() {
 
     //respond to insertions of shiny modal boxes into document.body
     var dom_observer1 = new MutationObserver(async function(mutation) {
-
+        console.log('mutation')
         var tgt = $(target);
-        var shinymodal = tgt.children('shiny-text-output');
-        console.log(shinymodal)
-        console.log(shinymodal.length)
-
-        if(shinymodal.length == 0){
-
-            var modal_id = shinymodal.find('.shiny-bound-output').attr('id');
-            console.log(modal_id)
-            if(modal_id == 'NOBS'){
+        var shinymodal = tgt.children('#shiny-modal-wrapper');
+        //
+        // if(shinymodal.length > 0){
+        //
+        var modal_id = shinymodal.find('.modal-body').attr('id');
+        console.log(modal_id)
+            if(modal_id == 'undefined'){
 
                 window.setTimeout(function(){
                     $('.loading-container').hide();
@@ -519,7 +517,7 @@ shinyjs.init = function() {
                     set_tablebutton_listener(btn = arguments[2], modal_id_ = arguments[0]);
                 }, modal_id));
             };
-        };
+        // };
     });
 
     //configure and register mutation observer for modals
@@ -736,6 +734,7 @@ shinyjs.init = function() {
         //window.setTimeout(function(){
         //    $('#SLIDER_UPDATES_PLOTS').trigger('click');
         //}, 1000); //wait for timeslider debounce
+        // var global_trigger = 0;
 
         $('div[id^="GRAPH_"]').on('shiny:value', function(event){
             let $this = $(this)
@@ -744,7 +743,12 @@ shinyjs.init = function() {
 
             if(! is_qc_plot){
                 $('#GEN_PLOTS3').removeClass('disabled').removeAttr('disabled');
-                shinyjs.enable("DATES3")
+                shinyjs.enable("DATES3");
+
+                $('#loading-start').hide();
+                // global_trigger++
+                // console.log(global_trigger);
+
                 if(enable_data_tour){
                     Shiny.setInputValue('CONTINUE_DATA_TOUR', next_tour_id);
                 };
@@ -914,3 +918,35 @@ function plusSlides(n) {
 function currentSlide(n) {
   showSlides(slideIndex = n);
 }
+
+// keeping modal reactivity without splash
+$(document).ready(function() {
+    if ('#loading-start:visible') {
+        console.log("loading in progress")
+    }
+    if ('#loading-start:hidden') {
+        console.log("loading done")
+        //
+        window.setTimeout(function(){
+            $('.loading-container').hide();
+            $('#landing #DISMISS_MODAL').show();
+            $('#landing #TAKE_TOUR').show();
+            $('#DATA_TOUR').removeAttr('disabled');
+            $('#GEN_PLOTS3').removeClass('disabled').removeAttr('disabled');
+        }, 1000);
+        window.setTimeout(function(){
+            $('.loading-container').hide();
+            $('#landing #DISMISS_MODAL').show();
+            $('#landing #TAKE_TOUR').show();
+            $('#DATA_TOUR').removeAttr('disabled');
+            $('#GEN_PLOTS3').removeClass('disabled').removeAttr('disabled');
+        }, 3000);
+        window.setTimeout(function(){
+            $('.loading-container').hide();
+            $('#landing #DISMISS_MODAL').show();
+            $('#landing #TAKE_TOUR').show();
+            $('#DATA_TOUR').removeAttr('disabled');
+            $('#GEN_PLOTS3').removeClass('disabled').removeAttr('disabled');
+        }, 8000);
+    };
+});
