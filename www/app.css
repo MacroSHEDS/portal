@@ -755,8 +755,10 @@ tbody tr.active-row {
 /* Jumbotron */
 .jumbotron {
     margin-bottom: 30px;
+    margin-left: 20px;
+    margin-top: 10px;
     padding-top: 36px;
-    padding-bottom: 24px;
+    padding-bottom: 24px !important;
 }
 
 .text-left {

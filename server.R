@@ -87,7 +87,7 @@ server <- function(input, output, session) {
         )
     }
 
-    source("ui/landing_page_ui.R", local = TRUE)
+    # source("ui/landing_page_ui.R", local = TRUE)
     source("server/summary_biplot_server.R", local = TRUE)
     # source('server/oneSiteNVar_server.R', local=TRUE)
     source("server/nSiteNVar_server.R", local = TRUE)
@@ -122,15 +122,15 @@ server <- function(input, output, session) {
                 big.mark = ","
             )
     })
-
-    observeEvent(
-        once = TRUE,
-        ignoreNULL = FALSE,
-        ignoreInit = FALSE,
-        eventExpr = TRUE,
-        handler.quoted = TRUE,
-        handlerExpr = landing_page
-    )
+    # 
+    # observeEvent(
+    #     once = TRUE,
+    #     ignoreNULL = FALSE,
+    #     ignoreInit = FALSE,
+    #     eventExpr = TRUE,
+    #     handler.quoted = TRUE,
+    #     handlerExpr = landing_page
+    # )
 
     observeEvent(
         eventExpr = input$MAPDATA,

@@ -101,6 +101,12 @@ output$MAP <- renderLeaflet({
         #     options = WMSTileOptions(format = "image/png", info_format = "text/html", transparent = TRUE),
         #     group = "Tree Canopy"
         # ) %>%
+        addTiles(
+            urlTemplate = "http://macrosheds.org/map_tiles/nlcd_30m/nlcd/{z}/{x}/{y}.png",
+            options = tileOptions(minZoom = 2, maxZoom = 10, tms = TRUE),
+            attribution = "USGS Multi-Resolution Land Characteristics Consortium",
+            group = "Landcover" # NLCD (30m)
+        ) %>%
         # Tree Canopy Change (2011-2016)
         addWMSTiles(
             "https://www.mrlc.gov/geoserver/mrlc_display/NLCD_Tree_Canopy_Change_Index_L48/ows?SERVICE=WMS&",
@@ -393,7 +399,7 @@ output$MAP <- renderLeaflet({
         ) %>%
         addLayersControl(
             position = "topright",
-            baseGroups = c("Land Cover (2019)", "Land Cover Change (2001-2019)", "Impervious Surfaces", "Geology", "EPA Ecoregions", "Streams", "Tree Canopy (2016)", "Tree Canopy Change (2011-2016)", "3DEP Elevation"),
+            baseGroups = c("Land Cover (2019)", "Landcover", "Land Cover Change (2001-2019)", "Impervious Surfaces", "Geology", "EPA Ecoregions", "Streams", "Tree Canopy (2016)", "Tree Canopy Change (2011-2016)", "3DEP Elevation"),
             # all maps
             # baseGroups = c("Plain", "Simple", "Geochemistry", "Wetlands and Water Bodies", "Shaded Relief", "Impervious Surfaces", "Tree Canopy", "Streams", "Landcover", "Sulfur", "SO3 and NH3/NH4", "Pop. Density", "Topo Map", "Aerial Imagery", "EPA Ecoregions", "Soils", "Hazardous Sites"),
             options = layersControlOptions(

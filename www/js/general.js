@@ -467,13 +467,15 @@ shinyjs.init = function() {
     var dom_observer1 = new MutationObserver(async function(mutation) {
 
         var tgt = $(target);
-        var shinymodal = tgt.children('#shiny-modal-wrapper');
+        var shinymodal = tgt.children('shiny-text-output');
+        console.log(shinymodal)
+        console.log(shinymodal.length)
 
-        if(shinymodal.length > 0){
+        if(shinymodal.length == 0){
 
-            var modal_id = shinymodal.find('.modal-body').attr('id');
-
-            if(modal_id == 'landing'){
+            var modal_id = shinymodal.find('.shiny-bound-output').attr('id');
+            console.log(modal_id)
+            if(modal_id == 'NOBS'){
 
                 window.setTimeout(function(){
                     $('.loading-container').hide();
