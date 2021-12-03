@@ -835,25 +835,34 @@ $(document).ready(function(){
 var attrToggle = 0;
 
 $(document).ready(function(){
+
+    var window_height = ($('#sidebarCollapsed').height() * .55);
+    $('#MAP').css('height', window_height);
+
     $('#COLLAPSE_ATTRIBUTES').click(function(){
         attrToggle++;
 
-        if (attrToggle%2 != 0) {
+
+        if (attrToggle%2 == 0) {
 
             //  button stuff
-            $(".full-map-mode").toggleClass("glyphicon-menu-down glyphicon-menu-up");
+            $(".full-map-mode").toggleClass("glyphicon-menu-up glyphicon-menu-down");
             console.log("expand: full map view");
             // dissapear attr table and footer
             $(".rank-list-container").addClass("hidden")
             $("#notes-footer").addClass("hidden")
+            // reset map height
+            var window_height = ($('#sidebarCollapsed').height() * .8);
+            $('#MAP').css('height', window_height);
 
         } else {
-            $(".full-map-mode").toggleClass("glyphicon-menu-up glyphicon-menu-down");
+            $(".full-map-mode").toggleClass("glyphicon-menu-down glyphicon-menu-up");
             console.log("collapse: small map, large attribute table view");
 
             // reappear attr table and footer
             $(".rank-list-container").removeClass("hidden")
             $("#notes-footer").removeClass("hidden")
+            $('#MAP').css('height', '350px');
         }
 
     });
