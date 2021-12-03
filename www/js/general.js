@@ -950,3 +950,85 @@ $(document).ready(function() {
         }, 8000);
     };
 });
+
+// auto-rotate
+// $(document).ready( function() {
+//     var intervalId = window.setInterval(function(){
+//       plusSlides(slideIndex);
+//       // console.log('a seocnd has passed');
+//   }, 8000);
+// })
+// var carouselCount = 0;
+//
+
+// $(document).ready( function() {
+//     var intervalId = window.setInterval(function(){
+//       slideIndex++;
+//       carouselCount++;
+//
+//       showSlides(slideIndex);
+//       console.log(slideIndex);
+//   }, 10000);
+//
+//     var intervalStop = window.setInterval(function(){
+//       clearInterval(intervalId);
+//       var slideIndex = 2;
+//   }, 50000);
+//
+// })
+//
+// $(document).ready( function() {
+//     $('.update-slide').addClass('update');
+//     setTimeout(
+//       function()
+//           {
+//               $('.update-slide').removeClass('update');
+//           }, 11000);
+// })
+// single use function funciton
+$(document).ready( function() {
+    var intervalUpdate = window.setInterval(function(){
+        $('#macrosheds-dot').addClass('update');
+        setTimeout(
+          function()
+              {
+                  $('#macrosheds-dot').removeClass('update');
+              }, 500);
+      }, 1000);
+
+      $('#macrosheds-dot').click( function() {
+              clearInterval(intervalUpdate);
+          }
+      );
+})
+
+var dotExcited = 0;
+
+$(document).ready( function() {
+          if (dotExcited == 0) {
+              $('#macrosheds-dot').click( function() {
+                if (dotExcited == 0) {
+                var intervalUpdate = window.setInterval(function(){
+                    $('#macrosheds-dot-two').addClass('update');
+                    setTimeout(
+                      function()
+                          {
+                              $('#macrosheds-dot-two').removeClass('update');
+                          }, 500);
+                  }, 1000);
+                dotExcited++;
+                }
+
+                  $('#macrosheds-dot-two').click( function() {
+                          clearInterval(intervalUpdate);
+                          dotExcited++;
+                      }
+                  );
+              }
+          );
+      }
+  })
+//
+// $(document).ready( function() {
+//
+// })
