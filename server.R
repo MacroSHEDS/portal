@@ -143,12 +143,23 @@ server <- function(input, output, session) {
             init_vals$basedata_change_reloads_plots <- TRUE
 
             map_selection <- str_match(input$MAPDATA, "(.+?)__(.+?)_goto.*$")[, 2:3]
+            map_selection_two <- str_match(input$MAPDATA[2], "(.+?)__(.+?)_goto.*$")[, 2:3]
+            print(str_match(map_selection_two[1], '(?<=").*'))
+            print("GOBBLEDYGOOFUS")
+            domain_two <- str_match(map_selection_two[1], '(?<=").*')
+            # print(map_selection_two$value)
+            domain_sel_two <- map_selection_two[1]
+            site_sel_two <- map_selection_two[2]
+            print(paste0("domain two", domain_sel_two))
+            print(paste0("site two", site_sel_two))
 
             domain_sel <- map_selection[1]
             site_sel <- map_selection[2]
+            print(paste0("domain one", domain_sel))
+            print(paste0("site one", site_sel))
 
             dmn_sitelist <- get_sitelist(
-                domain = domain_sel,
+                domain = domain_sel_two,
                 type = c(
                     "stream_gauge",
                     "stream_sampling_point"
@@ -159,16 +170,18 @@ server <- function(input, output, session) {
                 session = session,
                 inputId = "DOMAINS3",
                 label = NULL,
-                selected = domain_sel,
-                choices = domains_pretty
+                selected = c(domain_sel, domain_two),
+                choices = domains_pretty,
+                options = list(maxItems = 3)
             )
 
             updateSelectizeInput(
                 session = session,
                 inputId = "SITES3",
                 label = NULL,
-                selected = site_sel,
-                choices = dmn_sitelist
+                selected = c(site_sel, site_sel_two),
+                choices = dmn_sitelist,
+                options = list(maxItems = 3)
             )
 
             print("MAPDATA")

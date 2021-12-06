@@ -53,6 +53,9 @@ map_tab <- tabPanel(
                 id = "notes-footer",
                 "go to 'Notes/Caveats' tab for more information"
             ),
+            tags$footer(
+                textOutput("results_basic")
+            )
             # class = "leftpanel-text"
         )
     )

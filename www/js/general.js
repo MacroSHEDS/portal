@@ -68,12 +68,45 @@ shinyjs.init = function() {
        };
    };
 
+    function arrayToList(array) {
+        let list = null;
+        for (let i = array.length - 1; i >= 0; i--) {
+            list = { value: array[i], rest: list };
+        }
+        return list;
+    }
     //connect map buttons to app tabs
     $('body').ready(function(){
         $('body').on('click', '[id$="_goto"]', function(){
             var goto_id = $(this).attr('id') + new Date(); //trigger reactivity
             $('#SITE_EXPLORE').trigger('click');
-            Shiny.setInputValue('MAPDATA', goto_id);
+
+            // add sites to cart
+            // id printing into weird attributes...
+            $('div').find('.rank-list').prepend(
+                    '<div class="rank-list-item" id =' + goto_id +' draggable="false">' + goto_id + '</div>'
+                );
+
+            // set mapdata as top 3 ranks
+            var rankList = [];
+
+            $(".rank-list > .rank-list-item").each((index, elem) => {
+              rankList.push(elem.innerHTML);
+            });
+            console.log('cowabunga, baby')
+            console.log(rankList)
+
+            Shiny.setInputValue('MAPDATA', arrayToList(rankList));
+
+            // if (rankList) {
+            //     $.each(rankList, function(index, el){
+            //         Shiny.setInputValue('MAPDATA', el);
+            //         console.log(el)
+            //     })
+            // } else {
+            //     Shiny.setInputValue('MAPDATA', rankList);
+            // }
+
         });
     });
 
