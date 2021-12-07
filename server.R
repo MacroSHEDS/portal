@@ -142,35 +142,53 @@ server <- function(input, output, session) {
         handlerExpr = {
             init_vals$basedata_change_reloads_plots <- TRUE
 
-            map_selection <- str_match(input$MAPDATA, "(.+?)__(.+?)_goto.*$")[, 2:3]
-            map_selection_two <- str_match(input$MAPDATA[2], "(.+?)__(.+?)_goto.*$")[, 2:3]
-            print(str_match(map_selection_two[1], '(?<=").*'))
-            print("GOBBLEDYGOOFUS")
-            domain_two <- str_match(map_selection_two[1], '(?<=").*')
-            # print(map_selection_two$value)
-            domain_sel_two <- map_selection_two[1]
-            site_sel_two <- map_selection_two[2]
-            print(paste0("domain two", domain_sel_two))
-            print(paste0("site two", site_sel_two))
+            print("raw input")
+            print(input$MAPDATA)
 
-            domain_sel <- map_selection[1]
-            site_sel <- map_selection[2]
-            print(paste0("domain one", domain_sel))
-            print(paste0("site one", site_sel))
+            map_selection <- str_match(input$MAPDATA, "(.+?)__(.+?)_goto.*$")[, 2:3]
+
+            print("goto regex of input")
+            print(map_selection)
+
+            # first pair
+            domain_sel <- map_selection[1, 1]
+            site_sel <- map_selection[1, 2]
+
+            # second pair
+            domain_sel_two <- str_match(map_selection[2, 1], '(?<=").*')
+            site_sel_two <- map_selection[2, 2]
+
 
             dmn_sitelist <- get_sitelist(
-                domain = domain_sel_two,
+                domain = domain_sel,
                 type = c(
                     "stream_gauge",
                     "stream_sampling_point"
                 )
             )
 
+            if (is.na(domain_sel_two)) {
+                print("no rank two station available")
+                dmn_all <- dmn_sitelist
+            } else {
+                dmn_sitelist_two <- get_sitelist(
+                    domain = toString(domain_sel_two),
+                    type = c(
+                        "stream_gauge",
+                        "stream_sampling_point"
+                    )
+                )
+
+                dmn_all <- c(dmn_sitelist, dmn_sitelist_two)
+            }
+
+
+
             updateSelectizeInput(
                 session = session,
                 inputId = "DOMAINS3",
                 label = NULL,
-                selected = c(domain_sel, domain_two),
+                selected = c(domain_sel, domain_sel_two),
                 choices = domains_pretty,
                 options = list(maxItems = 3)
             )
@@ -180,7 +198,7 @@ server <- function(input, output, session) {
                 inputId = "SITES3",
                 label = NULL,
                 selected = c(site_sel, site_sel_two),
-                choices = dmn_sitelist,
+                choices = dmn_all,
                 options = list(maxItems = 3)
             )
 
@@ -261,6 +279,7 @@ server <- function(input, output, session) {
         autoDestroy = FALSE,
         ignoreInit = TRUE
     )
+
     # observeEvent(
     #     eventExpr = input$CONTINUE_DATA_TOUR,
     #     handlerExpr = {
