@@ -17,7 +17,7 @@ map_tab <- tabPanel(
             div(
                 style = "width: 36px; position: absolute; right: 1em",
                 actionLink("COLLAPSE_ATTRIBUTES",
-                    label = "", icon = icon("menu-down", lib = "glyphicon", class = "full-map-mode gi-semi-x"),
+                    label = "", icon = icon("menu-up", lib = "glyphicon", class = "full-map-mode gi-semi-x"),
                     class = "full-map-toggle",
                     # `data-toggle` = "offcanvas",
                     style = "margin: 6px"
@@ -49,7 +49,13 @@ map_tab <- tabPanel(
     div(
         class = "label",
         tags$footer(
-            p("go to 'Notes/Caveats' tab for more information"),
+            p(
+                id = "notes-footer",
+                "go to 'Notes/Caveats' tab for more information"
+            ),
+            tags$footer(
+                textOutput("results_basic")
+            )
             # class = "leftpanel-text"
         )
     )

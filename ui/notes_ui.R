@@ -1,4 +1,4 @@
-notes_tab <- tabPanel("Notes/Caveats",
+notes_tab <- tabPanel("Notes",
     value = "notes",
     br(),
     div(includeHTML("ui/notes_tab.html"),

@@ -316,6 +316,7 @@ LEFT PANEL SCROLL CONTROL
 
 .wrapper {
     overflow-y: visible;
+    height: 100vh !important;
 }
 
 body {
@@ -357,6 +358,10 @@ COLLAPSE SECTION
     display: none;
 }
 
+/* .wrapper {
+    min-height: 856px;
+} */
+
 .content-wrapper-wide {
     margin-left: 36px !important;
 }
@@ -368,8 +373,8 @@ COLLAPSE SECTION
 
 .data-wrapper-wide {
     margin-left: 36px !important;
+    height: inherit;
 }
-
 .main-sidebar-wide {
     /* width: -webkit-calc(100% - 36px);
     width:    -moz-calc(100% - 36px);
@@ -447,6 +452,8 @@ MISC
   position: relative;
   width: 80px;
   height: 80px;
+  top: 45%;
+  left: 45%;
 
 }
 .lds-grid div {
@@ -597,6 +604,12 @@ tbody tr.active-row {
 #data-toggler {
     margin-top: 6px;
 }
+.leaflet-control-zoom-in {
+    color: #000 !important;
+}
+.leaflet-control-zoom-out {
+    color: #000 !important;
+}
 #COLLAPSE_DATA {
     margin: -6px;
 }
@@ -606,7 +619,7 @@ tbody tr.active-row {
 
 /* Attribute Table Expand/Collapse */
 .fullmap {
-    height: 700px !important;
+    /* height: 750px !important; */
 }
 
 /* Bucket List */
@@ -672,3 +685,206 @@ tbody tr.active-row {
 .gi-3x{font-size: 3em;}
 .gi-4x{font-size: 4em;}
 .gi-5x{font-size: 5em;}
+
+/* "People" Styling */
+/* Three columns side by side */
+.people-column {
+ /* float: left; */
+ width: 90%;
+ margin-bottom: 6px;
+ padding: 8px;
+ border-radius: 5%;
+ background-color: #f5f5f5;
+}
+
+/* Display the columns below each other instead of side by side on small screens */
+/* @media screen and (max-width: 650px) {
+ .people-column {
+   width: 100%;
+   display: block;
+ }
+} */
+/* logo  */
+.logo {
+    background-color: transparent;
+    margin-bottom: 4px;
+}
+/* Add some shadows to create a card effect */
+.people-card {
+
+ padding: 8px 0px;
+ border-radius: 25%;
+ background-color: #b8c7ce;
+}
+
+/* Some left and right padding inside the container */
+.people-container {
+ margin-top: 6px;
+ box-shadow: 1px 1px 1px 1px rgba(42, 106, 153, 0.4);
+ /* padding: 4px 2px; */
+ border-radius: 5%;
+}
+
+/* Clear floats */
+.people-container::after, .people-row::after {
+ content: "";
+ clear: both;
+ display: table;
+}
+
+/* .title {
+ color: grey;
+} */
+
+/* .button {
+ border: none;
+ outline: 0;
+ display: inline-block;
+ padding: 8px;
+ color: white;
+ background-color: #000;
+ text-align: center;
+ cursor: pointer;
+ width: 100%;
+} */
+
+/* .button:hover {
+ background-color: #555;
+}  */
+
+/* Landing Styles */
+
+/* Jumbotron */
+.jumbotron {
+    margin-bottom: 30px;
+    margin-left: 20px;
+    margin-top: 10px;
+    padding-top: 36px;
+    padding-bottom: 24px !important;
+}
+
+.text-left {
+    padding: 0px 20px;
+}
+
+/* Slideshow container */
+.slideshow-container {
+     /* position: relative; */
+     /* background: #f1f1f1f1; */
+}
+
+/* Slides */
+.mySlides {
+     /* display: none; */
+     /* padding: 80px; */
+     /* text-align: center; */
+     padding: 2px 12px;
+}
+
+/* update slide */
+
+.update {
+    border: 1px solid orange;
+    border-radius: 50%;
+}
+
+/* Next & previous buttons */
+.prev, .next {
+     cursor: pointer;
+     position: absolute;
+     top: 50%;
+     width: auto;
+     margin-top: -30px;
+     padding: 16px;
+     color: #888;
+     font-weight: bold;
+     font-size: 20px;
+     border-radius: 0 3px 3px 0;
+     user-select: none;
+}
+
+/* Position the "next button" to the right */
+.next {
+     position: absolute;
+     right: 0;
+     border-radius: 3px 0 0 3px;
+}
+
+/* On hover, add a black background color with a little bit see-through */
+.prev:hover, .next:hover {
+     background-color: rgba(0,0,0,0.8);
+     color: white;
+}
+
+/* The dot/bullet/indicator container */
+.dot-container {
+     width: 50%;
+     text-align: center;
+     padding: 10px;
+     background: #eee;
+     border-radius: 5%;
+     /* margin-bottom: 6px; */
+     margin-top: 6px !important;
+     margin: auto;
+}
+
+/* The dots/bullets/indicators */
+.dot {
+     cursor: pointer;
+     height: 15px;
+     width: 15px;
+     margin: 0 2px;
+     background-color: #bbb;
+     border-radius: 50%;
+     display: inline-block;
+     transition: background-color 0.6s ease;
+}
+
+/* Add a background color to the active dot/circle */
+.dot.active, .dot:hover {
+    background-color: #2a6a99; /* purple: #b66397 */
+}
+
+/* start loading dots */
+
+#loading-start {
+    opacity:0.8;
+    /* background-color:#fff; */
+    /* background-image: linear-gradient(red, yellow); */
+    /* background: rgb(2,0,36); */
+    /* background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%); */
+    /* background: rgb(52,152,219);
+    background: radial-gradient(circle, rgba(52,152,219,1) 0%, rgba(0,212,255,1) 100%); */
+    /* background: rgb(241,242,181); */
+    /* background: radial-gradient(circle, rgba(241,242,181,1) 0%, rgba(61,114,180,1) 100%); */
+    background-color: #2a6a99;
+    position:fixed;
+    width:100%;
+    height:100%;
+    top:0px;
+    left:0px;
+    z-index:1000;
+    top:0;
+    left:0;
+    display: flex;
+    justify-content: center;
+}
+
+#loading-start-image {
+    background-color:#ccc;
+    position:fixed;
+    height: 500px;
+    width: auto;
+    border: 2px solid black;
+    border-radius: 50%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 15%;
+    margin-bottom: auto;
+    object-fit: cover;
+}
+
+/* general */
+.flip-horizontally {
+  transform: scaleY(.5);
+}

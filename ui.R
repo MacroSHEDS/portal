@@ -10,7 +10,6 @@ source("ui/now_hiring_ui.R")
 source("ui/data_tab_ui.R")
 source("ui/notes_ui.R")
 
-
 ui <- fluidPage(
     use_cicerone(),
     tags$head(includeHTML(("ui/google_analytics.html"))),
@@ -24,6 +23,10 @@ ui <- fluidPage(
     # extendShinyjs(script = 'js/general.js',
     #               functions = c()),
 
+    div(
+        id = "loading-start",
+        includeHTML("ui/loading_dots.html"),
+    ),
     dashboardPage(
         dashboardHeader(disable = TRUE),
         dashboardSidebar(

@@ -68,12 +68,45 @@ shinyjs.init = function() {
        };
    };
 
+    function arrayToList(array) {
+        let list = null;
+        for (let i = array.length - 1; i >= 0; i--) {
+            list = { value: array[i], rest: list };
+        }
+        return list;
+    }
     //connect map buttons to app tabs
     $('body').ready(function(){
         $('body').on('click', '[id$="_goto"]', function(){
             var goto_id = $(this).attr('id') + new Date(); //trigger reactivity
             $('#SITE_EXPLORE').trigger('click');
-            Shiny.setInputValue('MAPDATA', goto_id);
+
+            // add sites to cart
+            // id printing into weird attributes...
+            $('div').find('.rank-list').prepend(
+                    '<div class="rank-list-item" id =' + goto_id +' draggable="false">' + goto_id + '</div>'
+                );
+
+            // set mapdata as top 3 ranks
+            var rankList = [];
+
+            $(".rank-list > .rank-list-item").each((index, elem) => {
+              rankList.push(elem.innerHTML);
+            });
+            console.log('cowabunga, baby')
+            console.log(rankList)
+
+            Shiny.setInputValue('MAPDATA', arrayToList(rankList));
+
+            // if (rankList) {
+            //     $.each(rankList, function(index, el){
+            //         Shiny.setInputValue('MAPDATA', el);
+            //         console.log(el)
+            //     })
+            // } else {
+            //     Shiny.setInputValue('MAPDATA', rankList);
+            // }
+
         });
     });
 
@@ -465,15 +498,15 @@ shinyjs.init = function() {
 
     //respond to insertions of shiny modal boxes into document.body
     var dom_observer1 = new MutationObserver(async function(mutation) {
-
+        console.log('mutation')
         var tgt = $(target);
         var shinymodal = tgt.children('#shiny-modal-wrapper');
-
-        if(shinymodal.length > 0){
-
-            var modal_id = shinymodal.find('.modal-body').attr('id');
-
-            if(modal_id == 'landing'){
+        //
+        // if(shinymodal.length > 0){
+        //
+        var modal_id = shinymodal.find('.modal-body').attr('id');
+        console.log(modal_id)
+            if(modal_id == 'undefined'){
 
                 window.setTimeout(function(){
                     $('.loading-container').hide();
@@ -517,7 +550,7 @@ shinyjs.init = function() {
                     set_tablebutton_listener(btn = arguments[2], modal_id_ = arguments[0]);
                 }, modal_id));
             };
-        };
+        // };
     });
 
     //configure and register mutation observer for modals
@@ -734,6 +767,7 @@ shinyjs.init = function() {
         //window.setTimeout(function(){
         //    $('#SLIDER_UPDATES_PLOTS').trigger('click');
         //}, 1000); //wait for timeslider debounce
+        // var global_trigger = 0;
 
         $('div[id^="GRAPH_"]').on('shiny:value', function(event){
             let $this = $(this)
@@ -742,7 +776,12 @@ shinyjs.init = function() {
 
             if(! is_qc_plot){
                 $('#GEN_PLOTS3').removeClass('disabled').removeAttr('disabled');
-                shinyjs.enable("DATES3")
+                shinyjs.enable("DATES3");
+
+                $('#loading-start').hide();
+                // global_trigger++
+                // console.log(global_trigger);
+
                 if(enable_data_tour){
                     Shiny.setInputValue('CONTINUE_DATA_TOUR', next_tour_id);
                 };
@@ -829,18 +868,209 @@ $(document).ready(function(){
 var attrToggle = 0;
 
 $(document).ready(function(){
+
+    var window_height = ($('#sidebarCollapsed').height() * .55);
+    $('#MAP').css('height', window_height);
+
     $('#COLLAPSE_ATTRIBUTES').click(function(){
         attrToggle++;
 
-        if (attrToggle%2 != 0) {
+
+        if (attrToggle%2 == 0) {
 
             //  button stuff
-            $(".full-map-mode").toggleClass("glyphicon-menu-down glyphicon-menu-up");
-            console.log("expand: full map view");
-        } else {
             $(".full-map-mode").toggleClass("glyphicon-menu-up glyphicon-menu-down");
+            console.log("expand: full map view");
+            // dissapear attr table and footer
+            $(".rank-list-container").addClass("hidden")
+            $("#notes-footer").addClass("hidden")
+            // reset map height
+            var window_height = ($('#sidebarCollapsed').height() * .8);
+            $('#MAP').css('height', window_height);
+
+        } else {
+            $(".full-map-mode").toggleClass("glyphicon-menu-down glyphicon-menu-up");
             console.log("collapse: small map, large attribute table view");
+
+            // reappear attr table and footer
+            $(".rank-list-container").removeClass("hidden")
+            $("#notes-footer").removeClass("hidden")
+            $('#MAP').css('height', '350px');
         }
 
     });
 });
+
+// make sure data tab panel is matching map tab panel height, and, remove white space
+$(document).ready(function()
+    {
+       var resizeDelay = 200;
+       var doResize = true;
+       var resizer = function () {
+          if (doResize) {
+
+            //your code that needs to be executed goes here
+            $(".data-wrapper-wide").css("height", $(".wrapper").height());
+            //  check process
+            console.log($(".content-wrapper").height());
+            console.log($(".main-sidebar").height());
+            $(".content-wrapper").css("height", $(".main-sidebar").height());
+            console.log($(".content-wrapper").height());
+            console.log('RESIZE')
+
+
+            doResize = false;
+          }
+        };
+        var resizerInterval = setInterval(resizer, resizeDelay);
+        resizer();
+
+        $(window).resize(function() {
+          doResize = true;
+        });
+});
+// landing slideshow
+
+function showSlides(n) {
+  var i;
+  var slides = document.getElementsByClassName("mySlides");
+  var dots = document.getElementsByClassName("dot");
+  if (n > slides.length) {slideIndex = 1}
+    if (n < 1) {slideIndex = slides.length}
+    for (i = 0; i < slides.length; i++) {
+      slides[i].style.display = "none";
+    }
+    for (i = 0; i < dots.length; i++) {
+      dots[i].className = dots[i].className.replace(" active", "");
+    }
+  slides[slideIndex-1].style.display = "block";
+  dots[slideIndex-1].className += " active";
+}
+
+var slideIndex = 1;
+
+$(document).ready(function() {
+    showSlides(slideIndex);
+});
+
+function plusSlides(n) {
+  showSlides(slideIndex += n);
+}
+
+function currentSlide(n) {
+  showSlides(slideIndex = n);
+}
+
+// keeping modal reactivity without splash
+$(document).ready(function() {
+    if ('#loading-start:visible') {
+        console.log("loading in progress")
+    }
+    if ('#loading-start:hidden') {
+        console.log("loading done")
+        //
+        window.setTimeout(function(){
+            $('.loading-container').hide();
+            $('#landing #DISMISS_MODAL').show();
+            $('#landing #TAKE_TOUR').show();
+            $('#DATA_TOUR').removeAttr('disabled');
+            $('#GEN_PLOTS3').removeClass('disabled').removeAttr('disabled');
+        }, 1000);
+        window.setTimeout(function(){
+            $('.loading-container').hide();
+            $('#landing #DISMISS_MODAL').show();
+            $('#landing #TAKE_TOUR').show();
+            $('#DATA_TOUR').removeAttr('disabled');
+            $('#GEN_PLOTS3').removeClass('disabled').removeAttr('disabled');
+        }, 3000);
+        window.setTimeout(function(){
+            $('.loading-container').hide();
+            $('#landing #DISMISS_MODAL').show();
+            $('#landing #TAKE_TOUR').show();
+            $('#DATA_TOUR').removeAttr('disabled');
+            $('#GEN_PLOTS3').removeClass('disabled').removeAttr('disabled');
+        }, 8000);
+    };
+});
+
+// auto-rotate
+// $(document).ready( function() {
+//     var intervalId = window.setInterval(function(){
+//       plusSlides(slideIndex);
+//       // console.log('a seocnd has passed');
+//   }, 8000);
+// })
+// var carouselCount = 0;
+//
+
+// $(document).ready( function() {
+//     var intervalId = window.setInterval(function(){
+//       slideIndex++;
+//       carouselCount++;
+//
+//       showSlides(slideIndex);
+//       console.log(slideIndex);
+//   }, 10000);
+//
+//     var intervalStop = window.setInterval(function(){
+//       clearInterval(intervalId);
+//       var slideIndex = 2;
+//   }, 50000);
+//
+// })
+//
+// $(document).ready( function() {
+//     $('.update-slide').addClass('update');
+//     setTimeout(
+//       function()
+//           {
+//               $('.update-slide').removeClass('update');
+//           }, 11000);
+// })
+// single use function funciton
+$(document).ready( function() {
+    var intervalUpdate = window.setInterval(function(){
+        $('#macrosheds-dot').addClass('update');
+        setTimeout(
+          function()
+              {
+                  $('#macrosheds-dot').removeClass('update');
+              }, 500);
+      }, 1000);
+
+      $('#macrosheds-dot').click( function() {
+              clearInterval(intervalUpdate);
+          }
+      );
+})
+
+var dotExcited = 0;
+
+$(document).ready( function() {
+          if (dotExcited == 0) {
+              $('#macrosheds-dot').click( function() {
+                if (dotExcited == 0) {
+                var intervalUpdate = window.setInterval(function(){
+                    $('#macrosheds-dot-two').addClass('update');
+                    setTimeout(
+                      function()
+                          {
+                              $('#macrosheds-dot-two').removeClass('update');
+                          }, 500);
+                  }, 1000);
+                dotExcited++;
+                }
+
+                  $('#macrosheds-dot-two').click( function() {
+                          clearInterval(intervalUpdate);
+                          dotExcited++;
+                      }
+                  );
+              }
+          );
+      }
+  })
+//
+// $(document).ready( function() {
+//
+// })

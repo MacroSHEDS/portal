@@ -87,7 +87,7 @@ server <- function(input, output, session) {
         )
     }
 
-    source("ui/landing_page_ui.R", local = TRUE)
+    # source("ui/loading_dots_ui.R", local = TRUE)
     source("server/summary_biplot_server.R", local = TRUE)
     # source('server/oneSiteNVar_server.R', local=TRUE)
     source("server/nSiteNVar_server.R", local = TRUE)
@@ -123,14 +123,18 @@ server <- function(input, output, session) {
             )
     })
 
-    observeEvent(
-        once = TRUE,
-        ignoreNULL = FALSE,
-        ignoreInit = FALSE,
-        eventExpr = TRUE,
-        handler.quoted = TRUE,
-        handlerExpr = landing_page
-    )
+    # observeEvent(
+    #     once = TRUE,
+    #     ignoreNULL = FALSE,
+    #     ignoreInit = FALSE,
+    #     eventExpr = TRUE,
+    #     handler.quoted = TRUE,
+    #     handlerExpr = {
+    #         show_loading_dots("LOADING_POPUP",
+    #             message = "loading"
+    #         )
+    #     }
+    # )
 
     observeEvent(
         eventExpr = input$MAPDATA,
@@ -138,10 +142,22 @@ server <- function(input, output, session) {
         handlerExpr = {
             init_vals$basedata_change_reloads_plots <- TRUE
 
+            print("raw input")
+            print(input$MAPDATA)
+
             map_selection <- str_match(input$MAPDATA, "(.+?)__(.+?)_goto.*$")[, 2:3]
 
-            domain_sel <- map_selection[1]
-            site_sel <- map_selection[2]
+            print("goto regex of input")
+            print(map_selection)
+
+            # first pair
+            domain_sel <- map_selection[1, 1]
+            site_sel <- map_selection[1, 2]
+
+            # second pair
+            domain_sel_two <- str_match(map_selection[2, 1], '(?<=").*')
+            site_sel_two <- map_selection[2, 2]
+
 
             dmn_sitelist <- get_sitelist(
                 domain = domain_sel,
@@ -151,20 +167,39 @@ server <- function(input, output, session) {
                 )
             )
 
+            if (is.na(domain_sel_two)) {
+                print("no rank two station available")
+                dmn_all <- dmn_sitelist
+            } else {
+                dmn_sitelist_two <- get_sitelist(
+                    domain = toString(domain_sel_two),
+                    type = c(
+                        "stream_gauge",
+                        "stream_sampling_point"
+                    )
+                )
+
+                dmn_all <- c(dmn_sitelist, dmn_sitelist_two)
+            }
+
+
+
             updateSelectizeInput(
                 session = session,
                 inputId = "DOMAINS3",
                 label = NULL,
-                selected = domain_sel,
-                choices = domains_pretty
+                selected = c(domain_sel, domain_sel_two),
+                choices = domains_pretty,
+                options = list(maxItems = 3)
             )
 
             updateSelectizeInput(
                 session = session,
                 inputId = "SITES3",
                 label = NULL,
-                selected = site_sel,
-                choices = dmn_sitelist
+                selected = c(site_sel, site_sel_two),
+                choices = dmn_all,
+                options = list(maxItems = 3)
             )
 
             print("MAPDATA")
@@ -199,14 +234,15 @@ server <- function(input, output, session) {
         ignoreInit = TRUE
     )
 
-    # observeEvent(
-    #     eventExpr = init_vals$loading_modal,
-    #     handlerExpr = {
-    #         # showModal(p('oi'))
-    #     },
-    #     autoDestroy = FALSE,
-    #     ignoreInit = TRUE
-    # )
+    observeEvent(
+        eventExpr = init_vals$loading_modal,
+        handlerExpr = {
+            # showModal(p('oi'))
+        },
+        autoDestroy = FALSE,
+        ignoreInit = TRUE
+    )
+
     observeEvent(
         eventExpr = input$START_DATA_TOUR,
         handlerExpr = {
@@ -243,6 +279,7 @@ server <- function(input, output, session) {
         autoDestroy = FALSE,
         ignoreInit = TRUE
     )
+
     # observeEvent(
     #     eventExpr = input$CONTINUE_DATA_TOUR,
     #     handlerExpr = {

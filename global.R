@@ -422,14 +422,10 @@ guide2b <- Cicerone$
 options(spinner.color = "#2a6a99", spinner.type = 8, spinner.size = .5)
 
 # shopping cart
-labels <- list(
-    "one",
-    "two",
-    "three"
-)
+site_cart <- list()
 
 rank_list_basic <- rank_list(
     # text = "Drag the items in any desired order",
-    labels = labels,
+    labels = site_cart,
     input_id = "rank_list_basic"
 )
