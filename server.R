@@ -142,23 +142,39 @@ server <- function(input, output, session) {
         handlerExpr = {
             init_vals$basedata_change_reloads_plots <- TRUE
 
-            print("raw input")
-            print(input$MAPDATA)
+            print("site one")
+            print(str(input$MAPDATA$value))
+            rank_one <- str_match(input$MAPDATA$value, "(.+?)__(.+?)_goto.*$")[, 2:3]
 
-            map_selection <- str_match(input$MAPDATA, "(.+?)__(.+?)_goto.*$")[, 2:3]
+            print("site two")
+            print(str(input$MAPDATA$rest$value))
+            rank_two <- str_match(input$MAPDATA$rest$value, "(.+?)__(.+?)_goto.*$")[, 2:3]
 
-            print("goto regex of input")
-            print(map_selection)
+            print("site three")
+            print(str(input$MAPDATA$rest$rest$value))
+            rank_three <- str_match(input$MAPDATA$rest$rest$value, "(.+?)__(.+?)_goto.*$")[, 2:3]
+
+            # map_selection <- str_match(input$MAPDATA, "(.+?)__(.+?)_goto.*$")[, 2:3]
+            # map_selection <- rbind(map_selection, c(NA, NA))
 
             # first pair
-            domain_sel <- map_selection[1, 1]
-            site_sel <- map_selection[1, 2]
+            domain_sel <- rank_one[1]
+            site_sel <- rank_one[2]
 
             # second pair
-            domain_sel_two <- str_match(map_selection[2, 1], '(?<=").*')
-            site_sel_two <- map_selection[2, 2]
+            domain_sel_two <- rank_two[1]
+            site_sel_two <- rank_two[2]
 
+            # third pair
+            domain_sel_three <- rank_three[1]
+            site_sel_three <- rank_three[2]
 
+            # all sites
+            site_all <- c(site_sel, site_sel_two, site_sel_three)
+            # all domains names
+            dmns <- c(domain_sel, domain_sel_two, domain_sel_three)
+
+            # get sitelist for first site pair
             dmn_sitelist <- get_sitelist(
                 domain = domain_sel,
                 type = c(
@@ -167,10 +183,13 @@ server <- function(input, output, session) {
                 )
             )
 
+            dmn_all <- dmn_sitelist
+
+            # if there is a second pair
             if (is.na(domain_sel_two)) {
                 print("no rank two station available")
-                dmn_all <- dmn_sitelist
             } else {
+                # get sitelist
                 dmn_sitelist_two <- get_sitelist(
                     domain = toString(domain_sel_two),
                     type = c(
@@ -178,17 +197,35 @@ server <- function(input, output, session) {
                         "stream_sampling_point"
                     )
                 )
-
                 dmn_all <- c(dmn_sitelist, dmn_sitelist_two)
             }
 
-
+            # if there is a third pair
+            if (is.na(domain_sel_three)) {
+                print("no rank three station available (NA)")
+            } else if (exists(domain_sel_three)) {
+                print("no rank three station available (not exists)")
+            } else {
+                # get sitelist
+                dmn_sitelist_three <- get_sitelist(
+                    domain = toString(domain_sel_three),
+                    type = c(
+                        "stream_gauge",
+                        "stream_sampling_point"
+                    )
+                )
+                dmn_all <- c(dmn_sitelist, dmn_sitelist_two, dmn_sitelist_three)
+            }
+            print("domains")
+            print(dmn_all)
+            print("sites")
+            print(site_all)
 
             updateSelectizeInput(
                 session = session,
                 inputId = "DOMAINS3",
                 label = NULL,
-                selected = c(domain_sel, domain_sel_two),
+                selected = dmns,
                 choices = domains_pretty,
                 options = list(maxItems = 3)
             )
@@ -197,7 +234,7 @@ server <- function(input, output, session) {
                 session = session,
                 inputId = "SITES3",
                 label = NULL,
-                selected = c(site_sel, site_sel_two),
+                selected = site_all,
                 choices = dmn_all,
                 options = list(maxItems = 3)
             )
