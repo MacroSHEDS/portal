@@ -1070,7 +1070,27 @@ $(document).ready( function() {
           );
       }
   })
-//
-// $(document).ready( function() {
-//
-// })
+
+// leflet legend
+function addLegend() {
+    if ($('.diy-legend').length) {
+        console.log('icon already present');
+    } else {
+        setTimeout( function() {
+            $('.leaflet-control-layers').after('<div><i class="leaflet-control-layers well-sm diy-legend gi-1-x glyphicon glyphicon-th-list" role="button"></i></div>');
+        }, 4000);
+        };
+    };
+
+$(document).ready( function() {
+    $('#left_tabs').click( function() {
+        addLegend()
+    });
+});
+
+$(document).ready(function() {
+    $('.diy-legend').click( function() {
+        console.log('LEGEND TOGGLE');
+        $('.leaflet-control-wms-legend').css('visibility: visible;');
+    });
+})

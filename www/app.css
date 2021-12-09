@@ -604,12 +604,7 @@ tbody tr.active-row {
 #data-toggler {
     margin-top: 6px;
 }
-.leaflet-control-zoom-in {
-    color: #000 !important;
-}
-.leaflet-control-zoom-out {
-    color: #000 !important;
-}
+
 #COLLAPSE_DATA {
     margin: -6px;
 }
@@ -887,4 +882,24 @@ tbody tr.active-row {
 /* general */
 .flip-horizontally {
   transform: scaleY(.5);
+}
+
+/* Leaflet Styling */
+/* zoom */
+.leaflet-control-zoom-in {
+    color: #000 !important;
+}
+.leaflet-control-zoom-out {
+    color: #000 !important;
+}
+/* legend */
+.leaflet-control-wms-legend {
+    visibility: hidden;
+}
+
+.diy-legend {
+    /* margin-right: 0px; */
+    color: #000 !important;
+    margin-left: 86%;
+    margin-top: 5%;
 }
