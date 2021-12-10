@@ -15,6 +15,10 @@ map_tab <- tabPanel(
         column(
             width = 12,
             div(
+                style = "position: absolute; right: 3.5em",
+                HTML('<div class="dropdown"><button class="btn btn-primary dropdown-toggle" type="button" id="about-us" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Legend<span class="caret"></span></button><ul class="dropdown-menu" aria-labelledby="legend-drop"><li><a id="3DEP-Leg" href="#">3DEP Elevation</a></li><li><a id="Streams-Leg" href="#">Streams</a></li><li><a id="Landcover-Leg" href="#">Landcover</a></li></ul></div>')
+            ),
+            div(
                 style = "width: 36px; position: absolute; right: 1em",
                 actionLink("COLLAPSE_ATTRIBUTES",
                     label = "", icon = icon("menu-up", lib = "glyphicon", class = "full-map-mode gi-semi-x"),
@@ -36,7 +40,7 @@ map_tab <- tabPanel(
                     tableOutput("MAP_SITE_INFO") %>%
                         tagAppendAttributes(class = "table") %>%
                         tagAppendAttributes(class = "horizontal-scroll"),
-                )
+                ),
             ),
         )
     ),

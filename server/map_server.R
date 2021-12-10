@@ -107,6 +107,11 @@ output$MAP <- renderLeaflet({
             attribution = "USGS Multi-Resolution Land Characteristics Consortium",
             group = "Landcover" # NLCD (30m)
         ) %>%
+        # addLegend("bottomright",
+        #     colors = c("blue", "yellow"),
+        #     labels = c("1", "2"),
+        #     group = "Landcover"
+        # ) %>%
         # Tree Canopy Change (2011-2016)
         addWMSTiles(
             "https://www.mrlc.gov/geoserver/mrlc_display/NLCD_Tree_Canopy_Change_Index_L48/ows?SERVICE=WMS&",
@@ -115,13 +120,13 @@ output$MAP <- renderLeaflet({
             group = "Tree Canopy Change (2011-2016)",
             attribution = "Multi-Resolution Land Characteristics (MRLC) consortium",
         ) %>%
-        addWMSLegend(uri = paste0(
-            # "https://www.mrlc.gov/geoserver/",
-            "mrlc_display/NLCD_Tree_Canopy_Change_Index_L48/",
-            "ows?service=WMS&request=GetLegendGraphic&format",
-            "=image%2Fpng&width=20&height=20&layer=",
-            "NLCD_Tree_Canopy_Change_Index_L48"
-        )) %>%
+        # addWMSLegend(uri = paste0(
+        #     # "https://www.mrlc.gov/geoserver/",
+        #     "mrlc_display/NLCD_Tree_Canopy_Change_Index_L48/",
+        #     "ows?service=WMS&request=GetLegendGraphic&format",
+        #     "=image%2Fpng&width=20&height=20&layer=",
+        #     "NLCD_Tree_Canopy_Change_Index_L48"
+        # )) %>%
         # Tree Canopy 2016
         addWMSTiles(
             "https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2016_Tree_Canopy_L48/ows?SERVICE=WMS&",
@@ -130,13 +135,13 @@ output$MAP <- renderLeaflet({
             attribution = "Multi-Resolution Land Characteristics (MRLC) consortium",
             group = "Tree Canopy (2016)"
         ) %>%
-        addWMSLegend(uri = paste0(
-            "https://www.mrlc.gov/geoserver/",
-            "mrlc_display/NLCD_2016_Tree_Canopy_L48/",
-            "ows?service=WMS&request=GetLegendGraphic&format=",
-            "image%2Fpng&width=20&height=20&layer=",
-            "NLCD_2016_Tree_Canopy_L48"
-        )) %>%
+        # addWMSLegend(uri = paste0(
+        #     "https://www.mrlc.gov/geoserver/",
+        #     "mrlc_display/NLCD_2016_Tree_Canopy_L48/",
+        #     "ows?service=WMS&request=GetLegendGraphic&format=",
+        #     "image%2Fpng&width=20&height=20&layer=",
+        #     "NLCD_2016_Tree_Canopy_L48"
+        # )) %>%
         # Geology
         addWMSTiles(
             "https://www.sciencebase.gov/arcgis/services/Catalog/5888bf4fe4b05ccb964bab9d/MapServer/WmsServer?",
@@ -145,13 +150,13 @@ output$MAP <- renderLeaflet({
             attribution = "Horton, J.D., 2017, The State Geologic Map Compilation (SGMC) geodatabase of the conterminous United States (ver. 1.1, August 2017): U.S. Geological Survey data release, https://doi.org/10.5066/F7WH2N65.",
             group = "Geology"
         ) %>%
-        addWMSLegend(uri = paste0(
-            "https://www.sciencebase.gov/",
-            "arcgis/services/Catalog/",
-            "5888bf4fe4b05ccb964bab9d/MapServer/",
-            "WmsServer?request=GetLegendGraphic%",
-            "26version=1.3.0%26format=image/png%26layer=0"
-        )) %>%
+        # addWMSLegend(uri = paste0(
+        #     "https://www.sciencebase.gov/",
+        #     "arcgis/services/Catalog/",
+        #     "5888bf4fe4b05ccb964bab9d/MapServer/",
+        #     "WmsServer?request=GetLegendGraphic%",
+        #     "26version=1.3.0%26format=image/png%26layer=0"
+        # )) %>%
         # Stanford/UT Impervious Surface (dark theme)
         # addWMSTiles(
         #     "https://geowebservices.stanford.edu/geoserver/wms",
@@ -168,12 +173,12 @@ output$MAP <- renderLeaflet({
             attribution = "Multi-Resolution Land Characteristics (MRLC) consortium",
             group = "Impervious Surfaces"
         ) %>% # ttps://www.mrlc.gov/geoserver/mrlc_display/NLCD_2019_Impervious_L48/ows?service=WMS&request=GetLegendGraphic&format=image%2Fpng&width=20&height=20&layer=NLCD_2019_Impervious_L48
-        addWMSLegend(uri = paste0(
-            "https://www.mrlc.gov/geoserver/",
-            "mrlc_display/NLCD_2019_Impervious_L48/",
-            "ows?service=WMS&request=GetLegendGraphic&format",
-            "=image%2Fpng&width=20&height=20&layer=NLCD_2019_Impervious_L48"
-        )) %>%
+        # addWMSLegend(uri = paste0(
+        #     "https://www.mrlc.gov/geoserver/",
+        #     "mrlc_display/NLCD_2019_Impervious_L48/",
+        #     "ows?service=WMS&request=GetLegendGraphic&format",
+        #     "=image%2Fpng&width=20&height=20&layer=NLCD_2019_Impervious_L48"
+        # )) %>%
         # code for HomeBrew NLCD serving (retired due to free option with full zoom)
         # addTiles(
         #     urlTemplate = "http://macrosheds.org/map_tiles/nlcd_30m/nlcd/{z}/{x}/{y}.png",
@@ -189,13 +194,13 @@ output$MAP <- renderLeaflet({
             attribution = "Multi-Resolution Land Characteristics (MRLC) consortium",
             group = "Land Cover (2019)"
         ) %>%
-        addWMSLegend(uri = paste0(
-            "https://www.mrlc.gov/geoserver/",
-            "mrlc_display/NLCD_2019_Land_Cover_L48/",
-            "ows?service=WMS&request=GetLegendGraphic&format",
-            "=image%2Fpng&width=20&height=20&layer=",
-            "NLCD_2019_Land_Cover_L48"
-        )) %>%
+        # addWMSLegend(uri = paste0(
+        #     "https://www.mrlc.gov/geoserver/",
+        #     "mrlc_display/NLCD_2019_Land_Cover_L48/",
+        #     "ows?service=WMS&request=GetLegendGraphic&format",
+        #     "=image%2Fpng&width=20&height=20&layer=",
+        #     "NLCD_2019_Land_Cover_L48"
+        # )) %>%
         # USGS NLCD (2001-2019)
         addWMSTiles(
             "https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2001_2019_change_index_L48/ows?SERVICE=WMS&",
@@ -204,13 +209,13 @@ output$MAP <- renderLeaflet({
             attribution = "Multi-Resolution Land Characteristics (MRLC) consortium",
             group = "Land Cover Change (2001-2019)"
         ) %>%
-        addWMSLegend(uri = paste0(
-            "https://www.mrlc.gov/geoserver",
-            "/mrlc_display/NLCD_2001_2019_change_index_L48/",
-            "ows?service=WMS&request=GetLegendGraphic&format",
-            "=image%2Fpng&width=20&height=20&layer=",
-            "NLCD_2001_2019_change_index_L48"
-        )) %>%
+        # addWMSLegend(uri = paste0(
+        #     "https://www.mrlc.gov/geoserver",
+        #     "/mrlc_display/NLCD_2001_2019_change_index_L48/",
+        #     "ows?service=WMS&request=GetLegendGraphic&format",
+        #     "=image%2Fpng&width=20&height=20&layer=",
+        #     "NLCD_2001_2019_change_index_L48"
+        # )) %>%
         # USGS Streams (NHD)
         addWMSTiles(
             "https://geowebservices.stanford.edu/geoserver/wms",
@@ -241,12 +246,12 @@ output$MAP <- renderLeaflet({
             attribution = "USGS",
             group = "3DEP Elevation"
         ) %>%
-        addWMSLegend(uri = paste0(
-            "https://elevation.nationalmap.gov:443/",
-            "arcgis/services/3DEPElevation/ImageServer/",
-            "WMSServer?request=GetLegendGraphic%26version=",
-            "1.3.0%26format=image/png%26layer=3DEPElevation:Hillshade Elevation Tinted"
-        )) %>%
+        # addWMSLegend(uri = paste0(
+        #     "https://elevation.nationalmap.gov:443/",
+        #     "arcgis/services/3DEPElevation/ImageServer/",
+        #     "WMSServer?request=GetLegendGraphic%26version=",
+        #     "1.3.0%26format=image/png%26layer=3DEPElevation:Hillshade Elevation Tinted"
+        # )) %>%
         # mapboxapi::addMapboxTiles(
         #   style_id = "ckvij6fet2e4k15pey4yj3qlj",
         #   username = "wslaughter",
@@ -275,7 +280,7 @@ output$MAP <- renderLeaflet({
             style_id = "ckvh270o93lon14ohwd7im4xl",
             username = "wslaughter",
             group = "EPA Ecoregions",
-            options = WMSTileOptions(legend = TRUE)
+            # options = WMSTileOptions(legend = TRUE)
         ) %>%
         # mapboxapi::addMapboxTiles(
         #   style_id = "ckvgtv89o68vw14pbg3ycuo61",
@@ -401,6 +406,7 @@ output$MAP <- renderLeaflet({
             position = "topright",
             baseGroups = c("Land Cover (2019)", "Landcover", "Land Cover Change (2001-2019)", "Impervious Surfaces", "Geology", "EPA Ecoregions", "Streams", "Tree Canopy (2016)", "Tree Canopy Change (2011-2016)", "3DEP Elevation"),
             # all maps
+            # baseGroups = c("Landcover", "3DEP Elevation"),
             # baseGroups = c("Plain", "Simple", "Geochemistry", "Wetlands and Water Bodies", "Shaded Relief", "Impervious Surfaces", "Tree Canopy", "Streams", "Landcover", "Sulfur", "SO3 and NH3/NH4", "Pop. Density", "Topo Map", "Aerial Imagery", "EPA Ecoregions", "Soils", "Hazardous Sites"),
             options = layersControlOptions(
                 collapsed = TRUE,
@@ -638,6 +644,18 @@ output$MAP_SITE_INFO <- renderTable(
 #     )
 #     (input$MapMine_shape_click) %>%#
 #     (input$MapMine_shape_click) %>%
+
+observeEvent(input$map_groups, {
+    print(input$map_groups)
+    map <- leafletProxy("MAP") %>% clearControls()
+    if (input$map_groups == "Landcover") {
+        map <- map %>% addLegend("bottomright",
+            colors = c("blue", "yellow"),
+            labels = c("1", "2"),
+            group = "Landcover"
+        )
+    }
+})
 
 # shopping cart
 # current_site <- paste0(sg$domain, sg$site_code)

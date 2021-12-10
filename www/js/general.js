@@ -1077,20 +1077,119 @@ function addLegend() {
         console.log('icon already present');
     } else {
         setTimeout( function() {
-            $('.leaflet-control-layers').after('<div><i class="leaflet-control-layers well-sm diy-legend gi-1-x glyphicon glyphicon-th-list" role="button"></i></div>');
-        }, 4000);
+            // $('#MAP').append('<div><i id= "my-legend" class="leaflet-control-layers well-sm diy-legend gi-1-x glyphicon glyphicon-th-list" role="button"></i></div>');
+            $('#MAP').append('<div><i id= "my-legend" class="leaflet-control-layers well-sm diy-legend gi-1-x glyphicon glyphicon-th-list" role="button"></i><div class="well"></div></div>');
+            // $('#MAP').append('<div class="dropdown"><button class="btn btn-primary dropdown-toggle" type="button" id="about-us" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Landcover<span class="caret"></span></button><ul class="dropdown-menu" aria-labelledby="legend-drop"><li><a id="3DEP-Leg" href="#">3DEP Elevation</a></li><li><a id="Streams-Leg" href="#">Streams</a></li><li><a id="Landcover-Leg" href="#">Landcover</a></li></ul></div>')
+        }, 3000);
         };
     };
+
+function sortLegend() {
+        var legendList = [];
+
+        $(".wms-legend").each((index, elem) => {
+          legendList.push(elem.src);
+        });
+
+        var legURL = [];
+
+        for (wms in legendList) {
+            legURL
+        }
+    };
+
+$(document).ready( function() {
+    sortLegend()
+});
 
 $(document).ready( function() {
     $('#left_tabs').click( function() {
         addLegend()
+        // $('#my-legend').click(function() {
+        //     console.log('WOOT');
+        //     // $(this).parent().find("span");
+        // })
     });
 });
 
+function checkClick() {
+        console.log("YES THIS CLICK IS WORKING");
+};
+
 $(document).ready(function() {
-    $('.diy-legend').click( function() {
-        console.log('LEGEND TOGGLE');
-        $('.leaflet-control-wms-legend').css('visibility: visible;');
-    });
+    $('#Streams-Leg').click( function() {
+        if ($('.leaflet-control-wms-legend').length) {
+            console.log('legend already present')
+            $('.leaflet-top.leaflet-right').innerHTML('')
+        } else {
+            $('.leaflet-top.leaflet-right').append('<div class="container"> <div class="leaflet-control-wms-legend leaflet-control" style="height: 515px; width: 267px;"><img class="wms-legend" src="https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2019_Land_Cover_L48/ows?service=WMS&amp;request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=NLCD_2019_Land_Cover_L48" alt="Legend" style="float: right; margin-top: 35%;"></div></div>');
+                };
+            });
+        });
+
+// Legend Dropdown
+// <div style="z-index: 900 !important;margin-top: 10px;" id="diy-legend" class="leaflet-control well">
+//
+//   <div class="dropdown">
+// <button class="btn btn-primary dropdown-toggle" type="button" id="about-us" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="">
+// About Us
+// <span class="caret"></span>
+// </button>
+// <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="about-us">
+// <li><a href="#">Our Story</a></li>
+// <li><a href="#">Our Team</a></li>
+// <li><a href="#">Contact Us</a></li>
+// </ul>
+// </div></div>
+
+// just dropdown
+//   <div class="dropdown">
+// <button class="btn btn-primary dropdown-toggle" type="button" id="about-us" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="">
+// About Us
+// <span class="caret"></span>
+// </button>
+// <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="about-us">
+// <li><a href="#">Our Story</a></li>
+// <li><a href="#">Our Team</a></li>
+// <li><a href="#">Contact Us</a></li>
+// </ul>
+// </div>
+// Javascript to get Legend Labels
+// from URLs
+
+// var wmsDict = {
+//     'http://127.0.0.1:7027/mrlc_display/NLCD_Tree_Canopy_Change_I…g&width=20&height=20&layer=NLCD_Tree_Canopy_Change_Index_L48': "Tree Canopy Change",
+//     'https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2016_Tree_C…age%2Fpng&width=20&height=20&layer=NLCD_2016_Tree_Canopy_L48': "Tree Canopy",
+//     'https://www.sciencebase.gov/arcgis/services/Catalog/5888bf4f…etLegendGraphic%26version=1.3.0%26format=image/png%26layer=0': "Geology",
+//
+// }
+
+
+// for (x in legendList) {
+//  for ( item in wmsDict) {
+//     if (legendList[x].src.toString().trim == item.toString().trim) {
+//       console.log(wmsDict[item]);
+//     }
+//   }
+// }
+
+// Layers Legend 'active' controls
+
+// 1) on click, layer populates 'active layer' variable
+// var activeLayer = ''
+
+// $(document).ready( function() {
+//     $('.leaflet-control-layers-list').on('input', function() {
+//         console.log('WOOT');
+//         // $(this).parent().find("span");
+//     })
+// })
+
+$(document).ready( function() {
+    $('#my-legend').click(function() {
+        console.log('WOOT');
+        // $(this).parent().find("span");
+    })
 })
+// 2) this variable triggers legend icon to be associated with legend or legend URL for active layer
+// 3) legend icon on click/hover displays legend visual
