@@ -187,13 +187,13 @@ output$MAP <- renderLeaflet({
         #     group = "Landcover" # NLCD (30m)
         # ) %>%
         # USGS NLCD (2019)
-        addWMSTiles(
-            "https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2019_Land_Cover_L48/ows?SERVICE=WMS&",
-            layers = "NLCD_2019_Land_Cover_L48",
-            options = WMSTileOptions(format = "image/png", info_format = "text/html", transparent = TRUE),
-            attribution = "Multi-Resolution Land Characteristics (MRLC) consortium",
-            group = "Land Cover (2019)"
-        ) %>%
+        # addWMSTiles(
+        #     "https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2019_Land_Cover_L48/ows?SERVICE=WMS&",
+        #     layers = "NLCD_2019_Land_Cover_L48",
+        #     options = WMSTileOptions(format = "image/png", info_format = "text/html", transparent = TRUE),
+        #     attribution = "Multi-Resolution Land Characteristics (MRLC) consortium",
+        #     group = "Land Cover (2019)"
+        # ) %>%
         # addWMSLegend(uri = paste0(
         #     "https://www.mrlc.gov/geoserver/",
         #     "mrlc_display/NLCD_2019_Land_Cover_L48/",
@@ -207,7 +207,7 @@ output$MAP <- renderLeaflet({
             layers = "NLCD_2001_2019_change_index_L48",
             options = WMSTileOptions(format = "image/png", info_format = "text/html", transparent = TRUE),
             attribution = "Multi-Resolution Land Characteristics (MRLC) consortium",
-            group = "Land Cover Change (2001-2019)"
+            group = "Landcover Change (2001-2019)"
         ) %>%
         # addWMSLegend(uri = paste0(
         #     "https://www.mrlc.gov/geoserver",
@@ -217,13 +217,13 @@ output$MAP <- renderLeaflet({
         #     "NLCD_2001_2019_change_index_L48"
         # )) %>%
         # USGS Streams (NHD)
-        addWMSTiles(
-            "https://geowebservices.stanford.edu/geoserver/wms",
-            layers = "druid:fc050zj3595",
-            options = WMSTileOptions(format = "image/png", info_format = "text/html", transparent = TRUE),
-            attribution = "USGS- National Hydrography Dataset",
-            group = "Streams"
-        ) %>%
+        # addWMSTiles(
+        #     "https://geowebservices.stanford.edu/geoserver/wms",
+        #     layers = "druid:fc050zj3595",
+        #     options = WMSTileOptions(format = "image/png", info_format = "text/html", transparent = TRUE),
+        #     attribution = "USGS- National Hydrography Dataset",
+        #     group = "Streams"
+        # ) %>%
         # NHD Flow (poor single-wms coverage)
         # addWMSTiles(
         #     "https://hydro.nationalmap.gov:443/arcgis/services/nhd/MapServer/WmsServer?&",
@@ -404,7 +404,7 @@ output$MAP <- renderLeaflet({
         ) %>%
         addLayersControl(
             position = "topright",
-            baseGroups = c("Land Cover (2019)", "Landcover", "Land Cover Change (2001-2019)", "Impervious Surfaces", "Geology", "EPA Ecoregions", "Streams", "Tree Canopy (2016)", "Tree Canopy Change (2011-2016)", "3DEP Elevation"),
+            baseGroups = c("Landcover", "Landcover Change (2001-2019)", "Impervious Surfaces", "Geology", "EPA Ecoregions", "Tree Canopy (2016)", "Tree Canopy Change (2011-2016)", "3DEP Elevation"),
             # all maps
             # baseGroups = c("Landcover", "3DEP Elevation"),
             # baseGroups = c("Plain", "Simple", "Geochemistry", "Wetlands and Water Bodies", "Shaded Relief", "Impervious Surfaces", "Tree Canopy", "Streams", "Landcover", "Sulfur", "SO3 and NH3/NH4", "Pop. Density", "Topo Map", "Aerial Imagery", "EPA Ecoregions", "Soils", "Hazardous Sites"),

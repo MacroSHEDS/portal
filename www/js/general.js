@@ -869,7 +869,7 @@ var attrToggle = 0;
 
 $(document).ready(function(){
 
-    var window_height = ($('#sidebarCollapsed').height() * .55);
+    var window_height = ($('#sidebarCollapsed').height() * .38);
     $('#MAP').css('height', window_height);
 
     $('#COLLAPSE_ATTRIBUTES').click(function(){
@@ -1078,7 +1078,7 @@ function addLegend() {
     } else {
         setTimeout( function() {
             // $('#MAP').append('<div><i id= "my-legend" class="leaflet-control-layers well-sm diy-legend gi-1-x glyphicon glyphicon-th-list" role="button"></i></div>');
-            $('#MAP').append('<div><i id= "my-legend" class="leaflet-control-layers well-sm diy-legend gi-1-x glyphicon glyphicon-th-list" role="button"></i><div class="well"></div></div>');
+            // $('#MAP').append('<div><i id= "my-legend" class="leaflet-control-layers well-sm diy-legend gi-1-x glyphicon glyphicon-th-list" role="button"></i><div class="well"></div></div>');
             // $('#MAP').append('<div class="dropdown"><button class="btn btn-primary dropdown-toggle" type="button" id="about-us" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Landcover<span class="caret"></span></button><ul class="dropdown-menu" aria-labelledby="legend-drop"><li><a id="3DEP-Leg" href="#">3DEP Elevation</a></li><li><a id="Streams-Leg" href="#">Streams</a></li><li><a id="Landcover-Leg" href="#">Landcover</a></li></ul></div>')
         }, 3000);
         };
@@ -1116,13 +1116,146 @@ function checkClick() {
         console.log("YES THIS CLICK IS WORKING");
 };
 
-$(document).ready(function() {
-    $('#Streams-Leg').click( function() {
+function layerClicks() {
+    // Landcover
+    $('#Landcover-Leg').click( function() {
         if ($('.leaflet-control-wms-legend').length) {
             console.log('legend already present')
-            $('.leaflet-top.leaflet-right').innerHTML('')
+            $('.leaflet-control-wms-legend').replaceWith('<div></div>')
         } else {
-            $('.leaflet-top.leaflet-right').append('<div class="container"> <div class="leaflet-control-wms-legend leaflet-control" style="height: 515px; width: 267px;"><img class="wms-legend" src="https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2019_Land_Cover_L48/ows?service=WMS&amp;request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=NLCD_2019_Land_Cover_L48" alt="Legend" style="float: right; margin-top: 35%;"></div></div>');
+            $('.leaflet-top.leaflet-right').append('<div class=""> <div class="leaflet-control-wms-legend leaflet-control" style="height: 515px; width: 267px;"><img class="wms-legend" src="https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2019_Land_Cover_L48/ows?service=WMS&amp;request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=NLCD_2019_Land_Cover_L48" alt="Legend" style="float: right; margin-top: 35%;"></div></div>');
+                };
+            });
+
+    // Elevation
+    $('#3DEP-Leg').click( function() {
+        if ($('.leaflet-control-wms-legend').length) {
+            console.log('legend already present')
+            $('.leaflet-control-wms-legend').replaceWith('<div></div>')
+        } else {
+            $('.leaflet-top.leaflet-right').append('<div class=""> <div class="leaflet-control-wms-legend leaflet-control" style="height: 66px; width: 110px;"><img class="wms-legend" src="https://elevation.nationalmap.gov:443/arcgis/services/3DEPElevation/ImageServer/WMSServer?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=3DEPElevation:Hillshade Elevation Tinted" alt="Legend" style="float: right; margin-top: 35%;"></div>');
+                };
+            });
+
+    // Impervious
+    $('#Impervious-Leg').click( function() {
+        if ($('.leaflet-control-wms-legend').length) {
+            console.log('legend already present')
+            $('.leaflet-control-wms-legend').replaceWith('<div></div>')
+        } else {
+            $('.leaflet-top.leaflet-right').append('<div class="leaflet-control-wms-legend leaflet-control" style="height: 20px; width: 20px;"><img class="wms-legend" src="https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2019_Impervious_L48/ows?service=WMS&amp;request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=NLCD_2019_Impervious_L48" alt="Legend" style="float: right; margin-top: 35%;"></div>');
+                };
+            });
+
+    // Tree Canopy
+    $('#Tree-Leg').click( function() {
+        if ($('.leaflet-control-wms-legend').length) {
+            console.log('legend already present')
+            $('.leaflet-control-wms-legend').replaceWith('<div></div>')
+        } else {
+            $('.leaflet-top.leaflet-right').append('<div class="leaflet-control-wms-legend leaflet-control" style="height: 20px; width: 20px;"><img class="wms-legend" src="https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2016_Tree_Canopy_L48/ows?service=WMS&amp;request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=NLCD_2016_Tree_Canopy_L48" alt="Legend" style="float: right; margin-top: 35%;"></div>');
+                };
+            });
+
+    // Tree Canopy Change
+    $('#TreeCanopyChange-Leg').click( function() {
+        if ($('.leaflet-control-wms-legend').length) {
+            console.log('legend already present')
+            $('.leaflet-control-wms-legend').replaceWith('<div></div>')
+        } else {
+            $('.leaflet-top.leaflet-right').append('<div class="leaflet-control-wms-legend leaflet-control"><img class="wms-legend" src="mrlc_display/NLCD_Tree_Canopy_Change_Index_L48/ows?service=WMS&amp;request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=NLCD_Tree_Canopy_Change_Index_L48" alt="Legend" style="float: right; margin-top: 35%;"></div>');
+                };
+            });
+
+    // Geology
+    $('#Geology-Leg').click( function() {
+        if ($('.leaflet-control-wms-legend').length) {
+            console.log('legend already present')
+            $('.leaflet-control-wms-legend').replaceWith('<div></div>')
+        } else {
+            $('.leaflet-top.leaflet-right').append('<div class="leaflet-control-wms-legend leaflet-control" style="height: 20px; width: 20px;"><img class="wms-legend" src="https://www.sciencebase.gov/arcgis/services/Catalog/5888bf4fe4b05ccb964bab9d/MapServer/WmsServer?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=0" alt="Legend" style="float: right; margin-top: 35%;"></div>');
+                };
+            });
+
+    // Geology
+    $('#LCChange-Leg').click( function() {
+        if ($('.leaflet-control-wms-legend').length) {
+            console.log('legend already present')
+            $('.leaflet-control-wms-legend').replaceWith('<div></div>')
+        } else {
+            $('.leaflet-top.leaflet-right').append('<div class="leaflet-control-wms-legend leaflet-control" style="height: 20px; width: 20px;"><img class="wms-legend" src="https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2001_2019_change_index_L48/ows?service=WMS&amp;request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=NLCD_2001_2019_change_index_L48" alt="Legend" style="float: right; margin-top: 35%;"></div>');
+                };
+            });
+}
+
+$(document).ready(function() {
+    // Landcover
+    $('#Landcover-Leg').click( function() {
+        if ($('.leaflet-control-wms-legend').length) {
+            console.log('legend already present')
+            $('.leaflet-control-wms-legend').replaceWith('<div></div>')
+        } else {
+            $('.leaflet-top.leaflet-right').append('<div class=""> <div class="leaflet-control-wms-legend leaflet-control" style="height: 515px; width: 267px;"><img class="wms-legend" src="https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2019_Land_Cover_L48/ows?service=WMS&amp;request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=NLCD_2019_Land_Cover_L48" alt="Legend" style="float: right; margin-top: 35%;"></div></div>');
+                };
+            });
+
+    // Elevation
+    $('#3DEP-Leg').click( function() {
+        if ($('.leaflet-control-wms-legend').length) {
+            console.log('legend already present')
+            $('.leaflet-control-wms-legend').replaceWith('<div></div>')
+        } else {
+            $('.leaflet-top.leaflet-right').append('<div class=""> <div class="leaflet-control-wms-legend leaflet-control" style="height: 66px; width: 110px;"><img class="wms-legend" src="https://elevation.nationalmap.gov:443/arcgis/services/3DEPElevation/ImageServer/WMSServer?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=3DEPElevation:Hillshade Elevation Tinted" alt="Legend" style="float: right; margin-top: 35%;"></div>');
+                };
+            });
+
+    // Impervious
+    $('#Impervious-Leg').click( function() {
+        if ($('.leaflet-control-wms-legend').length) {
+            console.log('legend already present')
+            $('.leaflet-control-wms-legend').replaceWith('<div></div>')
+        } else {
+            $('.leaflet-top.leaflet-right').append('<div class="leaflet-control-wms-legend leaflet-control" style="height: 20px; width: 20px;"><img class="wms-legend" src="https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2019_Impervious_L48/ows?service=WMS&amp;request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=NLCD_2019_Impervious_L48" alt="Legend" style="float: right; margin-top: 35%;"></div>');
+                };
+            });
+
+    // Tree Canopy
+    $('#Tree-Leg').click( function() {
+        if ($('.leaflet-control-wms-legend').length) {
+            console.log('legend already present')
+            $('.leaflet-control-wms-legend').replaceWith('<div></div>')
+        } else {
+            $('.leaflet-top.leaflet-right').append('<div class="leaflet-control-wms-legend leaflet-control" style="height: 20px; width: 20px;"><img class="wms-legend" src="https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2016_Tree_Canopy_L48/ows?service=WMS&amp;request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=NLCD_2016_Tree_Canopy_L48" alt="Legend" style="float: right; margin-top: 35%;"></div>');
+                };
+            });
+
+    // Tree Canopy Change
+    $('#TreeCanopyChange-Leg').click( function() {
+        if ($('.leaflet-control-wms-legend').length) {
+            console.log('legend already present')
+            $('.leaflet-control-wms-legend').replaceWith('<div></div>')
+        } else {
+            $('.leaflet-top.leaflet-right').append('<div class="leaflet-control-wms-legend leaflet-control"><img class="wms-legend" src="mrlc_display/NLCD_Tree_Canopy_Change_Index_L48/ows?service=WMS&amp;request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=NLCD_Tree_Canopy_Change_Index_L48" alt="Legend" style="float: right; margin-top: 35%;"></div>');
+                };
+            });
+
+    // Geology
+    $('#Geology-Leg').click( function() {
+        if ($('.leaflet-control-wms-legend').length) {
+            console.log('legend already present')
+            $('.leaflet-control-wms-legend').replaceWith('<div></div>')
+        } else {
+            $('.leaflet-top.leaflet-right').append('<div class="leaflet-control-wms-legend leaflet-control" style="height: 20px; width: 20px;"><img class="wms-legend" src="https://www.sciencebase.gov/arcgis/services/Catalog/5888bf4fe4b05ccb964bab9d/MapServer/WmsServer?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=0" alt="Legend" style="float: right; margin-top: 35%;"></div>');
+                };
+            });
+
+    // Geology
+    $('#LCChange-Leg').click( function() {
+        if ($('.leaflet-control-wms-legend').length) {
+            console.log('legend already present')
+            $('.leaflet-control-wms-legend').replaceWith('<div></div>')
+        } else {
+            $('.leaflet-top.leaflet-right').append('<div class="leaflet-control-wms-legend leaflet-control" style="height: 20px; width: 20px;"><img class="wms-legend" src="https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2001_2019_change_index_L48/ows?service=WMS&amp;request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=NLCD_2001_2019_change_index_L48" alt="Legend" style="float: right; margin-top: 35%;"></div>');
                 };
             });
         });
@@ -1184,12 +1317,20 @@ $(document).ready(function() {
 //         // $(this).parent().find("span");
 //     })
 // })
-
+//
 $(document).ready( function() {
-    $('#my-legend').click(function() {
-        console.log('WOOT');
-        // $(this).parent().find("span");
-    })
-})
+    $(window).on('resize', function() {
+        if ($("#attribute-content").width() < 500) {
+            // console.log("very small attribute table");
+            $('#legend-button').replaceWith(
+                    '<div><div class="dropup" id="legend-button"><button class="dropdown-toggle" type="button" id="about-us" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i id= "my-legend" class="well-sm gi-1-x glyphicon glyphicon-th-list" role="button"></i><span class="caret"></span></button><ul class="dropdown-menu" aria-labelledby="legend-drop"><li><a id="3DEP-Leg" href="#">3DEP Elevation</a></li><li><a id="Tree-Leg" href="#">Tree Canopy</a></li><li><a id="TreeCanopyChange-Leg" href="#">Tree Canopy Change</a></li><li><a id="Impervious-Leg" href="#">Impervious Surfaces</a></li><li><a id="Landcover-Leg" href="#">Landcover</a></li><li><a id="LCChange-Leg" href="#">Landcover Change</a></li><li><a id="Ecoregions" href="#">Ecoregions</a></li><li><a id="Geology-Leg" href="#">Geology</a></li></ul></div></div>'
+                );
+            layerClicks();
+            } else {
+                $('#legend-button').replaceWith('<div class="dropup" id="legend-button"><button class="btn btn-primary dropdown-toggle" type="button" id="about-us" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Legend <span class="caret"></span></button><ul class="dropdown-menu" aria-labelledby="legend-drop"><li><a id="3DEP-Leg" href="#">3DEP Elevation</a></li><li><a id="Tree-Leg" href="#">Tree Canopy</a></li><li><a id="TreeCanopyChange-Leg" href="#">Tree Canopy Change</a></li><li><a id="Impervious-Leg" href="#">Impervious Surfaces</a></li><li><a id="Landcover-Leg" href="#">Landcover</a></li><li><a id="LCChange-Leg" href="#">Landcover Change</a></li><li><a id="Ecoregions" href="#">Ecoregions</a></li><li><a id="Geology-Leg" href="#">Geology</a></li></ul></div>');
+                layerClicks();
+            }
+        });
+    });
 // 2) this variable triggers legend icon to be associated with legend or legend URL for active layer
 // 3) legend icon on click/hover displays legend visual
