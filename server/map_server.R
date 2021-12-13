@@ -645,18 +645,6 @@ output$MAP_SITE_INFO <- renderTable(
 #     (input$MapMine_shape_click) %>%#
 #     (input$MapMine_shape_click) %>%
 
-observeEvent(input$map_groups, {
-    print(input$map_groups)
-    map <- leafletProxy("MAP") %>% clearControls()
-    if (input$map_groups == "Landcover") {
-        map <- map %>% addLegend("bottomright",
-            colors = c("blue", "yellow"),
-            labels = c("1", "2"),
-            group = "Landcover"
-        )
-    }
-})
-
 # shopping cart
 # current_site <- paste0(sg$domain, sg$site_code)
 output$results_basic <- renderPrint({

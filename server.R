@@ -140,7 +140,7 @@ server <- function(input, output, session) {
         eventExpr = input$MAPDATA,
         priority = 110,
         handlerExpr = {
-            init_vals$basedata_change_reloads_plots <- TRUE
+            init_vals$basedata_change_reloads_plots <- FALSE
 
             print("site one")
             print(str(input$MAPDATA$value))
