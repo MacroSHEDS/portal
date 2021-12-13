@@ -910,3 +910,18 @@ tbody tr.active-row {
     float: left !important;
     margin-top: 70px;
 }
+
+/* c("#2a6a99", "#b66397", "#d88546") */
+/* Rank List Styling */
+.rank-list-item:nth-child(1) {
+    border: 3px solid #2a6a99 !important;
+    margin-bottom: 2px;
+}
+.rank-list-item:nth-child(2) {
+    border: 3px solid #b66397 !important;
+    margin-bottom: 2px;
+}
+.rank-list-item:nth-child(3) {
+    border: 3px solid #d88546 !important;
+    margin-bottom: 2px;
+}

@@ -78,13 +78,14 @@ shinyjs.init = function() {
     //connect map buttons to app tabs
     $('body').ready(function(){
         $('body').on('click', '[id$="_goto"]', function(){
-            var goto_id = $(this).attr('id') + new Date(); //trigger reactivity
+
+            var goto_id = $(this).attr('id') // + new Date(); //trigger reactivity
+
             $('#SITE_EXPLORE').trigger('click');
 
             // add sites to cart
-            // id printing into weird attributes...
             $('div').find('.rank-list').prepend(
-                    '<div class="rank-list-item" id =' + goto_id +' draggable="false">' + goto_id + '</div>'
+                    '<div class="rank-list-item" id =' + goto_id + 'remover' + ' draggable="false">' + goto_id + ' <button type="button" class="btn btn-default btn-sm rankremover" style="float: right"><span class="glyphicon glyphicon-remove"></span> </button></div>'
                 );
 
             // set mapdata as top 3 ranks
@@ -93,23 +94,38 @@ shinyjs.init = function() {
             $(".rank-list > .rank-list-item").each((index, elem) => {
               rankList.push(elem.innerHTML);
             });
-            console.log('cowabunga, baby')
             console.log(rankList)
 
             Shiny.setInputValue('MAPDATA', arrayToList(rankList));
-
-            // if (rankList) {
-            //     $.each(rankList, function(index, el){
-            //         Shiny.setInputValue('MAPDATA', el);
-            //         console.log(el)
-            //     })
-            // } else {
-            //     Shiny.setInputValue('MAPDATA', rankList);
-            // }
-
         });
     });
 
+    $('body').ready(function(){
+        $('body').on('click', '[id$="_gotoremover"]', function(){
+            if ($(this).hasClass('rank-list-item')) {
+                if ($(this).find('rankremover')) {
+                    console.log('DELETE button pushed')
+                    $(this).remove()
+                    $(this).remove()
+
+                    // set mapdata as top 3 ranks
+                    var rankList = [];
+
+                    $(".rank-list > .rank-list-item").each((index, elem) => {
+                      rankList.push(elem.innerHTML);
+                    });
+                    console.log(rankList)
+
+                    Shiny.setInputValue('MAPDATA', arrayToList(rankList));
+                } else {
+                    console.log('not pushed')
+                    console.log($(this))
+                }
+            } else {
+                console.log('map button, not list')
+            }
+        });
+    });
     //set height of some tab windows
     var wheight = $(window).height() - 100 + 'px';
     $('[data-value="participants"]').css('max-height', wheight);
