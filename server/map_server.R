@@ -393,7 +393,7 @@ output$MAP <- renderLeaflet({
             # all maps
             # baseGroups = c("Plain", "Simple", "Geochemistry", "Wetlands and Water Bodies", "Shaded Relief", "Impervious Surfaces", "Tree Canopy", "Streams", "Landcover", "Sulfur", "SO3 and NH3/NH4", "Pop. Density", "Topo Map", "Aerial Imagery", "EPA Ecoregions", "Soils", "Hazardous Sites"),
             options = layersControlOptions(
-                collapsed = FALSE,
+                collapsed = TRUE,
                 autoZIndex = TRUE
             )
         ) %>%
