@@ -1027,6 +1027,7 @@ $(document).ready(function() {
 //               $('.update-slide').removeClass('update');
 //           }, 11000);
 // })
+
 // single use function funciton
 $(document).ready( function() {
     var intervalUpdate = window.setInterval(function(){
@@ -1123,56 +1124,72 @@ function layerClicks() {
     console.log(legendsActive)
     // Landcover
     $('#Landcover-Leg').click( function() {
-        if (legendsActive > 0) {
+        if ($('.leaflet-control-wms-legend')[0] == undefined) {
+            $('.leaflet-top.leaflet-right').append('<div class=""> <div id = "Landcover" class="leaflet-control-wms-legend leaflet-control" style="height: 515px; width: 267px;"><img class="wms-legend" src="https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2019_Land_Cover_L48/ows?service=WMS&amp;request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=NLCD_2019_Land_Cover_L48" alt="Legend" style="float: right; margin-top: 35%;"></div></div>');
+        } else if ($('.leaflet-control-wms-legend')[0].id.toString().trim() == "Landcover") {
             $('.leaflet-control-wms-legend').replaceWith('<div></div>')
-            $('.leaflet-top.leaflet-right').append('<div class=""> <div class="leaflet-control-wms-legend leaflet-control" style="height: 515px; width: 267px;"><img class="wms-legend" src="https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2019_Land_Cover_L48/ows?service=WMS&amp;request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=NLCD_2019_Land_Cover_L48" alt="Legend" style="float: right; margin-top: 35%;"></div></div>');
+        } else if (legendsActive > 0) {
+            $('.leaflet-control-wms-legend').replaceWith('<div></div>')
+            $('.leaflet-top.leaflet-right').append('<div class=""> <div id = "Landcover" class="leaflet-control-wms-legend leaflet-control" style="height: 515px; width: 267px;"><img class="wms-legend" src="https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2019_Land_Cover_L48/ows?service=WMS&amp;request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=NLCD_2019_Land_Cover_L48" alt="Legend" style="float: right; margin-top: 35%;"></div></div>');
         } else if ($('.leaflet-control-wms-legend').length) {
             console.log('legend already present')
             $('.leaflet-control-wms-legend').replaceWith('<div></div>')
         } else {
-            $('.leaflet-top.leaflet-right').append('<div class=""> <div class="leaflet-control-wms-legend leaflet-control" style="height: 515px; width: 267px;"><img class="wms-legend" src="https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2019_Land_Cover_L48/ows?service=WMS&amp;request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=NLCD_2019_Land_Cover_L48" alt="Legend" style="float: right; margin-top: 35%;"></div></div>');
+            $('.leaflet-top.leaflet-right').append('<div class=""> <div id = "Landcover" class="leaflet-control-wms-legend leaflet-control" style="height: 515px; width: 267px;"><img class="wms-legend" src="https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2019_Land_Cover_L48/ows?service=WMS&amp;request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=NLCD_2019_Land_Cover_L48" alt="Legend" style="float: right; margin-top: 35%;"></div></div>');
                 legendsActive ++;
                 };
             });
 
     // Elevation
     $('#3DEP-Leg').click( function() {
-        if (legendsActive > 0) {
+        if ($('.leaflet-control-wms-legend')[0] == undefined) {
+            $('.leaflet-top.leaflet-right').append('<div class=""> <div id="3DEP" class="leaflet-control-wms-legend leaflet-control" style="height: 66px; width: 110px;"><img class="wms-legend" src="https://elevation.nationalmap.gov:443/arcgis/services/3DEPElevation/ImageServer/WMSServer?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=3DEPElevation:Hillshade Elevation Tinted" alt="Legend" style="float: right; margin-top: 35%;"></div>');
+        } else if ($('.leaflet-control-wms-legend')[0].id.toString().trim() == "3DEP") {
             $('.leaflet-control-wms-legend').replaceWith('<div></div>')
-            $('.leaflet-top.leaflet-right').append('<div class=""> <div class="leaflet-control-wms-legend leaflet-control" style="height: 66px; width: 110px;"><img class="wms-legend" src="https://elevation.nationalmap.gov:443/arcgis/services/3DEPElevation/ImageServer/WMSServer?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=3DEPElevation:Hillshade Elevation Tinted" alt="Legend" style="float: right; margin-top: 35%;"></div>');
+        } else if (legendsActive > 0) {
+            $('.leaflet-control-wms-legend').replaceWith('<div></div>')
+            $('.leaflet-top.leaflet-right').append('<div class=""> <div id="3DEP" class="leaflet-control-wms-legend leaflet-control" style="height: 66px; width: 110px;"><img class="wms-legend" src="https://elevation.nationalmap.gov:443/arcgis/services/3DEPElevation/ImageServer/WMSServer?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=3DEPElevation:Hillshade Elevation Tinted" alt="Legend" style="float: right; margin-top: 35%;"></div>');
         } else if ($('.leaflet-control-wms-legend').length) {
             console.log('legend already present')
             $('.leaflet-control-wms-legend').replaceWith('<div></div>')
         } else {
-            $('.leaflet-top.leaflet-right').append('<div class=""> <div class="leaflet-control-wms-legend leaflet-control" style="height: 66px; width: 110px;"><img class="wms-legend" src="https://elevation.nationalmap.gov:443/arcgis/services/3DEPElevation/ImageServer/WMSServer?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=3DEPElevation:Hillshade Elevation Tinted" alt="Legend" style="float: right; margin-top: 35%;"></div>');
+            $('.leaflet-top.leaflet-right').append('<div class=""> <div id="3DEP" class="leaflet-control-wms-legend leaflet-control" style="height: 66px; width: 110px;"><img class="wms-legend" src="https://elevation.nationalmap.gov:443/arcgis/services/3DEPElevation/ImageServer/WMSServer?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=3DEPElevation:Hillshade Elevation Tinted" alt="Legend" style="float: right; margin-top: 35%;"></div>');
             legendsActive ++;
                 };
             });
 
     // Impervious
     $('#Impervious-Leg').click( function() {
-        if (legendsActive > 0) {
+        if ($('.leaflet-control-wms-legend')[0] == undefined) {
+            $('.leaflet-top.leaflet-right').append('<div id = "Impervious" class="leaflet-control-wms-legend leaflet-control" style="height: 20px; width: 20px;"><img class="wms-legend" src="https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2019_Impervious_L48/ows?service=WMS&amp;request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=NLCD_2019_Impervious_L48" alt="Legend" style="float: right; margin-top: 35%;"></div>');
+        } else if ($('.leaflet-control-wms-legend')[0].id.toString().trim() == "3DEP") {
             $('.leaflet-control-wms-legend').replaceWith('<div></div>')
-            $('.leaflet-top.leaflet-right').append('<div class="leaflet-control-wms-legend leaflet-control" style="height: 20px; width: 20px;"><img class="wms-legend" src="https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2019_Impervious_L48/ows?service=WMS&amp;request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=NLCD_2019_Impervious_L48" alt="Legend" style="float: right; margin-top: 35%;"></div>');
+        } else if (legendsActive > 0) {
+            $('.leaflet-control-wms-legend').replaceWith('<div></div>')
+            $('.leaflet-top.leaflet-right').append('<div id = "Impervious" class="leaflet-control-wms-legend leaflet-control" style="height: 20px; width: 20px;"><img class="wms-legend" src="https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2019_Impervious_L48/ows?service=WMS&amp;request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=NLCD_2019_Impervious_L48" alt="Legend" style="float: right; margin-top: 35%;"></div>');
         } else if ($('.leaflet-control-wms-legend').length) {
             console.log('legend already present')
             $('.leaflet-control-wms-legend').replaceWith('<div></div>')
         } else {
-            $('.leaflet-top.leaflet-right').append('<div class="leaflet-control-wms-legend leaflet-control" style="height: 20px; width: 20px;"><img class="wms-legend" src="https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2019_Impervious_L48/ows?service=WMS&amp;request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=NLCD_2019_Impervious_L48" alt="Legend" style="float: right; margin-top: 35%;"></div>');
+            $('.leaflet-top.leaflet-right').append('<div id = "Impervious" class="leaflet-control-wms-legend leaflet-control" style="height: 20px; width: 20px;"><img class="wms-legend" src="https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2019_Impervious_L48/ows?service=WMS&amp;request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=NLCD_2019_Impervious_L48" alt="Legend" style="float: right; margin-top: 35%;"></div>');
             legendsActive ++;
                 };
             });
 
     // Tree Canopy
     $('#Tree-Leg').click( function() {
-        if (legendsActive > 0) {
+        if ($('.leaflet-control-wms-legend')[0] == undefined) {
+            $('.leaflet-top.leaflet-right').append('<div id = "Tree" class="leaflet-control-wms-legend leaflet-control" style="height: 20px; width: 20px;"><img class="wms-legend" src="https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2016_Tree_Canopy_L48/ows?service=WMS&amp;request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=NLCD_2016_Tree_Canopy_L48" alt="Legend" style="float: right; margin-top: 35%;"></div>');
+        } else if ($('.leaflet-control-wms-legend')[0].id.toString().trim() == "3DEP") {
             $('.leaflet-control-wms-legend').replaceWith('<div></div>')
-            $('.leaflet-top.leaflet-right').append('<div class="leaflet-control-wms-legend leaflet-control" style="height: 20px; width: 20px;"><img class="wms-legend" src="https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2016_Tree_Canopy_L48/ows?service=WMS&amp;request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=NLCD_2016_Tree_Canopy_L48" alt="Legend" style="float: right; margin-top: 35%;"></div>');
+        } else if (legendsActive > 0) {
+            $('.leaflet-control-wms-legend').replaceWith('<div></div>')
+            $('.leaflet-top.leaflet-right').append('<div id = "Tree" class="leaflet-control-wms-legend leaflet-control" style="height: 20px; width: 20px;"><img class="wms-legend" src="https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2016_Tree_Canopy_L48/ows?service=WMS&amp;request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=NLCD_2016_Tree_Canopy_L48" alt="Legend" style="float: right; margin-top: 35%;"></div>');
         } else if ($('.leaflet-control-wms-legend').length) {
             console.log('legend already present')
             $('.leaflet-control-wms-legend').replaceWith('<div></div>')
         } else {
-            $('.leaflet-top.leaflet-right').append('<div class="leaflet-control-wms-legend leaflet-control" style="height: 20px; width: 20px;"><img class="wms-legend" src="https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2016_Tree_Canopy_L48/ows?service=WMS&amp;request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=NLCD_2016_Tree_Canopy_L48" alt="Legend" style="float: right; margin-top: 35%;"></div>');
+            $('.leaflet-top.leaflet-right').append('<div id = "Tree" class="leaflet-control-wms-legend leaflet-control" style="height: 20px; width: 20px;"><img class="wms-legend" src="https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2016_Tree_Canopy_L48/ows?service=WMS&amp;request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=NLCD_2016_Tree_Canopy_L48" alt="Legend" style="float: right; margin-top: 35%;"></div>');
             legendsActive ++;
                 };
             });
@@ -1193,28 +1210,36 @@ function layerClicks() {
 
     // Geology
     $('#Geology-Leg').click( function() {
-        if (legendsActive > 0) {
+        if ($('.leaflet-control-wms-legend')[0] == undefined) {
+            $('.leaflet-top.leaflet-right').append('<div id="Geology" class="leaflet-control-wms-legend leaflet-control" style="height: 20px; width: 20px;"><img class="wms-legend" src="https://www.sciencebase.gov/arcgis/services/Catalog/5888bf4fe4b05ccb964bab9d/MapServer/WmsServer?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=0" alt="Legend" style="float: right; margin-top: 35%;"></div>');
+        } else if ($('.leaflet-control-wms-legend')[0].id.toString().trim() == "Geology") {
             $('.leaflet-control-wms-legend').replaceWith('<div></div>')
-            $('.leaflet-top.leaflet-right').append('<div class="leaflet-control-wms-legend leaflet-control" style="height: 20px; width: 20px;"><img class="wms-legend" src="https://www.sciencebase.gov/arcgis/services/Catalog/5888bf4fe4b05ccb964bab9d/MapServer/WmsServer?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=0" alt="Legend" style="float: right; margin-top: 35%;"></div>');
+        } else if (legendsActive > 0) {
+            $('.leaflet-control-wms-legend').replaceWith('<div></div>')
+            $('.leaflet-top.leaflet-right').append('<div id="Geology" class="leaflet-control-wms-legend leaflet-control" style="height: 20px; width: 20px;"><img class="wms-legend" src="https://www.sciencebase.gov/arcgis/services/Catalog/5888bf4fe4b05ccb964bab9d/MapServer/WmsServer?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=0" alt="Legend" style="float: right; margin-top: 35%;"></div>');
         } else if ($('.leaflet-control-wms-legend').length) {
             console.log('legend already present')
             $('.leaflet-control-wms-legend').replaceWith('<div></div>')
         } else {
-            $('.leaflet-top.leaflet-right').append('<div class="leaflet-control-wms-legend leaflet-control" style="height: 20px; width: 20px;"><img class="wms-legend" src="https://www.sciencebase.gov/arcgis/services/Catalog/5888bf4fe4b05ccb964bab9d/MapServer/WmsServer?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=0" alt="Legend" style="float: right; margin-top: 35%;"></div>');
+            $('.leaflet-top.leaflet-right').append('<div id="Geology" class="leaflet-control-wms-legend leaflet-control" style="height: 20px; width: 20px;"><img class="wms-legend" src="https://www.sciencebase.gov/arcgis/services/Catalog/5888bf4fe4b05ccb964bab9d/MapServer/WmsServer?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=0" alt="Legend" style="float: right; margin-top: 35%;"></div>');
             legendsActive ++;
                 };
             });
 
     // Land Cover Change
     $('#LCChange-Leg').click( function() {
-        if (legendsActive > 0) {
+        if ($('.leaflet-control-wms-legend')[0] == undefined) {
+            $('.leaflet-top.leaflet-right').append('<div id = "LCChange" class="leaflet-control-wms-legend leaflet-control" style="height: 20px; width: 20px;"><img class="wms-legend" src="https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2001_2019_change_index_L48/ows?service=WMS&amp;request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=NLCD_2001_2019_change_index_L48" alt="Legend" style="float: right; margin-top: 35%;"></div>');
+        } else if ($('.leaflet-control-wms-legend')[0].id.toString().trim() == "LCChange") {
             $('.leaflet-control-wms-legend').replaceWith('<div></div>')
-            $('.leaflet-top.leaflet-right').append('<div class="leaflet-control-wms-legend leaflet-control" style="height: 20px; width: 20px;"><img class="wms-legend" src="https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2001_2019_change_index_L48/ows?service=WMS&amp;request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=NLCD_2001_2019_change_index_L48" alt="Legend" style="float: right; margin-top: 35%;"></div>');
+        } else if (legendsActive > 0) {
+            $('.leaflet-control-wms-legend').replaceWith('<div></div>')
+            $('.leaflet-top.leaflet-right').append('<div id = "LCChange" class="leaflet-control-wms-legend leaflet-control" style="height: 20px; width: 20px;"><img class="wms-legend" src="https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2001_2019_change_index_L48/ows?service=WMS&amp;request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=NLCD_2001_2019_change_index_L48" alt="Legend" style="float: right; margin-top: 35%;"></div>');
         } else if ($('.leaflet-control-wms-legend').length) {
             console.log('legend already present')
             $('.leaflet-control-wms-legend').replaceWith('<div></div>')
         } else {
-            $('.leaflet-top.leaflet-right').append('<div class="leaflet-control-wms-legend leaflet-control" style="height: 20px; width: 20px;"><img class="wms-legend" src="https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2001_2019_change_index_L48/ows?service=WMS&amp;request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=NLCD_2001_2019_change_index_L48" alt="Legend" style="float: right; margin-top: 35%;"></div>');
+            $('.leaflet-top.leaflet-right').append('<div id = "LCChange" class="leaflet-control-wms-legend leaflet-control" style="height: 20px; width: 20px;"><img class="wms-legend" src="https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2001_2019_change_index_L48/ows?service=WMS&amp;request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=NLCD_2001_2019_change_index_L48" alt="Legend" style="float: right; margin-top: 35%;"></div>');
             legendsActive ++;
                 };
             });
