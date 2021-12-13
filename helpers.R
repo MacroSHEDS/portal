@@ -1459,5 +1459,3 @@ read_combine_ws_traits <- function(ws_prod, ws_var, new_var_name, dmns,
   }
   return(combined_data)
 }
-
-
