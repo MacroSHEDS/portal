@@ -1,6 +1,7 @@
 # library(shiny)
 # library(readr)
 # library(shinyjs)
+library(tidyverse)
 
 options(shiny.usecairo = TRUE)
 
@@ -142,84 +143,53 @@ server <- function(input, output, session) {
         handlerExpr = {
             init_vals$basedata_change_reloads_plots <- FALSE
 
-            print("site one")
-            print(str(input$MAPDATA$value))
-            rank_one <- str_match(input$MAPDATA$value, "(.+?)__(.+?)_goto.*$")[, 2:3]
+            print("GADZOOKS")
+            spatial_list <- lapply(rapply(input$MAPDATA, enquote, how = "unlist"), eval)
+            sites_list <- c()
 
-            print("site two")
-            print(str(input$MAPDATA$rest$value))
-            rank_two <- str_match(input$MAPDATA$rest$value, "(.+?)__(.+?)_goto.*$")[, 2:3]
-
-            print("site three")
-            print(str(input$MAPDATA$rest$rest$value))
-            rank_three <- str_match(input$MAPDATA$rest$rest$value, "(.+?)__(.+?)_goto.*$")[, 2:3]
-
-            # map_selection <- str_match(input$MAPDATA, "(.+?)__(.+?)_goto.*$")[, 2:3]
-            # map_selection <- rbind(map_selection, c(NA, NA))
-
-            # first pair
-            domain_sel <- rank_one[1]
-            site_sel <- rank_one[2]
-
-            # second pair
-            domain_sel_two <- rank_two[1]
-            site_sel_two <- rank_two[2]
-
-            # third pair
-            domain_sel_three <- rank_three[1]
-            site_sel_three <- rank_three[2]
-
-            # all sites
-            site_all <- c(site_sel, site_sel_two, site_sel_three)
-            # all domains names
-            dmns <- c(domain_sel, domain_sel_two, domain_sel_three)
-
-            # get sitelist for first site pair
-            dmn_sitelist <- get_sitelist(
-                domain = domain_sel,
-                type = c(
-                    "stream_gauge",
-                    "stream_sampling_point"
-                )
-            )
-
-            dmn_all <- dmn_sitelist
-
-            # if there is a second pair
-            if (is.na(domain_sel_two)) {
-                print("no rank two station available")
-            } else {
-                # get sitelist
-                dmn_sitelist_two <- get_sitelist(
-                    domain = toString(domain_sel_two),
-                    type = c(
-                        "stream_gauge",
-                        "stream_sampling_point"
-                    )
-                )
-                dmn_all <- c(dmn_sitelist, dmn_sitelist_two)
+            for (x in names(spatial_list)) {
+                sites_list <- c(sites_list, spatial_list[[x]])
             }
 
-            # if there is a third pair
-            if (is.na(domain_sel_three)) {
-                print("no rank three station available (NA)")
-            } else if (exists(domain_sel_three)) {
-                print("no rank three station available (not exists)")
-            } else {
-                # get sitelist
-                dmn_sitelist_three <- get_sitelist(
-                    domain = toString(domain_sel_three),
-                    type = c(
-                        "stream_gauge",
-                        "stream_sampling_point"
-                    )
-                )
-                dmn_all <- c(dmn_sitelist, dmn_sitelist_two, dmn_sitelist_three)
+            site_pairs <- c()
+            i <- 0
+            for (item in sites_list) {
+                i <- i + 1
+                site <- str_match(item, "(.+?)__(.+?)_goto.*$")[1, 3]
+                domain <- str_match(item, "(.+?)__(.+?)_goto.*$")[1, 2]
+                pair <- c(site, domain)
+                site_pairs[[i]] <- pair
             }
-            print("domains")
+
+            print("SKOOZDAG")
+
+            site_all <- c()
+            dmns <- c()
+            dmn_all <- c()
+            print("woop")
             print(dmn_all)
-            print("sites")
             print(site_all)
+            print(dmns)
+
+            for (unit in site_pairs) {
+                # get domain and site
+                this_dmn <- unit[2]
+                this_site <- unit[1]
+
+                # append domain and site to master lists
+                dmns <- c(dmns, this_dmn)
+                site_all <- c(site_all, this_site)
+
+                # get sitelist for domain, and append
+                this_dmn_sitelist <- get_sitelist(
+                    domain = this_dmn,
+                    type = c(
+                        "stream_gauge",
+                        "stream_sampling_point"
+                    )
+                )
+                dmn_all <- c(dmn_all, this_dmn_sitelist)
+            }
 
             updateSelectizeInput(
                 session = session,
@@ -239,6 +209,24 @@ server <- function(input, output, session) {
                 options = list(maxItems = 3)
             )
 
+            # update biplot selectizers too
+            updateSelectizeInput(
+                session = session,
+                inputId = "DOMAINS2_B",
+                label = NULL,
+                selected = dmns,
+                choices = domains_pretty,
+                # options = list()
+            )
+
+            updateSelectizeInput(
+                session = session,
+                inputId = "SITES2_B",
+                label = NULL,
+                selected = site_all,
+                choices = dmn_all,
+                # options = list()
+            )
             print("MAPDATA")
         }
     )

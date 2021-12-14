@@ -42,16 +42,17 @@ pre_filtered_bi <- reactive({
     date2 <- year(input$DATES2_INTER[2])
     domains <- input$DOMAINS2
     domains_s <- input$DOMAINS2_S
+    domains_b <- input$DOMAINS2_B
+    sites_b <- input$SITES2_B
     sites <- input$SITES2
     type <- switch(input$SITE_SELECTION2,
         ALL_SITES2 = "all",
         DOMINE_NETWORK2 = "dom",
-        BY_SITE2 = "site"
+        BY_SITE2 = "site",
+        BY_BUCKET2 = "bucket"
     )
     # raw <- summary()
     raw <- sum
-
-
 
     if (type == "dom") {
         fill <- raw %>%
@@ -68,6 +69,12 @@ pre_filtered_bi <- reactive({
         fill <- raw
     }
 
+    if (type == "bucket") {
+        fill <- raw %>%
+            filter(domain %in% domains_b) %>%
+            filter(site_code %in% sites_b)
+    }
+
     final <- fill %>%
         filter(
             Year >= !!date1,
@@ -77,6 +84,113 @@ pre_filtered_bi <- reactive({
     return(final)
 })
 
+# site select bucket react
+# observeEvent(
+#     eventExpr = input$MAPDATA,
+#     priority = 110,
+#     handlerExpr = {
+#         init_vals$basedata_change_reloads_plots <- FALSE
+#
+#         print("site one")
+#         print(str(input$MAPDATA$value))
+#         rank_one <- str_match(input$MAPDATA$value, "(.+?)__(.+?)_goto.*$")[, 2:3]
+#
+#         print("site two")
+#         print(str(input$MAPDATA$rest$value))
+#         rank_two <- str_match(input$MAPDATA$rest$value, "(.+?)__(.+?)_goto.*$")[, 2:3]
+#
+#         print("site three")
+#         print(str(input$MAPDATA$rest$rest$value))
+#         rank_three <- str_match(input$MAPDATA$rest$rest$value, "(.+?)__(.+?)_goto.*$")[, 2:3]
+#
+#         # map_selection <- str_match(input$MAPDATA, "(.+?)__(.+?)_goto.*$")[, 2:3]
+#         # map_selection <- rbind(map_selection, c(NA, NA))
+#
+#         # first pair
+#         domain_sel <- rank_one[1]
+#         site_sel <- rank_one[2]
+#
+#         # second pair
+#         domain_sel_two <- rank_two[1]
+#         site_sel_two <- rank_two[2]
+#
+#         # third pair
+#         domain_sel_three <- rank_three[1]
+#         site_sel_three <- rank_three[2]
+#
+#         # all sites
+#         site_all <- c(site_sel, site_sel_two, site_sel_three)
+#         # all domains names
+#         dmns <- c(domain_sel, domain_sel_two, domain_sel_three)
+#
+#         # get sitelist for first site pair
+#         dmn_sitelist <- get_sitelist(
+#             domain = domain_sel,
+#             type = c(
+#                 "stream_gauge",
+#                 "stream_sampling_point"
+#             )
+#         )
+#
+#         dmn_all <- dmn_sitelist
+#
+#         # if there is a second pair
+#         if (is.na(domain_sel_two)) {
+#             print("no rank two station available")
+#         } else {
+#             # get sitelist
+#             dmn_sitelist_two <- get_sitelist(
+#                 domain = toString(domain_sel_two),
+#                 type = c(
+#                     "stream_gauge",
+#                     "stream_sampling_point"
+#                 )
+#             )
+#             dmn_all <- c(dmn_sitelist, dmn_sitelist_two)
+#         }
+#
+#         # if there is a third pair
+#         if (is.na(domain_sel_three)) {
+#             print("no rank three station available (NA)")
+#         } else if (exists(domain_sel_three)) {
+#             print("no rank three station available (not exists)")
+#         } else {
+#             # get sitelist
+#             dmn_sitelist_three <- get_sitelist(
+#                 domain = toString(domain_sel_three),
+#                 type = c(
+#                     "stream_gauge",
+#                     "stream_sampling_point"
+#                 )
+#             )
+#             dmn_all <- c(dmn_sitelist, dmn_sitelist_two, dmn_sitelist_three)
+#         }
+#         print("domains")
+#         print(dmn_all)
+#         print("sites")
+#         print(site_all)
+#
+#         updateSelectizeInput(
+#             session = session,
+#             inputId = "DOMAINS3",
+#             label = NULL,
+#             selected = dmns,
+#             choices = domains_pretty,
+#             options = list(maxItems = 3)
+#         )
+#
+#         updateSelectizeInput(
+#             session = session,
+#             inputId = "SITES3",
+#             label = NULL,
+#             selected = site_all,
+#             choices = dmn_all,
+#             options = list(maxItems = 3)
+#         )
+#
+#         print("MAPDATA")
+#     }
+# )
 # Final filtering for variables and configures table for plotly graph
 filtered_bi <- reactive({
 
