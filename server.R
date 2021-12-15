@@ -1,6 +1,7 @@
 # library(shiny)
 # library(readr)
 # library(shinyjs)
+library(tidyverse)
 
 options(shiny.usecairo = TRUE)
 
@@ -140,55 +141,61 @@ server <- function(input, output, session) {
         eventExpr = input$MAPDATA,
         priority = 110,
         handlerExpr = {
-            init_vals$basedata_change_reloads_plots <- TRUE
+            init_vals$basedata_change_reloads_plots <- FALSE
 
-            print("raw input")
-            print(input$MAPDATA)
+            print("GADZOOKS")
+            spatial_list <- lapply(rapply(input$MAPDATA, enquote, how = "unlist"), eval)
+            sites_list <- c()
 
-            map_selection <- str_match(input$MAPDATA, "(.+?)__(.+?)_goto.*$")[, 2:3]
+            for (x in names(spatial_list)) {
+                sites_list <- c(sites_list, spatial_list[[x]])
+            }
 
-            print("goto regex of input")
-            print(map_selection)
+            site_pairs <- c()
+            i <- 0
+            for (item in sites_list) {
+                i <- i + 1
+                site <- str_match(item, "(.+?)__(.+?)_goto.*$")[1, 3]
+                domain <- str_match(item, "(.+?)__(.+?)_goto.*$")[1, 2]
+                pair <- c(site, domain)
+                site_pairs[[i]] <- pair
+            }
 
-            # first pair
-            domain_sel <- map_selection[1, 1]
-            site_sel <- map_selection[1, 2]
+            print("SKOOZDAG")
 
-            # second pair
-            domain_sel_two <- str_match(map_selection[2, 1], '(?<=").*')
-            site_sel_two <- map_selection[2, 2]
+            site_all <- c()
+            dmns <- c()
+            dmn_all <- c()
+            print("woop")
+            print(dmn_all)
+            print(site_all)
+            print(dmns)
 
+            for (unit in site_pairs) {
+                # get domain and site
+                this_dmn <- unit[2]
+                this_site <- unit[1]
 
-            dmn_sitelist <- get_sitelist(
-                domain = domain_sel,
-                type = c(
-                    "stream_gauge",
-                    "stream_sampling_point"
-                )
-            )
+                # append domain and site to master lists
+                dmns <- c(dmns, this_dmn)
+                site_all <- c(site_all, this_site)
 
-            if (is.na(domain_sel_two)) {
-                print("no rank two station available")
-                dmn_all <- dmn_sitelist
-            } else {
-                dmn_sitelist_two <- get_sitelist(
-                    domain = toString(domain_sel_two),
+                # get sitelist for domain, and append
+                this_dmn_sitelist <- get_sitelist(
+                    domain = this_dmn,
                     type = c(
                         "stream_gauge",
                         "stream_sampling_point"
                     )
                 )
-
-                dmn_all <- c(dmn_sitelist, dmn_sitelist_two)
+                dmn_all <- c(dmn_all, this_dmn_sitelist)
             }
-
-
 
             updateSelectizeInput(
                 session = session,
                 inputId = "DOMAINS3",
                 label = NULL,
-                selected = c(domain_sel, domain_sel_two),
+                selected = dmns,
                 choices = domains_pretty,
                 options = list(maxItems = 3)
             )
@@ -197,11 +204,29 @@ server <- function(input, output, session) {
                 session = session,
                 inputId = "SITES3",
                 label = NULL,
-                selected = c(site_sel, site_sel_two),
+                selected = site_all,
                 choices = dmn_all,
                 options = list(maxItems = 3)
             )
 
+            # update biplot selectizers too
+            updateSelectizeInput(
+                session = session,
+                inputId = "DOMAINS2_B",
+                label = NULL,
+                selected = dmns,
+                choices = domains_pretty,
+                # options = list()
+            )
+
+            updateSelectizeInput(
+                session = session,
+                inputId = "SITES2_B",
+                label = NULL,
+                selected = site_all,
+                choices = dmn_all,
+                # options = list()
+            )
             print("MAPDATA")
         }
     )

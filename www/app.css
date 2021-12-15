@@ -604,12 +604,7 @@ tbody tr.active-row {
 #data-toggler {
     margin-top: 6px;
 }
-.leaflet-control-zoom-in {
-    color: #000 !important;
-}
-.leaflet-control-zoom-out {
-    color: #000 !important;
-}
+
 #COLLAPSE_DATA {
     margin: -6px;
 }
@@ -887,4 +882,46 @@ tbody tr.active-row {
 /* general */
 .flip-horizontally {
   transform: scaleY(.5);
+}
+
+/* Leaflet Styling */
+/* zoom */
+.leaflet-control-zoom-in {
+    color: #000 !important;
+}
+.leaflet-control-zoom-out {
+    color: #000 !important;
+}
+/* legend */
+/* .leaflet-control-wms-legend {
+    visibility: hidden;
+} */
+
+.diy-legend {
+    /* margin-right: 0px; */
+    color: #000 !important;
+    margin-right: 10px;
+    margin-top: 60px;
+    float: right;
+    z-index: 100;
+}
+
+#diy-legend {
+    float: left !important;
+    margin-top: 70px;
+}
+
+/* c("#2a6a99", "#b66397", "#d88546") */
+/* Rank List Styling */
+.rank-list-item:nth-child(1) {
+    border: 3px solid #2a6a99 !important;
+    margin-bottom: 2px;
+}
+.rank-list-item:nth-child(2) {
+    border: 3px solid #b66397 !important;
+    margin-bottom: 2px;
+}
+.rank-list-item:nth-child(3) {
+    border: 3px solid #d88546 !important;
+    margin-bottom: 2px;
 }
