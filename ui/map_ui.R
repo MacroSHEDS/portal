@@ -33,6 +33,7 @@ map_tab <- tabPanel(
                 type = "tabs",
                 tabPanel(
                     "Selected Sites",
+                    style = "overflow-y:scroll; height: 300px;",
                     rank_list_basic,
                 ),
                 tabPanel(
