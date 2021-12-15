@@ -15,7 +15,14 @@ map_tab <- tabPanel(
         column(
             width = 12,
             div(
+                id = "legend-container",
                 style = "position: absolute; right: 4em",
+                bsTooltip(
+                    id = "legend-container",
+                    title = "this is a BETA legend, improved legend coming soon",
+                    placement = "bottom",
+                    trigger = "hover"
+                ),
                 HTML('<div class="dropup" id="legend-button"><button class="btn btn-primary dropdown-toggle" type="button" id="about-us" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Legend <span class="caret"></span></button><ul class="dropdown-menu" aria-labelledby="legend-drop"><li><a id="3DEP-Leg" href="#">3DEP Elevation</a></li><li><a id="Tree-Leg" href="#">Tree Canopy</a></li><li><a id="Impervious-Leg" href="#">Impervious Surfaces</a></li><li><a id="Landcover-Leg" href="#">Landcover</a></li><li><a id="LCChange-Leg" href="#">Landcover Change</a></li><li><a id="Geology-Leg" href="#">Geology</a></li></ul></div>')
                 # <li><a id="Ecoregions" href="#">Ecoregions</a></li> <li><a id="TreeCanopyChange-Leg" href="#">Tree Canopy Change</a></li>
             ),
@@ -31,13 +38,23 @@ map_tab <- tabPanel(
             tabsetPanel(
                 id = "attribute-content",
                 type = "tabs",
+                selected = "Selected Sites",
                 tabPanel(
+                    id = "bucket-info",
+                    HTML('<span class="glyphicon glyphicon-question-sign"></span>'),
+                    div(
+                        includeHTML("ui/info_tab.html"),
+                        # style = "padding: 20px"
+                    ),
+                ),
+                tabPanel(
+                    id = "site-bucket",
                     "Selected Sites",
                     style = "overflow-y:scroll; height: 300px;",
                     rank_list_basic,
                 ),
                 tabPanel(
-                    "Watershed Attributes",
+                    "Watershed",
                     # textOutput("MAP_SITE_INFO_TITLE"),
                     tableOutput("MAP_SITE_INFO") %>%
                         tagAppendAttributes(class = "table") %>%
@@ -59,9 +76,6 @@ map_tab <- tabPanel(
                 id = "notes-footer",
                 "go to 'Notes/Caveats' tab for more information"
             ),
-            tags$footer(
-                textOutput("results_basic")
-            )
             # class = "leftpanel-text"
         )
     )

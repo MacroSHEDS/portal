@@ -1,0 +1,85 @@
+<div class = "notes" style="overflow-y: scroll; height: 300px; padding: 20px;">
+   <!-- <h4> Macrosheds Site Notes </h4> -->
+  <div class="panel-group" id="accordion">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+              Map
+            </a>
+          </h4>
+        </div>
+        <div id="collapseOne" class="panel-collapse collapse">
+          <div class="panel-body">
+              <ul>
+                 <li>
+                     the map contains <span style="color: blue;"> rain gauges</span> and <span style="color: purple;"> stream chemistry gauges</span>
+                     from the MacroSheds dataset
+                 </li>
+                 <li>
+                     stream chemistry gauges will have a <strong>blue plus sign</strong> -- click this icon to add the site to your bucket in the "Selected Sites" tab
+                 </li>
+                 <li>
+                     use the square icon in the upper right of the map to control which layers of geospatial data to visualize on the map
+                 </li>
+                 <li>
+                     use the blue "Legend" button (or on small screens, the grey list icon) to choose legends to appear or dissappear on the map (click a layer name to make the legend appear, and click again to make it go away)
+                 </li>
+              </ul>
+          </div>
+        </div>
+      </div>
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+                Selected Sites
+            </a>
+          </h4>
+        </div>
+        <div id="collapseTwo" class="panel-collapse collapse">
+          <div class="panel-body">
+            <ul>
+                <li>
+                    the "Selected Sites" tab contains a <em>rank list</em>, storing sites a user adds from the above map <em>(see the map information section for more detail)</em>
+                </li>
+
+                <li>
+                    once a user adds a site to this bucket, they may notice that the blue <span style="color:blue;">Plot</span>
+                    button flashes orange- this reflects that the user must click the plot button to see the added sites data
+                    in the time series graphs
+                </li>
+
+                <li>
+                    users should be aware that the rank list provides data to the time series and site comparison tabs, but manipulating inputs there, won't effect your list
+                </li>
+                <li>
+                    the top three rank list items are supplied to the Time Series tab (color coded with line color in the graphs), while the site comparison tab uses the entire rank list
+                </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
+                Watershed
+            </a>
+          </h4>
+        </div>
+        <div id="collapseThree" class="panel-collapse collapse">
+          <div class="panel-body">
+            <ul>
+                <li>
+                        the Watershed tab provides a table of supplemental information about the top ranked site in the rank list
+                </li>
+                <li>
+                        we are working on making it so that, when the map view is expanded (using the arrows at the middle top of the website), this tab becomes a scrollable data table containing attribute data of every site in the rank list
+                </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+  </div>
+</div> <!-- end container -->

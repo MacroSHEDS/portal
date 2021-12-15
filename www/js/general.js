@@ -84,6 +84,9 @@ shinyjs.init = function() {
             // make "PLOT" button attention styled
             $("#GEN_PLOTS3").addClass("btn-update");
 
+            // make site comparison option highlight as well?
+            // $('value="BY_BUCKET2"').addClass("btn-update");
+
             $('#SITE_EXPLORE').trigger('click');
 
             // extract domain and site name, clean
