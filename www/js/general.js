@@ -81,18 +81,32 @@ shinyjs.init = function() {
 
             var goto_id = $(this).attr('id') // + new Date(); //trigger reactivity
 
+            // make "PLOT" button attention styled
+            $("#GEN_PLOTS3").addClass("btn-update");
+
+            // make site comparison option highlight as well?
+            // $('value="BY_BUCKET2"').addClass("btn-update");
+
             $('#SITE_EXPLORE').trigger('click');
+
+            // extract domain and site name, clean
+            site_info = goto_id.split('_');
+            site_info_end = site_info.length -1
+
+            // var site = site_info[2];
+            var domain = site_info[0];
+            var site = site_info.slice(1, site_info_end).join(' ');
 
             // add sites to cart
             $('div').find('.rank-list').prepend(
-                    '<div class="rank-list-item" id =' + goto_id + 'remover' + ' draggable="false">' + goto_id + ' <button type="button" class="btn btn-default btn-sm rankremover" style="float: right"><span class="glyphicon glyphicon-remove"></span> </button></div>'
+                    '<div class="rank-list-item" id =' + goto_id + 'remover' + ' draggable="false">' + '<strong>' + domain + '</strong>' + ':  ' + site + ' <button type="button" class="btn btn-default btn-sm rankremover" style="float: right"><span class="glyphicon glyphicon-remove"></span> </button></div>'
                 );
 
             // set mapdata as top 3 ranks
             var rankList = [];
 
             $(".rank-list > .rank-list-item").each((index, elem) => {
-              rankList.push(elem.innerHTML);
+              rankList.push(elem.id);
             });
             console.log(rankList)
 
@@ -289,6 +303,10 @@ shinyjs.init = function() {
 
     $('body').ready(function(){
         $('#GEN_PLOTS3').click(govern_qc3);
+        $('#GEN_PLOTS3').click( function() {
+            $(this).removeClass("btn-update");
+            // $(this).addClass("btn-primary");
+        });
     });
 
     //BIPLOT: disable X-axis selection when aggregation == 'Yearly'
@@ -1009,42 +1027,7 @@ $(document).ready(function() {
     };
 });
 
-// auto-rotate
-// $(document).ready( function() {
-//     var intervalId = window.setInterval(function(){
-//       plusSlides(slideIndex);
-//       // console.log('a seocnd has passed');
-//   }, 8000);
-// })
-// var carouselCount = 0;
-//
-
-// $(document).ready( function() {
-//     var intervalId = window.setInterval(function(){
-//       slideIndex++;
-//       carouselCount++;
-//
-//       showSlides(slideIndex);
-//       console.log(slideIndex);
-//   }, 10000);
-//
-//     var intervalStop = window.setInterval(function(){
-//       clearInterval(intervalId);
-//       var slideIndex = 2;
-//   }, 50000);
-//
-// })
-//
-// $(document).ready( function() {
-//     $('.update-slide').addClass('update');
-//     setTimeout(
-//       function()
-//           {
-//               $('.update-slide').removeClass('update');
-//           }, 11000);
-// })
-
-// single use function funciton
+//  orange attention animation funciton
 $(document).ready( function() {
     var intervalUpdate = window.setInterval(function(){
         $('#macrosheds-dot').addClass('update');
@@ -1060,6 +1043,22 @@ $(document).ready( function() {
           }
       );
 })
+
+// $(document).ready( function() {
+//     var intervalUpdate = window.setInterval(function(){
+//         $('.btn-update').css('border', '0px;');
+//         setTimeout(
+//           function()
+//               {
+//                   $('.btn-update').css('0px solid orange;');
+//               }, 500);
+//       }, 1000);
+//
+//       // $('#').click( function() {
+//       //         clearInterval(intervalUpdate);
+//       //     }
+//       // );
+// })
 
 var dotExcited = 0;
 
@@ -1088,6 +1087,33 @@ $(document).ready( function() {
       }
   })
 
+// var dotExcited = 0;
+//
+// $(document).ready( function() {
+//           if (dotExcited == 0) {
+//               $('#macrosheds-dot').click( function() {
+//                 if (dotExcited == 0) {
+//                 var intervalUpdate = window.setInterval(function(){
+//                     $('#macrosheds-dot-two').addClass('update');
+//                     setTimeout(
+//                       function()
+//                           {
+//                               $('#macrosheds-dot-two').removeClass('update');
+//                           }, 500);
+//                   }, 1000);
+//                 dotExcited++;
+//                 }
+//
+//                   $('#macrosheds-dot-two').click( function() {
+//                           clearInterval(intervalUpdate);
+//                           dotExcited++;
+//                       }
+//                   );
+//               }
+//           );
+//       }
+//   })
+
 // leflet legend
 function addLegend() {
     if ($('.diy-legend').length) {
@@ -1100,38 +1126,6 @@ function addLegend() {
         }, 3000);
         };
     };
-
-function sortLegend() {
-        var legendList = [];
-
-        $(".wms-legend").each((index, elem) => {
-          legendList.push(elem.src);
-        });
-
-        var legURL = [];
-
-        for (wms in legendList) {
-            legURL
-        }
-    };
-
-$(document).ready( function() {
-    sortLegend()
-});
-
-$(document).ready( function() {
-    $('#left_tabs').click( function() {
-        addLegend()
-        // $('#my-legend').click(function() {
-        //     console.log('WOOT');
-        //     // $(this).parent().find("span");
-        // })
-    });
-});
-
-function checkClick() {
-        console.log("YES THIS CLICK IS WORKING");
-};
 
 var legendsActive = 0;
 
@@ -1265,64 +1259,6 @@ $(document).ready(function() {
     layerClicks();
         });
 
-// Legend Dropdown
-// <div style="z-index: 900 !important;margin-top: 10px;" id="diy-legend" class="leaflet-control well">
-//
-//   <div class="dropdown">
-// <button class="btn btn-primary dropdown-toggle" type="button" id="about-us" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="">
-// About Us
-// <span class="caret"></span>
-// </button>
-// <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="about-us">
-// <li><a href="#">Our Story</a></li>
-// <li><a href="#">Our Team</a></li>
-// <li><a href="#">Contact Us</a></li>
-// </ul>
-// </div></div>
-
-// just dropdown
-//   <div class="dropdown">
-// <button class="btn btn-primary dropdown-toggle" type="button" id="about-us" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="">
-// About Us
-// <span class="caret"></span>
-// </button>
-// <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="about-us">
-// <li><a href="#">Our Story</a></li>
-// <li><a href="#">Our Team</a></li>
-// <li><a href="#">Contact Us</a></li>
-// </ul>
-// </div>
-// Javascript to get Legend Labels
-// from URLs
-
-// var wmsDict = {
-//     'http://127.0.0.1:7027/mrlc_display/NLCD_Tree_Canopy_Change_I…g&width=20&height=20&layer=NLCD_Tree_Canopy_Change_Index_L48': "Tree Canopy Change",
-//     'https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2016_Tree_C…age%2Fpng&width=20&height=20&layer=NLCD_2016_Tree_Canopy_L48': "Tree Canopy",
-//     'https://www.sciencebase.gov/arcgis/services/Catalog/5888bf4f…etLegendGraphic%26version=1.3.0%26format=image/png%26layer=0': "Geology",
-//
-// }
-
-
-// for (x in legendList) {
-//  for ( item in wmsDict) {
-//     if (legendList[x].src.toString().trim == item.toString().trim) {
-//       console.log(wmsDict[item]);
-//     }
-//   }
-// }
-
-// Layers Legend 'active' controls
-
-// 1) on click, layer populates 'active layer' variable
-// var activeLayer = ''
-
-// $(document).ready( function() {
-//     $('.leaflet-control-layers-list').on('input', function() {
-//         console.log('WOOT');
-//         // $(this).parent().find("span");
-//     })
-// })
-//
 $(document).ready( function() {
     $(window).on('resize', function() {
         if ($("#attribute-content").width() < 500) {
@@ -1340,8 +1276,5 @@ $(document).ready( function() {
         });
     });
 
- // $(document).ready( function() {
- //     $('#COLLAPSE_ATTRIBUTES').click();
- // })
 // 2) this variable triggers legend icon to be associated with legend or legend URL for active layer
 // 3) legend icon on click/hover displays legend visual

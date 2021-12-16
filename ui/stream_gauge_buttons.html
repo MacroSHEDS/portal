@@ -1,18 +1,39 @@
+<button data-toggle='collapse' class='btn btn-sm btn-link btn-block'
+    data-target='#{domain}__{site_code}_collapse'>
+</button>
+
 <div style='text-align: center'>
-    {domain}-{site_code}
+
+<!-- <button class="well">{domain}  {site_code}</button> -->
+
+<ul class="list-group" style="margin-bottom: 0px;">
+<li class="list-group-item">
+<span class="badge" style="float: left;">domain</span>
+<strong>{domain}</strong>
+</li>
+<li class="list-group-item">
+<span class="badge" style="float: left;">chemistry gauge</span>
+{site_code}
+</li>
+</ul>
+
 </div>
 <button data-toggle='collapse' class='btn btn-sm btn-link btn-block'
     data-target='#{domain}__{site_code}_collapse'>
 </button>
-<div id='{domain}__{site_code}_collapse' class='collapse'>
-</div>
 
-<div class="" style="margin-left: 30% ">
-    <button class='btn btn-sm btn-primary' id='{domain}__{site_code}_goto' >
+<div class="" style="margin-left: 42% ">
+    <!-- <button class='btn btn-sm btn-primary' id='{domain}__{site_code}_goto' >
         go to
-    </button>
+    </button> -->
 
     <button class='btn btn-sm btn-primary' id='{domain}__{site_code}_goto' style="">
-        <span class="glyphicon glyphicon-plus"></span>
+        <a target="_blank" data-toggle="tooltip" data-placement="bottom" title="click to add this site to the selected sites bucket below!">
+            <span class="glyphicon glyphicon-plus"></span>
+        </a>
     </button>
+</div>
+
+<div id='{domain}__{site_code}_collapse' class='collapse'>
+
 </div>

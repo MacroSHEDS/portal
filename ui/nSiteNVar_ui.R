@@ -6,7 +6,7 @@ nSiteNVar_tab <- tabPanel("Time Series",
             div(
                 class = "text-center",
                 actionButton("GEN_PLOTS3",
-                    "Update Plots",
+                    "Plot",
                     class = "text-center, btn btn-block btn-primary",
                 )
             ),

@@ -143,7 +143,6 @@ server <- function(input, output, session) {
         handlerExpr = {
             init_vals$basedata_change_reloads_plots <- FALSE
 
-            print("GADZOOKS")
             spatial_list <- lapply(rapply(input$MAPDATA, enquote, how = "unlist"), eval)
             sites_list <- c()
 
@@ -161,15 +160,9 @@ server <- function(input, output, session) {
                 site_pairs[[i]] <- pair
             }
 
-            print("SKOOZDAG")
-
             site_all <- c()
             dmns <- c()
             dmn_all <- c()
-            print("woop")
-            print(dmn_all)
-            print(site_all)
-            print(dmns)
 
             for (unit in site_pairs) {
                 # get domain and site
