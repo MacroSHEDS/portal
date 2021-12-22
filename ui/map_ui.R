@@ -46,12 +46,26 @@ map_tab <- tabPanel(
                         includeHTML("ui/info_tab.html"),
                         # style = "padding: 20px"
                     ),
+                    div(
+                        class = "label",
+                        tags$footer(
+                            p(
+                                id = "notes-footer",
+                                "go to 'Notes/Caveats' tab for more information"
+                            ),
+                            # class = "leftpanel-text"
+                        )
+                    )
                 ),
                 tabPanel(
                     id = "site-bucket",
                     "Selected Sites",
                     style = "overflow-y:scroll; height: 300px;",
                     rank_list_basic,
+                    div(
+                        class = "label",
+                        HTML('<div id="map-site-clear" style="margin-left: auto;"><span class="glyphicon glyphicon-trash gi-semi-x"></span></div> '),
+                    )
                 ),
                 tabPanel(
                     "Watershed",
@@ -59,6 +73,16 @@ map_tab <- tabPanel(
                     tableOutput("MAP_SITE_INFO") %>%
                         tagAppendAttributes(class = "table") %>%
                         tagAppendAttributes(class = "horizontal-scroll"),
+                    div(
+                        class = "label",
+                        tags$footer(
+                            p(
+                                id = "notes-footer",
+                                "go to 'Notes/Caveats' tab for more information"
+                            ),
+                            # class = "leftpanel-text"
+                        )
+                    )
                 ),
             ),
         )
@@ -69,14 +93,15 @@ map_tab <- tabPanel(
 
     # DT::dataTableOutput('MAP_SITE_INFO')
     # div('Site Information', class = 'widget-title text-center'),
-    div(
-        class = "label",
-        tags$footer(
-            p(
-                id = "notes-footer",
-                "go to 'Notes/Caveats' tab for more information"
-            ),
-            # class = "leftpanel-text"
-        )
-    )
+    # div(
+    #     class = "label",
+    #     HTML('<span class="glyphicon glyphicon-trash"> </span> <p> click to empty all site selections </p>'),
+    #     tags$footer(
+    #         p(
+    #             id = "notes-footer",
+    #             "go to 'Notes/Caveats' tab for more information"
+    #         ),
+    #         # class = "leftpanel-text"
+    #     )
+    # )
 )

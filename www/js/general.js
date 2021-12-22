@@ -75,6 +75,7 @@ shinyjs.init = function() {
         }
         return list;
     }
+
     //connect map buttons to app tabs
     $('body').ready(function(){
         $('body').on('click', '[id$="_goto"]', function(){
@@ -82,7 +83,8 @@ shinyjs.init = function() {
             var goto_id = $(this).attr('id') // + new Date(); //trigger reactivity
 
             // make "PLOT" button attention styled
-            $("#GEN_PLOTS3").addClass("btn-update");
+            // $("#GEN_PLOTS3").addClass("btn-update");
+            $("#GEN_PLOTS3").addClass("btn-warning");
 
             // make site comparison option highlight as well?
             // $('value="BY_BUCKET2"').addClass("btn-update");
@@ -98,9 +100,27 @@ shinyjs.init = function() {
             var site = site_info.slice(1, site_info_end).join(' ');
 
             // add sites to cart
-            $('div').find('.rank-list').prepend(
-                    '<div class="rank-list-item" id =' + goto_id + 'remover' + ' draggable="false">' + '<strong>' + domain + '</strong>' + ':  ' + site + ' <button type="button" class="btn btn-default btn-sm rankremover" style="float: right"><span class="glyphicon glyphicon-remove"></span> </button></div>'
-                );
+            let hash = '#';
+            let idString = hash.concat(goto_id, "remover")
+
+            if ($('.rank-list').find(idString).length) {
+
+                if ($('.map-site-warning').length == 0) {
+                    // add warning to user that duplicate site cant be added
+                    $('.map-site-btn').parent().parent().prepend('<!-- Warning Alert --><div class="alert alert-warning alert map-site-warning" style="padding: 6px; margin-bottom: 8px;">    <strong>Warning!</strong> sites cannot be added to selection list more than once </div>')
+
+                    // make it so clicking warning hides it
+                    $('.map-site-warning').click( function() {
+                        $('.map-site-warning').hide();
+                    });
+
+                }
+
+            } else {
+                $('div').find('.rank-list').prepend(
+                        '<div class="rank-list-item" id =' + goto_id + 'remover' + ' draggable="false">' + '<strong>' + domain + '</strong>' + ':  ' + site + ' <button type="button" class="btn btn-default btn-sm rankremover" style="float: right"><span class="glyphicon glyphicon-remove"></span> </button></div>'
+                    );
+            }
 
             // set mapdata as top 3 ranks
             var rankList = [];
@@ -108,10 +128,26 @@ shinyjs.init = function() {
             $(".rank-list > .rank-list-item").each((index, elem) => {
               rankList.push(elem.id);
             });
-            console.log(rankList)
 
             Shiny.setInputValue('MAPDATA', arrayToList(rankList));
+
         });
+    });
+
+    // make it so clicking trash can clears bucket
+    $('#map-site-clear').on('click', function() {
+        // set mapdata as top 3 ranks
+        $('#SITE_EXPLORE').trigger('click');
+        // $("#GEN_PLOTS3").addClass("btn-warning");
+
+        var rankList = ['nothing'];
+
+        $(".rank-list > .rank-list-item").each((index, elem) => {
+          elem.remove();
+        });
+
+
+        Shiny.setInputValue('MAPDATA', arrayToList(rankList));
     });
 
     $('body').ready(function(){
@@ -304,7 +340,8 @@ shinyjs.init = function() {
     $('body').ready(function(){
         $('#GEN_PLOTS3').click(govern_qc3);
         $('#GEN_PLOTS3').click( function() {
-            $(this).removeClass("btn-update");
+            // $(this).removeClass("btn-update");
+            $(this).removeClass("btn-warning");
             // $(this).addClass("btn-primary");
         });
     });
@@ -1044,22 +1081,6 @@ $(document).ready( function() {
       );
 })
 
-// $(document).ready( function() {
-//     var intervalUpdate = window.setInterval(function(){
-//         $('.btn-update').css('border', '0px;');
-//         setTimeout(
-//           function()
-//               {
-//                   $('.btn-update').css('0px solid orange;');
-//               }, 500);
-//       }, 1000);
-//
-//       // $('#').click( function() {
-//       //         clearInterval(intervalUpdate);
-//       //     }
-//       // );
-// })
-
 var dotExcited = 0;
 
 $(document).ready( function() {
@@ -1114,24 +1135,12 @@ $(document).ready( function() {
 //       }
 //   })
 
-// leflet legend
-function addLegend() {
-    if ($('.diy-legend').length) {
-        console.log('icon already present');
-    } else {
-        setTimeout( function() {
-            // $('#MAP').append('<div><i id= "my-legend" class="leaflet-control-layers well-sm diy-legend gi-1-x glyphicon glyphicon-th-list" role="button"></i></div>');
-            // $('#MAP').append('<div><i id= "my-legend" class="leaflet-control-layers well-sm diy-legend gi-1-x glyphicon glyphicon-th-list" role="button"></i><div class="well"></div></div>');
-            // $('#MAP').append('<div class="dropdown"><button class="btn btn-primary dropdown-toggle" type="button" id="about-us" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Landcover<span class="caret"></span></button><ul class="dropdown-menu" aria-labelledby="legend-drop"><li><a id="3DEP-Leg" href="#">3DEP Elevation</a></li><li><a id="Streams-Leg" href="#">Streams</a></li><li><a id="Landcover-Leg" href="#">Landcover</a></li></ul></div>')
-        }, 3000);
-        };
-    };
-
 var legendsActive = 0;
 
 function layerClicks() {
-    console.log('legends info')
-    console.log(legendsActive)
+    // console.log('legends info')
+    // console.log(legendsActive)
+
     // Landcover
     $('#Landcover-Leg').click( function() {
         if ($('.leaflet-control-wms-legend')[0] == undefined) {

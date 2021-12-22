@@ -141,6 +141,7 @@ server <- function(input, output, session) {
         eventExpr = input$MAPDATA,
         priority = 110,
         handlerExpr = {
+            print("MAPDATA, bucket chain reaction activated")
             init_vals$basedata_change_reloads_plots <- FALSE
 
             spatial_list <- lapply(rapply(input$MAPDATA, enquote, how = "unlist"), eval)

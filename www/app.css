@@ -926,8 +926,8 @@ tbody tr.active-row {
     margin-bottom: 2px;
 }
 
-/* button attention animation, plots */
-@-webkit-keyframes btn-update {
+/* 'PLOT' button update animation (flashing orange border)  */
+/* @-webkit-keyframes btn-update {
     from, to {
         border-color: transparent
     }
@@ -949,4 +949,4 @@ tbody tr.active-row {
     border: 1px solid orange;
     -webkit-animation: btn-update 2s step-end infinite;
     animation: btn-update 2s step-end infinite;
-}
+} */
