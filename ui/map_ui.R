@@ -38,7 +38,7 @@ map_tab <- tabPanel(
             tabsetPanel(
                 id = "attribute-content",
                 type = "tabs",
-                selected = "Selected Sites",
+                selected = HTML('<span class="glyphicon glyphicon-shopping-cart"></span> Selected Sites'),
                 tabPanel(
                     id = "bucket-info",
                     HTML('<span class="glyphicon glyphicon-question-sign"></span>'),
@@ -59,7 +59,7 @@ map_tab <- tabPanel(
                 ),
                 tabPanel(
                     id = "site-bucket",
-                    "Selected Sites",
+                    HTML('<span class="glyphicon glyphicon-shopping-cart"></span> Selected Sites'),
                     style = "overflow-y:scroll; height: 300px;",
                     rank_list_basic,
                     div(

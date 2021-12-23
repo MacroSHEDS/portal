@@ -157,6 +157,10 @@ shinyjs.init = function() {
         });
     });
 
+    $(document).ready( function() {
+        $('<span class="glyphicon glyphicon-shopping-cart"></span>  Selected Sites').insertAfter($('span:contains("Selected Sites")'))
+    });
+
     // make it so clicking trash can clears bucket
     $('#map-site-clear').on('click', function() {
         // set mapdata as top 3 ranks
@@ -193,7 +197,7 @@ shinyjs.init = function() {
             }
         });
     });
-    
+
     //set height of some tab windows
     var wheight = $(window).height() - 100 + 'px';
     $('[data-value="participants"]').css('max-height', wheight);

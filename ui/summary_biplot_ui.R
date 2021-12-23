@@ -14,9 +14,9 @@ summary_biplot_tab <- tabPanel("Site Comparison",
                     "Show all sites" = "ALL_SITES2",
                     "Select by domain" = "DOMINE_NETWORK2",
                     "Select individual sites" = "BY_SITE2",
-                    "Site selected tab sites" = "BY_BUCKET2"
+                    "Selected Sites " = "BY_BUCKET2"
                 ),
-                selected = "ALL_SITES2"
+                selected = "BY_BUCKET2"
             ),
             # br(),
             conditionalPanel(
