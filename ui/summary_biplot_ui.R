@@ -1,4 +1,3 @@
-
 biplot_data_types_x <- append(biplot_data_types, "Year", after = 0)
 biplot_data_types_size <- append(biplot_data_types, "Proportion of Record Missing", after = 0)
 # biplot_data_types_size <- biplot_data_types

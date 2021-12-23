@@ -96,14 +96,35 @@ server <- function(input, output, session) {
     source("ui/data_ui.R", local = TRUE)
     source("server/data_server.R", local = TRUE)
 
+    # # register clicking of map popup links
+    # observeEvent(input$SITE_EXPLORE, {
+    #     updateTabsetPanel(session,
+    #         "right_tabs",
+    #         selected = "multisite_exploration"
+    #     )
+    # })
     # register clicking of map popup links
     observeEvent(input$SITE_EXPLORE, {
-        updateTabsetPanel(session,
-            "right_tabs",
-            selected = "multisite_exploration"
-        )
-    })
+        sel <- input$active_tab
 
+        if (sel == "multisite_exploration") {
+            updateTabsetPanel(session,
+                "right_tabs",
+                selected = "multisite_exploration"
+            )
+        } else if (sel == "biplot") {
+            updateTabsetPanel(session,
+                "right_tabs",
+                selected = "biplot"
+            )
+        } else {
+            print("inconclusive right tab focal data, default to TS")
+            updateTabsetPanel(session,
+                "right_tabs",
+                selected = "multisite_exploration"
+            )
+        }
+    })
     output$NSTREAMS <- renderText({
         nrow(unique(site_data[, c("stream", "domain")]))
     })

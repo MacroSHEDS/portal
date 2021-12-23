@@ -68,6 +68,15 @@ shinyjs.init = function() {
        };
    };
 
+// tab focus control
+$("body").on("shown.bs.tab", "a[data-toggle='tab']", function() {
+    // console.log("THE SE PST WORKED!")
+    var data_focus = $("#right_tabs").children(".active").children('a').attr('data-value')
+
+    Shiny.setInputValue("active_tab", data_focus);
+})
+
+// rank list control
     function arrayToList(array) {
         let list = null;
         for (let i = array.length - 1; i >= 0; i--) {
@@ -142,8 +151,6 @@ shinyjs.init = function() {
             // imperfect solution to allow draggable to re-order
             // selectizer input
             $('body').on('mousedown', '[id$="_gotoremover"]', function(){
-                console.log('CAVEMAN')
-
                 window.setTimeout(function(){
 
                     $("#GEN_PLOTS3").addClass("btn-warning");
