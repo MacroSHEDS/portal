@@ -133,6 +133,9 @@ $("body").on("shown.bs.tab", "a[data-toggle='tab']", function() {
     $('body').ready(function(){
         $('body').on('click', '[id$="_goto"]', function(){
 
+            $('a[data-value$="Selected Sites"]').trigger("click");
+
+
             var goto_id = $(this).attr('id') // + new Date(); //trigger reactivity
 
             // make "PLOT" button attention styled
@@ -184,26 +187,26 @@ $("body").on("shown.bs.tab", "a[data-toggle='tab']", function() {
         Shiny.setInputValue('MAPDATA', arrayToList(rankList));
     });
 
-    // rank list all-clear trash can
-    $('body').ready(function(){
-        $('body').on('click', '[id$="_gotoremover"]', function(){
-            if ($(this).hasClass('rank-list-item')) {
-                if ($(this).find('rankremover')) {
-                    $(this).remove()
-                    $(this).remove()
-
-                    // set mapdata as top 3 ranks
-                    var rankList = [];
-
-                    $(".rank-list > .rank-list-item").each((index, elem) => {
-                      rankList.push(elem.innerHTML);
-                    });
-
-                    Shiny.setInputValue('MAPDATA', arrayToList(rankList));
-                }
-            }
-        });
-    });
+    // // rank list all-clear trash can
+    // $('body').ready(function(){
+    //     $('body').on('click', '[id$="_gotoremover"]', function(){
+    //         if ($(this).hasClass('rank-list-item')) {
+    //             if ($(this).find('rankremover')) {
+    //                 $(this).remove()
+    //                 $(this).remove()
+    //                 $(this).remove()
+    //                 // set mapdata as top 3 ranks
+    //                 var rankList = [];
+    //
+    //                 $(".rank-list > .rank-list-item").each((index, elem) => {
+    //                   rankList.push(elem.innerHTML);
+    //                 });
+    //
+    //                 Shiny.setInputValue('MAPDATA', arrayToList(rankList));
+    //             }
+    //         }
+    //     });
+    // });
 
     //set height of some tab windows
     var wheight = $(window).height() - 100 + 'px';
@@ -599,6 +602,13 @@ $("body").on("shown.bs.tab", "a[data-toggle='tab']", function() {
     //respond to insertions of shiny modal boxes into document.body
     var dom_observer1 = new MutationObserver(async function(mutation) {
         console.log('mutation')
+
+        // map pop up info button activation
+        $('body').on('click', "#info_trigger", function() {
+            console.log("I have been clicked, and i am the iNFO button!")
+            $('a[data-value="Watershed"]').trigger("click");
+        });
+
         var tgt = $(target);
         var shinymodal = tgt.children('#shiny-modal-wrapper');
         //
@@ -1137,33 +1147,18 @@ $(document).ready( function() {
       }
   })
 
-// var dotExcited = 0;
-//
-// $(document).ready( function() {
-//           if (dotExcited == 0) {
-//               $('#macrosheds-dot').click( function() {
-//                 if (dotExcited == 0) {
-//                 var intervalUpdate = window.setInterval(function(){
-//                     $('#macrosheds-dot-two').addClass('update');
-//                     setTimeout(
-//                       function()
-//                           {
-//                               $('#macrosheds-dot-two').removeClass('update');
-//                           }, 500);
-//                   }, 1000);
-//                 dotExcited++;
-//                 }
-//
-//                   $('#macrosheds-dot-two').click( function() {
-//                           clearInterval(intervalUpdate);
-//                           dotExcited++;
-//                       }
-//                   );
-//               }
-//           );
-//       }
-//   })
+// pop-up easy info button
+$("#MAP").on('click', function() {
+    console.log('woop')
+//         $('#info_trigger').on('click', function() {
+//             console.log("I have been clicked, and i am the iNFO button!")
+//             $('a[data-value="Watershed"]').trigger("click");
+//         });
+});
 
+
+
+// leaflet legend JS
 var legendsActive = 0;
 
 function layerClicks() {

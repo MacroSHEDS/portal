@@ -355,7 +355,7 @@ output$MAP <- renderLeaflet({
             fillColor = "#FF75D5",
             popup = glue(stream_gauge_buttons,
                 domain = sg$domain,
-                # pretty_domain = sg$pretty_domain,
+                pretty_domain = sg$pretty_domain,
                 # stream = sg$stream,
                 site_code = sg$site_code,
                 # full_name = sg$full_name,

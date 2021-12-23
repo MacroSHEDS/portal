@@ -9,7 +9,7 @@
 <ul class="list-group" style="margin-bottom: 0px;">
 <li class="list-group-item">
 <span class="badge" style="float: left;">domain</span>
-<strong>{domain}</strong>
+<strong>{pretty_domain}</strong>
 </li>
 <li class="list-group-item">
 <span class="badge" style="float: left;">chemistry gauge</span>
@@ -22,7 +22,7 @@
     data-target='#{domain}__{site_code}_collapse'>
 </button>
 
-<div class="" style="margin-left: 42% ">
+<div class="" style="margin-left: 32% ">
     <!-- <button class='btn btn-sm btn-primary' id='{domain}__{site_code}_goto' >
         go to
     </button> -->
@@ -32,8 +32,20 @@
             <span class="glyphicon glyphicon-plus" style="color: #FFF;"></span>
         </a>
     </button>
+
+    <button class='btn btn-sm btn-primary map-site-btn' id='info_trigger' style="">
+        <a target="_blank" data-toggle="tooltip" data-placement="bottom" title="click to open up the information tab for this site">
+            <span class="glyphicon glyphicon-info-sign" style="color: #FFF;"></span>
+        </a>
+    </button>
 </div>
 
+<!-- <div class="" style="margin-left: 42% ">
+    <!-- <button class='btn btn-sm btn-primary' id='{domain}__{site_code}_goto' >
+        go to
+    </button> -->
+
+<!-- </div> -->
 <div id='{domain}__{site_code}_collapse' class='collapse'>
 
 </div>
