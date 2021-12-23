@@ -64,7 +64,11 @@ map_tab <- tabPanel(
                     rank_list_basic,
                     div(
                         class = "label",
-                        HTML('<div id="map-site-clear" style="margin-left: auto;"><span class="glyphicon glyphicon-trash gi-semi-x"></span></div> '),
+                        HTML('<button id="map-site-clear" class="btn btn-sm btn-primary" style="margin-left: 45%;">
+                            <a target="_blank" data-toggle="tooltip" data-placement="bottom" title="click to clear all the selected sites">
+                            <span class="glyphicon glyphicon-trash gi-semi-x"></span>
+                            </a>
+                            </button>'),
                     )
                 ),
                 tabPanel(

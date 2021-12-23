@@ -76,6 +76,50 @@ shinyjs.init = function() {
         return list;
     }
 
+    function rankLister() {
+        // set mapdata as top 3 ranks
+        var rankList = [];
+
+        $(".rank-list > .rank-list-item").each((index, elem) => {
+          rankList.push(elem.id);
+        });
+
+        Shiny.setInputValue('MAPDATA', arrayToList(rankList));
+    }
+
+    function rankFinder(goto_id) {
+        // extract domain and site name, clean
+        site_info = goto_id.split('_');
+        site_info_end = site_info.length -1
+
+        // var site = site_info[2];
+        var domain = site_info[0];
+        var site = site_info.slice(1, site_info_end).join(' ');
+
+        // add sites to cart
+        let hash = '#';
+        let idString = hash.concat(goto_id, "remover")
+
+        if ($('.rank-list').find(idString).length) {
+
+            if ($('.map-site-warning').length == 0) {
+                // add warning to user that duplicate site cant be added
+                $('.map-site-btn').parent().parent().prepend('<!-- Warning Alert --><div class="alert alert-warning alert map-site-warning" style="padding: 6px; margin-bottom: 8px;">    <strong>Warning!</strong> sites cannot be added to selection list more than once </div>')
+
+                // make it so clicking warning hides it
+                $('.map-site-warning').click( function() {
+                    $('.map-site-warning').hide();
+                });
+
+            }
+
+        } else {
+            $('div').find('.rank-list').prepend(
+                    '<div class="rank-list-item" id =' + goto_id + 'remover' + ' draggable="false">' + '<strong>' + domain + '</strong>' + ':  ' + site + ' <button type="button" class="btn btn-default btn-sm rankremover" style="float: right"><span class="glyphicon glyphicon-remove"></span> </button></div>'
+                );
+        }
+    }
+
     //connect map buttons to app tabs
     $('body').ready(function(){
         $('body').on('click', '[id$="_goto"]', function(){
@@ -91,46 +135,25 @@ shinyjs.init = function() {
 
             $('#SITE_EXPLORE').trigger('click');
 
-            // extract domain and site name, clean
-            site_info = goto_id.split('_');
-            site_info_end = site_info.length -1
+            rankFinder(goto_id);
 
-            // var site = site_info[2];
-            var domain = site_info[0];
-            var site = site_info.slice(1, site_info_end).join(' ');
+            rankLister();
 
-            // add sites to cart
-            let hash = '#';
-            let idString = hash.concat(goto_id, "remover")
+            // imperfect solution to allow draggable to re-order
+            // selectizer input
+            $('body').on('mousedown', '[id$="_gotoremover"]', function(){
+                console.log('CAVEMAN')
 
-            if ($('.rank-list').find(idString).length) {
+                window.setTimeout(function(){
 
-                if ($('.map-site-warning').length == 0) {
-                    // add warning to user that duplicate site cant be added
-                    $('.map-site-btn').parent().parent().prepend('<!-- Warning Alert --><div class="alert alert-warning alert map-site-warning" style="padding: 6px; margin-bottom: 8px;">    <strong>Warning!</strong> sites cannot be added to selection list more than once </div>')
+                    $("#GEN_PLOTS3").addClass("btn-warning");
+                    $('#SITE_EXPLORE').trigger('click');
 
-                    // make it so clicking warning hides it
-                    $('.map-site-warning').click( function() {
-                        $('.map-site-warning').hide();
-                    });
+                    rankFinder(goto_id);
 
-                }
-
-            } else {
-                $('div').find('.rank-list').prepend(
-                        '<div class="rank-list-item" id =' + goto_id + 'remover' + ' draggable="false">' + '<strong>' + domain + '</strong>' + ':  ' + site + ' <button type="button" class="btn btn-default btn-sm rankremover" style="float: right"><span class="glyphicon glyphicon-remove"></span> </button></div>'
-                    );
-            }
-
-            // set mapdata as top 3 ranks
-            var rankList = [];
-
-            $(".rank-list > .rank-list-item").each((index, elem) => {
-              rankList.push(elem.id);
+                    rankLister();
+                }, 1750);
             });
-
-            Shiny.setInputValue('MAPDATA', arrayToList(rankList));
-
         });
     });
 
@@ -150,11 +173,11 @@ shinyjs.init = function() {
         Shiny.setInputValue('MAPDATA', arrayToList(rankList));
     });
 
+    // rank list all-clear trash can
     $('body').ready(function(){
         $('body').on('click', '[id$="_gotoremover"]', function(){
             if ($(this).hasClass('rank-list-item')) {
                 if ($(this).find('rankremover')) {
-                    console.log('DELETE button pushed')
                     $(this).remove()
                     $(this).remove()
 
@@ -164,18 +187,13 @@ shinyjs.init = function() {
                     $(".rank-list > .rank-list-item").each((index, elem) => {
                       rankList.push(elem.innerHTML);
                     });
-                    console.log(rankList)
 
                     Shiny.setInputValue('MAPDATA', arrayToList(rankList));
-                } else {
-                    console.log('not pushed')
-                    console.log($(this))
                 }
-            } else {
-                console.log('map button, not list')
             }
         });
     });
+    
     //set height of some tab windows
     var wheight = $(window).height() - 100 + 'px';
     $('[data-value="participants"]').css('max-height', wheight);
