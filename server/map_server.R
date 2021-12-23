@@ -404,7 +404,7 @@ output$MAP <- renderLeaflet({
         ) %>%
         addLayersControl(
             position = "topright",
-            baseGroups = c("Landcover", "Landcover Change (2001-2019)", "Impervious Surfaces", "Geology", "EPA Ecoregions", "Tree Canopy (2016)", "Tree Canopy Change (2011-2016)", "3DEP Elevation"),
+            baseGroups = c("Basemap", "Landcover", "Landcover Change (2001-2019)", "Impervious Surfaces", "Geology", "EPA Ecoregions", "Tree Canopy (2016)", "Tree Canopy Change (2011-2016)", "3DEP Elevation"),
             # all maps
             # baseGroups = c("Landcover", "3DEP Elevation"),
             # baseGroups = c("Plain", "Simple", "Geochemistry", "Wetlands and Water Bodies", "Shaded Relief", "Impervious Surfaces", "Tree Canopy", "Streams", "Landcover", "Sulfur", "SO3 and NH3/NH4", "Pop. Density", "Topo Map", "Aerial Imagery", "EPA Ecoregions", "Soils", "Hazardous Sites"),
@@ -452,8 +452,8 @@ observeEvent(
                     layerId = paste0(code, "-temp"),
                     lng = sg$longitude,
                     lat = sg$latitude,
-                    color = "#228B22", stroke = TRUE, opacity = 1, radius = 4,
-                    weight = 10, fillOpacity = 1, fillColor = "#228B22",
+                    color = "#e08e0b", stroke = TRUE, radius = 8, weight = 2,
+                    fillOpacity = 0.25, fillColor = "#e08e0b",
                     popup = glue(stream_gauge_buttons,
                         domain = sg$domain,
                         pretty_domain = sg$pretty_domain, stream = sg$stream,
@@ -504,7 +504,7 @@ observeEvent(
             proxy %>%
                 addPolygons(
                     data = shed, weight = 3, smooth = 0, stroke = T,
-                    fillOpacity = 0.2, color = "#228B22",
+                    fillOpacity = 0.2, color = "#e08e0b",
                     layerId = paste0(shed$site_code, "-temp"), group = "Catchments"
                 )
 
@@ -512,7 +512,7 @@ observeEvent(
             proxy %>%
                 addPolygons(
                     data = shed, weight = 3, smooth = 0, stroke = T,
-                    fillOpacity = 0.2, color = "#228B22",
+                    fillOpacity = 0.2, color = "#e08e0b",
                     layerId = paste0(shed$site_code, "-temp"), group = "Catchments"
                 ) %>%
                 removeShape(layerId = paste0(site_remove, "-temp"))
