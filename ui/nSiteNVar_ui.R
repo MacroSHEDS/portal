@@ -263,11 +263,12 @@ nSiteNVar_tab <- tabPanel("Time Series",
 
                     # REFRESH can be clicked by js to trigger R events
                     actionButton("REFRESH", "", style = "display: none"),
-
+                    br(),
                     # precip facets (just one now)
                     div(id = "P3"),
                     dygraphOutput("GRAPH_PRECIP3", height = "75px") %>%
                         withSpinner(),
+                    br(),
                     br(),
 
                     # facet A
@@ -297,7 +298,8 @@ nSiteNVar_tab <- tabPanel("Time Series",
                             )
                         ),
                     ),
-
+                    br(),
+                    br(),
                     # facet B
                     conditionalPanel(
                         "output.n_plots3 > 1",
@@ -322,7 +324,8 @@ nSiteNVar_tab <- tabPanel("Time Series",
                             )
                         )
                     ),
-
+                    br(),
+                    br(),
                     # facet C
                     conditionalPanel(
                         "output.n_plots3 > 2",
@@ -355,7 +358,8 @@ nSiteNVar_tab <- tabPanel("Time Series",
                     # br(),
                     # HTML('<div>  ----  precipitation chemistry line  </div>'),
                     # br(),
-
+                    br(),
+                    br(),
                     HTML(paste0(
                         '<p style="color: blue; font-size: 0.75em">',
                         "Click and drag to zoom. Double-click to reset view.</p>"

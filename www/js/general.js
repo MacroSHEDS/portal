@@ -600,6 +600,14 @@ $("body").on("shown.bs.tab", "a[data-toggle='tab']", function() {
     //respond to insertions of shiny modal boxes into document.body
     var dom_observer1 = new MutationObserver(async function(mutation) {
         console.log('mutation')
+
+        //  info tab stuff
+        // map pop up info button activation
+          $('body').on('click', "#info_trigger", function() {
+              console.log("I have been clicked, and i am the iNFO button!")
+              $('a[data-value="Watershed"]').trigger("click");
+          });
+
         var tgt = $(target);
         var shinymodal = tgt.children('#shiny-modal-wrapper');
         //
