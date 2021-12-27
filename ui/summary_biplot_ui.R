@@ -13,7 +13,7 @@ summary_biplot_tab <- tabPanel("Site Comparison",
                     "Show all sites" = "ALL_SITES2",
                     "Select by domain" = "DOMINE_NETWORK2",
                     "Select individual sites" = "BY_SITE2",
-                    "Selected Sites " = "BY_BUCKET2"
+                    "Map Selections " = "BY_BUCKET2"
                 ),
                 selected = "BY_BUCKET2"
             ),
