@@ -68,6 +68,15 @@ shinyjs.init = function() {
        };
    };
 
+// tab focus control
+$("body").on("shown.bs.tab", "a[data-toggle='tab']", function() {
+    // console.log("THE SE PST WORKED!")
+    var data_focus = $("#right_tabs").children(".active").children('a').attr('data-value')
+
+    Shiny.setInputValue("active_tab", data_focus);
+})
+
+// rank list control
     function arrayToList(array) {
         let list = null;
         for (let i = array.length - 1; i >= 0; i--) {
@@ -75,6 +84,51 @@ shinyjs.init = function() {
         }
         return list;
     }
+
+    function rankLister() {
+        // set mapdata as top 3 ranks
+        var rankList = [];
+
+        $(".rank-list > .rank-list-item").each((index, elem) => {
+          rankList.push(elem.id);
+        });
+
+        Shiny.setInputValue('MAPDATA', arrayToList(rankList));
+    }
+
+    function rankFinder(goto_id) {
+        // extract domain and site name, clean
+        site_info = goto_id.split('_');
+        site_info_end = site_info.length -1
+
+        // var site = site_info[2];
+        var domain = site_info[0];
+        var site = site_info.slice(1, site_info_end).join(' ');
+
+        // add sites to cart
+        let hash = '#';
+        let idString = hash.concat(goto_id, "remover")
+
+        if ($('.rank-list').find(idString).length) {
+
+            if ($('.map-site-warning').length == 0) {
+                // add warning to user that duplicate site cant be added
+                $('.map-site-btn').parent().parent().prepend('<!-- Warning Alert --><div class="alert alert-warning alert map-site-warning" style="padding: 6px; margin-bottom: 8px;">    <strong>Warning!</strong> sites cannot be added to selection list more than once </div>')
+
+                // make it so clicking warning hides it
+                $('.map-site-warning').click( function() {
+                    $('.map-site-warning').hide();
+                });
+
+            }
+
+        } else {
+            $('div').find('.rank-list').prepend(
+                    '<div class="rank-list-item" id =' + goto_id + 'remover' + ' draggable="false">' + '<strong>' + domain + '</strong>' + ':  ' + site + ' <button type="button" class="btn btn-default btn-sm rankremover" style="float: right"><span class="glyphicon glyphicon-remove"></span> </button></div>'
+                );
+        }
+    }
+
     //connect map buttons to app tabs
     $('body').ready(function(){
         $('body').on('click', '[id$="_goto"]', function(){
@@ -82,44 +136,59 @@ shinyjs.init = function() {
             var goto_id = $(this).attr('id') // + new Date(); //trigger reactivity
 
             // make "PLOT" button attention styled
-            $("#GEN_PLOTS3").addClass("btn-update");
+            // $("#GEN_PLOTS3").addClass("btn-update");
+            $("#GEN_PLOTS3").addClass("btn-warning");
 
             // make site comparison option highlight as well?
             // $('value="BY_BUCKET2"').addClass("btn-update");
 
             $('#SITE_EXPLORE').trigger('click');
 
-            // extract domain and site name, clean
-            site_info = goto_id.split('_');
-            site_info_end = site_info.length -1
+            rankFinder(goto_id);
 
-            // var site = site_info[2];
-            var domain = site_info[0];
-            var site = site_info.slice(1, site_info_end).join(' ');
+            rankLister();
 
-            // add sites to cart
-            $('div').find('.rank-list').prepend(
-                    '<div class="rank-list-item" id =' + goto_id + 'remover' + ' draggable="false">' + '<strong>' + domain + '</strong>' + ':  ' + site + ' <button type="button" class="btn btn-default btn-sm rankremover" style="float: right"><span class="glyphicon glyphicon-remove"></span> </button></div>'
-                );
-
-            // set mapdata as top 3 ranks
-            var rankList = [];
-
-            $(".rank-list > .rank-list-item").each((index, elem) => {
-              rankList.push(elem.id);
-            });
-            console.log(rankList)
-
-            Shiny.setInputValue('MAPDATA', arrayToList(rankList));
+            // imperfect solution to allow draggable to re-order
+            // selectizer input
+            // $('body').on('mousedown', '[id$="_gotoremover"]', function(){
+            //     window.setTimeout(function(){
+            //
+            //         $("#GEN_PLOTS3").addClass("btn-warning");
+            //         $('#SITE_EXPLORE').trigger('click');
+            //
+            //         rankFinder(goto_id);
+            //
+            //         rankLister();
+            //     }, 1500);
+            // });
         });
     });
 
+    $(document).ready( function() {
+        $('<span class="glyphicon glyphicon-shopping-cart"></span>  Selected Sites').insertAfter($('span:contains("Selected Sites")'))
+    });
+
+    // make it so clicking trash can clears bucket
+    $('#map-site-clear').on('click', function() {
+        // set mapdata as top 3 ranks
+        $('#SITE_EXPLORE').trigger('click');
+        // $("#GEN_PLOTS3").addClass("btn-warning");
+
+        var rankList = ['nothing'];
+
+        $(".rank-list > .rank-list-item").each((index, elem) => {
+          elem.remove();
+        });
+
+
+        Shiny.setInputValue('MAPDATA', arrayToList(rankList));
+    });
+
+    // rank list all-clear trash can
     $('body').ready(function(){
         $('body').on('click', '[id$="_gotoremover"]', function(){
             if ($(this).hasClass('rank-list-item')) {
                 if ($(this).find('rankremover')) {
-                    console.log('DELETE button pushed')
-                    $(this).remove()
                     $(this).remove()
 
                     // set mapdata as top 3 ranks
@@ -128,18 +197,13 @@ shinyjs.init = function() {
                     $(".rank-list > .rank-list-item").each((index, elem) => {
                       rankList.push(elem.innerHTML);
                     });
-                    console.log(rankList)
 
                     Shiny.setInputValue('MAPDATA', arrayToList(rankList));
-                } else {
-                    console.log('not pushed')
-                    console.log($(this))
                 }
-            } else {
-                console.log('map button, not list')
             }
         });
     });
+
     //set height of some tab windows
     var wheight = $(window).height() - 100 + 'px';
     $('[data-value="participants"]').css('max-height', wheight);
@@ -304,7 +368,10 @@ shinyjs.init = function() {
     $('body').ready(function(){
         $('#GEN_PLOTS3').click(govern_qc3);
         $('#GEN_PLOTS3').click( function() {
-            $(this).removeClass("btn-update");
+            // make sure plotting reflects sort lsit rank order
+            rankLister()
+            // $(this).removeClass("btn-update");
+            $(this).removeClass("btn-warning");
             // $(this).addClass("btn-primary");
         });
     });
@@ -533,6 +600,14 @@ shinyjs.init = function() {
     //respond to insertions of shiny modal boxes into document.body
     var dom_observer1 = new MutationObserver(async function(mutation) {
         console.log('mutation')
+
+        //  info tab stuff
+        // map pop up info button activation
+          $('body').on('click', "#info_trigger", function() {
+              console.log("I have been clicked, and i am the iNFO button!")
+              $('a[data-value="Watershed"]').trigger("click");
+          });
+
         var tgt = $(target);
         var shinymodal = tgt.children('#shiny-modal-wrapper');
         //
@@ -1044,22 +1119,6 @@ $(document).ready( function() {
       );
 })
 
-// $(document).ready( function() {
-//     var intervalUpdate = window.setInterval(function(){
-//         $('.btn-update').css('border', '0px;');
-//         setTimeout(
-//           function()
-//               {
-//                   $('.btn-update').css('0px solid orange;');
-//               }, 500);
-//       }, 1000);
-//
-//       // $('#').click( function() {
-//       //         clearInterval(intervalUpdate);
-//       //     }
-//       // );
-// })
-
 var dotExcited = 0;
 
 $(document).ready( function() {
@@ -1114,24 +1173,12 @@ $(document).ready( function() {
 //       }
 //   })
 
-// leflet legend
-function addLegend() {
-    if ($('.diy-legend').length) {
-        console.log('icon already present');
-    } else {
-        setTimeout( function() {
-            // $('#MAP').append('<div><i id= "my-legend" class="leaflet-control-layers well-sm diy-legend gi-1-x glyphicon glyphicon-th-list" role="button"></i></div>');
-            // $('#MAP').append('<div><i id= "my-legend" class="leaflet-control-layers well-sm diy-legend gi-1-x glyphicon glyphicon-th-list" role="button"></i><div class="well"></div></div>');
-            // $('#MAP').append('<div class="dropdown"><button class="btn btn-primary dropdown-toggle" type="button" id="about-us" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Landcover<span class="caret"></span></button><ul class="dropdown-menu" aria-labelledby="legend-drop"><li><a id="3DEP-Leg" href="#">3DEP Elevation</a></li><li><a id="Streams-Leg" href="#">Streams</a></li><li><a id="Landcover-Leg" href="#">Landcover</a></li></ul></div>')
-        }, 3000);
-        };
-    };
-
 var legendsActive = 0;
 
 function layerClicks() {
-    console.log('legends info')
-    console.log(legendsActive)
+    // console.log('legends info')
+    // console.log(legendsActive)
+
     // Landcover
     $('#Landcover-Leg').click( function() {
         if ($('.leaflet-control-wms-legend')[0] == undefined) {

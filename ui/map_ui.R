@@ -38,7 +38,7 @@ map_tab <- tabPanel(
             tabsetPanel(
                 id = "attribute-content",
                 type = "tabs",
-                selected = "Selected Sites",
+                selected = HTML('<span class="glyphicon glyphicon-shopping-cart"></span> Selected Sites'),
                 tabPanel(
                     id = "bucket-info",
                     HTML('<span class="glyphicon glyphicon-question-sign"></span>'),
@@ -46,12 +46,30 @@ map_tab <- tabPanel(
                         includeHTML("ui/info_tab.html"),
                         # style = "padding: 20px"
                     ),
+                    div(
+                        class = "label",
+                        tags$footer(
+                            p(
+                                id = "notes-footer",
+                                "go to 'Notes/Caveats' tab for more information"
+                            ),
+                            # class = "leftpanel-text"
+                        )
+                    )
                 ),
                 tabPanel(
                     id = "site-bucket",
-                    "Selected Sites",
+                    HTML('<span class="glyphicon glyphicon-shopping-cart"></span> Selected Sites'),
                     style = "overflow-y:scroll; height: 300px;",
                     rank_list_basic,
+                    div(
+                        class = "label",
+                        HTML('<button id="map-site-clear" class="btn btn-sm btn-primary" style="margin-left: 45%;">
+                            <a target="_blank" data-toggle="tooltip" data-placement="bottom" title="click to clear all the selected sites">
+                            <span class="glyphicon glyphicon-trash gi-semi-x"></span>
+                            </a>
+                            </button>'),
+                    )
                 ),
                 tabPanel(
                     "Watershed",
@@ -59,6 +77,16 @@ map_tab <- tabPanel(
                     tableOutput("MAP_SITE_INFO") %>%
                         tagAppendAttributes(class = "table") %>%
                         tagAppendAttributes(class = "horizontal-scroll"),
+                    div(
+                        class = "label",
+                        tags$footer(
+                            p(
+                                id = "notes-footer",
+                                "go to 'Notes/Caveats' tab for more information"
+                            ),
+                            # class = "leftpanel-text"
+                        )
+                    )
                 ),
             ),
         )
@@ -69,14 +97,15 @@ map_tab <- tabPanel(
 
     # DT::dataTableOutput('MAP_SITE_INFO')
     # div('Site Information', class = 'widget-title text-center'),
-    div(
-        class = "label",
-        tags$footer(
-            p(
-                id = "notes-footer",
-                "go to 'Notes/Caveats' tab for more information"
-            ),
-            # class = "leftpanel-text"
-        )
-    )
+    # div(
+    #     class = "label",
+    #     HTML('<span class="glyphicon glyphicon-trash"> </span> <p> click to empty all site selections </p>'),
+    #     tags$footer(
+    #         p(
+    #             id = "notes-footer",
+    #             "go to 'Notes/Caveats' tab for more information"
+    #         ),
+    #         # class = "leftpanel-text"
+    #     )
+    # )
 )
