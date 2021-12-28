@@ -201,6 +201,11 @@ $("body").on("shown.bs.tab", "a[data-toggle='tab']", function() {
                     Shiny.setInputValue('MAPDATA', arrayToList(rankList));
                 }
             }
+            // here thar be dragons, enter not ye of faint heart
+            // var lat = $('#neon__BLDE_collapse').parent().offsetParent()[0]._leaflet_pos.x
+            // this is the way to extract a lat ([1] for long) from a popup
+            // this can be used with setView() to make a magnifying glass or geo icon auto-focus bucket items
+            // but first, one must riddle out stopPropogation(), a quest that makes laltong extraction firhgtful
         });
     });
 
