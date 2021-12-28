@@ -1152,32 +1152,6 @@ $(document).ready( function() {
       }
   })
 
-// var dotExcited = 0;
-//
-// $(document).ready( function() {
-//           if (dotExcited == 0) {
-//               $('#macrosheds-dot').click( function() {
-//                 if (dotExcited == 0) {
-//                 var intervalUpdate = window.setInterval(function(){
-//                     $('#macrosheds-dot-two').addClass('update');
-//                     setTimeout(
-//                       function()
-//                           {
-//                               $('#macrosheds-dot-two').removeClass('update');
-//                           }, 500);
-//                   }, 1000);
-//                 dotExcited++;
-//                 }
-//
-//                   $('#macrosheds-dot-two').click( function() {
-//                           clearInterval(intervalUpdate);
-//                           dotExcited++;
-//                       }
-//                   );
-//               }
-//           );
-//       }
-//   })
 
 var legendsActive = 0;
 
