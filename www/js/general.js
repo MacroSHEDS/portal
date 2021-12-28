@@ -156,10 +156,10 @@ $("body").on("shown.bs.tab", "a[data-toggle='tab']", function() {
                     $("#GEN_PLOTS3").addClass("btn-warning");
                     $('#SITE_EXPLORE').trigger('click');
 
-                    rankFinder(goto_id);
+                    // rankFinder(goto_id);
 
                     rankLister();
-                }, 1500);
+                }, 1200);
             });
         });
     });
