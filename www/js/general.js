@@ -150,17 +150,17 @@ $("body").on("shown.bs.tab", "a[data-toggle='tab']", function() {
 
             // imperfect solution to allow draggable to re-order
             // selectizer input
-            // $('body').on('mousedown', '[id$="_gotoremover"]', function(){
-            //     window.setTimeout(function(){
-            //
-            //         $("#GEN_PLOTS3").addClass("btn-warning");
-            //         $('#SITE_EXPLORE').trigger('click');
-            //
-            //         rankFinder(goto_id);
-            //
-            //         rankLister();
-            //     }, 1500);
-            // });
+            $('body').on('mousedown', '[id$="_gotoremover"]', function(){
+                window.setTimeout(function(){
+
+                    $("#GEN_PLOTS3").addClass("btn-warning");
+                    $('#SITE_EXPLORE').trigger('click');
+
+                    rankFinder(goto_id);
+
+                    rankLister();
+                }, 1500);
+            });
         });
     });
 

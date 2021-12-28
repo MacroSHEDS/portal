@@ -78,29 +78,31 @@ map_tab <- tabPanel(
                             <span class="glyphicon glyphicon-trash gi-semi-x"></span>
                             </a>
                             </button>'),
-                    div(
-                        class = "panel panel-default",
-                        div(
-                            class = "panel-heading",
-                            icon("trash"),
-                            "Remove item"
-                        ),
-                        div(
-                            class = "panel-body",
-                            id = "sortable_bin"
-                        )
-                    ),
-                    sortable_js(
-                        "sortable_bin",
-                        options = sortable_options(
-                          group = list(
-                            group = "sortGroup1",
-                            put = TRUE,
-                            pull = TRUE
-                          ),
-                          onAdd = htmlwidgets::JS("function (evt) { this.el.removeChild(evt.item); }")
-                        )
-                      )
+                        # very rough "drag-to-delete" bin
+                        # div(
+                        #     class = "panel panel-default",
+                        #     div(
+                        #         class = "panel-heading",
+                        #         icon("trash"),
+                        #         "Remove item"
+                        #     ),
+                        #     div(
+                        #         class = "panel-body",
+                        #         id = "sortable_bin"
+                        #     )
+                        # ),
+
+                        # sortable_js(
+                        #     "sortable_bin",
+                        #     options = sortable_options(
+                        #         group = list(
+                        #             group = "sortGroup1",
+                        #             put = TRUE,
+                        #             pull = TRUE
+                        #         ),
+                        #         onAdd = htmlwidgets::JS("function (evt) { this.el.removeChild(evt.item); }")
+                        #     )
+                        # )
                     )
                 ),
                 tabPanel(
