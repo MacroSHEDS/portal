@@ -17,13 +17,16 @@
                      from the MacroSheds dataset
                  </li>
                  <li>
-                     stream chemistry gauges will have a <strong>blue plus sign</strong> -- click this icon to add the site to your bucket in the "Selected Sites" tab
+                     stream chemistry gauges will have a <strong>blue plus sign</strong> -- click this icon to add the site to your map selections
                  </li>
                  <li>
                      use the square icon in the upper right of the map to control which layers of geospatial data to visualize on the map
                  </li>
                  <li>
-                     use the blue "Legend" button (or on small screens, the grey list icon) to choose legends to appear or dissappear on the map (click a layer name to make the legend appear, and click again to make it go away)
+                     use the blue "Legend" button (or on small screens, the grey list icon) to choose legends to appear or dissappear on the map
+                 </li>
+                 <li>
+                     some layers have important notes about their visualization: landcover will not visualize at the lowest (finest scale) 8 levels, and EPA Ecoregions shifts from EPA EcoRegions 1 at bird's-eye zoom, to EPA Ecoregions 2 at finer scales. Along with other Legend improvements, we hope to get a legend for EPA Ecoregions that is dynamic with the layer.
                  </li>
               </ul>
           </div>
@@ -33,7 +36,7 @@
         <div class="panel-heading">
           <h4 class="panel-title">
             <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
-                Selected Sites
+                Map Selections
             </a>
           </h4>
         </div>
@@ -41,17 +44,16 @@
           <div class="panel-body">
             <ul>
                 <li>
-                    the "Selected Sites" tab contains a <em>rank list</em>, storing sites a user adds from the above map <em>(see the map information section for more detail)</em>
+                    the "Map Selections" tab contains a <em>rank list</em>, storing sites a user adds from the above map <em>(see the map information section for more detail)</em>
                 </li>
 
                 <li>
                     once a user adds a site to this bucket, they may notice that the blue <span style="color:blue;">Plot</span>
-                    button flashes orange- this reflects that the user must click the plot button to see the added sites data
-                    in the time series graphs
+                    button turns orange- this reflects that the dataset has been updated and is ready to visualize
                 </li>
 
                 <li>
-                    users should be aware that the rank list provides data to the time series and site comparison tabs, but manipulating inputs there, won't effect your list
+                    users should be aware that the rank list provides data to the time series and site comparison tabs, but manipulating inputs there won't effect your list
                 </li>
                 <li>
                     the top three rank list items are supplied to the Time Series tab (color coded with line color in the graphs), while the site comparison tab uses the entire rank list
@@ -72,7 +74,7 @@
           <div class="panel-body">
             <ul>
                 <li>
-                        the Watershed tab provides a table of supplemental information about the top ranked site in the rank list
+                        the Watershed tab provides a table of supplemental information about the top ranked site in the rank list, or, if a site has been clicked in the map tab- that site's information
                 </li>
                 <li>
                         we are working on making it so that, when the map view is expanded (using the arrows at the middle top of the website), this tab becomes a scrollable data table containing attribute data of every site in the rank list

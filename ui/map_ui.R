@@ -23,7 +23,16 @@ map_tab <- tabPanel(
                     placement = "bottom",
                     trigger = "hover"
                 ),
-                HTML('<div class="dropup" id="legend-button"><button class="btn btn-primary dropdown-toggle" type="button" id="about-us" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Legend <span class="caret"></span></button><ul class="dropdown-menu" aria-labelledby="legend-drop"><li><a id="3DEP-Leg" href="#">3DEP Elevation</a></li><li><a id="Tree-Leg" href="#">Tree Canopy</a></li><li><a id="Impervious-Leg" href="#">Impervious Surfaces</a></li><li><a id="Landcover-Leg" href="#">Landcover</a></li><li><a id="LCChange-Leg" href="#">Landcover Change</a></li><li><a id="Geology-Leg" href="#">Geology</a></li></ul></div>')
+                HTML('<div class="dropup" id="legend-button"><button class="btn btn-primary dropdown-toggle" type="button"
+                id="about-us" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Legend
+                <span class="caret"></span></button><ul class="dropdown-menu" aria-labelledby="legend-drop">
+                <li><a id="No-Leg" href="#">No Legend</a></li>
+                <li><a id="3DEP-Leg" href="#">3DEP Elevation</a></li>
+                <li><a id="Tree-Leg" href="#">Tree Canopy</a></li>
+                <li><a id="Impervious-Leg" href="#">Impervious Surfaces</a></li>
+                <div class = "ms-tooltip" style = "margin-inline: 11%" title = "landcover imagery tiles do not visualize at lowest 8 zoom levels"><li><a id="Landcover-Leg" href="#">Landcover</a></li> </div>
+                <li><a id="LCChange-Leg" href="#">Landcover Change</a></li>
+                <li><a id="Geology-Leg" href="#">Geology</a></li></ul></div>')
                 # <li><a id="Ecoregions" href="#">Ecoregions</a></li> <li><a id="TreeCanopyChange-Leg" href="#">Tree Canopy Change</a></li>
             ),
             div(
@@ -38,7 +47,7 @@ map_tab <- tabPanel(
             tabsetPanel(
                 id = "attribute-content",
                 type = "tabs",
-                selected = HTML('<span class="glyphicon glyphicon-shopping-cart"></span> Selected Sites'),
+                selected = HTML('<span class="glyphicon glyphicon-shopping-cart"></span> Map Selections'),
                 tabPanel(
                     id = "bucket-info",
                     HTML('<span class="glyphicon glyphicon-question-sign"></span>'),
@@ -59,16 +68,41 @@ map_tab <- tabPanel(
                 ),
                 tabPanel(
                     id = "site-bucket",
-                    HTML('<span class="glyphicon glyphicon-shopping-cart"></span> Selected Sites'),
+                    HTML('<span class="glyphicon glyphicon-shopping-cart"></span> Map Selections'),
                     style = "overflow-y:scroll; height: 300px;",
                     rank_list_basic,
                     div(
                         class = "label",
                         HTML('<button id="map-site-clear" class="btn btn-sm btn-primary" style="margin-left: 45%;">
-                            <a target="_blank" data-toggle="tooltip" data-placement="bottom" title="click to clear all the selected sites">
+                            <a target="_blank" data-toggle="tooltip" data-placement="bottom" title="click to clear all the Map Selections">
                             <span class="glyphicon glyphicon-trash gi-semi-x"></span>
                             </a>
                             </button>'),
+                        # very rough "drag-to-delete" bin
+                        # div(
+                        #     class = "panel panel-default",
+                        #     div(
+                        #         class = "panel-heading",
+                        #         icon("trash"),
+                        #         "Remove item"
+                        #     ),
+                        #     div(
+                        #         class = "panel-body",
+                        #         id = "sortable_bin"
+                        #     )
+                        # ),
+
+                        # sortable_js(
+                        #     "sortable_bin",
+                        #     options = sortable_options(
+                        #         group = list(
+                        #             group = "sortGroup1",
+                        #             put = TRUE,
+                        #             pull = TRUE
+                        #         ),
+                        #         onAdd = htmlwidgets::JS("function (evt) { this.el.removeChild(evt.item); }")
+                        #     )
+                        # )
                     )
                 ),
                 tabPanel(
