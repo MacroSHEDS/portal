@@ -96,14 +96,15 @@ $("body").on("shown.bs.tab", "a[data-toggle='tab']", function() {
         Shiny.setInputValue('MAPDATA', arrayToList(rankList));
     }
 
-    function rankFinder(goto_id) {
+    function rankFinder(goto_id, pretty_domain) {
         // extract domain and site name, clean
         site_info = goto_id.split('_');
         site_info_end = site_info.length -1
+        site_break = site_info.findIndex(elem => elem == "")
 
         // var site = site_info[2];
-        var domain = site_info[0];
-        var site = site_info.slice(1, site_info_end).join(' ');
+        var domain = site_info.slice(0, site_break).join(' ');
+        var site = site_info.slice(site_break, site_info_end).join(' ');
 
         // add sites to cart
         let hash = '#';
@@ -124,7 +125,7 @@ $("body").on("shown.bs.tab", "a[data-toggle='tab']", function() {
 
         } else {
             $('div').find('.rank-list').prepend(
-                    '<div class="rank-list-item" id =' + goto_id + 'remover' + ' draggable="false">' + '<strong>' + domain + '</strong>' + ':  ' + site + ' <button type="button" class="btn btn-default btn-sm rankremover" style="float: right"><span class="glyphicon glyphicon-remove"></span> </button></div>'
+                    '<div class="rank-list-item" id =' + goto_id + 'remover' + ' draggable="false">' + '<strong>' + pretty_domain + '</strong>' + ':  ' + site + ' <button type="button" class="btn btn-default btn-sm rankremover" style="float: right"><span class="glyphicon glyphicon-remove"></span> </button></div>'
                 );
         }
     }
@@ -133,8 +134,9 @@ $("body").on("shown.bs.tab", "a[data-toggle='tab']", function() {
     $('body').ready(function(){
         $('body').on('click', '[id$="_goto"]', function(){
 
-            var goto_id = $(this).attr('id') // + new Date(); //trigger reactivity
-
+            var goto_id = $(this).attr('id'); // + new Date(); //trigger reactivity
+            console.log($('.list-group-item').first().find("strong").text());
+            var p_domain = $('.list-group-item').first().find("strong").text();
             // make "PLOT" button attention styled
             // $("#GEN_PLOTS3").addClass("btn-update");
             $("#GEN_PLOTS3").addClass("btn-warning");
@@ -144,7 +146,7 @@ $("body").on("shown.bs.tab", "a[data-toggle='tab']", function() {
 
             $('#SITE_EXPLORE').trigger('click');
 
-            rankFinder(goto_id);
+            rankFinder(goto_id, p_domain);
 
             rankLister();
 
