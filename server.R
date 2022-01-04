@@ -79,13 +79,15 @@ server <- function(input, output, session) {
     show_loading_dots <- function(id, duration = NULL, message = NULL) {
         msg <- if (is.null(message)) "" else message
 
-        showNotification(loading_dots,
-            ui = message,
-            id = id,
-            duration = duration,
-            closeButton = FALSE,
-            type = "message"
-        )
+        shinyjs::show("loading-start")
+
+        # showNotification(loading_dots,
+        #     ui = message,
+        #     id = id,
+        #     duration = duration,
+        #     closeButton = FALSE,
+        #     type = "message"
+        # )
     }
 
     # source("ui/loading_dots_ui.R", local = TRUE)
@@ -289,9 +291,9 @@ server <- function(input, output, session) {
                 guide2a$start()
             } else {
                 click("GEN_PLOTS3")
-                show_loading_dots("LOADING_POPUP",
-                    message = "loading"
-                )
+                # show_loading_dots("LOADING_POPUP",
+                #     message = "loading"
+                # )
             }
         },
         autoDestroy = FALSE,

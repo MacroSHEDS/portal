@@ -447,7 +447,7 @@ MISC
 }
 
 /* loading square animation */
-.lds-grid {
+/* .lds-grid {
   display: inline-block;
   position: relative;
   width: 80px;
@@ -517,7 +517,7 @@ MISC
     opacity: 0.5;
   }
 }
-
+ */
 /* table styling */
 /* table {
   width: 90% !important;
