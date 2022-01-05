@@ -143,6 +143,8 @@ $("body").on("shown.bs.tab", "a[data-toggle='tab']", function() {
                 $(this).hide()
             });
 
+            $('[role="tooltip"]').hide();
+
             var goto_id = $(this).attr('id'); // + new Date(); //trigger reactivity
             console.log($('.list-group-item').first().find("strong").text());
             var p_domain = $('.list-group-item').first().find("strong").text();
@@ -194,6 +196,11 @@ $("body").on("shown.bs.tab", "a[data-toggle='tab']", function() {
         var rankList = ['nothing'];
 
         $(".rank-list > .rank-list-item").each((index, elem) => {
+          // find parent leaflet popup and replace (+) with (-)
+          var parent_id = "#" + elem.id.split("remover")[0]
+          console.log(parent_id)
+          $(parent_id).children().children().replaceWith('<span class="glyphicon glyphicon-plus" style="color: #FFF;"></span>')
+
           elem.remove();
         });
 
