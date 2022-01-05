@@ -25,7 +25,7 @@ ui <- fluidPage(
 
     div(
         id = "loading-start",
-        includeHTML("ui/loading_dots.html"),
+        includeHTML("ui/loading_gif.html"),
     ),
     dashboardPage(
         dashboardHeader(disable = TRUE),
