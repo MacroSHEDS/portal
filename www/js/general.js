@@ -1027,9 +1027,18 @@ $(document).ready(function(){
 
 
         if (attrToggle%2 == 0) {
+            console.log("collapse: small map, large attribute table view");
 
+            // reappear attr table and footer
+            $(".rank-list-container").removeClass("hidden")
+            $("#notes-footer").removeClass("hidden")
+            $('#MAP').css('height', '350px');
             //  button stuff
-            $(".full-map-mode").toggleClass("glyphicon-menu-up glyphicon-menu-down");
+            $(".full-map-mode").toggleClass("glyphicon-menu-down glyphicon-menu-up");
+
+        } else {
+            $(".full-map-mode").toggleClass("glyphicon-menu-down glyphicon-menu-up");
+
             console.log("expand: full map view");
             // dissapear attr table and footer
             $(".rank-list-container").addClass("hidden")
@@ -1038,14 +1047,6 @@ $(document).ready(function(){
             var window_height = ($('#sidebarCollapsed').height() * .8);
             $('#MAP').css('height', window_height);
 
-        } else {
-            $(".full-map-mode").toggleClass("glyphicon-menu-down glyphicon-menu-up");
-            console.log("collapse: small map, large attribute table view");
-
-            // reappear attr table and footer
-            $(".rank-list-container").removeClass("hidden")
-            $("#notes-footer").removeClass("hidden")
-            $('#MAP').css('height', '350px');
         }
 
     });

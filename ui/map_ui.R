@@ -38,7 +38,7 @@ map_tab <- tabPanel(
             div(
                 style = "width: 36px; position: absolute; right: 1em",
                 actionLink("COLLAPSE_ATTRIBUTES",
-                    label = "", icon = icon("menu-up", lib = "glyphicon", class = "full-map-mode gi-semi-x"),
+                    label = "", icon = icon("menu-down", lib = "glyphicon", class = "full-map-mode gi-semi-x"),
                     class = "full-map-toggle",
                     # `data-toggle` = "offcanvas",
                     style = "margin: 6px"
