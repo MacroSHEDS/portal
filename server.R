@@ -79,6 +79,8 @@ server <- function(input, output, session) {
     show_loading_dots <- function(id, duration = NULL, message = NULL) {
         msg <- if (is.null(message)) "" else message
 
+        # shinyjs::show("loading-start")
+
         showNotification(loading_dots,
             ui = message,
             id = id,

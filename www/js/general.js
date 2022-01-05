@@ -96,35 +96,41 @@ $("body").on("shown.bs.tab", "a[data-toggle='tab']", function() {
         Shiny.setInputValue('MAPDATA', arrayToList(rankList));
     }
 
-    function rankFinder(goto_id) {
+    function rankFinder(goto_id, pretty_domain) {
         // extract domain and site name, clean
         site_info = goto_id.split('_');
         site_info_end = site_info.length -1
+        site_break = site_info.findIndex(elem => elem == "")
 
         // var site = site_info[2];
-        var domain = site_info[0];
-        var site = site_info.slice(1, site_info_end).join(' ');
+        var domain = site_info.slice(0, site_break).join(' ');
+        var site = site_info.slice(site_break, site_info_end).join(' ');
 
         // add sites to cart
         let hash = '#';
         let idString = hash.concat(goto_id, "remover")
 
         if ($('.rank-list').find(idString).length) {
+            // 'minus' option
+            var parent_id = "#" + goto_id
+            console.log(parent_id)
+            $(parent_id).children().children().replaceWith('<span class="glyphicon glyphicon-plus" style="color: #FFF;"></span>')
+            $(idString).remove()
 
-            if ($('.map-site-warning').length == 0) {
-                // add warning to user that duplicate site cant be added
-                $('.map-site-btn').parent().parent().prepend('<!-- Warning Alert --><div class="alert alert-warning alert map-site-warning" style="padding: 6px; margin-bottom: 8px;">    <strong>Warning!</strong> sites cannot be added to selection list more than once </div>')
-
-                // make it so clicking warning hides it
-                $('.map-site-warning').click( function() {
-                    $('.map-site-warning').hide();
-                });
-
-            }
+            // 'warning' option
+            // if ($('.map-site-warning').length == 0) {
+            //     // add warning to user that duplicate site cant be added
+            //     $('.map-site-btn').parent().parent().prepend('<!-- Warning Alert --><div class="alert alert-warning alert map-site-warning" style="padding: 6px; margin-bottom: 8px;">    <strong>Warning!</strong> sites cannot be added to selection list more than once </div>')
+            //
+            //     // make it so clicking warning hides it
+            //     $('.map-site-warning').click( function() {
+            //         $('.map-site-warning').hide();
+            //     });
+            // }
 
         } else {
             $('div').find('.rank-list').prepend(
-                    '<div class="rank-list-item" id =' + goto_id + 'remover' + ' draggable="false">' + '<strong>' + domain + '</strong>' + ':  ' + site + ' <button type="button" class="btn btn-default btn-sm rankremover" style="float: right"><span class="glyphicon glyphicon-remove"></span> </button></div>'
+                    '<div class="rank-list-item" id =' + goto_id + 'remover' + ' draggable="false">' + '<strong>' + pretty_domain + '</strong>' + ':  ' + site + ' <button type="button" class="btn btn-default btn-sm rankremover" style="float: right"><span class="glyphicon glyphicon-remove"></span> </button></div>'
                 );
         }
     }
@@ -132,8 +138,21 @@ $("body").on("shown.bs.tab", "a[data-toggle='tab']", function() {
     //connect map buttons to app tabs
     $('body').ready(function(){
         $('body').on('click', '[id$="_goto"]', function(){
+            // tooltip removability
+            $('[role="tooltip"]').click( function() {
+                $(this).hide()
+            });
 
-            var goto_id = $(this).attr('id') // + new Date(); //trigger reactivity
+            $('[role="tooltip"]').hide();
+
+            var goto_id = $(this).attr('id'); // + new Date(); //trigger reactivity
+            console.log($('.list-group-item').first().find("strong").text());
+            var p_domain = $('.list-group-item').first().find("strong").text();
+
+            //  plus to minus sign
+            var full_id = "#" + goto_id
+            $(full_id).children().children().replaceWith('<span class="glyphicon glyphicon-minus" style="color: #FFF;"></span>')
+
 
             // make "PLOT" button attention styled
             // $("#GEN_PLOTS3").addClass("btn-update");
@@ -144,7 +163,7 @@ $("body").on("shown.bs.tab", "a[data-toggle='tab']", function() {
 
             $('#SITE_EXPLORE').trigger('click');
 
-            rankFinder(goto_id);
+            rankFinder(goto_id, p_domain);
 
             rankLister();
 
@@ -177,6 +196,11 @@ $("body").on("shown.bs.tab", "a[data-toggle='tab']", function() {
         var rankList = ['nothing'];
 
         $(".rank-list > .rank-list-item").each((index, elem) => {
+          // find parent leaflet popup and replace (+) with (-)
+          var parent_id = "#" + elem.id.split("remover")[0]
+          console.log(parent_id)
+          $(parent_id).children().children().replaceWith('<span class="glyphicon glyphicon-plus" style="color: #FFF;"></span>')
+
           elem.remove();
         });
 
@@ -189,6 +213,12 @@ $("body").on("shown.bs.tab", "a[data-toggle='tab']", function() {
         $('body').on('click', '[id$="_gotoremover"]', function(){
             if ($(this).hasClass('rank-list-item')) {
                 if ($(this).find('rankremover')) {
+
+                    // find parent leaflet popup and replace (+) with (-)
+                    var parent_id = "#" + $(this)[0].id.split("remover")[0]
+                    console.log(parent_id)
+                    $(parent_id).children().children().replaceWith('<span class="glyphicon glyphicon-plus" style="color: #FFF;"></span>')
+
                     $(this).remove()
 
                     // set mapdata as top 3 ranks
@@ -989,8 +1019,8 @@ var attrToggle = 0;
 
 $(document).ready(function(){
 
-    var window_height = ($('#sidebarCollapsed').height() * .38);
-    $('#MAP').css('height', window_height);
+    // var window_height = ($('#sidebarCollapsed').height() * .38);
+    // $('#MAP').css('height', window_height);
 
     $('#COLLAPSE_ATTRIBUTES').click(function(){
         attrToggle++;
@@ -1300,6 +1330,15 @@ $(document).ready(function() {
     layerClicks();
         });
 
+$(document).ready(function() {
+    $('[data-toggle="tooltip"]').tooltip({
+        trigger : 'hover'
+    })
+    $('[role="tooltip"]').on('click', function () {
+        $(this).tooltip('hide')
+    })
+});
+
 $(document).ready( function() {
     $(window).on('resize', function() {
         if ($("#attribute-content").width() < 500) {
@@ -1308,12 +1347,18 @@ $(document).ready( function() {
                     '<div><div class="dropup" id="legend-button"><button class="dropdown-toggle" type="button" id="about-us" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i id= "my-legend" class="well-sm gi-1-x glyphicon glyphicon-th-list" role="button"></i><span class="caret"></span></button><ul class="dropdown-menu" aria-labelledby="legend-drop"><li><a id="No-Leg" href="#">No Legend</a></li><li><a id="3DEP-Leg" href="#">3DEP Elevation</a></li><li><a id="Tree-Leg" href="#">Tree Canopy</a></li><li><a id="Impervious-Leg" href="#">Impervious Surfaces</a></li><li><div class = "ms-tooltip" style = "margin-inline: 11%" title = "landcover imagery tiles do not visualize at lowest 8 zoom levels"><a id="Landcover-Leg" href="#">Landcover</a></div></li> <li><a id="LCChange-Leg" href="#">Landcover Change</a></li><li><a id="Geology-Leg" href="#">Geology</a></li></ul></div></div>'
                      // <li><a id="Ecoregions" href="#">Ecoregions</a></li> <li><a id="TreeCanopyChange-Leg" href="#">Tree Canopy Change</a></li>
                 );
+            // change tab names to be more ocncise
+            // $('[data-value$="Map Selections"]').html('<span class=\"glyphicon glyphicon-shopping-cart\"></span>')
+
             layerClicks();
             } else {
                 $('#legend-button').replaceWith('<div class="dropup" id="legend-button"><button class="btn btn-primary dropdown-toggle" type="button" id="about-us" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Legend <span class="caret"></span></button><ul class="dropdown-menu" aria-labelledby="legend-drop"><li><a id="No-Leg" href="#">No Legend</a></li><li><a id="3DEP-Leg" href="#">3DEP Elevation</a></li><li><a id="Tree-Leg" href="#">Tree Canopy</a></li><li><a id="Impervious-Leg" href="#">Impervious Surfaces</a></li><div class = "ms-tooltip" style = "margin-inline: 11%" title = "landcover imagery tiles do not visualize at lowest 8 zoom levels"><li><a id="Landcover-Leg" href="#">Landcover</a></li> </div><li><a id="LCChange-Leg" href="#">Landcover Change</a></li><li><a id="Geology-Leg" href="#">Geology</a></li></ul></div>');
                 layerClicks();
+                // $('[data-value$="Map Selections"]').html('<span class=\"glyphicon glyphicon-shopping-cart\"></span> Map Selections')
                 // <li><a id="TreeCanopyChange-Leg" href="#">Tree Canopy Change</a></li>  <li><a id="Ecoregions" href="#">Ecoregions</a></li>
             }
+
+
         });
     });
 

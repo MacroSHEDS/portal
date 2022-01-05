@@ -73,11 +73,19 @@ map_tab <- tabPanel(
                     rank_list_basic,
                     div(
                         class = "label",
-                        HTML('<button id="map-site-clear" class="btn btn-sm btn-primary" style="margin-left: 45%;">
+                        # put into html for "plot" button under lsit
+                        # <button id="#GEN_PLOTS3" class="btn btn-sm btn-primary shiny-bound-input" style="">
+                        # <a target="_blank" data-toggle="tooltip" data-placement="bottom" title="click to clear all the Map Selections">
+                        # <span  class="glyphicon glyphicon-stats gi-semi-x"></span>
+                        # </a>
+                        # </button>
+                        HTML('
+                            <div class="text-center">
+                            <button id="map-site-clear" class="btn btn-sm btn-primary" style="">
                             <a target="_blank" data-toggle="tooltip" data-placement="bottom" title="click to clear all the Map Selections">
                             <span class="glyphicon glyphicon-trash gi-semi-x"></span>
                             </a>
-                            </button>'),
+                            </button></div>'),
                         # very rough "drag-to-delete" bin
                         # div(
                         #     class = "panel panel-default",
