@@ -1025,7 +1025,6 @@ $(document).ready(function(){
     $('#COLLAPSE_ATTRIBUTES').click(function(){
         attrToggle++;
 
-
         if (attrToggle%2 == 0) {
             console.log("collapse: small map, large attribute table view");
 
