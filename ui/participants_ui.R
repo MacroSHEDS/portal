@@ -267,9 +267,9 @@ participants_tab <- tabPanel("Participants",
                     ),
                     div(
                         class = "people-container",
-                        HTML('<p class="leftpanel-text"><b>Anna Bergstrom</b><br>Duke</p>'),
+                        HTML('<p class="leftpanel-text"><b>Anna Bergstrom</b><br>Boise State</p>'),
                         img(
-                            src = "logo/duke.png",
+                            src = "logo/boise_state.png",
                             style = "height: 50px;",
                             class = "logo"
                         ),
