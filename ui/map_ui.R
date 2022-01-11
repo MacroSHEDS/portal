@@ -129,8 +129,8 @@ map_tab <- tabPanel(
                             # class = "leftpanel-text"
                         )
                     )
-                ),
-            ),
+                )
+            )
         )
     ),
     # this button opens the site exploration tab. the button is hidden and unclickable.
