@@ -184,7 +184,10 @@ $("body").on("shown.bs.tab", "a[data-toggle='tab']", function() {
     });
 
     $(document).ready( function() {
-        $('<span class="glyphicon glyphicon-shopping-cart"></span>  Map Selections').insertAfter($('span:contains("Map Selections")'))
+        $('body').one('click', function() {
+            console.log("pre-click MADNeSS");
+            $('<nobr> Map Selections</nobr>').insertAfter($("a span.glyphicon.glyphicon-shopping-cart"));
+        })
     });
 
     // make it so clicking trash can clears bucket
@@ -646,7 +649,9 @@ $("body").on("shown.bs.tab", "a[data-toggle='tab']", function() {
         // add site auto-focus to site cart (maybe not preffered?)
         $('body').on('click', "button[id$='_goto']", function() {
           // console.log("I have been clicked, and i am the ADDSITE button!")
-          $('a[data-value$="Map Selections"]').trigger("click");
+          //
+          // $('a[data-value$="Map Selections"]').trigger("click");
+          $("a span.glyphicon.glyphicon-shopping-cart").parent().trigger("click")
         });
 
         var tgt = $(target);
@@ -1348,6 +1353,7 @@ $(document).ready( function() {
                      // <li><a id="Ecoregions" href="#">Ecoregions</a></li> <li><a id="TreeCanopyChange-Leg" href="#">Tree Canopy Change</a></li>
                 );
             // change tab names to be more ocncise
+            $("a span.glyphicon.glyphicon-shopping-cart").parent().html('<span class="glyphicon glyphicon-shopping-cart"></span>')
             // $('[data-value$="Map Selections"]').html('<span class=\"glyphicon glyphicon-shopping-cart\"></span>')
 
             layerClicks();
@@ -1355,6 +1361,7 @@ $(document).ready( function() {
                 $('#legend-button').replaceWith('<div class="dropup" id="legend-button"><button class="btn btn-primary dropdown-toggle" type="button" id="about-us" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Legend <span class="caret"></span></button><ul class="dropdown-menu" aria-labelledby="legend-drop"><li><a id="No-Leg" href="#">No Legend</a></li><li><a id="3DEP-Leg" href="#">3DEP Elevation</a></li><li><a id="Tree-Leg" href="#">Tree Canopy</a></li><li><a id="Impervious-Leg" href="#">Impervious Surfaces</a></li><div class = "ms-tooltip" style = "margin-inline: 11%" title = "landcover imagery tiles do not visualize at lowest 8 zoom levels"><li><a id="Landcover-Leg" href="#">Landcover</a></li> </div><li><a id="LCChange-Leg" href="#">Landcover Change</a></li><li><a id="Geology-Leg" href="#">Geology</a></li></ul></div>');
                 layerClicks();
                 // $('[data-value$="Map Selections"]').html('<span class=\"glyphicon glyphicon-shopping-cart\"></span> Map Selections')
+                $("a span.glyphicon.glyphicon-shopping-cart").parent().html('<span class="glyphicon glyphicon-shopping-cart"></span> Map Selections')
                 // <li><a id="TreeCanopyChange-Leg" href="#">Tree Canopy Change</a></li>  <li><a id="Ecoregions" href="#">Ecoregions</a></li>
             }
 
