@@ -185,7 +185,6 @@ $("body").on("shown.bs.tab", "a[data-toggle='tab']", function() {
 
     $(document).ready( function() {
         $('body').one('click', function() {
-            console.log("pre-click MADNeSS");
             $('<nobr> Map Selections</nobr>').insertAfter($("a span.glyphicon.glyphicon-shopping-cart"));
         })
     });
