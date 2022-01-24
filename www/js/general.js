@@ -1210,15 +1210,20 @@ $(document).ready( function() {
     $('#legend-nlcd').on('click', function() {
         $('#legend-nlcd-modal').css('display', 'block')
     })
+    $('#legend-impervious').on('click', function() {
+        $('#legend-impervious-modal').css('display', 'block')
+    })
+
 // When the user clicks on <span> (x), close the modal
     $('.close').on('click', function() {
         $('#legend-nlcd-modal').css('display', 'none')
+        $('#legend-impervious-modal').css('display', 'none')
     })
 
 // When the user clicks anywhere outside of the modal, close it
     window.onclick = function(event) {
-        if (event.target == modal) {
-            modal.style.display = "none";
+        if (event.target == $('.legend-modal')) {
+            $('.legend-modal').css('display', 'none');
         }
     }
 })

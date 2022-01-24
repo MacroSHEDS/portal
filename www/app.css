@@ -1035,6 +1035,33 @@ tbody tr.active-row {
     background-color: #64B3D5;
 }
 
+/* Impervious SUrfaces */
+meter {
+  width: 500px;
+  height: 25px;
+  -webkit-appearance: none; /* Reset appearance */
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+meter::-webkit-meter-bar {
+  background: none; /* Required to get rid of the default background property */
+  background-color: whiteSmoke;
+  box-shadow: 0 5px 5px -5px #333 inset;
+}
+
+meter {
+  box-shadow: 0 5px 5px -5px #999 inset;
+  background-image: linear-gradient(
+    90deg,
+    #000000 0%,
+    #d3d2d0 5%,
+    #deadaa 25%,
+    #ec4c3a 75%,
+    #a13bef 100%
+  );
+  background-size: 100% 100%;
+}
+
 /* The Modal (background) */
 .legend-modal {
   display: none; /* Hidden by default */

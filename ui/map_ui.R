@@ -111,7 +111,8 @@ map_tab <- tabPanel(
                     style = "overflow-y:scroll; height: 300px;",
                   div(class='well',
                       includeHTML("ui/legend/legend_list.html"),
-                      includeHTML("ui/legend/nlcd.html")
+                      includeHTML("ui/legend/nlcd.html"),
+                      includeHTML("ui/legend/impervious.html")
                       ),
                     div(
                         class = "label",
