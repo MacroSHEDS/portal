@@ -186,8 +186,11 @@ $("body").on("shown.bs.tab", "a[data-toggle='tab']", function() {
     $(document).ready( function() {
         $('body').one('click', function() {
             $('<nobr> Map Selections</nobr>').insertAfter($("a span.glyphicon.glyphicon-shopping-cart"));
+            $('<span class="glyphicon glyphicon-shopping-cart"></span>').insertBefore($("span:contains('Map Selections')").prev())
         })
     });
+
+
 
     // make it so clicking trash can clears bucket
     $('#map-site-clear').on('click', function() {
@@ -205,7 +208,6 @@ $("body").on("shown.bs.tab", "a[data-toggle='tab']", function() {
 
           elem.remove();
         });
-
 
         Shiny.setInputValue('MAPDATA', arrayToList(rankList));
     });
