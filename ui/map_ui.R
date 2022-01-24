@@ -14,27 +14,27 @@ map_tab <- tabPanel(
         id = "attribute-table",
         column(
             width = 12,
-            div(
-                id = "legend-container",
-                style = "position: absolute; right: 4em",
-                bsTooltip(
-                    id = "legend-container",
-                    title = "this is a BETA legend, improved legend coming soon",
-                    placement = "bottom",
-                    trigger = "hover"
-                ),
-                HTML('<div class="dropup" id="legend-button"><button class="btn btn-primary dropdown-toggle" type="button"
-                id="about-us" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Legend
-                <span class="caret"></span></button><ul class="dropdown-menu" aria-labelledby="legend-drop">
-                <li><a id="No-Leg" href="#">No Legend</a></li>
-                <li><a id="3DEP-Leg" href="#">3DEP Elevation</a></li>
-                <li><a id="Tree-Leg" href="#">Tree Canopy</a></li>
-                <li><a id="Impervious-Leg" href="#">Impervious Surfaces</a></li>
-                <div class = "ms-tooltip" style = "margin-inline: 11%" title = "landcover imagery tiles do not visualize at lowest 8 zoom levels"><li><a id="Landcover-Leg" href="#">Landcover</a></li> </div>
-                <li><a id="LCChange-Leg" href="#">Landcover Change</a></li>
-                <li><a id="Geology-Leg" href="#">Geology</a></li></ul></div>')
-                # <li><a id="Ecoregions" href="#">Ecoregions</a></li> <li><a id="TreeCanopyChange-Leg" href="#">Tree Canopy Change</a></li>
-            ),
+            ## div(
+            ##     id = "legend-container",
+            ##     style = "position: absolute; right: 4em",
+            ##     bsTooltip(
+            ##         id = "legend-container",
+            ##         title = "this is a BETA legend, improved legend coming soon",
+            ##         placement = "bottom",
+            ##         trigger = "hover"
+            ##     ),
+            ##     HTML('<div class="dropup" id="legend-button"><button class="btn btn-primary dropdown-toggle" type="button"
+            ##     id="about-us" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Legend
+            ##     <span class="caret"></span></button><ul class="dropdown-menu" aria-labelledby="legend-drop">
+            ##     <li><a id="No-Leg" href="#">No Legend</a></li>
+            ##     <li><a id="3DEP-Leg" href="#">3DEP Elevation</a></li>
+            ##     <li><a id="Tree-Leg" href="#">Tree Canopy</a></li>
+            ##     <li><a id="Impervious-Leg" href="#">Impervious Surfaces</a></li>
+            ##     <div class = "ms-tooltip" style = "margin-inline: 11%" title = "landcover imagery tiles do not visualize at lowest 8 zoom levels"><li><a id="Landcover-Leg" href="#">Landcover</a></li> </div>
+            ##     <li><a id="LCChange-Leg" href="#">Landcover Change</a></li>
+            ##     <li><a id="Geology-Leg" href="#">Geology</a></li></ul></div>')
+            ##     # <li><a id="Ecoregions" href="#">Ecoregions</a></li> <li><a id="TreeCanopyChange-Leg" href="#">Tree Canopy Change</a></li>
+            ## ),
             div(
                 style = "width: 36px; position: absolute; right: 1em",
                 actionLink("COLLAPSE_ATTRIBUTES",
@@ -60,7 +60,7 @@ map_tab <- tabPanel(
                         tags$footer(
                             p(
                                 id = "notes-footer",
-                                "go to 'Notes/Caveats' tab for more information"
+                                "go to 'Notes' tab for more information"
                             ),
                             # class = "leftpanel-text"
                         )
@@ -86,31 +86,6 @@ map_tab <- tabPanel(
                             <span class="glyphicon glyphicon-trash gi-semi-x"></span>
                             </a>
                             </button></div>'),
-                        # very rough "drag-to-delete" bin
-                        # div(
-                        #     class = "panel panel-default",
-                        #     div(
-                        #         class = "panel-heading",
-                        #         icon("trash"),
-                        #         "Remove item"
-                        #     ),
-                        #     div(
-                        #         class = "panel-body",
-                        #         id = "sortable_bin"
-                        #     )
-                        # ),
-
-                        # sortable_js(
-                        #     "sortable_bin",
-                        #     options = sortable_options(
-                        #         group = list(
-                        #             group = "sortGroup1",
-                        #             put = TRUE,
-                        #             pull = TRUE
-                        #         ),
-                        #         onAdd = htmlwidgets::JS("function (evt) { this.el.removeChild(evt.item); }")
-                        #     )
-                        # )
                     )
                 ),
                 tabPanel(
@@ -124,7 +99,26 @@ map_tab <- tabPanel(
                         tags$footer(
                             p(
                                 id = "notes-footer",
-                                "go to 'Notes/Caveats' tab for more information"
+                                "go to 'Notes' tab for more information"
+                            ),
+                            # class = "leftpanel-text"
+                        )
+                    )
+                ),
+                tabPanel( # at some pont, make list element float right
+                    id = "Legend",
+                    HTML('<span class="glyphicon glyphicon-list-alt"></span>'),
+                    style = "overflow-y:scroll; height: 300px;",
+                  div(class='well',
+                      includeHTML("ui/legend/legend_list.html"),
+                      includeHTML("ui/legend/nlcd.html")
+                      ),
+                    div(
+                        class = "label",
+                        tags$footer(
+                            p(
+                                id = "notes-footer",
+                                "go to 'Notes' tab for more information"
                             ),
                             # class = "leftpanel-text"
                         )
@@ -145,7 +139,7 @@ map_tab <- tabPanel(
     #     tags$footer(
     #         p(
     #             id = "notes-footer",
-    #             "go to 'Notes/Caveats' tab for more information"
+    #             "go to 'Notes' tab for more information"
     #         ),
     #         # class = "leftpanel-text"
     #     )

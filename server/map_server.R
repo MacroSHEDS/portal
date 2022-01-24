@@ -112,14 +112,14 @@ output$MAP <- renderLeaflet({
         #     labels = c("1", "2"),
         #     group = "Landcover"
         # ) %>%
-        # Tree Canopy Change (2011-2016)
-        addWMSTiles(
-            "https://www.mrlc.gov/geoserver/mrlc_display/NLCD_Tree_Canopy_Change_Index_L48/ows?SERVICE=WMS&",
-            layers = "NLCD_Tree_Canopy_Change_Index_L48",
-            options = WMSTileOptions(format = "image/png", info_format = "text/html", transparent = TRUE),
-            group = "Tree Canopy Change (2011-2016)",
-            attribution = "Multi-Resolution Land Characteristics (MRLC) consortium",
-        ) %>%
+        # Tree Canopy Change (2011-2016) COMB
+        ## addWMSTiles(
+        ##     "https://www.mrlc.gov/geoserver/mrlc_display/NLCD_Tree_Canopy_Change_Index_L48/ows?SERVICE=WMS&",
+        ##     layers = "NLCD_Tree_Canopy_Change_Index_L48",
+        ##     options = WMSTileOptions(format = "image/png", info_format = "text/html", transparent = TRUE),
+        ##     group = "Tree Canopy Change (2011-2016)",
+        ##     attribution = "Multi-Resolution Land Characteristics (MRLC) consortium",
+        ## ) %>%
         # addWMSLegend(uri = paste0(
         #     # "https://www.mrlc.gov/geoserver/",
         #     "mrlc_display/NLCD_Tree_Canopy_Change_Index_L48/",
@@ -127,14 +127,14 @@ output$MAP <- renderLeaflet({
         #     "=image%2Fpng&width=20&height=20&layer=",
         #     "NLCD_Tree_Canopy_Change_Index_L48"
         # )) %>%
-        # Tree Canopy 2016
-        addWMSTiles(
-            "https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2016_Tree_Canopy_L48/ows?SERVICE=WMS&",
-            layers = "NLCD_2016_Tree_Canopy_L48",
-            options = WMSTileOptions(format = "image/png", info_format = "text/html", transparent = TRUE),
-            attribution = "Multi-Resolution Land Characteristics (MRLC) consortium",
-            group = "Tree Canopy (2016)"
-        ) %>%
+        # Tree Canopy 2016 COMB
+        ## addWMSTiles(
+        ##     "https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2016_Tree_Canopy_L48/ows?SERVICE=WMS&",
+        ##     layers = "NLCD_2016_Tree_Canopy_L48",
+        ##     options = WMSTileOptions(format = "image/png", info_format = "text/html", transparent = TRUE),
+        ##     attribution = "Multi-Resolution Land Characteristics (MRLC) consortium",
+        ##     group = "Tree Canopy (2016)"
+        ## ) %>%
         # addWMSLegend(uri = paste0(
         #     "https://www.mrlc.gov/geoserver/",
         #     "mrlc_display/NLCD_2016_Tree_Canopy_L48/",
@@ -404,7 +404,8 @@ output$MAP <- renderLeaflet({
         ) %>%
         addLayersControl(
             position = "topright",
-            baseGroups = c("Basemap", "Landcover", "Landcover Change (2001-2019)", "Impervious Surfaces", "Geology", "EPA Ecoregions", "Tree Canopy (2016)", "Tree Canopy Change (2011-2016)", "3DEP Elevation"),
+            ## baseGroups = c("Basemap", "Landcover", "Landcover Change (2001-2019)", "Impervious Surfaces", "Geology", "EPA Ecoregions", "Tree Canopy (2016)", "Tree Canopy Change (2011-2016)", "3DEP Elevation"), # COMB
+            baseGroups = c("Basemap", "Landcover", "Landcover Change (2001-2019)", "Impervious Surfaces", "Geology", "EPA Ecoregions", "3DEP Elevation"),
             # all maps
             # baseGroups = c("Landcover", "3DEP Elevation"),
             # baseGroups = c("Plain", "Simple", "Geochemistry", "Wetlands and Water Bodies", "Shaded Relief", "Impervious Surfaces", "Tree Canopy", "Streams", "Landcover", "Sulfur", "SO3 and NH3/NH4", "Pop. Density", "Topo Map", "Aerial Imagery", "EPA Ecoregions", "Soils", "Hazardous Sites"),
