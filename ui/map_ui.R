@@ -112,7 +112,8 @@ map_tab <- tabPanel(
                   div(class='well',
                       includeHTML("ui/legend/legend_list.html"),
                       includeHTML("ui/legend/nlcd.html"),
-                      includeHTML("ui/legend/impervious.html")
+                      includeHTML("ui/legend/impervious.html"),
+                      includeHTML("ui/legend/nlcd_change.html")
                       ),
                     div(
                         class = "label",

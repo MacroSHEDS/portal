@@ -1370,6 +1370,7 @@ $(document).ready( function() {
 //     })
 //     $('[role="tooltip"]').on('click', function () {
 //         $(this).tooltip('hide')
+
 //     })
 // });
 

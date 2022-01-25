@@ -1035,9 +1035,48 @@ tbody tr.active-row {
     background-color: #64B3D5;
 }
 
+/* NLCD Change */
+
+.no-change {
+  background-color: #005F00;
+}
+.water-change {
+  background-color: #0000FF;
+}
+.urban-change {
+  background-color: #EC82EC;
+}
+.wetland-within-class-change {
+  background-color: #79FFD2;
+}
+.herbaceous-wetland-change {
+  background-color: #009EDE;
+}
+.ag-hay-change {
+  background-color: #FF9F00;
+}
+.cultivated-crop-change {
+  background-color: #9F2828;
+}
+.hay-change {
+  background-color: #FFFF00;
+}
+.persistent-grass-change {
+  background-color: #D1B588;
+}
+.barren-change {
+  background-color: #C0C0C0;
+}
+.forest-theme-change {
+  background-color: #00FF00;
+}
+.woody-wetland-change {
+  background-color: #00FF00;
+}
+
 /* Impervious SUrfaces */
 meter {
-  width: 500px;
+  width: 100%;
   height: 25px;
   -webkit-appearance: none; /* Reset appearance */
   border: 1px solid #ccc;
@@ -1072,6 +1111,7 @@ meter {
   top: 2em;
   /* width: 70%; /\* Full width *\/ */
   max-height: 90%; /* Full height */
+  max-width: 70%; /* Full height */
   overflow: auto; /* Enable scroll if needed */
   background-color: rgb(0,0,0); /* Fallback color */
   background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
