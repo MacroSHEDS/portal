@@ -1196,36 +1196,31 @@ $(document).ready( function() {
 // $(document).ready( function() {
 //     $('#legend-nlcd').
 // })
+
 $(document).ready( function() {
-// // Get the modal
-// var modal = document.getElementById("legend-nlcd-modal");
-
-// // Get the button that opens the modal
-// var btn = document.getElementById("legend-nlcd");
-
-// // Get the <span> element that closes the modal
-// var span = document.getElementsByClassName("close")[0];
-
-// When the user clicks on the button, open the modal
-    $('#legend-nlcd').on('click', function() {
-        $('#legend-nlcd-modal').css('display', 'block')
-    })
-    $('#legend-impervious').on('click', function() {
-        $('#legend-impervious-modal').css('display', 'block')
+    // When the user clicks on the button, open the modal
+    $("[id^='legend-']").on('click', function(e) {
+        var leg = '#'.concat(e.target.id.concat('-modal'));
+        $(leg).css('display', 'block');
     })
 
-// When the user clicks on <span> (x), close the modal
+    $(document).on('keydown', function(event) {
+       if (event.key == "Escape") {
+           $("[id$='-modal']").css('display', 'none');
+       }
+    });
+
+    // When the user clicks on <span> (x), close the modal
     $('.close').on('click', function() {
-        $('#legend-nlcd-modal').css('display', 'none')
-        $('#legend-impervious-modal').css('display', 'none')
+        $("[id$='-modal']").css('display', 'none')
     })
 
-// When the user clicks anywhere outside of the modal, close it
-    window.onclick = function(event) {
-        if (event.target == $('.legend-modal')) {
-            $('.legend-modal').css('display', 'none');
-        }
-    }
+    // close modal on click outside at anywhere
+    $(document).on('click',function(e){
+    if(!(($(e.target).closest($("[id^='legend-']")).length > 0 ))){
+        $("[id$='-modal']").css('display', 'none');
+   }
+ })
 })
 // var legendsActive = 0;
 
