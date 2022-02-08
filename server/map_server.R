@@ -72,18 +72,21 @@ rg <- filter(
 
 output$MAP <- renderLeaflet({
     leaflet() %>%
+        # MapBox (blue styled basemap)
         # mapboxapi::addMapboxTiles(
         #   style_id = "ckvctd9at07qk14qrirm7m6nz",
         #   username = "wslaughter",
         #   group = "Plain"
         # ) %>%
+        # NEXRAD Weather
         # addWMSTiles(
         #   "http://mesonet.agron.iastate.edu/cgi-bin/wms/nexrad/n0r.cgi",
         #   layers = "nexrad-n0r-900913",
         #   options = WMSTileOptions(format = "image/png", transparent = TRUE),
         #   attribution = "Weather data © 2012 IEM Nexrad",
-        #   group = "Plain"
+        #   group = "Weather"
         # ) %>%
+        # USGS Wetland and Lotic Polygons
         # addWMSTiles(
         #   "https://geowebservices.stanford.edu/geoserver/wms",
         #   layers = "druid:sv709xw7113",
@@ -91,51 +94,182 @@ output$MAP <- renderLeaflet({
         #   # attribution = "Weather data © 2012 IEM Nexrad",
         #   group = "Wetlands and Water Bodies"
         # ) %>%
-        addWMSTiles(
-            "https://geowebservices.stanford.edu/geoserver/wms",
-            layers = "druid:nh022gd9639",
-            options = WMSTileOptions(format = "image/png", info_format = "text/html", transparent = TRUE),
-            group = "Tree Canopy"
-        ) %>%
+        # Stanford/UT Tree Canopy WMS
         # addWMSTiles(
         #     "https://geowebservices.stanford.edu/geoserver/wms",
-        #     layers = "druid:nt481py7519",
+        #     layers = "druid:nh022gd9639",
         #     options = WMSTileOptions(format = "image/png", info_format = "text/html", transparent = TRUE),
-        #     # attribution = "Weather data © 2012 IEM Nexrad",
-        #     group = "Basemap"
+        #     group = "Tree Canopy"
         # ) %>%
-        addWMSTiles(
-            "https://www.sciencebase.gov/arcgis/services/Catalog/5888bf4fe4b05ccb964bab9d/MapServer/WmsServer?",
-            layers = "0",
-            options = WMSTileOptions(format = "image/png", info_format = "text/html", transparent = TRUE),
-            attribution = "USGS- State Geologic Map Compilation",
-            group = "Geology"
-        ) %>%
-        # mapboxapi::addMapboxTiles(
-        #     style_id = "ckvh2vbn22i4k14p6vri1pvfa",
-        #     username = "wslaughter",
-        #     group = "Plain"
-        # ) %>%
-        addWMSTiles(
-            "https://geowebservices.stanford.edu/geoserver/wms",
-            layers = "druid:sw186vh2473",
-            options = WMSTileOptions(format = "image/png", info_format = "text/html", transparent = TRUE),
-            attribution = "Geological Survey (U.S.). 100-Meter Resolution Impervious Surface of the Conterminous United States, 2001. 100-Meter Resolution Impervious Surface of the Conterminous United States, 2001 - TexasGeoDataPortal.",
-            group = "Impervious Surfaces"
-        ) %>%
         addTiles(
             urlTemplate = "http://macrosheds.org/map_tiles/nlcd_30m/nlcd/{z}/{x}/{y}.png",
             options = tileOptions(minZoom = 2, maxZoom = 10, tms = TRUE),
             attribution = "USGS Multi-Resolution Land Characteristics Consortium",
-            group = "Landcover (2019)" # NLCD (30m)
+            group = "Landcover" # NLCD (30m)
         ) %>%
+        # addLegend("bottomright",
+        #     colors = c("blue", "yellow"),
+        #     labels = c("1", "2"),
+        #     group = "Landcover"
+        # ) %>%
+        # Tree Canopy Change (2011-2016) COMB
+        ## addWMSTiles(
+        ##     "https://www.mrlc.gov/geoserver/mrlc_display/NLCD_Tree_Canopy_Change_Index_L48/ows?SERVICE=WMS&",
+        ##     layers = "NLCD_Tree_Canopy_Change_Index_L48",
+        ##     options = WMSTileOptions(format = "image/png", info_format = "text/html", transparent = TRUE),
+        ##     group = "Tree Canopy Change (2011-2016)",
+        ##     attribution = "Multi-Resolution Land Characteristics (MRLC) consortium",
+        ## ) %>%
+        # addWMSLegend(uri = paste0(
+        #     # "https://www.mrlc.gov/geoserver/",
+        #     "mrlc_display/NLCD_Tree_Canopy_Change_Index_L48/",
+        #     "ows?service=WMS&request=GetLegendGraphic&format",
+        #     "=image%2Fpng&width=20&height=20&layer=",
+        #     "NLCD_Tree_Canopy_Change_Index_L48"
+        # )) %>%
+        # Tree Canopy 2016 COMB
+        ## addWMSTiles(
+        ##     "https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2016_Tree_Canopy_L48/ows?SERVICE=WMS&",
+        ##     layers = "NLCD_2016_Tree_Canopy_L48",
+        ##     options = WMSTileOptions(format = "image/png", info_format = "text/html", transparent = TRUE),
+        ##     attribution = "Multi-Resolution Land Characteristics (MRLC) consortium",
+        ##     group = "Tree Canopy (2016)"
+        ## ) %>%
+        # addWMSLegend(uri = paste0(
+        #     "https://www.mrlc.gov/geoserver/",
+        #     "mrlc_display/NLCD_2016_Tree_Canopy_L48/",
+        #     "ows?service=WMS&request=GetLegendGraphic&format=",
+        #     "image%2Fpng&width=20&height=20&layer=",
+        #     "NLCD_2016_Tree_Canopy_L48"
+        # )) %>%
+        # Geology
         addWMSTiles(
-            "https://geowebservices.stanford.edu/geoserver/wms",
-            layers = "druid:fc050zj3595",
+            "https://www.sciencebase.gov/arcgis/services/Catalog/5888bf4fe4b05ccb964bab9d/MapServer/WmsServer?",
+            layers = "0",
+            options = WMSTileOptions(format = "image/png", info_format = "text/html", transparent = TRUE),
+            attribution = "Horton, J.D., 2017, The State Geologic Map Compilation (SGMC) geodatabase of the conterminous United States (ver. 1.1, August 2017): U.S. Geological Survey data release, https://doi.org/10.5066/F7WH2N65.",
+            group = "Geology"
+        ) %>%
+        # Annual Temp
+        addWMSTiles(
+            "https://www.sciencebase.gov/arcgis/services/Catalog/57a26dd6e4b006cb45553f7a/MapServer/WmsServer?",
+            layers = "0",
             options = WMSTileOptions(format = "image/png", info_format = "text/html", transparent = TRUE),
             attribution = "USGS",
-            group = "Streams"
+            group = "Annual Temperature (2016)"
         ) %>%
+       # Evapotranspiration
+        addWMSTiles(
+            ## "https://arcgis-webadaptor-sciencebase2-prod.snafu.cr.usgs.gov:443/sciencebase2/services/Catalog/55d3730fe4b0518e35468e1e/MapServer/WmsServer?",
+            "https://www.sciencebase.gov:443/catalogMaps/mapping/ows/4f4e4b2ee4b07f02db6b3fe6?SERVICE=WMS&",
+            layers = "PRISM Data Explorer",
+            options = WMSTileOptions(format = "image/png", info_format = "text/html", transparent = TRUE),
+            attribution = "USGS",
+            group = "Evapotranspiration (2000-2013)"
+        ) %>%
+
+        # addWMSLegend(uri = paste0(
+        #     "https://www.sciencebase.gov/",
+        #     "arcgis/services/Catalog/",
+        #     "5888bf4fe4b05ccb964bab9d/MapServer/",
+        #     "WmsServer?request=GetLegendGraphic%",
+        #     "26version=1.3.0%26format=image/png%26layer=0"
+        # )) %>%
+        # Stanford/UT Impervious Surface (dark theme)
+        # addWMSTiles(
+        #     "https://geowebservices.stanford.edu/geoserver/wms",
+        #     layers = "druid:sw186vh2473",
+        #     options = WMSTileOptions(format = "image/png", info_format = "text/html", transparent = TRUE),
+        #     attribution = "Geological Survey (U.S.). 100-Meter Resolution Impervious Surface of the Conterminous United States, 2001. 100-Meter Resolution Impervious Surface of the Conterminous United States, 2001 - TexasGeoDataPortal.",
+        #     group = "Impervious Surfaces"
+        # ) %>%
+        # USGS Impervious Surface
+        addWMSTiles(
+            "https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2019_Impervious_L48/ows?SERVICE=WMS&",
+            layers = "NLCD_2019_Impervious_L48",
+            options = WMSTileOptions(format = "image/png", info_format = "text/html", transparent = TRUE),
+            attribution = "Multi-Resolution Land Characteristics (MRLC) consortium",
+            group = "Impervious Surfaces"
+        ) %>% # ttps://www.mrlc.gov/geoserver/mrlc_display/NLCD_2019_Impervious_L48/ows?service=WMS&request=GetLegendGraphic&format=image%2Fpng&width=20&height=20&layer=NLCD_2019_Impervious_L48
+        # addWMSLegend(uri = paste0(
+        #     "https://www.mrlc.gov/geoserver/",
+        #     "mrlc_display/NLCD_2019_Impervious_L48/",
+        #     "ows?service=WMS&request=GetLegendGraphic&format",
+        #     "=image%2Fpng&width=20&height=20&layer=NLCD_2019_Impervious_L48"
+        # )) %>%
+        # code for HomeBrew NLCD serving (retired due to free option with full zoom)
+        # addTiles(
+        #     urlTemplate = "http://macrosheds.org/map_tiles/nlcd_30m/nlcd/{z}/{x}/{y}.png",
+        #     options = tileOptions(minZoom = 2, maxZoom = 10, tms = TRUE),
+        #     attribution = "USGS Multi-Resolution Land Characteristics Consortium",
+        #     group = "Landcover" # NLCD (30m)
+        # ) %>%
+        # USGS NLCD (2019)
+        # addWMSTiles(
+        #     "https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2019_Land_Cover_L48/ows?SERVICE=WMS&",
+        #     layers = "NLCD_2019_Land_Cover_L48",
+        #     options = WMSTileOptions(format = "image/png", info_format = "text/html", transparent = TRUE),
+        #     attribution = "Multi-Resolution Land Characteristics (MRLC) consortium",
+        #     group = "Land Cover (2019)"
+        # ) %>%
+        # addWMSLegend(uri = paste0(
+        #     "https://www.mrlc.gov/geoserver/",
+        #     "mrlc_display/NLCD_2019_Land_Cover_L48/",
+        #     "ows?service=WMS&request=GetLegendGraphic&format",
+        #     "=image%2Fpng&width=20&height=20&layer=",
+        #     "NLCD_2019_Land_Cover_L48"
+        # )) %>%
+        # USGS NLCD (2001-2019)
+        addWMSTiles(
+            "https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2001_2019_change_index_L48/ows?SERVICE=WMS&",
+            layers = "NLCD_2001_2019_change_index_L48",
+            options = WMSTileOptions(format = "image/png", info_format = "text/html", transparent = TRUE),
+            attribution = "Multi-Resolution Land Characteristics (MRLC) consortium",
+            group = "Landcover Change (2001-2019)"
+        ) %>%
+        # addWMSLegend(uri = paste0(
+        #     "https://www.mrlc.gov/geoserver",
+        #     "/mrlc_display/NLCD_2001_2019_change_index_L48/",
+        #     "ows?service=WMS&request=GetLegendGraphic&format",
+        #     "=image%2Fpng&width=20&height=20&layer=",
+        #     "NLCD_2001_2019_change_index_L48"
+        # )) %>%
+        # USGS Streams (NHD)
+        # addWMSTiles(
+        #     "https://geowebservices.stanford.edu/geoserver/wms",
+        #     layers = "druid:fc050zj3595",
+        #     options = WMSTileOptions(format = "image/png", info_format = "text/html", transparent = TRUE),
+        #     attribution = "USGS- National Hydrography Dataset",
+        #     group = "Streams"
+        # ) %>%
+        # NHD Flow (poor single-wms coverage)
+        # addWMSTiles(
+        #     "https://hydro.nationalmap.gov:443/arcgis/services/nhd/MapServer/WmsServer?&",
+        #     layers = "6",
+        #     options = WMSTileOptions(format = "image/png", info_format = "text/html", transparent = TRUE),
+        #     attribution = "USGS",
+        #     group = "NHDPlus"
+        # ) %>%
+        # addWMSLegend(uri = paste0(
+        #     "https://hydro.nationalmap.gov:443/",
+        #     "arcgis/services/nhd/MapServer",
+        #     "/WmsServer?request=GetLegendGraphic%26version=",
+        #     "1.3.0%26format=image/png%26layer=6"
+        # )) %>%
+        # 3DEP Elevation
+        addWMSTiles(
+            "https://elevation.nationalmap.gov:443/arcgis/services/3DEPElevation/ImageServer/WMSServer",
+            layers = "3DEPElevation:Hillshade Elevation Tinted",
+            options = WMSTileOptions(format = "image/png", info_format = "text/html", transparent = TRUE),
+            attribution = "USGS",
+            group = "3DEP Elevation"
+        ) %>%
+        # addWMSLegend(uri = paste0(
+        #     "https://elevation.nationalmap.gov:443/",
+        #     "arcgis/services/3DEPElevation/ImageServer/",
+        #     "WMSServer?request=GetLegendGraphic%26version=",
+        #     "1.3.0%26format=image/png%26layer=3DEPElevation:Hillshade Elevation Tinted"
+        # )) %>%
         # mapboxapi::addMapboxTiles(
         #   style_id = "ckvij6fet2e4k15pey4yj3qlj",
         #   username = "wslaughter",
@@ -163,7 +297,8 @@ output$MAP <- renderLeaflet({
         mapboxapi::addMapboxTiles(
             style_id = "ckvh270o93lon14ohwd7im4xl",
             username = "wslaughter",
-            group = "EPA Ecoregions"
+            group = "EPA Ecoregions",
+            # options = WMSTileOptions(legend = TRUE)
         ) %>%
         # mapboxapi::addMapboxTiles(
         #   style_id = "ckvgtv89o68vw14pbg3ycuo61",
@@ -238,7 +373,7 @@ output$MAP <- renderLeaflet({
             fillColor = "#FF75D5",
             popup = glue(stream_gauge_buttons,
                 domain = sg$domain,
-                # pretty_domain = sg$pretty_domain,
+                pretty_domain = sg$pretty_domain,
                 # stream = sg$stream,
                 site_code = sg$site_code,
                 # full_name = sg$full_name,
@@ -267,7 +402,6 @@ output$MAP <- renderLeaflet({
                 zoomToBoundsOnClick = TRUE,
                 maxClusterRadius = 4.5,
                 iconCreateFunction = JS("function (cluster) {
-
                                                                                   var childCount = cluster.getChildCount();
                                                                                   if (childCount < 3) {
                                                                                     c = '#69D9FE60;'
@@ -288,9 +422,10 @@ output$MAP <- renderLeaflet({
         ) %>%
         addLayersControl(
             position = "topright",
-            baseGroups = c("Basemap", "Landcover (2019)", "Impervious Surfaces", "Geology", "EPA Ecoregions", "Streams", "Tree Canopy"),
-            # baseGroups = c("Base Map", "Land Cover (2019)", "Land Cover Change (2001-2019)", "Impervious Surfaces", "Geology", "EPA Ecoregions", "3DEP Elevation", "Streams", "Tree Canopy (2016)", "Tree Canopy Change (2011-2016)"),
+            ## baseGroups = c("Basemap", "Landcover", "Landcover Change (2001-2019)", "Impervious Surfaces", "Geology", "EPA Ecoregions", "Tree Canopy (2016)", "Tree Canopy Change (2011-2016)", "3DEP Elevation"), # COMB
+            baseGroups = c("Basemap", "Landcover", "Landcover Change (2001-2019)", "Annual Temperature (2016)", "Evapotranspiration (2000-2013)", "Impervious Surfaces", "Geology", "EPA Ecoregions", "3DEP Elevation"),
             # all maps
+            # baseGroups = c("Landcover", "3DEP Elevation"),
             # baseGroups = c("Plain", "Simple", "Geochemistry", "Wetlands and Water Bodies", "Shaded Relief", "Impervious Surfaces", "Tree Canopy", "Streams", "Landcover", "Sulfur", "SO3 and NH3/NH4", "Pop. Density", "Topo Map", "Aerial Imagery", "EPA Ecoregions", "Soils", "Hazardous Sites"),
             options = layersControlOptions(
                 collapsed = TRUE,
@@ -336,8 +471,8 @@ observeEvent(
                     layerId = paste0(code, "-temp"),
                     lng = sg$longitude,
                     lat = sg$latitude,
-                    color = "#228B22", stroke = TRUE, opacity = 1, radius = 4,
-                    weight = 10, fillOpacity = 1, fillColor = "#228B22",
+                    color = "#e08e0b", stroke = TRUE, radius = 8, weight = 2,
+                    fillOpacity = 0.25, fillColor = "#e08e0b",
                     popup = glue(stream_gauge_buttons,
                         domain = sg$domain,
                         pretty_domain = sg$pretty_domain, stream = sg$stream,
@@ -388,7 +523,7 @@ observeEvent(
             proxy %>%
                 addPolygons(
                     data = shed, weight = 3, smooth = 0, stroke = T,
-                    fillOpacity = 0.2, color = "#228B22",
+                    fillOpacity = 0.2, color = "#e08e0b",
                     layerId = paste0(shed$site_code, "-temp"), group = "Catchments"
                 )
 
@@ -396,7 +531,7 @@ observeEvent(
             proxy %>%
                 addPolygons(
                     data = shed, weight = 3, smooth = 0, stroke = T,
-                    fillOpacity = 0.2, color = "#228B22",
+                    fillOpacity = 0.2, color = "#e08e0b",
                     layerId = paste0(shed$site_code, "-temp"), group = "Catchments"
                 ) %>%
                 removeShape(layerId = paste0(site_remove, "-temp"))
@@ -477,14 +612,17 @@ site_info_tib <- reactive({
             select(-bb, -tt))
     }
 
-    fin_tib[is.na(fin_tib)] <- ""
+    # fin_tib[is.na(fin_tib)] <- ""
 
+    fin_tib <- fin_tib %>%
+        unite("value", val:qua, remove = TRUE, sep = " | ", na.rm = TRUE)
     return(fin_tib)
 })
 
 output$MAP_SITE_INFO <- renderTable(
-    colnames = FALSE,
+    colnames = TRUE,
     # bordered = TRUE,
+    hover = TRUE,
     {
         expr <- {
             tib <- site_info_tib()
@@ -494,14 +632,14 @@ output$MAP_SITE_INFO <- renderTable(
     }
 )
 
-output$MAP_SITE_INFO_TITLE <- renderText({
-    site_tib <- site_info_tib()
-    if (nrow(site_tib) == 0 || is.null(site_tib)) {
-        return(" ")
-    } else {
-        return("Site Information")
-    }
-})
+# output$MAP_SITE_INFO_TITLE <- renderText({
+#     site_tib <- site_info_tib()
+#     if (nrow(site_tib) == 0 || is.null(site_tib)) {
+#         return(" ")
+#     } else {
+#         return("Site Information")
+#     }
+# })
 
 ## Add site as a class
 # htmlwidgets::onRender("
@@ -514,8 +652,6 @@ output$MAP_SITE_INFO_TITLE <- renderText({
 #         L.marker([data.latitude[i], data.longitude[i]], {icon: myIcon}).addTo(this);",
 #                       data = sg)
 
-
-
 # Get id from map click
 # test <- reactive({
 #     validate(
@@ -526,4 +662,10 @@ output$MAP_SITE_INFO_TITLE <- renderText({
 #         )
 #     )
 #     (input$MapMine_shape_click) %>%#
-#     (input$MapMine_shape_click)
+#     (input$MapMine_shape_click) %>%
+
+# shopping cart
+# current_site <- paste0(sg$domain, sg$site_code)
+output$results_basic <- renderPrint({
+    input$rank_list_basic # This matches the input_id of the rank list
+})
