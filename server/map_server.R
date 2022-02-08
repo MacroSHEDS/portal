@@ -150,6 +150,25 @@ output$MAP <- renderLeaflet({
             attribution = "Horton, J.D., 2017, The State Geologic Map Compilation (SGMC) geodatabase of the conterminous United States (ver. 1.1, August 2017): U.S. Geological Survey data release, https://doi.org/10.5066/F7WH2N65.",
             group = "Geology"
         ) %>%
+        # Annual Temp
+        addWMSTiles(
+            "https://www.sciencebase.gov/arcgis/services/Catalog/57a26dd6e4b006cb45553f7a/MapServer/WmsServer?",
+            layers = "0",
+            options = WMSTileOptions(format = "image/png", info_format = "text/html", transparent = TRUE),
+            attribution = "USGS",
+            group = "Annual Temperature (2016)"
+        ) %>%
+
+       # Evapotranspiration
+        ## addWMSTiles(
+        ##     ## "https://arcgis-webadaptor-sciencebase2-prod.snafu.cr.usgs.gov:443/sciencebase2/services/Catalog/55d3730fe4b0518e35468e1e/MapServer/WmsServer?",
+        ##     "https://www.sciencebase.gov:443/catalogMaps/mapping/ows/4f4e4b2ee4b07f02db6b3fe6?SERVICE=WMS&",
+        ##     layers = "PRISM Data Explorer",
+        ##     options = WMSTileOptions(format = "image/png", info_format = "text/html", transparent = TRUE),
+        ##     attribution = "USGS",
+        ##     group = "Evapotranspiration (2000-2013)"
+        ## ) %>%
+
         # addWMSLegend(uri = paste0(
         #     "https://www.sciencebase.gov/",
         #     "arcgis/services/Catalog/",
@@ -405,7 +424,7 @@ output$MAP <- renderLeaflet({
         addLayersControl(
             position = "topright",
             ## baseGroups = c("Basemap", "Landcover", "Landcover Change (2001-2019)", "Impervious Surfaces", "Geology", "EPA Ecoregions", "Tree Canopy (2016)", "Tree Canopy Change (2011-2016)", "3DEP Elevation"), # COMB
-            baseGroups = c("Basemap", "Landcover", "Landcover Change (2001-2019)", "Impervious Surfaces", "Geology", "EPA Ecoregions", "3DEP Elevation"),
+            baseGroups = c("Basemap", "Landcover", "Landcover Change (2001-2019)", "Annual Temperature (2016)", "Impervious Surfaces", "Geology", "EPA Ecoregions", "3DEP Elevation"),
             # all maps
             # baseGroups = c("Landcover", "3DEP Elevation"),
             # baseGroups = c("Plain", "Simple", "Geochemistry", "Wetlands and Water Bodies", "Shaded Relief", "Impervious Surfaces", "Tree Canopy", "Streams", "Landcover", "Sulfur", "SO3 and NH3/NH4", "Pop. Density", "Topo Map", "Aerial Imagery", "EPA Ecoregions", "Soils", "Hazardous Sites"),
