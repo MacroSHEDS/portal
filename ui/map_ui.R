@@ -88,8 +88,11 @@ map_tab <- tabPanel(
                             </button></div>'),
                     )
                 ),
+
+
                 tabPanel(
                     "Watershed",
+                    id = "watershed",
                     # textOutput("MAP_SITE_INFO_TITLE"),
                     tableOutput("MAP_SITE_INFO") %>%
                         tagAppendAttributes(class = "table") %>%
@@ -105,6 +108,7 @@ map_tab <- tabPanel(
                         )
                     )
                 ),
+
                 tabPanel( # at some pont, make list element float right
                     id = "Legend",
                     HTML('<span class="glyphicon glyphicon-list-alt"></span>'),
@@ -112,7 +116,10 @@ map_tab <- tabPanel(
                   div(class='well',
                       includeHTML("ui/legend/legend_list.html"),
                       includeHTML("ui/legend/nlcd.html"),
+                      includeHTML("ui/legend/3DEP.html"),
+                      includeHTML("ui/legend/geology.html"),
                       includeHTML("ui/legend/impervious.html"),
+                      includeHTML("ui/legend/ecoregion.html"),
                       includeHTML("ui/legend/nlcd_change.html")
                       ),
                     div(
@@ -125,7 +132,7 @@ map_tab <- tabPanel(
                             # class = "leftpanel-text"
                         )
                     )
-                )
+                ),
             )
         )
     ),

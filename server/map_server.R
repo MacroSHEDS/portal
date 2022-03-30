@@ -299,6 +299,7 @@ output$MAP <- renderLeaflet({
             style_id = "ckvh270o93lon14ohwd7im4xl",
             username = "wslaughter",
             group = "EPA Ecoregions",
+            access_token = conf$mapbox_sk,
             # options = WMSTileOptions(legend = TRUE)
         ) %>%
         # mapboxapi::addMapboxTiles(
@@ -424,7 +425,7 @@ output$MAP <- renderLeaflet({
         addLayersControl(
             position = "topright",
             ## baseGroups = c("Basemap", "Landcover", "Landcover Change (2001-2019)", "Impervious Surfaces", "Geology", "EPA Ecoregions", "Tree Canopy (2016)", "Tree Canopy Change (2011-2016)", "3DEP Elevation"), # COMB
-            baseGroups = c("Basemap", "Landcover", "Landcover Change (2001-2019)", "Annual Temperature (2016)", "Impervious Surfaces", "Geology", "EPA Ecoregions", "3DEP Elevation"),
+            baseGroups = c("Basemap", "Landcover", "Landcover Change (2001-2019)", "Annual Temperature (2016)", "EPA Ecoregions", "Impervious Surfaces", "Geology", "3DEP Elevation"),
             # all maps
             # baseGroups = c("Landcover", "3DEP Elevation"),
             # baseGroups = c("Plain", "Simple", "Geochemistry", "Wetlands and Water Bodies", "Shaded Relief", "Impervious Surfaces", "Tree Canopy", "Streams", "Landcover", "Sulfur", "SO3 and NH3/NH4", "Pop. Density", "Topo Map", "Aerial Imagery", "EPA Ecoregions", "Soils", "Hazardous Sites"),

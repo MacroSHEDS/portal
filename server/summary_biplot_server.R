@@ -51,6 +51,8 @@ pre_filtered_bi <- reactive({
         BY_SITE2 = "site",
         BY_BUCKET2 = "bucket"
     )
+
+
     # raw <- summary()
     raw <- sum
 
@@ -122,6 +124,7 @@ filtered_bi <- reactive({
     year1 <- year(isolate(input$DATES2_INTER[1]))
     year2 <- year(isolate(input$DATES2_INTER[2]))
     pfb <- pre_filtered_bi()
+
     # raw <- isolate(summary())
     raw <- sum
 
@@ -315,6 +318,18 @@ filtered_bi <- reactive({
 
     return(final)
 })
+
+## observeEvent(
+##     eventExpr = input$GEN_PLOTS2,
+##     priority = 90,
+##     ignoreNULL = FALSE,
+##   handlerExpr = {
+##     print("GOOSE")
+##     filtered_bi()
+##     return()
+##   }
+## )
+
 
 # Update axis options ####
 # remove year as an axis option when aggregation the whole records
@@ -624,6 +639,8 @@ observe({
 # Update ws_chars options if the category is changed
 observe({
     x_var <- input$X_VAR2
+    type <- input$SITE_SELECTION2
+    ## trigger <- input$GEN_PLOTS2
     chem_x <- isolate(input$X_TYPE2)
 
     if (chem_x == "Watershed Characteristics") {
@@ -1213,3 +1230,31 @@ output$SUMMARY_BIPLOT <- renderPlotly({
 #
 #     updateSelectInput(session, )
 # })
+
+# reduce the reactivity sensitivity of the timeslider, so that intermediate inputs
+# don't trigger plot updates
+                                        #
+# biplot ideas
+# 1) add in much more informative warnings than "no data" to help
+#    user know what dates/data avialable
+# 2) add coloring and other devices to help user use the site selected
+#    in the biplot as well
+
+timeSliderChanged <- eventReactive(
+    {
+        input$DATES2_INTER
+    },
+    {
+
+        # this is the ultimate gatekeeper for plot rendering. it can be triggered by
+        # the Update Plots button or by the user directly. to ensure that the plots
+        # still update if the dates selected don't change, a random date is appended
+        # to input$DATES3. this random date is then ignored in all the data preppers
+
+        print("BIPLOT: slider update for plots.")
+
+        datevec_rando_append <- c(input$DATES2_INTER, as.Date(runif(1, 0, 10000)))
+        return(datevec_rando_append)
+    }
+) %>%
+    debounce(1000)

@@ -6,6 +6,14 @@ summary_biplot_tab <- tabPanel("Site Comparison",
     value = "biplot",
     sidebarLayout(
         sidebarPanel(
+            ## div(
+            ##     class = "text-center",
+            ##     actionButton("GEN_PLOTS2",
+            ##         "Plot",
+            ##         class = "text-center, btn btn-block btn-primary",
+            ##     )
+            ## ),
+            ## br(),
             div("Site Selection", class = "widget-title text-center"),
             radioButtons("SITE_SELECTION2",
                 label = NULL,
@@ -15,7 +23,7 @@ summary_biplot_tab <- tabPanel("Site Comparison",
                     "Select individual sites" = "BY_SITE2",
                     "Map Selections " = "BY_BUCKET2"
                 ),
-                selected = "BY_BUCKET2"
+                selected = "ALL_SITES2"
             ),
             # br(),
             conditionalPanel(
@@ -80,7 +88,7 @@ summary_biplot_tab <- tabPanel("Site Comparison",
                 ),
                 selectizeInput("X_UNIT2",
                     label = NULL,
-                    multiple = FALSE, choices = "cc_cumulative_precip", selected = "cc_cumulative_precip"
+                    multiple = FALSE, choices = "mm", selected = "mm"
                 ),
                 radioButtons("LOG_X2",
                     label = NULL,

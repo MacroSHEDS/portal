@@ -145,6 +145,7 @@ $("body").on("shown.bs.tab", "a[data-toggle='tab']", function() {
 
             $('[role="tooltip"]').hide();
 
+
             var goto_id = $(this).attr('id'); // + new Date(); //trigger reactivity
             console.log($('.list-group-item').first().find("strong").text());
             var p_domain = $('.list-group-item').first().find("strong").text();
@@ -584,6 +585,8 @@ $("body").on("shown.bs.tab", "a[data-toggle='tab']", function() {
     //control data catalog interactions
     $('body').ready(function(){
         $('#dataTable').on('focus', function(i){
+
+
             $('#site_catalog td').each(function(i){
                 var $this = $(this);
                 var titleVal = $this.text();
@@ -655,6 +658,8 @@ $("body").on("shown.bs.tab", "a[data-toggle='tab']", function() {
           $("a span.glyphicon.glyphicon-shopping-cart").parent().trigger("click")
         });
 
+
+
         var tgt = $(target);
         var shinymodal = tgt.children('#shiny-modal-wrapper');
         //
@@ -697,9 +702,13 @@ $("body").on("shown.bs.tab", "a[data-toggle='tab']", function() {
             //for catalog modals
             if(/catalog$/.test(modal_id)){
 
-                await new Promise(r => setTimeout(r, 1000)); //wait a second for the modal and its table to load
+                await new Promise(r => setTimeout(r, 800)); //wait a second for the modal and its table to load
 
                 shinymodal.find('td').each(set_td_titles);
+
+                $("a[id^='DataTables_Table_']").css({"position":"inherit"});
+                $("a[id^='DataTables_Table_']").removeClass('next');
+                $("a[id^='DataTables_Table_']").addClass('previous');
 
                 //set up listeners for all button elements inside table cells (uses partial application)
                 shinymodal.find('td button').each(partial(function(index, value){
@@ -721,12 +730,20 @@ $("body").on("shown.bs.tab", "a[data-toggle='tab']", function() {
             var modl = $('.modal-body');
             var modal_id = modl.attr('id');
 
+
+            $("a[id^='DataTables_Table_']").css({"position":"inherit"});
+
+            $("a[id^='DataTables_Table_']").removeClass('next');
+            $("a[id^='DataTables_Table_']").addClass('previous');
+            // console.log('OTHER: table bug')
+
             modl.find('td').each(set_td_titles);
 
             //set up listeners for all button elements inside table cells (uses partial application)
             modl.find('td button').each(partial(function(index, value){
                 set_tablebutton_listener(btn = arguments[2], modal_id_ = arguments[0]);
             }, modal_id));
+
 
         }, 200);
     });
@@ -758,6 +775,10 @@ $("body").on("shown.bs.tab", "a[data-toggle='tab']", function() {
             var modal_id = modl.attr('id');
 
             modl.find('td').each(set_td_titles);
+
+            $("a[id^='DataTables_Table_']").css({"position":"inherit"});
+            $("a[id^='DataTables_Table_']").removeClass('next');
+            $("a[id^='DataTables_Table_']").addClass('previous');
 
             //set up listeners for all button elements inside table cells (uses partial application)
             modl.find('td button').each(partial(function(index, value){
@@ -832,6 +853,7 @@ $("body").on("shown.bs.tab", "a[data-toggle='tab']", function() {
     });
 
     $('body').on('click', '#DATA_TOUR', function(i, v){
+        $('#GEN_PLOTS3').trigger('click');
 
         enable_data_tour = true;
         next_tour_id = 'a';
@@ -860,7 +882,7 @@ $("body").on("shown.bs.tab", "a[data-toggle='tab']", function() {
         Shiny.setInputValue('FLAGS3:logical', 'true');
         Shiny.setInputValue('INTERP3:logical', 'true');
 
-        Shiny.setInputValue('START_DATA_TOUR', '' + new Date());
+        Shiny.setInputValue('START_     DATA_TOUR', '' + new Date());
     });
 
     $('body').on('click', '.cicerone2a .driver-close-btn', function(i, v){
@@ -870,7 +892,6 @@ $("body").on("shown.bs.tab", "a[data-toggle='tab']", function() {
         Shiny.setInputValue('AGG3', 'Daily');
         next_tour_id = 'b';
         set_tour_location(['hjandrews'], ['GSWS09', 'GSWS10'], [{value: 'NO3_N', label: 'Nitrate-N (mg/L)'}]);
-        //$('#GEN_PLOTS3').trigger('click');
 
     });
 
@@ -982,12 +1003,16 @@ $(document).ready(function(){
             $(".table").css("min-width", "95%");
 
             //  button stuff
+            $("#COLLAPSE_SIDEBAR").css("pointer-events", "none");
+
             $(".map-mode").css("opacity", "0");
             $(".data-mode").toggleClass("glyphicon-circle-arrow-left glyphicon-circle-arrow-right");
             $('#COLLAPSE_DATA').css({'margin': '6px'});
             console.log("expand: data table view");
         } else {
             $(".table").css("min-width", "90%");
+
+            $("#COLLAPSE_SIDEBAR").css("pointer-events", "auto");
             $(".map-mode").css("opacity", "1");
             $(".data-mode").toggleClass("glyphicon-circle-arrow-right glyphicon-circle-arrow-left");
             console.log("collapse: data table view");
@@ -1008,10 +1033,14 @@ $(document).ready(function(){
         if (mapsToggle%2 != 0) {
             // make non-viz button invisible
             $(".data-mode").css("opacity", "0");
+            $("#COLLAPSE_DATA").css("pointer-events", "none");
+
             $(".map-mode").toggleClass("glyphicon-circle-arrow-left glyphicon-circle-arrow-right");
             console.log("expand: map mode")
         } else {
             $(".data-mode").css("opacity", "1");
+            $("#COLLAPSE_DATA").css("pointer-events", "auto");
+
             $(".map-mode").toggleClass("glyphicon-circle-arrow-right glyphicon-circle-arrow-left");
             // $(".map-mode-toggle").toggleClass("map-mode-toggle map-mode-toggle");
             console.log("collapse: map-mode, return to hybrid mode");
@@ -1197,9 +1226,14 @@ $(document).ready( function() {
 //     $('#legend-nlcd').
 // })
 
+
 $(document).ready( function() {
     // When the user clicks on the button, open the modal
     $("[id^='legend-']").on('click', function(e) {
+        // remove previous modal
+        $("[id$='-modal']").css('display', 'none');
+
+        //  fire up clicked modal
         var leg = '#'.concat(e.target.id.concat('-modal'));
         $(leg).css('display', 'block');
     })
@@ -1211,16 +1245,27 @@ $(document).ready( function() {
     });
 
     // When the user clicks on <span> (x), close the modal
-    $('.close').on('click', function() {
+    $('#site_catalog').on('click', function() {
         $("[id$='-modal']").css('display', 'none')
     })
 
+    // When the user clicks on <span> (x), close the modal
+    // $('#SITE_CATALOG_BUTTON').on('click', function() {
+    //     setTimeout(
+    //         function()
+    //         {
+    //             $('#DataTables_Table_1_next').css({"position":"inherit"});
+    //             console.log('activity: fix NEXT bug')
+    //         },
+    //     700);
+    // })
+
+            // fix position of next button
+
     // close modal on click outside at anywhere
-    $(document).on('click',function(e){
-    if(!(($(e.target).closest($("[id^='legend-']")).length > 0 ))){
+    $(".glyphicon-remove-circle").on('click', function(e){
         $("[id$='-modal']").css('display', 'none');
-   }
- })
+    })
 })
 // var legendsActive = 0;
 
@@ -1364,15 +1409,17 @@ $(document).ready( function() {
 //     layerClicks();
 //         });
 
-// $(document).ready(function() {
-//     $('[data-toggle="tooltip"]').tooltip({
-//         trigger : 'hover'
-//     })
-//     $('[role="tooltip"]').on('click', function () {
-//         $(this).tooltip('hide')
-
-//     })
-// });
+$(document).ready(function() {
+    $('.glyphicon-list-alt').attr( 'title',
+        'click to access map layer legends'
+                                 );
+    $('.glyphicon-question-sign').attr( 'title',
+        'click for more information on mapping and data features'
+                                      );
+    $('[data-value="Watershed"]').attr( 'title',
+        'click for information on selected watershed'
+                                      );
+});
 
 // $(document).ready( function() {
 //     $(window).on('resize', function() {
@@ -1401,3 +1448,41 @@ $(document).ready( function() {
 
 // 2) this variable triggers legend icon to be associated with legend or legend URL for active layer
 // 3) legend icon on click/hover displays legend visual
+$(document).ready(function(){
+
+    function onElementInserted(containerSelector, elementSelector, callback) {
+
+        var onMutationsObserved = function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.addedNodes.length) {
+                    var elements = $(mutation.addedNodes).find(elementSelector);
+                    for (var i = 0, len = elements.length; i < len; i++) {
+                        callback(elements[i]);
+                    }
+                }
+            });
+        };
+
+        var target = $(containerSelector)[0];
+        var config = { childList: true, subtree: true };
+        var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
+        var observer = new MutationObserver(onMutationsObserved);
+        observer.observe(target, config);
+
+        }
+
+    onElementInserted('#mapcontainer', '.leaflet-control-layers-selector', function(element) {
+        console.log('leaflet jquery applied')
+
+        $('.leaflet-control-layers-selector').on('click',function() {
+        $('.glyphicon-list-alt').css('color', 'orange')
+        // $('.glyphicon-list-alt').fadeOut("slow").fadeIn("slow")
+
+        setTimeout( function() {
+            $('.glyphicon-list-alt').css('color', '#b8c7ce')
+            // $('.glyphicon-list-alt').stop(true)
+            }, 1500 );
+        });
+    });
+});
+
