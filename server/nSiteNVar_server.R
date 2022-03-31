@@ -100,6 +100,24 @@ observeEvent(
     }
 )
 
+## on selectizer input change, update plot button
+tsSelectizers <- reactive({
+  list(input$DOMAINS3,
+       input$SITES3,
+       input$VARS3)
+})
+
+observeEvent(
+    eventExpr = tsSelectizers(),
+    ignoreNULL = TRUE,
+    ignoreInit = TRUE,
+    handlerExpr = {
+        # change PLOT button to orange 'new data' status
+        print('data input altered, ready to update plot')
+        shinyjs::addClass("GEN_PLOTS3", "btn-warning")
+    }
+)
+
 # when basedata changes, variable list changes, but not variable selections,
 # unless the previous selections are not available for the newly selected sites(s).
 # if basedata is changing as a result of clicking a map "Go to" link
@@ -190,11 +208,14 @@ observeEvent(
 )
 
 # for triggering Update Plots click from map go-to buttons AFTER updating var selection
-observeEvent(input$VARS_INVISIBLE3, {
-    print("Update from VARS_INVISIBLE3")
-    shinyjs::click("GEN_PLOTS3")
-    init_vals$basedata_change_reloads_plots <- FALSE
-})
+observeEvent(input$VARS_INVISIBLE3,
+             ignoreInit = TRUE,
+             handlerExpr = {
+               print("change to VARS_INVISIBLE3")
+               ## print("---- currently does not fire plots")
+               shinyjs::click("GEN_PLOTS3")
+               init_vals$basedata_change_reloads_plots <- FALSE
+             })
 
 # update timeslider when Update Plots is clicked
 observeEvent(

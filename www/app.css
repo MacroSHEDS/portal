@@ -951,3 +951,168 @@ tbody tr.active-row {
     -webkit-animation: btn-update 2s step-end infinite;
     animation: btn-update 2s step-end infinite;
 } */
+
+/* Legend Styling */
+/* NLCD */
+
+.white {
+    background-color: #FFFFFF;
+}
+
+.water {
+    background-color: #5475A8;
+}
+
+.lowintensity {
+    background-color: #E8D1D1;
+}
+
+.highintensity {
+    background-color: #E29E8C;
+}
+
+.developed {
+    background-color: #ff0000;
+}
+
+.devhighintensity {
+    background-color: #B50000;
+}
+
+.barerock {
+    background-color: #D2CDC0;
+}
+
+.deciduous {
+    background-color: #85C77E;
+}
+
+.evergreen {
+    background-color: #38814E;
+}
+
+.mixed {
+    background-color: #D4E7B0;
+}
+
+.dwarf {
+    background-color: #AF963C;
+}
+
+.shrubland {
+    background-color: #DCCA8F;
+}
+
+.grasslands {
+    background-color: #FDE9AA;
+}
+
+.sedge {
+    background-color: #D1D182;
+}
+
+.lichens {
+    background-color: #A3CC51;
+}
+
+.moss {
+    background-color: #82BA9E;
+}
+
+.pasture {
+    background-color: #FBF65D;
+}
+
+.rowcrops {
+    background-color: #CA9146;
+}
+
+.woodywetlands {
+    background-color: #C8E6F8;
+}
+
+.emergentwetlands {
+    background-color: #64B3D5;
+}
+
+/* NLCD Change */
+
+.no-change {
+  background-color: #005F00;
+}
+.water-change {
+  background-color: #0000FF;
+}
+.urban-change {
+  background-color: #EC82EC;
+}
+.wetland-within-class-change {
+  background-color: #79FFD2;
+}
+.herbaceous-wetland-change {
+  background-color: #009EDE;
+}
+.ag-hay-change {
+  background-color: #FF9F00;
+}
+.cultivated-crop-change {
+  background-color: #9F2828;
+}
+.hay-change {
+  background-color: #FFFF00;
+}
+.persistent-grass-change {
+  background-color: #D1B588;
+}
+.barren-change {
+  background-color: #C0C0C0;
+}
+.forest-theme-change {
+  background-color: #00FF00;
+}
+.woody-wetland-change {
+  background-color: #00FF00;
+}
+
+/* Impervious SUrfaces */
+meter {
+  width: 100%;
+  height: 25px;
+  -webkit-appearance: none; /* Reset appearance */
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+meter::-webkit-meter-bar {
+  background: none; /* Required to get rid of the default background property */
+  background-color: whiteSmoke;
+  box-shadow: 0 5px 5px -5px #333 inset;
+}
+
+meter {
+  box-shadow: 0 5px 5px -5px #999 inset;
+  background-image: linear-gradient(
+    90deg,
+    #000000 0%,
+    #d3d2d0 5%,
+    #deadaa 25%,
+    #ec4c3a 75%,
+    #a13bef 100%
+  );
+  background-size: 100% 100%;
+}
+
+/* The Modal (background) */
+.legend-modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1000; /* Sit on top */
+  left: 10em;
+  right: 10em;
+  top: 2em;
+  /* width: 70%; /\* Full width *\/ */
+  max-height: 90%; /* Full height */
+  max-width: 70%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}

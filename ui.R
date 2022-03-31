@@ -13,6 +13,8 @@ source("ui/notes_ui.R")
 ui <- fluidPage(
   use_cicerone(),
   tags$head(includeHTML(("ui/google_analytics.html"))),
+  tags$meta(name="description",
+            content="Welcome to the MacroSheds dataset web portal! MacroSheds unites stream and watershed data from all these sources on one platform, making it easy for anyone to explore the hydrology, water quality, and biogeochemistry of rivers across North America and beyond."),
   # screen shouldn't go gray when plots are updating.
   # tags$style(type="text/css", ".recalculating { opacity: 1.0; }" ),
   tags$head(tags$style(HTML(

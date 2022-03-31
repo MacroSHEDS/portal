@@ -30,9 +30,12 @@ suppressPackageStartupMessages({
     library(errors)
     library(cicerone)
     library(mapdeck)
+    library(mapboxapi)
     # library(rhandsontable)
     # library(shiny.router)
 })
+
+
 
 # TODO:
 # most of the variables created in this script can be automatically generated.
@@ -44,19 +47,22 @@ suppressPackageStartupMessages({
 conf <- jsonlite::fromJSON("config.json")
 
 # #uncomment and run this (without saving script) to create initial connection to our shinyapps account
-# rsconnect::setAccountInfo(name = 'cuahsi',
-#                           token = conf$shinyapps_cuahsi_token,
-#                           secret = conf$shinyapps_cuahsi_secret)
-#
+## rsconnect::setAccountInfo(name = 'cuahsi',
+##                           token = conf$shinyapps_cuahsi_token,
+##                           secret = conf$shinyapps_cuahsi_secret)
+
 # #uncomment and run this (without saving script) to deploy app
-# options(rsconnect.max.bundle.size = 8 * 1024 * 1024 * 1024)
-# rsconnect::deployApp('/home/mike/git/macrosheds/portal',
-#                      appName = 'macrosheds',
-#                      account = 'cuahsi')
+## options(rsconnect.http.timeout = 1000)
+## options(rsconnect.max.bundle.size = 8 * 1024 * 1024 * 1024)
+## rsconnect::deployApp('~/files/projects/science/macrosheds/portal',
+##                      appName = 'macrosheds',
+##                      account = 'cuahsi')
 
-# options(dplyr.summarise.inform = FALSE)
+## rsconnect::showLogs(appName = "macrosheds", streaming = TRUE)
 
-# for local testing (comment all before pushing live)
+## options(dplyr.summarise.inform = FALSE)
+
+# for local testing (commentshowLogs(appName = "YourApp", entries =100, streaming = TRUE) all before pushing live)
 # setwd('~/git/macrosheds/portal')
 # setwd('~/desktop/macrosheds/portal')
 # options(shiny.trace = TRUE) #see every communication between ui and server
@@ -72,6 +78,9 @@ source("function_aliases.R")
 # googlesheets4::gs4_auth(path = '../data_acquisition/googlesheet_service_accnt.json')
 #                         use_oob = TRUE)
 load_portal_config(from_where = "local")
+
+##  mapbox token import
+mapboxapi::mb_access_token(conf$mapbox_sk)
 
 # some stream_gauge sites do not have discharge, like calhoun - weir_3
 sites_with_Q <- sm(read_csv("data/general/sites_with_discharge.csv")) %>%
