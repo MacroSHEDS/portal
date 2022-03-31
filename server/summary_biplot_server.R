@@ -320,13 +320,12 @@ filtered_bi <- reactive({
 })
 
 ## observeEvent(
-##     eventExpr = input$GEN_PLOTS2,
+##     eventExpr = input$SITE_SELECTION2,
 ##     priority = 90,
 ##     ignoreNULL = FALSE,
 ##   handlerExpr = {
-##     print("GOOSE")
-##     filtered_bi()
-##     return()
+##     shinyjs::runjs('$("span:contains("Map Selections")").css("color", "#485580");
+##                     $("span:contains("Map Selections")").prev().prev().css("color", "#485580")')
 ##   }
 ## )
 

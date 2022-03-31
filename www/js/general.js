@@ -159,8 +159,12 @@ $("body").on("shown.bs.tab", "a[data-toggle='tab']", function() {
             // $("#GEN_PLOTS3").addClass("btn-update");
             $("#GEN_PLOTS3").addClass("btn-warning");
 
+            // biplot atteniton stlying
+            $("span:contains('Map Selections')").css('color', 'orange')
+            $("span:contains('Map Selections')").prev().prev().css('color', 'orange')
+
             // make site comparison option highlight as well?
-            // $('value="BY_BUCKET2"').addClass("btn-update");
+            // $('value="BY_BUCKET2"').addClass("btn-warning");
 
             $('#SITE_EXPLORE').trigger('click');
 
@@ -172,10 +176,13 @@ $("body").on("shown.bs.tab", "a[data-toggle='tab']", function() {
             // selectizer input
             $('body').on('mousedown', '[id$="_gotoremover"]', function(){
                 window.setTimeout(function(){
-
+                    // time series
                     $("#GEN_PLOTS3").addClass("btn-warning");
-                    $('#SITE_EXPLORE').trigger('click');
+                    // biplot
+                    $("span:contains('Map Selections')").css('color', 'orange')
+                    $("span:contains('Map Selections')").prev().prev().css('color', 'orange')
 
+                    $('#SITE_EXPLORE').trigger('click');
                     // rankFinder(goto_id);
 
                     rankLister();
@@ -406,6 +413,13 @@ $("body").on("shown.bs.tab", "a[data-toggle='tab']", function() {
     };
 
     $('body').ready(function(){
+
+        $('input[value="BY_BUCKET2"]').click( function (){
+            console.log("WOOPWOOP")
+            $("span:contains('Map Selections')").css("color", "#485580");
+            $("span:contains('Map Selections')").prev().prev().css("color", "#485580")
+        });
+
         $('#GEN_PLOTS3').click(govern_qc3);
         $('#GEN_PLOTS3').click( function() {
             // make sure plotting reflects sort lsit rank order
@@ -1475,14 +1489,40 @@ $(document).ready(function(){
         console.log('leaflet jquery applied')
 
         $('.leaflet-control-layers-selector').on('click',function() {
-        $('.glyphicon-list-alt').css('color', 'orange')
+            $('.glyphicon-list-alt').css('color', '#43D6E6')
+            $('.leaflet-control-layers-selector').next().css('color', '')
+        });
+
         // $('.glyphicon-list-alt').fadeOut("slow").fadeIn("slow")
 
-        setTimeout( function() {
-            $('.glyphicon-list-alt').css('color', '#b8c7ce')
-            // $('.glyphicon-list-alt').stop(true)
-            }, 1500 );
+        $(".glyphicon-list-alt").parent().on('click', function() {
+            $('.glyphicon-list-alt').css('color', '#7da27e')
         });
+
+        $("span:contains('Basemap')").parent().on('click', function(event) {
+            $('.glyphicon-list-alt').css('color', '')
+
+        	$("span:contains('Basemap')").css('color', '')
+        });
+
+ $("span:contains('Basemap')").parent().on('click', function(event) {
+        });
+
+        $('.leaflet-control-layers-selector').on('click', function(event){
+            var target = $(event.target)
+        	target.next().css('color', '#43D6E6')
+        });
+
+        // setTimeout( function() {
+        //     $('.glyphicon-list-alt').css('color', '#b8c7ce')
+        //     // $('.glyphicon-list-alt').stop(true)
+        //     }, 3000 );
+        // });
     });
 });
 
+
+// $(document).ready(function(){
+//     $("span:contains('Map Selections')").css('color', '#485580')
+//     $("span:contains('Map Selections')").prev().prev().css('color', '#485580')
+// });
