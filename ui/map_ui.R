@@ -109,6 +109,31 @@ map_tab <- tabPanel(
                     )
                 ),
 
+                tabPanel(
+                    "Meta",
+                    id = "meta-info",
+                    ## tableOutput("MAP_SITE_INFO") %>%
+                    ##     tagAppendAttributes(class = "table") %>%
+                    ##     tagAppendAttributes(class = "horizontal-scroll"),
+                    div(
+                      class = "well",
+                      div(
+                        id = "meta-menu",
+                        includeHTML("ui/meta/meta_list.html")
+                      ),
+                      hidden(
+                        div(
+                          id = "meta-disturbance",
+                          tableOutput("MAP_DISTURBANCE_INFO") %>%
+                            tagAppendAttributes(class = "table") %>%
+                            tagAppendAttributes(class = "horizontal-scroll"),
+
+                        ))
+
+
+                    )
+                ),
+
                 tabPanel( # at some pont, make list element float right
                     id = "Legend",
                     HTML('<span class="glyphicon glyphicon-list-alt"></span>'),

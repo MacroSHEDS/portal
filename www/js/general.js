@@ -1,4 +1,20 @@
 shinyjs.init = function() {
+    // detect if mobile device!
+    if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
+        // true for mobile device
+        alert("Notice: the MacroSheds portal is best viewed on a desktop or laptop computer. Some features may be hard to use on mobile. If you must visit on your phone, at least turn it sideways!");
+    } else {
+        // check for small screen
+        if(screen.width < 1024 || screen.height < 768) {
+            alert("Your screen resolution is: " + screen.width + "x" + screen.height + "\n reccomended resolution is at least 1024 x 768");
+        // check for window size
+        // } else if ($(window).width() < 1000 || $(window).height() < 1000){
+        //     alert("Your window dimensions are: " + $(window).width() + "x" + $(window).height() + "\n reccomended window size is greater than 1000 x 1000");
+        } else {
+            console.log('screen resolution sufficient')
+        }
+    }
+
     //$(window).resize(shinyjs.getHeight50);
 
     // // // MacroshedsServer Tiling Service Injectors (Scratch Pad)
@@ -1496,13 +1512,22 @@ $(document).ready(function(){
         // $('.glyphicon-list-alt').fadeOut("slow").fadeIn("slow")
 
         $(".glyphicon-list-alt").parent().on('click', function() {
-            $('.glyphicon-list-alt').css('color', '#7da27e')
+            $('.glyphicon-list-alt').css('color', '')
         });
 
         $("span:contains('Basemap')").parent().on('click', function(event) {
             $('.glyphicon-list-alt').css('color', '')
 
         	$("span:contains('Basemap')").css('color', '')
+        });
+
+
+        $(document).ready(function(){
+            $('meta-history').on('click', function() {
+                console.log("HERE I AM")
+                $('meta-disturbance').show();
+                $('meta-menu').hide()
+            });
         });
 
  $("span:contains('Basemap')").parent().on('click', function(event) {

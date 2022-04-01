@@ -1103,10 +1103,26 @@ load_portal_config <- function(from_where) {
             na = c("", "NA"),
             col_types = "ccccccccc"
         ))
+
+        disturbance_record <- sm(googlesheets4::read_sheet(
+            conf$disturbance_record_gsheet,
+            na = c("", "NA"),
+            col_types = "ccccccccccc"
+        ))
+
+        site_doi_license <- sm(googlesheets4::read_sheet(
+            conf$site_doi_license_gsheet,
+            na = c("", "NA"),
+            col_types = "cnccccccc"
+        ))
     } else if (from_where == "local") {
+
         variables <- sm(read_csv("data/general/variables.csv"))
         site_data <- sm(read_csv("data/general/site_data.csv"))
         universal_products <- sm(read_csv("data/general/universal_products.csv"))
+        disturbance_record <- sm(read_csv("data/general/disturbance_record.csv"))
+        site_doi_license <- sm(read_csv("data/general/site_doi_license.csv"))
+
     } else {
         stop('from_where must be either "local" or "remote"')
     }
@@ -1118,6 +1134,16 @@ load_portal_config <- function(from_where) {
 
     assign("site_data",
         site_data,
+        pos = .GlobalEnv
+    )
+
+    assign("disturbance_record",
+        disturbance_record,
+        pos = .GlobalEnv
+    )
+
+    assign("site_doi_license",
+        site_doi_license,
         pos = .GlobalEnv
     )
 }
