@@ -329,9 +329,9 @@ $("body").on("shown.bs.tab", "a[data-toggle='tab']", function() {
 
     //adjust height on right-side content so that dropdown doesn't go off the page
     $(document).ready(function(){
-        $('#ADD_SIZE2').click(function(){
+        $('#add_size2').click(function(){
             var current_height = $('.content').height();
-            if($('#ADD_SIZE2').is(':checked')){
+            if($('#add_size2').is(':checked')){
                 $('.content').height(current_height + 150);
             } else {
                 $('.content').height(current_height - 150);
@@ -678,6 +678,11 @@ $("body").on("shown.bs.tab", "a[data-toggle='tab']", function() {
         $('body').on('click', "#info_trigger", function() {
           // console.log("I have been clicked, and i am the INFO button!")
           $('a[data-value="Watershed"]').trigger("click");
+        });
+
+        $('body').on('click', "#history_trigger", function() {
+          console.log("I have been clicked, and i am the mETA button!")
+          $('a[data-value="Meta"]').trigger("click");
         });
 
         // add site auto-focus to site cart (maybe not preffered?)
@@ -1547,7 +1552,19 @@ $(document).ready(function(){
 });
 
 
-// $(document).ready(function(){
-//     $("span:contains('Map Selections')").css('color', '#485580')
-//     $("span:contains('Map Selections')").prev().prev().css('color', '#485580')
-// });
+$(document).ready(function(){
+// maybe use once() cleverly to make efficient
+    $('body').ready(function(){
+        $('body').on('click', '[id$="_gotoremover"]', function(){
+            if($("[data-value='biplot'][aria-selected='true']").length) {
+                console.log('reasonable')
+                $('.rank-list-item:nth-child(1)').attr('style', 'border: 3px solid #green !important')
+                $('.rank-list-item:nth-child(2)').attr('style', 'border: 3px solid #green !important')
+            } else {
+                $('.rank-list-item:nth-child(1)').attr('style', 'border: 3px solid #2a6a99 !important')
+                $('.rank-list-item:nth-child(2)').attr('style', 'border: 3px solid #b66397 !important')
+                $('.rank-list-item:nth-child(3)').attr('style', 'border: 3px solid #d88546 !important')
+            }
+        })
+    })
+});

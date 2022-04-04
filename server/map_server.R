@@ -155,8 +155,8 @@ output$MAP <- renderLeaflet({
             "https://www.sciencebase.gov/arcgis/services/Catalog/57a26dd6e4b006cb45553f7a/MapServer/WmsServer?",
             layers = "0",
             options = WMSTileOptions(format = "image/png", info_format = "text/html", transparent = TRUE),
-            attribution = "USGS",
-            group = "Annual Temperature (2016)"
+            attribution = "Department of Ecosystem Science, University of Wyoming, 201607, United States Annual Temperature Raster",
+            group = "Annual Temperature (30-year normal)"
         ) %>%
 
        # Evapotranspiration
@@ -425,7 +425,7 @@ output$MAP <- renderLeaflet({
         addLayersControl(
             position = "topright",
             ## baseGroups = c("Basemap", "Landcover", "Landcover Change (2001-2019)", "Impervious Surfaces", "Geology", "EPA Ecoregions", "Tree Canopy (2016)", "Tree Canopy Change (2011-2016)", "3DEP Elevation"), # COMB
-            baseGroups = c("Basemap", "Landcover", "Landcover Change (2001-2019)", "Annual Temperature (2016)", "EPA Ecoregions", "Impervious Surfaces", "Geology", "3DEP Elevation"),
+            baseGroups = c("Basemap", "Landcover", "Landcover Change (2001-2019)", "Annual Temperature (30-year normal)", "EPA Ecoregions", "Impervious Surfaces", "Geology", "3DEP Elevation"),
             # all maps
             # baseGroups = c("Landcover", "3DEP Elevation"),
             # baseGroups = c("Plain", "Simple", "Geochemistry", "Wetlands and Water Bodies", "Shaded Relief", "Impervious Surfaces", "Tree Canopy", "Streams", "Landcover", "Sulfur", "SO3 and NH3/NH4", "Pop. Density", "Topo Map", "Aerial Imagery", "EPA Ecoregions", "Soils", "Hazardous Sites"),
@@ -495,6 +495,70 @@ observeEvent(
         }
     }
 )
+
+observeEvent(
+    ignoreNULL = FALSE,
+    {
+        input$MAP_marker_click
+        input$MAP_click
+    },
+    {
+    site_id <- input$MAP_marker_click$id
+
+    if (is.na(site_id) || is.null(site_id)) {
+        return()
+    }
+
+    code_temp_check <- str_split_fixed(site_id, "-", n = Inf)[1, ]
+
+    if (code_temp_check[length(code_temp_check)] == "temp") {
+        code <- substr(site_id, 1, nchar(site_id) - 5)
+    } else {
+        code <- site_id
+    }
+
+    rain <- str_split_fixed(code, "_[*]_", n = Inf)[2]
+
+    if (rain == "rain" & !is.na(rain)) {
+      print("RAIN catch")
+      site_code <- str_split_fixed(code, "_[*]_", n = Inf)[1]
+
+      this_shed <- site_data %>%
+            filter(site_code == !!site_code) %>%
+            filter(site_type == "rain_gauge")
+    } else {
+      print("STREAM ctach")
+      site_code <- code
+      print(site_code)
+
+      this_shed <- site_data %>%
+            filter(site_code == !!site_code) %>%
+            filter(site_type == "stream_gauge")
+    }
+
+    this_dmn <- this_shed$domain
+
+    # disturbance record
+    meta <- disturbance_record %>%
+      filter(domain == this_dmn) %>%
+      filter(site_code == !!site_code)
+
+    if(meta$watershed_type == "exp") {
+        print("experimental watershed selected")
+        shinyjs::removeClass("history_trigger", "hidden")
+        shinyjs::inlineCSS(
+                   "#stream_popup_icons {margin-left: 23%}"
+                 )
+
+        updateSelectInput(
+          session,
+          "button",
+          selected = "history"
+          )
+    } else if (meta$watershed_type == "non_exp") {
+        shinyjs::addClass("history_trigger", "hidden")
+    }
+})
 
 # Highlight watersheds when stream guages are clicked
 prev_select_m <- reactiveVal()
@@ -743,9 +807,8 @@ meta_info_tib <- reactive({
       filter(site_code == !!site_code) %>%
       mutate(start_date = as.character(start_date)) %>%
       mutate(end_date = as.character(end_date))
-      ## select(!network, !)
 
-
+    ## select(!network, !)
 
     if(nrow(meta) == 0) {
       print("this site has no citation information")
@@ -810,13 +873,10 @@ cite_info_tib <- reactive({
 
     # disturbance record
     cite <- site_doi_license %>%
-      filter(domain == this_dmn)
-      ## filter(site_code == !!site_code) %>%
-      ## mutate(start_date = as.character(start_date)) %>%
-      ## mutate(end_date = as.character(end_date))
-      ## select(!network, !)
-
-
+      filter(domain == this_dmn) %>%
+      select(-citation_used) %>%
+      select(-last_col()) %>%
+      relocate(any_of(c("domain", "doi", "citation", "license", "license_type")))
 
     if(nrow(cite) == 0) {
       print("this site has no citation information")

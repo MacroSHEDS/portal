@@ -164,7 +164,8 @@ map_tab <- tabPanel(
                       includeHTML("ui/legend/geology.html"),
                       includeHTML("ui/legend/impervious.html"),
                       includeHTML("ui/legend/ecoregion.html"),
-                      includeHTML("ui/legend/nlcd_change.html")
+                      includeHTML("ui/legend/nlcd_change.html"),
+                      includeHTML("ui/legend/temp.html")
                       ),
                     div(
                         class = "label",

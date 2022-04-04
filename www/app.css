@@ -913,7 +913,7 @@ tbody tr.active-row {
 }
 
 /* c("#2a6a99", "#b66397", "#d88546") */
-/* Rank List Styling */
+/* Rank List Styling (TIMESERIES) */
 .rank-list-item:nth-child(1) {
     border: 3px solid #2a6a99 !important;
     margin-bottom: 2px;
