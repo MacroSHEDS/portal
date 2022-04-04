@@ -1522,13 +1522,13 @@ $(document).ready(function(){
         });
 
 
-        $(document).ready(function(){
-            $('meta-history').on('click', function() {
-                console.log("HERE I AM")
-                $('meta-disturbance').show();
-                $('meta-menu').hide()
-            });
-        });
+        // $(document).ready(function(){
+        //     $('meta-history').on('click', function() {
+        //         console.log("HERE I AM")
+        //         $('meta-disturbance').removeClass();
+        //         $('meta-menu').hide()
+        //     });
+        // });
 
  $("span:contains('Basemap')").parent().on('click', function(event) {
         });

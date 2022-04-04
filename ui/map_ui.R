@@ -117,20 +117,39 @@ map_tab <- tabPanel(
                     ##     tagAppendAttributes(class = "horizontal-scroll"),
                     div(
                       class = "well",
-                      div(
-                        id = "meta-menu",
-                        includeHTML("ui/meta/meta_list.html")
+                      ## div(
+                      ##   id = "meta-menu",
+                      ##   includeHTML("ui/meta/meta_list.html")
+                      ## ),
+                      selectInput(
+                        "button",
+                        "meta information",
+                        choices = c(
+                          "none",
+                          "history",
+                          "citation"
+                        )
                       ),
                       hidden(
                         div(
                           id = "meta-disturbance",
+                          class = "meta-table",
                           tableOutput("MAP_DISTURBANCE_INFO") %>%
                             tagAppendAttributes(class = "table") %>%
                             tagAppendAttributes(class = "horizontal-scroll"),
 
-                        ))
+                      )
+                    ),
+                    hidden(
+                        div(
+                          id = "meta-citation",
+                          class = "meta-table",
+                          tableOutput("MAP_CITATION_INFO") %>%
+                            tagAppendAttributes(class = "table") %>%
+                            tagAppendAttributes(class = "horizontal-scroll"),
 
-
+                      )
+                    )
                     )
                 ),
 

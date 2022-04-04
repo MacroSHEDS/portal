@@ -685,6 +685,21 @@ output$MAP_SITE_INFO <- renderTable(
 #   domain, doi, license, citation
 
 # META
+observeEvent(input$button, {
+  print(input$button)
+  if(input$button == "none") {
+    shinyjs::hide(selector=".meta-table")
+  } else if(input$button == "history") {
+    shinyjs::hide(selector=".meta-table")
+    shinyjs::toggle("meta-disturbance")
+  } else if(input$button == "citation") {
+    shinyjs::hide(selector=".meta-table")
+    shinyjs::toggle("meta-citation")
+  }
+
+})
+
+# disturbance
 meta_info_tib <- reactive({
     site_id <- input$MAP_marker_click$id
 
@@ -752,9 +767,79 @@ output$MAP_DISTURBANCE_INFO <- renderTable(
 
             return(meta_)
         }
+    })
+
+# citation
+
+cite_info_tib <- reactive({
+    site_id <- input$MAP_marker_click$id
+
+    if (is.na(site_id) || is.null(site_id)) {
+        return()
+    }
+
+    code_temp_check <- str_split_fixed(site_id, "-", n = Inf)[1, ]
+
+    if (code_temp_check[length(code_temp_check)] == "temp") {
+        code <- substr(site_id, 1, nchar(site_id) - 5)
+    } else {
+        code <- site_id
+    }
+
+    rain <- str_split_fixed(code, "_[*]_", n = Inf)[2]
+
+    if (rain == "rain" & !is.na(rain)) {
+      print("RAIN catch")
+      site_code <- str_split_fixed(code, "_[*]_", n = Inf)[1]
+
+      this_shed <- site_data %>%
+            filter(site_code == !!site_code) %>%
+            filter(site_type == "rain_gauge")
+    } else {
+      print("STREAM ctach")
+      site_code <- code
+      print(site_code)
+
+      this_shed <- site_data %>%
+            filter(site_code == !!site_code) %>%
+            filter(site_type == "stream_gauge")
+    }
+
+    this_dmn <- this_shed$domain
+    print(this_dmn)
+
+    # disturbance record
+    cite <- site_doi_license %>%
+      filter(domain == this_dmn)
+      ## filter(site_code == !!site_code) %>%
+      ## mutate(start_date = as.character(start_date)) %>%
+      ## mutate(end_date = as.character(end_date))
+      ## select(!network, !)
+
+
+
+    if(nrow(cite) == 0) {
+      print("this site has no citation information")
+      cite <- tibble()
+      return(cite)
+    } else {
+      head(cite)
+      return(cite)
+    }
+})
+
+output$MAP_CITATION_INFO <- renderTable(
+    colnames = TRUE,
+    # bordered = TRUE,
+    hover = TRUE,
+    {
+        expr <- {
+            cite_ <- cite_info_tib()
+
+            return(cite_)
+        }
     }
 )
-
 ## output$MAP_SITE_INFO <- renderTable(
 ##     colnames = TRUE,
 ##     # bordered = TRUE,
