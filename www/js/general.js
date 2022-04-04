@@ -1551,20 +1551,47 @@ $(document).ready(function(){
     });
 });
 
+function biplotColor() {
 
-$(document).ready(function(){
-// maybe use once() cleverly to make efficient
-    $('body').ready(function(){
-        $('body').on('click', '[id$="_gotoremover"]', function(){
-            if($("[data-value='biplot'][aria-selected='true']").length) {
-                console.log('reasonable')
-                $('.rank-list-item:nth-child(1)').attr('style', 'border: 3px solid #green !important')
-                $('.rank-list-item:nth-child(2)').attr('style', 'border: 3px solid #green !important')
-            } else {
-                $('.rank-list-item:nth-child(1)').attr('style', 'border: 3px solid #2a6a99 !important')
-                $('.rank-list-item:nth-child(2)').attr('style', 'border: 3px solid #b66397 !important')
-                $('.rank-list-item:nth-child(3)').attr('style', 'border: 3px solid #d88546 !important')
-            }
-        })
-    })
+    console.log('coloring by biplot')
+
+    for(let i = 0; i < $('g.legendpoints path.scatterpts').length; i++) {
+        var rank_index = i + 1;
+        var bucket_item = '.rank-list-item:nth-child(' + rank_index + ')';
+        var scatter_color = $('g.legendpoints path.scatterpts')[i].style.fill;
+        var bucket_style = 'border: 3px solid ' + scatter_color + ' !important';
+
+        $(bucket_item).attr('style', bucket_style)
+    };
+};
+
+$(document).ready(function() {
+    $("[data-value='biplot']").on('click', function() {
+        if($('input[value="BY_BUCKET2"]')[0].checked == true) {
+            setTimeout(function(){
+                biplotColor()
+            }, 2000);
+        };
+    });
+
+    $('[id$="_goto"]').on('click', function() {
+        if($('input[value="BY_BUCKET2"]')[0].checked == true) {
+            setTimeout(function(){
+                biplotColor()
+            }, 4000);
+        };
+    });
+
+    // $("input[value='BY_BUCKET2']").on('click', function() {
+
+    // })
+
+    $("[data-value='multisite_exploration']").on('click', function() {
+        console.log('coloring by time series')
+        $('.rank-list-item:nth-child(1)').attr('style', 'border: 3px solid #2a6a99 !important')
+        $('.rank-list-item:nth-child(2)').attr('style', 'border: 3px solid #b66397 !important')
+        $('.rank-list-item:nth-child(3)').attr('style', 'border: 3px solid #d88546 !important')
+
+        $('.rank-list-item').slice(3).attr('style', 'border: 3px solid #4d91d0 !important')
+    });
 });
