@@ -520,14 +520,12 @@ observeEvent(
     rain <- str_split_fixed(code, "_[*]_", n = Inf)[2]
 
     if (rain == "rain" & !is.na(rain)) {
-      print("RAIN catch")
       site_code <- str_split_fixed(code, "_[*]_", n = Inf)[1]
 
       this_shed <- site_data %>%
             filter(site_code == !!site_code) %>%
             filter(site_type == "rain_gauge")
     } else {
-      print("STREAM ctach")
       site_code <- code
       print(site_code)
 
@@ -543,7 +541,10 @@ observeEvent(
       filter(domain == this_dmn) %>%
       filter(site_code == !!site_code)
 
-    if(meta$watershed_type == "exp") {
+    print(head(meta))
+    if(nrow(meta) < 1) {
+      print('no disturbance info for this site')
+    }else if(meta$watershed_type == "exp") {
         print("experimental watershed selected")
         shinyjs::removeClass("history_trigger", "hidden")
         shinyjs::inlineCSS(
@@ -782,14 +783,12 @@ meta_info_tib <- reactive({
     rain <- str_split_fixed(code, "_[*]_", n = Inf)[2]
 
     if (rain == "rain" & !is.na(rain)) {
-      print("RAIN catch")
       site_code <- str_split_fixed(code, "_[*]_", n = Inf)[1]
 
       this_shed <- site_data %>%
             filter(site_code == !!site_code) %>%
             filter(site_type == "rain_gauge")
     } else {
-      print("STREAM ctach")
       site_code <- code
       print(site_code)
 
@@ -852,16 +851,13 @@ cite_info_tib <- reactive({
     rain <- str_split_fixed(code, "_[*]_", n = Inf)[2]
 
     if (rain == "rain" & !is.na(rain)) {
-      print("RAIN catch")
       site_code <- str_split_fixed(code, "_[*]_", n = Inf)[1]
 
       this_shed <- site_data %>%
             filter(site_code == !!site_code) %>%
             filter(site_type == "rain_gauge")
     } else {
-      print("STREAM ctach")
       site_code <- code
-      print(site_code)
 
       this_shed <- site_data %>%
             filter(site_code == !!site_code) %>%

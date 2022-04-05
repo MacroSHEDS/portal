@@ -203,6 +203,14 @@ $("body").on("shown.bs.tab", "a[data-toggle='tab']", function() {
 
                     rankLister();
                 }, 1200);
+
+                if($("[data-value='biplot'][aria-selected='true']").length) {
+                    if($('input[value="BY_BUCKET2"]')[0].checked == true) {
+                        setTimeout(function(){
+                            biplotColor()
+                        }, 6000);
+                    };
+                }
             });
         });
     });
@@ -1550,48 +1558,74 @@ $(document).ready(function(){
         // });
     });
 });
+        // var scatter_color = $('g.legendpoints path.scatterpts')[i].style.fill;
+        // var bucket_style = 'border: 3px solid ' + scatter_color + ' !important';
 
 function biplotColor() {
+    console.log('empty space where site comparison coloring should be')
+    // console.log('coloring by biplot')
 
-    console.log('coloring by biplot')
+    // // for every legend item
+    // for(let i = 0; i < $('g.legendpoints path.scatterpts').length; i++) {
 
-    for(let i = 0; i < $('g.legendpoints path.scatterpts').length; i++) {
-        var rank_index = i + 1;
-        var bucket_item = '.rank-list-item:nth-child(' + rank_index + ')';
-        var scatter_color = $('g.legendpoints path.scatterpts')[i].style.fill;
-        var bucket_style = 'border: 3px solid ' + scatter_color + ' !important';
+    //     // get text of legend entry
+    //     var legend_text = $('g .legendtext')[i].innerHTML.split(" - ")
 
-        $(bucket_item).attr('style', bucket_style)
-    };
+    //     for(let x = 0; i < $('.rank-list-item').length; x++) {
+
+    //         // check against text of rank items
+    //         var rank_index = x + 1;
+    //         var bucket_item = '.rank-list-item:nth-child(' + rank_index + ')';
+    //         var bucket_text = $(bucket_item).text().split(":")
+
+    //         if(legend_text[0].trim() == bucket_text[0].trim()) {
+    //             console.log("matched domain");
+
+    //             if(legend_text[1].trim() == bucket_text[1].trim()) {
+    //                 console.log("matched site! coloring item")
+
+    //                 var scatter_color = $('g.legendpoints path.scatterpts')[i].style.fill;
+    //                 var bucket_style = 'border: 3px solid ' + scatter_color + ' !important';
+    //                 $(bucket_item).attr('style', bucket_style)
+    //             }
+    //         }
+
+    //     }
+    // };
 };
 
-$(document).ready(function() {
-    $("[data-value='biplot']").on('click', function() {
-        if($('input[value="BY_BUCKET2"]')[0].checked == true) {
-            setTimeout(function(){
-                biplotColor()
-            }, 2000);
-        };
-    });
+// $(document).ready(function() {
+//     $("[data-value='biplot']").on('click', function() {
+//         if($('input[value="BY_BUCKET2"]')[0].checked == true) {
+//             setTimeout(function(){
+//                 biplotColor()
+//             }, 2000);
+//         };
+//     });
 
-    $('[id$="_goto"]').on('click', function() {
-        if($('input[value="BY_BUCKET2"]')[0].checked == true) {
-            setTimeout(function(){
-                biplotColor()
-            }, 4000);
-        };
-    });
+//     if($("[data-value='biplot'][aria-selected='true']").length) {
+//         $('body').on('click', '[id$="_gotoremover"]', function(){
+//             if($('input[value="BY_BUCKET2"]')[0].checked == true) {
+//                 setTimeout(function(){
+//                     biplotColor()
+//                 }, 6000);
+//             };
+//         });
+//         $('[id$="_goto"]').on('click', function() {
+//             if($('input[value="BY_BUCKET2"]')[0].checked == true) {
+//                 setTimeout(function(){
+//                     biplotColor()
+//                 }, 6000);
+//             };
+//         });
+//     };
 
-    // $("input[value='BY_BUCKET2']").on('click', function() {
+//     $("[data-value='multisite_exploration']").on('click', function() {
+//         console.log('coloring by time series')
+//         $('.rank-list-item:nth-child(1)').attr('style', 'border: 3px solid #2a6a99 !important')
+//         $('.rank-list-item:nth-child(2)').attr('style', 'border: 3px solid #b66397 !important')
+//         $('.rank-list-item:nth-child(3)').attr('style', 'border: 3px solid #d88546 !important')
 
-    // })
-
-    $("[data-value='multisite_exploration']").on('click', function() {
-        console.log('coloring by time series')
-        $('.rank-list-item:nth-child(1)').attr('style', 'border: 3px solid #2a6a99 !important')
-        $('.rank-list-item:nth-child(2)').attr('style', 'border: 3px solid #b66397 !important')
-        $('.rank-list-item:nth-child(3)').attr('style', 'border: 3px solid #d88546 !important')
-
-        $('.rank-list-item').slice(3).attr('style', 'border: 3px solid #4d91d0 !important')
-    });
-});
+//         $('.rank-list-item').slice(4).attr('style', 'border: 3px solid #4d91d0 !important')
+//     });
+// });
