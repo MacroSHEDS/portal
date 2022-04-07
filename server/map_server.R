@@ -155,18 +155,19 @@ output$MAP <- renderLeaflet({
             "https://www.sciencebase.gov/arcgis/services/Catalog/57a26dd6e4b006cb45553f7a/MapServer/WmsServer?",
             layers = "0",
             options = WMSTileOptions(format = "image/png", info_format = "text/html", transparent = TRUE),
-            attribution = "USGS",
-            group = "Annual Temperature (2016)"
+            attribution = "Department of Ecosystem Science, University of Wyoming, 201607, United States Annual Temperature Raster",
+            group = "Annual Temperature (30-year normal)"
         ) %>%
+
        # Evapotranspiration
-        addWMSTiles(
-            ## "https://arcgis-webadaptor-sciencebase2-prod.snafu.cr.usgs.gov:443/sciencebase2/services/Catalog/55d3730fe4b0518e35468e1e/MapServer/WmsServer?",
-            "https://www.sciencebase.gov:443/catalogMaps/mapping/ows/4f4e4b2ee4b07f02db6b3fe6?SERVICE=WMS&",
-            layers = "PRISM Data Explorer",
-            options = WMSTileOptions(format = "image/png", info_format = "text/html", transparent = TRUE),
-            attribution = "USGS",
-            group = "Evapotranspiration (2000-2013)"
-        ) %>%
+        ## addWMSTiles(
+        ##     ## "https://arcgis-webadaptor-sciencebase2-prod.snafu.cr.usgs.gov:443/sciencebase2/services/Catalog/55d3730fe4b0518e35468e1e/MapServer/WmsServer?",
+        ##     "https://www.sciencebase.gov:443/catalogMaps/mapping/ows/4f4e4b2ee4b07f02db6b3fe6?SERVICE=WMS&",
+        ##     layers = "PRISM Data Explorer",
+        ##     options = WMSTileOptions(format = "image/png", info_format = "text/html", transparent = TRUE),
+        ##     attribution = "USGS",
+        ##     group = "Evapotranspiration (2000-2013)"
+        ## ) %>%
 
         # addWMSLegend(uri = paste0(
         #     "https://www.sciencebase.gov/",
@@ -298,6 +299,7 @@ output$MAP <- renderLeaflet({
             style_id = "ckvh270o93lon14ohwd7im4xl",
             username = "wslaughter",
             group = "EPA Ecoregions",
+            access_token = conf$mapbox_sk,
             # options = WMSTileOptions(legend = TRUE)
         ) %>%
         # mapboxapi::addMapboxTiles(
@@ -423,7 +425,7 @@ output$MAP <- renderLeaflet({
         addLayersControl(
             position = "topright",
             ## baseGroups = c("Basemap", "Landcover", "Landcover Change (2001-2019)", "Impervious Surfaces", "Geology", "EPA Ecoregions", "Tree Canopy (2016)", "Tree Canopy Change (2011-2016)", "3DEP Elevation"), # COMB
-            baseGroups = c("Basemap", "Landcover", "Landcover Change (2001-2019)", "Annual Temperature (2016)", "Evapotranspiration (2000-2013)", "Impervious Surfaces", "Geology", "EPA Ecoregions", "3DEP Elevation"),
+            baseGroups = c("Basemap", "Landcover", "Landcover Change (2001-2019)", "Annual Temperature (30-year normal)", "EPA Ecoregions", "Impervious Surfaces", "Geology", "3DEP Elevation"),
             # all maps
             # baseGroups = c("Landcover", "3DEP Elevation"),
             # baseGroups = c("Plain", "Simple", "Geochemistry", "Wetlands and Water Bodies", "Shaded Relief", "Impervious Surfaces", "Tree Canopy", "Streams", "Landcover", "Sulfur", "SO3 and NH3/NH4", "Pop. Density", "Topo Map", "Aerial Imagery", "EPA Ecoregions", "Soils", "Hazardous Sites"),
@@ -494,6 +496,71 @@ observeEvent(
     }
 )
 
+observeEvent(
+    ignoreNULL = FALSE,
+    {
+        input$MAP_marker_click
+        input$MAP_click
+    },
+    {
+    site_id <- input$MAP_marker_click$id
+
+    if (is.na(site_id) || is.null(site_id)) {
+        return()
+    }
+
+    code_temp_check <- str_split_fixed(site_id, "-", n = Inf)[1, ]
+
+    if (code_temp_check[length(code_temp_check)] == "temp") {
+        code <- substr(site_id, 1, nchar(site_id) - 5)
+    } else {
+        code <- site_id
+    }
+
+    rain <- str_split_fixed(code, "_[*]_", n = Inf)[2]
+
+    if (rain == "rain" & !is.na(rain)) {
+      site_code <- str_split_fixed(code, "_[*]_", n = Inf)[1]
+
+      this_shed <- site_data %>%
+            filter(site_code == !!site_code) %>%
+            filter(site_type == "rain_gauge")
+    } else {
+      site_code <- code
+      print(site_code)
+
+      this_shed <- site_data %>%
+            filter(site_code == !!site_code) %>%
+            filter(site_type == "stream_gauge")
+    }
+
+    this_dmn <- this_shed$domain
+
+    # disturbance record
+    meta <- disturbance_record %>%
+      filter(domain == this_dmn) %>%
+      filter(site_code == !!site_code)
+
+    print(head(meta))
+    if(nrow(meta) < 1) {
+      print('no disturbance info for this site')
+    }else if(meta$watershed_type == "exp") {
+        print("experimental watershed selected")
+        shinyjs::removeClass("history_trigger", "hidden")
+        shinyjs::inlineCSS(
+                   "#stream_popup_icons {margin-left: 23%}"
+                 )
+
+        updateSelectInput(
+          session,
+          "button",
+          selected = "history"
+          )
+    } else if (meta$watershed_type == "non_exp") {
+        shinyjs::addClass("history_trigger", "hidden")
+    }
+})
+
 # Highlight watersheds when stream guages are clicked
 prev_select_m <- reactiveVal()
 observeEvent(
@@ -541,10 +608,47 @@ observeEvent(
     }
 )
 
-# Display table below map when a gauge is clicked
+# output$MAP_SITE_INFO_TITLE <- renderText({
+#     site_tib <- site_info_tib()
+#     if (nrow(site_tib) == 0 || is.null(site_tib)) {
+#         return(" ")
+#     } else {
+#         return("Site Information")
+#     }
+# })
+
+## Add site as a class
+# htmlwidgets::onRender("
+#         for (var i = 0; i < data.longitude.length; i++) {
+#         var site = data.site_code[i];
+#         var domain = data.domain[i];
+#         var sep = '-'
+#         var name = domain.concat(sep, site);
+#         var myIcon = L.divIcon({className: name});
+#         L.marker([data.latitude[i], data.longitude[i]], {icon: myIcon}).addTo(this);",
+#                       data = sg)
+
+# Get id from map click
+# test <- reactive({
+#     validate(
+#         need(
+#             input$MapMine_shape_click != "",
+#             "Please select a catchment from the map to the left to view plots and data.
+#         App may take a few seconds to load data after selecting data (depending on internet connection speed)."
+#         )
+#     )
+#     (input$MapMine_shape_click) %>%#
+#     (input$MapMine_shape_click) %>%
+
+# shopping cart
+# current_site <- paste0(sg$domain, sg$site_code)
+output$results_basic <- renderPrint({
+    input$rank_list_basic # This matches the input_id of the rank list
+})
+
+
 site_info_tib <- reactive({
     site_id <- input$MAP_marker_click$id
-
     if (is.na(site_id) || is.null(site_id)) {
         return()
     }
@@ -632,40 +736,173 @@ output$MAP_SITE_INFO <- renderTable(
     }
 )
 
-# output$MAP_SITE_INFO_TITLE <- renderText({
-#     site_tib <- site_info_tib()
-#     if (nrow(site_tib) == 0 || is.null(site_tib)) {
-#         return(" ")
-#     } else {
-#         return("Site Information")
-#     }
-# })
+# connect to gsheets to load in meta info
+# distrubance_record
+#   network, domain, site_code, watershed_type, disturbance_source, disturbance_type,
+#   ddisturbance_def, disturbance_ex, start_date, end_date, data_source
 
-## Add site as a class
-# htmlwidgets::onRender("
-#         for (var i = 0; i < data.longitude.length; i++) {
-#         var site = data.site_code[i];
-#         var domain = data.domain[i];
-#         var sep = '-'
-#         var name = domain.concat(sep, site);
-#         var myIcon = L.divIcon({className: name});
-#         L.marker([data.latitude[i], data.longitude[i]], {icon: myIcon}).addTo(this);",
-#                       data = sg)
+# site_data
+#   domain, pretty_domain, network, pretty_network, full_name,
 
-# Get id from map click
-# test <- reactive({
-#     validate(
-#         need(
-#             input$MapMine_shape_click != "",
-#             "Please select a catchment from the map to the left to view plots and data.
-#         App may take a few seconds to load data after selecting data (depending on internet connection speed)."
-#         )
-#     )
-#     (input$MapMine_shape_click) %>%#
-#     (input$MapMine_shape_click) %>%
+# site_doi_license
+#   domain, doi, license, citation
 
-# shopping cart
-# current_site <- paste0(sg$domain, sg$site_code)
-output$results_basic <- renderPrint({
-    input$rank_list_basic # This matches the input_id of the rank list
+# META
+observeEvent(input$button, {
+  print(input$button)
+  if(input$button == "none") {
+    shinyjs::hide(selector=".meta-table")
+  } else if(input$button == "history") {
+    shinyjs::hide(selector=".meta-table")
+    shinyjs::toggle("meta-disturbance")
+  } else if(input$button == "citation") {
+    shinyjs::hide(selector=".meta-table")
+    shinyjs::toggle("meta-citation")
+  }
+
 })
+
+# disturbance
+meta_info_tib <- reactive({
+    site_id <- input$MAP_marker_click$id
+
+    if (is.na(site_id) || is.null(site_id)) {
+        return()
+    }
+
+    code_temp_check <- str_split_fixed(site_id, "-", n = Inf)[1, ]
+
+    if (code_temp_check[length(code_temp_check)] == "temp") {
+        code <- substr(site_id, 1, nchar(site_id) - 5)
+    } else {
+        code <- site_id
+    }
+
+    rain <- str_split_fixed(code, "_[*]_", n = Inf)[2]
+
+    if (rain == "rain" & !is.na(rain)) {
+      site_code <- str_split_fixed(code, "_[*]_", n = Inf)[1]
+
+      this_shed <- site_data %>%
+            filter(site_code == !!site_code) %>%
+            filter(site_type == "rain_gauge")
+    } else {
+      site_code <- code
+      print(site_code)
+
+      this_shed <- site_data %>%
+            filter(site_code == !!site_code) %>%
+            filter(site_type == "stream_gauge")
+    }
+
+    this_dmn <- this_shed$domain
+    print(this_dmn)
+
+    # disturbance record
+    meta <- disturbance_record %>%
+      filter(domain == this_dmn) %>%
+      filter(site_code == !!site_code) %>%
+      mutate(start_date = as.character(start_date)) %>%
+      mutate(end_date = as.character(end_date))
+
+    ## select(!network, !)
+
+    if(nrow(meta) == 0) {
+      print("this site has no citation information")
+      meta <- tibble()
+      return(meta)
+    } else {
+      head(meta)
+      return(meta)
+    }
+})
+
+output$MAP_DISTURBANCE_INFO <- renderTable(
+    colnames = TRUE,
+    # bordered = TRUE,
+    hover = TRUE,
+    {
+        expr <- {
+            meta_ <- meta_info_tib()
+
+            return(meta_)
+        }
+    })
+
+# citation
+
+cite_info_tib <- reactive({
+    site_id <- input$MAP_marker_click$id
+
+    if (is.na(site_id) || is.null(site_id)) {
+        return()
+    }
+
+    code_temp_check <- str_split_fixed(site_id, "-", n = Inf)[1, ]
+
+    if (code_temp_check[length(code_temp_check)] == "temp") {
+        code <- substr(site_id, 1, nchar(site_id) - 5)
+    } else {
+        code <- site_id
+    }
+
+    rain <- str_split_fixed(code, "_[*]_", n = Inf)[2]
+
+    if (rain == "rain" & !is.na(rain)) {
+      site_code <- str_split_fixed(code, "_[*]_", n = Inf)[1]
+
+      this_shed <- site_data %>%
+            filter(site_code == !!site_code) %>%
+            filter(site_type == "rain_gauge")
+    } else {
+      site_code <- code
+
+      this_shed <- site_data %>%
+            filter(site_code == !!site_code) %>%
+            filter(site_type == "stream_gauge")
+    }
+
+    this_dmn <- this_shed$domain
+    print(this_dmn)
+
+    # disturbance record
+    cite <- site_doi_license %>%
+      filter(domain == this_dmn) %>%
+      select(-citation_used) %>%
+      select(-last_col()) %>%
+      relocate(any_of(c("domain", "doi", "citation", "license", "license_type")))
+
+    if(nrow(cite) == 0) {
+      print("this site has no citation information")
+      cite <- tibble()
+      return(cite)
+    } else {
+      head(cite)
+      return(cite)
+    }
+})
+
+output$MAP_CITATION_INFO <- renderTable(
+    colnames = TRUE,
+    # bordered = TRUE,
+    hover = TRUE,
+    {
+        expr <- {
+            cite_ <- cite_info_tib()
+
+            return(cite_)
+        }
+    }
+)
+## output$MAP_SITE_INFO <- renderTable(
+##     colnames = TRUE,
+##     # bordered = TRUE,
+##     hover = TRUE,
+##     {
+##         expr <- {
+##             tib <- site_info_tib()
+
+##             return(tib)
+##         }
+##     }
+## )

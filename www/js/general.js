@@ -1,4 +1,20 @@
 shinyjs.init = function() {
+    // detect if mobile device!
+    if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
+        // notice for mobile device requests
+        alert("Notice: the MacroSheds portal is best viewed on a desktop or laptop computer. Some features may be hard to use on mobile. If you must visit on your phone, at least turn it sideways!");
+    } else {
+        // check for small screen
+        if(screen.width < 1024 || screen.height < 768) {
+            alert("Your screen resolution is: " + screen.width + "x" + screen.height + "\n reccomended resolution is at least 1024 x 768");
+        // check for window size
+        // } else if ($(window).width() < 1000 || $(window).height() < 1000){
+        //     alert("Your window dimensions are: " + $(window).width() + "x" + $(window).height() + "\n reccomended window size is greater than 1000 x 1000");
+        } else {
+            console.log('screen resolution sufficient')
+        }
+    }
+
     //$(window).resize(shinyjs.getHeight50);
 
     // // // MacroshedsServer Tiling Service Injectors (Scratch Pad)
@@ -68,12 +84,194 @@ shinyjs.init = function() {
        };
    };
 
+// tab focus control
+$("body").on("shown.bs.tab", "a[data-toggle='tab']", function() {
+    // console.log("THE SE PST WORKED!")
+    var data_focus = $("#right_tabs").children(".active").children('a').attr('data-value')
+
+    Shiny.setInputValue("active_tab", data_focus);
+})
+
+// rank list control
+    function arrayToList(array) {
+        let list = null;
+        for (let i = array.length - 1; i >= 0; i--) {
+            list = { value: array[i], rest: list };
+        }
+        return list;
+    }
+
+    function rankLister() {
+        // set mapdata as top 3 ranks
+        var rankList = [];
+
+        $(".rank-list > .rank-list-item").each((index, elem) => {
+          rankList.push(elem.id);
+        });
+
+        Shiny.setInputValue('MAPDATA', arrayToList(rankList));
+    }
+
+    function rankFinder(goto_id, pretty_domain) {
+        // extract domain and site name, clean
+        site_info = goto_id.split('_');
+        site_info_end = site_info.length -1
+        site_break = site_info.findIndex(elem => elem == "")
+
+        // var site = site_info[2];
+        var domain = site_info.slice(0, site_break).join(' ');
+        var site = site_info.slice(site_break, site_info_end).join(' ');
+
+        // add sites to cart
+        let hash = '#';
+        let idString = hash.concat(goto_id, "remover")
+
+        if ($('.rank-list').find(idString).length) {
+            // 'minus' option
+            var parent_id = "#" + goto_id
+            console.log(parent_id)
+            $(parent_id).children().children().replaceWith('<span class="glyphicon glyphicon-plus" style="color: #FFF;"></span>')
+            $(idString).remove()
+
+            // 'warning' option
+            // if ($('.map-site-warning').length == 0) {
+            //     // add warning to user that duplicate site cant be added
+            //     $('.map-site-btn').parent().parent().prepend('<!-- Warning Alert --><div class="alert alert-warning alert map-site-warning" style="padding: 6px; margin-bottom: 8px;">    <strong>Warning!</strong> sites cannot be added to selection list more than once </div>')
+            //
+            //     // make it so clicking warning hides it
+            //     $('.map-site-warning').click( function() {
+            //         $('.map-site-warning').hide();
+            //     });
+            // }
+
+        } else {
+            $('div').find('.rank-list').prepend(
+                    '<div class="rank-list-item" id =' + goto_id + 'remover' + ' draggable="false">' + '<strong>' + pretty_domain + '</strong>' + ':  ' + site + ' <button type="button" class="btn btn-default btn-sm rankremover" style="float: right"><span class="glyphicon glyphicon-remove"></span> </button></div>'
+                );
+        }
+    }
+
     //connect map buttons to app tabs
     $('body').ready(function(){
         $('body').on('click', '[id$="_goto"]', function(){
-            var goto_id = $(this).attr('id') + new Date(); //trigger reactivity
+            // tooltip removability
+            $('[role="tooltip"]').click( function() {
+                $(this).hide()
+            });
+
+            $('[role="tooltip"]').hide();
+
+
+            var goto_id = $(this).attr('id'); // + new Date(); //trigger reactivity
+            console.log($('.list-group-item').first().find("strong").text());
+            var p_domain = $('.list-group-item').first().find("strong").text();
+
+            //  plus to minus sign
+            var full_id = "#" + goto_id
+            $(full_id).children().children().replaceWith('<span class="glyphicon glyphicon-minus" style="color: #FFF;"></span>')
+
+
+            // make "PLOT" button attention styled
+            // $("#GEN_PLOTS3").addClass("btn-update");
+            $("#GEN_PLOTS3").addClass("btn-warning");
+
+            // biplot atteniton stlying
+            $("span:contains('Map Selections')").css('color', 'orange')
+            $("span:contains('Map Selections')").prev().prev().css('color', 'orange')
+
+            // make site comparison option highlight as well?
+            // $('value="BY_BUCKET2"').addClass("btn-warning");
+
             $('#SITE_EXPLORE').trigger('click');
-            Shiny.setInputValue('MAPDATA', goto_id);
+
+            rankFinder(goto_id, p_domain);
+
+            rankLister();
+
+            // imperfect solution to allow draggable to re-order
+            // selectizer input
+            $('body').on('mousedown', '[id$="_gotoremover"]', function(){
+                window.setTimeout(function(){
+                    // time series
+                    $("#GEN_PLOTS3").addClass("btn-warning");
+                    // biplot
+                    $("span:contains('Map Selections')").css('color', 'orange')
+                    $("span:contains('Map Selections')").prev().prev().css('color', 'orange')
+
+                    $('#SITE_EXPLORE').trigger('click');
+                    // rankFinder(goto_id);
+
+                    rankLister();
+                }, 1200);
+
+                if($("[data-value='biplot'][aria-selected='true']").length) {
+                    if($('input[value="BY_BUCKET2"]')[0].checked == true) {
+                        setTimeout(function(){
+                            biplotColor()
+                        }, 6000);
+                    };
+                }
+            });
+        });
+    });
+
+    $(document).ready( function() {
+        $('body').one('click', function() {
+            $('<nobr> Map Selections</nobr>').insertAfter($("a span.glyphicon.glyphicon-shopping-cart"));
+            $('<span class="glyphicon glyphicon-shopping-cart"></span>').insertBefore($("span:contains('Map Selections')").prev())
+        })
+    });
+
+
+
+    // make it so clicking trash can clears bucket
+    $('#map-site-clear').on('click', function() {
+        // set mapdata as top 3 ranks
+        $('#SITE_EXPLORE').trigger('click');
+        // $("#GEN_PLOTS3").addClass("btn-warning");
+
+        var rankList = ['nothing'];
+
+        $(".rank-list > .rank-list-item").each((index, elem) => {
+          // find parent leaflet popup and replace (+) with (-)
+          var parent_id = "#" + elem.id.split("remover")[0]
+          console.log(parent_id)
+          $(parent_id).children().children().replaceWith('<span class="glyphicon glyphicon-plus" style="color: #FFF;"></span>')
+
+          elem.remove();
+        });
+
+        Shiny.setInputValue('MAPDATA', arrayToList(rankList));
+    });
+
+    // rank list all-clear trash can
+    $('body').ready(function(){
+        $('body').on('click', '[id$="_gotoremover"]', function(){
+            if ($(this).hasClass('rank-list-item')) {
+                if ($(this).find('rankremover')) {
+
+                    // find parent leaflet popup and replace (+) with (-)
+                    var parent_id = "#" + $(this)[0].id.split("remover")[0]
+                    console.log(parent_id)
+                    $(parent_id).children().children().replaceWith('<span class="glyphicon glyphicon-plus" style="color: #FFF;"></span>')
+
+                    $(this).remove()
+
+                    // set mapdata as top 3 ranks
+                    var rankList = [];
+
+                    $(".rank-list > .rank-list-item").each((index, elem) => {
+                      rankList.push(elem.innerHTML);
+                    });
+
+                    Shiny.setInputValue('MAPDATA', arrayToList(rankList));
+                }
+            }
+            // here thar be dragons, enter not ye of faint heart
+            // var lat = $('#neon__BLDE_collapse').parent().offsetParent()[0]._leaflet_pos.x
+            // this is the way to extract a lat ([1] for long) from a popup
+            // this can be used with setView() to make a magnifying glass or geo icon auto-focus bucket items
+            // but first, one must riddle out stopPropogation(), a quest that makes laltong extraction firhgtful
         });
     });
 
@@ -139,9 +337,9 @@ shinyjs.init = function() {
 
     //adjust height on right-side content so that dropdown doesn't go off the page
     $(document).ready(function(){
-        $('#ADD_SIZE2').click(function(){
+        $('#add_size2').click(function(){
             var current_height = $('.content').height();
-            if($('#ADD_SIZE2').is(':checked')){
+            if($('#add_size2').is(':checked')){
                 $('.content').height(current_height + 150);
             } else {
                 $('.content').height(current_height - 150);
@@ -239,7 +437,21 @@ shinyjs.init = function() {
     };
 
     $('body').ready(function(){
+
+        $('input[value="BY_BUCKET2"]').click( function (){
+            console.log("WOOPWOOP")
+            $("span:contains('Map Selections')").css("color", "#485580");
+            $("span:contains('Map Selections')").prev().prev().css("color", "#485580")
+        });
+
         $('#GEN_PLOTS3').click(govern_qc3);
+        $('#GEN_PLOTS3').click( function() {
+            // make sure plotting reflects sort lsit rank order
+            rankLister()
+            // $(this).removeClass("btn-update");
+            $(this).removeClass("btn-warning");
+            // $(this).addClass("btn-primary");
+        });
     });
 
     //BIPLOT: disable X-axis selection when aggregation == 'Yearly'
@@ -411,6 +623,8 @@ shinyjs.init = function() {
     //control data catalog interactions
     $('body').ready(function(){
         $('#dataTable').on('focus', function(i){
+
+
             $('#site_catalog td').each(function(i){
                 var $this = $(this);
                 var titleVal = $this.text();
@@ -465,15 +679,38 @@ shinyjs.init = function() {
 
     //respond to insertions of shiny modal boxes into document.body
     var dom_observer1 = new MutationObserver(async function(mutation) {
+        console.log('mutation')
+
+        //  info tab stuff
+        // map pop up info button activation
+        $('body').on('click', "#info_trigger", function() {
+          // console.log("I have been clicked, and i am the INFO button!")
+          $('a[data-value="Watershed"]').trigger("click");
+        });
+
+        $('body').on('click', "#history_trigger", function() {
+          console.log("I have been clicked, and i am the mETA button!")
+          $('a[data-value="Meta"]').trigger("click");
+        });
+
+        // add site auto-focus to site cart (maybe not preffered?)
+        $('body').on('click', "button[id$='_goto']", function() {
+          // console.log("I have been clicked, and i am the ADDSITE button!")
+          //
+          // $('a[data-value$="Map Selections"]').trigger("click");
+          $("a span.glyphicon.glyphicon-shopping-cart").parent().trigger("click")
+        });
+
+
 
         var tgt = $(target);
         var shinymodal = tgt.children('#shiny-modal-wrapper');
-
-        if(shinymodal.length > 0){
-
-            var modal_id = shinymodal.find('.modal-body').attr('id');
-
-            if(modal_id == 'landing'){
+        //
+        // if(shinymodal.length > 0){
+        //
+        var modal_id = shinymodal.find('.modal-body').attr('id');
+        console.log(modal_id)
+            if(modal_id == 'undefined'){
 
                 window.setTimeout(function(){
                     $('.loading-container').hide();
@@ -508,16 +745,20 @@ shinyjs.init = function() {
             //for catalog modals
             if(/catalog$/.test(modal_id)){
 
-                await new Promise(r => setTimeout(r, 1000)); //wait a second for the modal and its table to load
+                await new Promise(r => setTimeout(r, 800)); //wait a second for the modal and its table to load
 
                 shinymodal.find('td').each(set_td_titles);
+
+                $("a[id^='DataTables_Table_']").css({"position":"inherit"});
+                $("a[id^='DataTables_Table_']").removeClass('next');
+                $("a[id^='DataTables_Table_']").addClass('previous');
 
                 //set up listeners for all button elements inside table cells (uses partial application)
                 shinymodal.find('td button').each(partial(function(index, value){
                     set_tablebutton_listener(btn = arguments[2], modal_id_ = arguments[0]);
                 }, modal_id));
             };
-        };
+        // };
     });
 
     //configure and register mutation observer for modals
@@ -532,12 +773,20 @@ shinyjs.init = function() {
             var modl = $('.modal-body');
             var modal_id = modl.attr('id');
 
+
+            $("a[id^='DataTables_Table_']").css({"position":"inherit"});
+
+            $("a[id^='DataTables_Table_']").removeClass('next');
+            $("a[id^='DataTables_Table_']").addClass('previous');
+            // console.log('OTHER: table bug')
+
             modl.find('td').each(set_td_titles);
 
             //set up listeners for all button elements inside table cells (uses partial application)
             modl.find('td button').each(partial(function(index, value){
                 set_tablebutton_listener(btn = arguments[2], modal_id_ = arguments[0]);
             }, modal_id));
+
 
         }, 200);
     });
@@ -569,6 +818,10 @@ shinyjs.init = function() {
             var modal_id = modl.attr('id');
 
             modl.find('td').each(set_td_titles);
+
+            $("a[id^='DataTables_Table_']").css({"position":"inherit"});
+            $("a[id^='DataTables_Table_']").removeClass('next');
+            $("a[id^='DataTables_Table_']").addClass('previous');
 
             //set up listeners for all button elements inside table cells (uses partial application)
             modl.find('td button').each(partial(function(index, value){
@@ -643,6 +896,7 @@ shinyjs.init = function() {
     });
 
     $('body').on('click', '#DATA_TOUR', function(i, v){
+        $('#GEN_PLOTS3').trigger('click');
 
         enable_data_tour = true;
         next_tour_id = 'a';
@@ -671,7 +925,7 @@ shinyjs.init = function() {
         Shiny.setInputValue('FLAGS3:logical', 'true');
         Shiny.setInputValue('INTERP3:logical', 'true');
 
-        Shiny.setInputValue('START_DATA_TOUR', '' + new Date());
+        Shiny.setInputValue('START_     DATA_TOUR', '' + new Date());
     });
 
     $('body').on('click', '.cicerone2a .driver-close-btn', function(i, v){
@@ -681,7 +935,6 @@ shinyjs.init = function() {
         Shiny.setInputValue('AGG3', 'Daily');
         next_tour_id = 'b';
         set_tour_location(['hjandrews'], ['GSWS09', 'GSWS10'], [{value: 'NO3_N', label: 'Nitrate-N (mg/L)'}]);
-        //$('#GEN_PLOTS3').trigger('click');
 
     });
 
@@ -734,6 +987,7 @@ shinyjs.init = function() {
         //window.setTimeout(function(){
         //    $('#SLIDER_UPDATES_PLOTS').trigger('click');
         //}, 1000); //wait for timeslider debounce
+        // var global_trigger = 0;
 
         $('div[id^="GRAPH_"]').on('shiny:value', function(event){
             let $this = $(this)
@@ -742,7 +996,12 @@ shinyjs.init = function() {
 
             if(! is_qc_plot){
                 $('#GEN_PLOTS3').removeClass('disabled').removeAttr('disabled');
-                shinyjs.enable("DATES3")
+                shinyjs.enable("DATES3");
+
+                $('#loading-start').hide();
+                // global_trigger++
+                // console.log(global_trigger);
+
                 if(enable_data_tour){
                     Shiny.setInputValue('CONTINUE_DATA_TOUR', next_tour_id);
                 };
@@ -772,3 +1031,601 @@ shinyjs.init = function() {
 //shinyjs.getHeight50 = function() {
 //  Shiny.onInputChange('height50', $(window).height() * .5);
 //}
+
+// Map State Toggling: Map, Hybdrid, Data (and, map/fullmap toggling)
+
+var vizToggle = 0;
+
+$(document).ready(function(){
+    $('#COLLAPSE_DATA').click(function(){
+        vizToggle++;
+
+        if (vizToggle%2 != 0) {
+
+            //  map and table stuff
+            $(".table").css("min-width", "95%");
+
+            //  button stuff
+            $("#COLLAPSE_SIDEBAR").css("pointer-events", "none");
+
+            $(".map-mode").css("opacity", "0");
+            $(".data-mode").toggleClass("glyphicon-circle-arrow-left glyphicon-circle-arrow-right");
+            $('#COLLAPSE_DATA').css({'margin': '6px'});
+            console.log("expand: data table view");
+        } else {
+            $(".table").css("min-width", "90%");
+
+            $("#COLLAPSE_SIDEBAR").css("pointer-events", "auto");
+            $(".map-mode").css("opacity", "1");
+            $(".data-mode").toggleClass("glyphicon-circle-arrow-right glyphicon-circle-arrow-left");
+            console.log("collapse: data table view");
+        }
+
+    });
+});
+
+var mapsToggle = 0;
+
+$(document).ready(function(){
+    // on lcicking button to exp/collapse map
+    $('#COLLAPSE_SIDEBAR').click(function(){
+        //  map counter
+        mapsToggle++;
+
+        // if map is not expanded
+        if (mapsToggle%2 != 0) {
+            // make non-viz button invisible
+            $(".data-mode").css("opacity", "0");
+            $("#COLLAPSE_DATA").css("pointer-events", "none");
+
+            $(".map-mode").toggleClass("glyphicon-circle-arrow-left glyphicon-circle-arrow-right");
+            console.log("expand: map mode")
+        } else {
+            $(".data-mode").css("opacity", "1");
+            $("#COLLAPSE_DATA").css("pointer-events", "auto");
+
+            $(".map-mode").toggleClass("glyphicon-circle-arrow-right glyphicon-circle-arrow-left");
+            // $(".map-mode-toggle").toggleClass("map-mode-toggle map-mode-toggle");
+            console.log("collapse: map-mode, return to hybrid mode");
+        }
+
+    });
+});
+
+// attribute toggle
+var attrToggle = 0;
+
+$(document).ready(function(){
+
+    // var window_height = ($('#sidebarCollapsed').height() * .38);
+    // $('#MAP').css('height', window_height);
+
+    $('#COLLAPSE_ATTRIBUTES').click(function(){
+        attrToggle++;
+
+        if (attrToggle%2 == 0) {
+            console.log("collapse: small map, large attribute table view");
+
+            // reappear attr table and footer
+            $(".rank-list-container").removeClass("hidden")
+            $("#notes-footer").removeClass("hidden")
+            $('#MAP').css('height', '350px');
+            //  button stuff
+            $(".full-map-mode").toggleClass("glyphicon-menu-down glyphicon-menu-up");
+
+        } else {
+            $(".full-map-mode").toggleClass("glyphicon-menu-down glyphicon-menu-up");
+
+            console.log("expand: full map view");
+            // dissapear attr table and footer
+            $(".rank-list-container").addClass("hidden")
+            $("#notes-footer").addClass("hidden")
+            // reset map height
+            var window_height = ($('#sidebarCollapsed').height() * .8);
+            $('#MAP').css('height', window_height);
+
+        }
+
+    });
+});
+
+// make sure data tab panel is matching map tab panel height, and, remove white space
+$(document).ready(function()
+    {
+       var resizeDelay = 200;
+       var doResize = true;
+       var resizer = function () {
+          if (doResize) {
+
+            //your code that needs to be executed goes here
+            $(".data-wrapper-wide").css("height", $(".wrapper").height());
+            //  check process
+            console.log($(".content-wrapper").height());
+            console.log($(".main-sidebar").height());
+            $(".content-wrapper").css("height", $(".main-sidebar").height());
+            console.log($(".content-wrapper").height());
+            console.log('RESIZE')
+
+
+            doResize = false;
+          }
+        };
+        var resizerInterval = setInterval(resizer, resizeDelay);
+        resizer();
+
+        $(window).resize(function() {
+          doResize = true;
+        });
+});
+// landing slideshow
+
+function showSlides(n) {
+  var i;
+  var slides = document.getElementsByClassName("mySlides");
+  var dots = document.getElementsByClassName("dot");
+  if (n > slides.length) {slideIndex = 1}
+    if (n < 1) {slideIndex = slides.length}
+    for (i = 0; i < slides.length; i++) {
+      slides[i].style.display = "none";
+    }
+    for (i = 0; i < dots.length; i++) {
+      dots[i].className = dots[i].className.replace(" active", "");
+    }
+  slides[slideIndex-1].style.display = "block";
+  dots[slideIndex-1].className += " active";
+}
+
+var slideIndex = 1;
+
+$(document).ready(function() {
+    showSlides(slideIndex);
+});
+
+function plusSlides(n) {
+  showSlides(slideIndex += n);
+}
+
+function currentSlide(n) {
+  showSlides(slideIndex = n);
+}
+
+// keeping modal reactivity without splash
+$(document).ready(function() {
+    if ('#loading-start:visible') {
+        console.log("loading in progress")
+    }
+    if ('#loading-start:hidden') {
+        console.log("loading done")
+        //
+        window.setTimeout(function(){
+            $('.loading-container').hide();
+            $('#landing #DISMISS_MODAL').show();
+            $('#landing #TAKE_TOUR').show();
+            $('#DATA_TOUR').removeAttr('disabled');
+            $('#GEN_PLOTS3').removeClass('disabled').removeAttr('disabled');
+        }, 1000);
+        window.setTimeout(function(){
+            $('.loading-container').hide();
+            $('#landing #DISMISS_MODAL').show();
+            $('#landing #TAKE_TOUR').show();
+            $('#DATA_TOUR').removeAttr('disabled');
+            $('#GEN_PLOTS3').removeClass('disabled').removeAttr('disabled');
+        }, 3000);
+        window.setTimeout(function(){
+            $('.loading-container').hide();
+            $('#landing #DISMISS_MODAL').show();
+            $('#landing #TAKE_TOUR').show();
+            $('#DATA_TOUR').removeAttr('disabled');
+            $('#GEN_PLOTS3').removeClass('disabled').removeAttr('disabled');
+        }, 8000);
+    };
+});
+
+//  orange attention animation funciton
+$(document).ready( function() {
+    var intervalUpdate = window.setInterval(function(){
+        $('#macrosheds-dot').addClass('update');
+        setTimeout(
+          function()
+              {
+                  $('#macrosheds-dot').removeClass('update');
+              }, 500);
+      }, 1000);
+
+      $('#macrosheds-dot').click( function() {
+              clearInterval(intervalUpdate);
+          }
+      );
+})
+
+var dotExcited = 0;
+
+$(document).ready( function() {
+          if (dotExcited == 0) {
+              $('#macrosheds-dot').click( function() {
+                if (dotExcited == 0) {
+                var intervalUpdate = window.setInterval(function(){
+                    $('#macrosheds-dot-two').addClass('update');
+                    setTimeout(
+                      function()
+                          {
+                              $('#macrosheds-dot-two').removeClass('update');
+                          }, 500);
+                  }, 1000);
+                dotExcited++;
+                }
+
+                  $('#macrosheds-dot-two').click( function() {
+                          clearInterval(intervalUpdate);
+                          dotExcited++;
+                      }
+                  );
+              }
+          );
+      }
+  })
+
+// $(document).ready( function() {
+//     $('#legend-nlcd').
+// })
+
+
+$(document).ready( function() {
+    // When the user clicks on the button, open the modal
+    $("[id^='legend-']").on('click', function(e) {
+        // remove previous modal
+        $("[id$='-modal']").css('display', 'none');
+
+        //  fire up clicked modal
+        var leg = '#'.concat(e.target.id.concat('-modal'));
+        $(leg).css('display', 'block');
+    })
+
+    $(document).on('keydown', function(event) {
+       if (event.key == "Escape") {
+           $("[id$='-modal']").css('display', 'none');
+       }
+    });
+
+    // When the user clicks on <span> (x), close the modal
+    $('#site_catalog').on('click', function() {
+        $("[id$='-modal']").css('display', 'none')
+    })
+
+    // When the user clicks on <span> (x), close the modal
+    // $('#SITE_CATALOG_BUTTON').on('click', function() {
+    //     setTimeout(
+    //         function()
+    //         {
+    //             $('#DataTables_Table_1_next').css({"position":"inherit"});
+    //             console.log('activity: fix NEXT bug')
+    //         },
+    //     700);
+    // })
+
+            // fix position of next button
+
+    // close modal on click outside at anywhere
+    $(".glyphicon-remove-circle").on('click', function(e){
+        $("[id$='-modal']").css('display', 'none');
+    })
+})
+// var legendsActive = 0;
+
+// function layerClicks() {
+//     // console.log('legends info')
+//     // console.log(legendsActive)
+//     $('#No-Leg').click( function() {
+//         $('.leaflet-control-wms-legend').replaceWith('<div></div>');
+//     });
+
+//     // Landcover
+//     $('#Landcover-Leg').click( function() {
+//         if ($('.leaflet-control-wms-legend')[0] == undefined) {
+//             $('.leaflet-top.leaflet-right').append('<div class=""> <div id = "Landcover" class="leaflet-control-wms-legend leaflet-control" style="height: 515px; width: 267px;"><img class="wms-legend" src="https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2019_Land_Cover_L48/ows?service=WMS&amp;request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=NLCD_2019_Land_Cover_L48" alt="Legend" style="float: right; margin-top: 35%;"></div></div>');
+//         } else if ($('.leaflet-control-wms-legend')[0].id.toString().trim() == "Landcover") {
+//             $('.leaflet-control-wms-legend').replaceWith('<div></div>')
+//         } else if (legendsActive > 0) {
+//             $('.leaflet-control-wms-legend').replaceWith('<div></div>')
+//             $('.leaflet-top.leaflet-right').append('<div class=""> <div id = "Landcover" class="leaflet-control-wms-legend leaflet-control" style="height: 515px; width: 267px;"><img class="wms-legend" src="https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2019_Land_Cover_L48/ows?service=WMS&amp;request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=NLCD_2019_Land_Cover_L48" alt="Legend" style="float: right; margin-top: 35%;"></div></div>');
+//         } else if ($('.leaflet-control-wms-legend').length) {
+//             console.log('legend already present')
+//             $('.leaflet-control-wms-legend').replaceWith('<div></div>')
+//             $('.leaflet-top.leaflet-right').append('<div class=""> <div id = "Landcover" class="leaflet-control-wms-legend leaflet-control" style="height: 515px; width: 267px;"><img class="wms-legend" src="https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2019_Land_Cover_L48/ows?service=WMS&amp;request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=NLCD_2019_Land_Cover_L48" alt="Legend" style="float: right; margin-top: 35%;"></div></div>');
+//         } else {
+//             $('.leaflet-top.leaflet-right').append('<div class=""> <div id = "Landcover" class="leaflet-control-wms-legend leaflet-control" style="height: 515px; width: 267px;"><img class="wms-legend" src="https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2019_Land_Cover_L48/ows?service=WMS&amp;request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=NLCD_2019_Land_Cover_L48" alt="Legend" style="float: right; margin-top: 35%;"></div></div>');
+//                 legendsActive ++;
+//                 };
+//             });
+
+//     // Elevation
+//     $('#3DEP-Leg').click( function() {
+//         if ($('.leaflet-control-wms-legend')[0] == undefined) {
+//             $('.leaflet-top.leaflet-right').append('<div class=""> <div id="3DEP" class="leaflet-control-wms-legend leaflet-control" style="height: 66px; width: 110px;"><img class="wms-legend" src="https://elevation.nationalmap.gov:443/arcgis/services/3DEPElevation/ImageServer/WMSServer?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=3DEPElevation:Hillshade Elevation Tinted" alt="Legend" style="float: right; margin-top: 35%;"></div>');
+//         } else if ($('.leaflet-control-wms-legend')[0].id.toString().trim() == "3DEP") {
+//             $('.leaflet-control-wms-legend').replaceWith('<div></div>')
+//         } else if (legendsActive > 0) {
+//             $('.leaflet-control-wms-legend').replaceWith('<div></div>')
+//             $('.leaflet-top.leaflet-right').append('<div class=""> <div id="3DEP" class="leaflet-control-wms-legend leaflet-control" style="height: 66px; width: 110px;"><img class="wms-legend" src="https://elevation.nationalmap.gov:443/arcgis/services/3DEPElevation/ImageServer/WMSServer?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=3DEPElevation:Hillshade Elevation Tinted" alt="Legend" style="float: right; margin-top: 35%;"></div>');
+//         } else if ($('.leaflet-control-wms-legend').length) {
+//             console.log('legend already present')
+//             $('.leaflet-control-wms-legend').replaceWith('<div></div>')
+//             $('.leaflet-top.leaflet-right').append('<div class=""> <div id="3DEP" class="leaflet-control-wms-legend leaflet-control" style="height: 66px; width: 110px;"><img class="wms-legend" src="https://elevation.nationalmap.gov:443/arcgis/services/3DEPElevation/ImageServer/WMSServer?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=3DEPElevation:Hillshade Elevation Tinted" alt="Legend" style="float: right; margin-top: 35%;"></div>');
+//         } else {
+//             $('.leaflet-top.leaflet-right').append('<div class=""> <div id="3DEP" class="leaflet-control-wms-legend leaflet-control" style="height: 66px; width: 110px;"><img class="wms-legend" src="https://elevation.nationalmap.gov:443/arcgis/services/3DEPElevation/ImageServer/WMSServer?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=3DEPElevation:Hillshade Elevation Tinted" alt="Legend" style="float: right; margin-top: 35%;"></div>');
+//             legendsActive ++;
+//                 };
+//             });
+
+//     // Impervious
+//     $('#Impervious-Leg').click( function() {
+//         if ($('.leaflet-control-wms-legend')[0] == undefined) {
+//             $('.leaflet-top.leaflet-right').append('<div id = "Impervious" class="leaflet-control-wms-legend leaflet-control" style="height: 20px; width: 20px;"><img class="wms-legend" src="https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2019_Impervious_L48/ows?service=WMS&amp;request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=NLCD_2019_Impervious_L48" alt="Legend" style="float: right; margin-top: 35%;"></div>');
+//         } else if ($('.leaflet-control-wms-legend')[0].id.toString().trim() == "3DEP") {
+//             $('.leaflet-control-wms-legend').replaceWith('<div></div>')
+//         } else if (legendsActive > 0) {
+//             $('.leaflet-control-wms-legend').replaceWith('<div></div>')
+//             $('.leaflet-top.leaflet-right').append('<div id = "Impervious" class="leaflet-control-wms-legend leaflet-control" style="height: 20px; width: 20px;"><img class="wms-legend" src="https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2019_Impervious_L48/ows?service=WMS&amp;request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=NLCD_2019_Impervious_L48" alt="Legend" style="float: right; margin-top: 35%;"></div>');
+//         } else if ($('.leaflet-control-wms-legend').length) {
+//             console.log('legend already present')
+//             $('.leaflet-control-wms-legend').replaceWith('<div></div>')
+//             $('.leaflet-top.leaflet-right').append('<div id = "Impervious" class="leaflet-control-wms-legend leaflet-control" style="height: 20px; width: 20px;"><img class="wms-legend" src="https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2019_Impervious_L48/ows?service=WMS&amp;request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=NLCD_2019_Impervious_L48" alt="Legend" style="float: right; margin-top: 35%;"></div>');
+//         } else {
+//             $('.leaflet-top.leaflet-right').append('<div id = "Impervious" class="leaflet-control-wms-legend leaflet-control" style="height: 20px; width: 20px;"><img class="wms-legend" src="https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2019_Impervious_L48/ows?service=WMS&amp;request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=NLCD_2019_Impervious_L48" alt="Legend" style="float: right; margin-top: 35%;"></div>');
+//             legendsActive ++;
+//                 };
+//             });
+
+//     // Tree Canopy
+//     $('#Tree-Leg').click( function() {
+//         if ($('.leaflet-control-wms-legend')[0] == undefined) {
+//             $('.leaflet-top.leaflet-right').append('<div id = "Tree" class="leaflet-control-wms-legend leaflet-control" style="height: 20px; width: 20px;"><img class="wms-legend" src="https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2016_Tree_Canopy_L48/ows?service=WMS&amp;request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=NLCD_2016_Tree_Canopy_L48" alt="Legend" style="float: right; margin-top: 35%;"></div>');
+//         } else if ($('.leaflet-control-wms-legend')[0].id.toString().trim() == "3DEP") {
+//             $('.leaflet-control-wms-legend').replaceWith('<div></div>')
+//         } else if (legendsActive > 0) {
+//             $('.leaflet-control-wms-legend').replaceWith('<div></div>')
+//             $('.leaflet-top.leaflet-right').append('<div id = "Tree" class="leaflet-control-wms-legend leaflet-control" style="height: 20px; width: 20px;"><img class="wms-legend" src="https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2016_Tree_Canopy_L48/ows?service=WMS&amp;request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=NLCD_2016_Tree_Canopy_L48" alt="Legend" style="float: right; margin-top: 35%;"></div>');
+//         } else if ($('.leaflet-control-wms-legend').length) {
+//             console.log('legend already present')
+//             $('.leaflet-control-wms-legend').replaceWith('<div></div>')
+//             $('.leaflet-top.leaflet-right').append('<div id = "Tree" class="leaflet-control-wms-legend leaflet-control" style="height: 20px; width: 20px;"><img class="wms-legend" src="https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2016_Tree_Canopy_L48/ows?service=WMS&amp;request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=NLCD_2016_Tree_Canopy_L48" alt="Legend" style="float: right; margin-top: 35%;"></div>');
+//         } else {
+//             $('.leaflet-top.leaflet-right').append('<div id = "Tree" class="leaflet-control-wms-legend leaflet-control" style="height: 20px; width: 20px;"><img class="wms-legend" src="https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2016_Tree_Canopy_L48/ows?service=WMS&amp;request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=NLCD_2016_Tree_Canopy_L48" alt="Legend" style="float: right; margin-top: 35%;"></div>');
+//             legendsActive ++;
+//                 };
+//             });
+
+//     // Tree Canopy Change
+//     // $('#TreeCanopyChange-Leg').click( function() {
+//     //     if (legendsActive > 0) {
+//     //         $('.leaflet-control-wms-legend').replaceWith('<div></div>')
+//     //         $('.leaflet-top.leaflet-right').append('<div class="leaflet-control-wms-legend leaflet-control"><img class="wms-legend" src="mrlc_display/NLCD_Tree_Canopy_Change_Index_L48/ows?service=WMS&amp;request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=NLCD_Tree_Canopy_Change_Index_L48" alt="Legend" style="float: right; margin-top: 35%;"></div>');
+//     //     } else if ($('.leaflet-control-wms-legend').length) {
+//     //         console.log('legend already present')
+//     //         $('.leaflet-control-wms-legend').replaceWith('<div></div>')
+//     //     } else {
+//     //         $('.leaflet-top.leaflet-right').append('<div class="leaflet-control-wms-legend leaflet-control"><img class="wms-legend" src="mrlc_display/NLCD_Tree_Canopy_Change_Index_L48/ows?service=WMS&amp;request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=NLCD_Tree_Canopy_Change_Index_L48" alt="Legend" style="float: right; margin-top: 35%;"></div>');
+//     //         legendsActive ++;
+//     //             };
+//     //         });
+
+//     // Geology
+//     $('#Geology-Leg').click( function() {
+//         if ($('.leaflet-control-wms-legend')[0] == undefined) {
+//             $('.leaflet-top.leaflet-right').append('<div id="Geology" class="leaflet-control-wms-legend leaflet-control" style="height: 20px; width: 20px;"><img class="wms-legend" src="https://www.sciencebase.gov/arcgis/services/Catalog/5888bf4fe4b05ccb964bab9d/MapServer/WmsServer?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=0" alt="Legend" style="float: right; margin-top: 35%;"></div>');
+//         } else if ($('.leaflet-control-wms-legend')[0].id.toString().trim() == "Geology") {
+//             $('.leaflet-control-wms-legend').replaceWith('<div></div>')
+//         } else if (legendsActive > 0) {
+//             $('.leaflet-control-wms-legend').replaceWith('<div></div>')
+//             $('.leaflet-top.leaflet-right').append('<div id="Geology" class="leaflet-control-wms-legend leaflet-control" style="height: 20px; width: 20px;"><img class="wms-legend" src="https://www.sciencebase.gov/arcgis/services/Catalog/5888bf4fe4b05ccb964bab9d/MapServer/WmsServer?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=0" alt="Legend" style="float: right; margin-top: 35%;"></div>');
+//         } else if ($('.leaflet-control-wms-legend').length) {
+//             console.log('legend already present')
+//             $('.leaflet-control-wms-legend').replaceWith('<div></div>')
+//             $('.leaflet-top.leaflet-right').append('<div id="Geology" class="leaflet-control-wms-legend leaflet-control" style="height: 20px; width: 20px;"><img class="wms-legend" src="https://www.sciencebase.gov/arcgis/services/Catalog/5888bf4fe4b05ccb964bab9d/MapServer/WmsServer?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=0" alt="Legend" style="float: right; margin-top: 35%;"></div>');
+//         } else {
+//             $('.leaflet-top.leaflet-right').append('<div id="Geology" class="leaflet-control-wms-legend leaflet-control" style="height: 20px; width: 20px;"><img class="wms-legend" src="https://www.sciencebase.gov/arcgis/services/Catalog/5888bf4fe4b05ccb964bab9d/MapServer/WmsServer?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=0" alt="Legend" style="float: right; margin-top: 35%;"></div>');
+//             legendsActive ++;
+//                 };
+//             });
+
+//     // Land Cover Change
+//     $('#LCChange-Leg').click( function() {
+//         if ($('.leaflet-control-wms-legend')[0] == undefined) {
+//             $('.leaflet-top.leaflet-right').append('<div id = "LCChange" class="leaflet-control-wms-legend leaflet-control" style="height: 20px; width: 20px;"><img class="wms-legend" src="https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2001_2019_change_index_L48/ows?service=WMS&amp;request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=NLCD_2001_2019_change_index_L48" alt="Legend" style="float: right; margin-top: 35%;"></div>');
+//         } else if ($('.leaflet-control-wms-legend')[0].id.toString().trim() == "LCChange") {
+//             $('.leaflet-control-wms-legend').replaceWith('<div></div>')
+//         } else if (legendsActive > 0) {
+//             $('.leaflet-control-wms-legend').replaceWith('<div></div>')
+//             $('.leaflet-top.leaflet-right').append('<div id = "LCChange" class="leaflet-control-wms-legend leaflet-control" style="height: 20px; width: 20px;"><img class="wms-legend" src="https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2001_2019_change_index_L48/ows?service=WMS&amp;request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=NLCD_2001_2019_change_index_L48" alt="Legend" style="float: right; margin-top: 35%;"></div>');
+//         } else if ($('.leaflet-control-wms-legend').length) {
+//             console.log('legend already present')
+//             $('.leaflet-control-wms-legend').replaceWith('<div></div>')
+//             $('.leaflet-top.leaflet-right').append('<div id = "LCChange" class="leaflet-control-wms-legend leaflet-control" style="height: 20px; width: 20px;"><img class="wms-legend" src="https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2001_2019_change_index_L48/ows?service=WMS&amp;request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=NLCD_2001_2019_change_index_L48" alt="Legend" style="float: right; margin-top: 35%;"></div>');
+//         } else {
+//             $('.leaflet-top.leaflet-right').append('<div id = "LCChange" class="leaflet-control-wms-legend leaflet-control" style="height: 20px; width: 20px;"><img class="wms-legend" src="https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2001_2019_change_index_L48/ows?service=WMS&amp;request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=NLCD_2001_2019_change_index_L48" alt="Legend" style="float: right; margin-top: 35%;"></div>');
+//             legendsActive ++;
+//                 };
+//             });
+// }
+
+// $(document).ready(function() {
+//     layerClicks();
+//         });
+
+$(document).ready(function() {
+    $('.glyphicon-list-alt').attr( 'title',
+        'click to access map layer legends'
+                                 );
+    $('.glyphicon-question-sign').attr( 'title',
+        'click for more information on mapping and data features'
+                                      );
+    $('[data-value="Watershed"]').attr( 'title',
+        'click for information on selected watershed'
+                                      );
+});
+
+// $(document).ready( function() {
+//     $(window).on('resize', function() {
+//         if ($("#attribute-content").width() < 500) {
+//             // console.log("very small attribute table");
+//             $('#legend-button').replaceWith(
+//                     '<div><div class="dropup" id="legend-button"><button class="dropdown-toggle" type="button" id="about-us" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i id= "my-legend" class="well-sm gi-1-x glyphicon glyphicon-th-list" role="button"></i><span class="caret"></span></button><ul class="dropdown-menu" aria-labelledby="legend-drop"><li><a id="No-Leg" href="#">No Legend</a></li><li><a id="3DEP-Leg" href="#">3DEP Elevation</a></li><li><a id="Tree-Leg" href="#">Tree Canopy</a></li><li><a id="Impervious-Leg" href="#">Impervious Surfaces</a></li><li><div class = "ms-tooltip" style = "margin-inline: 11%" title = "landcover imagery tiles do not visualize at lowest 8 zoom levels"><a id="Landcover-Leg" href="#">Landcover</a></div></li> <li><a id="LCChange-Leg" href="#">Landcover Change</a></li><li><a id="Geology-Leg" href="#">Geology</a></li></ul></div></div>'
+//                      // <li><a id="Ecoregions" href="#">Ecoregions</a></li> <li><a id="TreeCanopyChange-Leg" href="#">Tree Canopy Change</a></li>
+//                 );
+//             // change tab names to be more ocncise
+//             $("a span.glyphicon.glyphicon-shopping-cart").parent().html('<span class="glyphicon glyphicon-shopping-cart"></span>')
+//             // $('[data-value$="Map Selections"]').html('<span class=\"glyphicon glyphicon-shopping-cart\"></span>')
+
+//             layerClicks();
+//             } else {
+//                 $('#legend-button').replaceWith('<div class="dropup" id="legend-button"><button class="btn btn-primary dropdown-toggle" type="button" id="about-us" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Legend <span class="caret"></span></button><ul class="dropdown-menu" aria-labelledby="legend-drop"><li><a id="No-Leg" href="#">No Legend</a></li><li><a id="3DEP-Leg" href="#">3DEP Elevation</a></li><li><a id="Tree-Leg" href="#">Tree Canopy</a></li><li><a id="Impervious-Leg" href="#">Impervious Surfaces</a></li><div class = "ms-tooltip" style = "margin-inline: 11%" title = "landcover imagery tiles do not visualize at lowest 8 zoom levels"><li><a id="Landcover-Leg" href="#">Landcover</a></li> </div><li><a id="LCChange-Leg" href="#">Landcover Change</a></li><li><a id="Geology-Leg" href="#">Geology</a></li></ul></div>');
+//                 layerClicks();
+//                 // $('[data-value$="Map Selections"]').html('<span class=\"glyphicon glyphicon-shopping-cart\"></span> Map Selections')
+//                 $("a span.glyphicon.glyphicon-shopping-cart").parent().html('<span class="glyphicon glyphicon-shopping-cart"></span> Map Selections')
+//                 // <li><a id="TreeCanopyChange-Leg" href="#">Tree Canopy Change</a></li>  <li><a id="Ecoregions" href="#">Ecoregions</a></li>
+//             }
+
+
+//         });
+//     });
+
+// 2) this variable triggers legend icon to be associated with legend or legend URL for active layer
+// 3) legend icon on click/hover displays legend visual
+$(document).ready(function(){
+
+    function onElementInserted(containerSelector, elementSelector, callback) {
+
+        var onMutationsObserved = function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.addedNodes.length) {
+                    var elements = $(mutation.addedNodes).find(elementSelector);
+                    for (var i = 0, len = elements.length; i < len; i++) {
+                        callback(elements[i]);
+                    }
+                }
+            });
+        };
+
+        var target = $(containerSelector)[0];
+        var config = { childList: true, subtree: true };
+        var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
+        var observer = new MutationObserver(onMutationsObserved);
+        observer.observe(target, config);
+
+        }
+
+    onElementInserted('#mapcontainer', '.leaflet-control-layers-selector', function(element) {
+        console.log('leaflet jquery applied')
+
+        $('.leaflet-control-layers-selector').on('click',function() {
+            $('.glyphicon-list-alt').css('color', '#43D6E6')
+            $('.leaflet-control-layers-selector').next().css('color', '')
+        });
+
+        // $('.glyphicon-list-alt').fadeOut("slow").fadeIn("slow")
+
+        $(".glyphicon-list-alt").parent().on('click', function() {
+            $('.glyphicon-list-alt').css('color', '')
+        });
+
+        $("span:contains('Basemap')").parent().on('click', function(event) {
+            $('.glyphicon-list-alt').css('color', '')
+
+        	$("span:contains('Basemap')").css('color', '')
+        });
+
+
+        // $(document).ready(function(){
+        //     $('meta-history').on('click', function() {
+        //         console.log("HERE I AM")
+        //         $('meta-disturbance').removeClass();
+        //         $('meta-menu').hide()
+        //     });
+        // });
+
+ $("span:contains('Basemap')").parent().on('click', function(event) {
+        });
+
+        $('.leaflet-control-layers-selector').on('click', function(event){
+            var target = $(event.target)
+        	target.next().css('color', '#43D6E6')
+        });
+
+        // setTimeout( function() {
+        //     $('.glyphicon-list-alt').css('color', '#b8c7ce')
+        //     // $('.glyphicon-list-alt').stop(true)
+        //     }, 3000 );
+        // });
+    });
+});
+        // var scatter_color = $('g.legendpoints path.scatterpts')[i].style.fill;
+        // var bucket_style = 'border: 3px solid ' + scatter_color + ' !important';
+
+function biplotColor() {
+    console.log('empty space where site comparison coloring should be')
+    // console.log('coloring by biplot')
+
+    // // for every legend item
+    // for(let i = 0; i < $('g.legendpoints path.scatterpts').length; i++) {
+
+    //     // get text of legend entry
+    //     var legend_text = $('g .legendtext')[i].innerHTML.split(" - ")
+
+    //     for(let x = 0; i < $('.rank-list-item').length; x++) {
+
+    //         // check against text of rank items
+    //         var rank_index = x + 1;
+    //         var bucket_item = '.rank-list-item:nth-child(' + rank_index + ')';
+    //         var bucket_text = $(bucket_item).text().split(":")
+
+    //         if(legend_text[0].trim() == bucket_text[0].trim()) {
+    //             console.log("matched domain");
+
+    //             if(legend_text[1].trim() == bucket_text[1].trim()) {
+    //                 console.log("matched site! coloring item")
+
+    //                 var scatter_color = $('g.legendpoints path.scatterpts')[i].style.fill;
+    //                 var bucket_style = 'border: 3px solid ' + scatter_color + ' !important';
+    //                 $(bucket_item).attr('style', bucket_style)
+    //             }
+    //         }
+
+    //     }
+    // };
+};
+
+// $(document).ready(function() {
+//     $("[data-value='biplot']").on('click', function() {
+//         if($('input[value="BY_BUCKET2"]')[0].checked == true) {
+//             setTimeout(function(){
+//                 biplotColor()
+//             }, 2000);
+//         };
+//     });
+
+//     if($("[data-value='biplot'][aria-selected='true']").length) {
+//         $('body').on('click', '[id$="_gotoremover"]', function(){
+//             if($('input[value="BY_BUCKET2"]')[0].checked == true) {
+//                 setTimeout(function(){
+//                     biplotColor()
+//                 }, 6000);
+//             };
+//         });
+//         $('[id$="_goto"]').on('click', function() {
+//             if($('input[value="BY_BUCKET2"]')[0].checked == true) {
+//                 setTimeout(function(){
+//                     biplotColor()
+//                 }, 6000);
+//             };
+//         });
+//     };
+
+//     $("[data-value='multisite_exploration']").on('click', function() {
+//         console.log('coloring by time series')
+//         $('.rank-list-item:nth-child(1)').attr('style', 'border: 3px solid #2a6a99 !important')
+//         $('.rank-list-item:nth-child(2)').attr('style', 'border: 3px solid #b66397 !important')
+//         $('.rank-list-item:nth-child(3)').attr('style', 'border: 3px solid #d88546 !important')
+
+//         $('.rank-list-item').slice(4).attr('style', 'border: 3px solid #4d91d0 !important')
+//     });
+// });
