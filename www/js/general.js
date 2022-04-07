@@ -1,7 +1,7 @@
 shinyjs.init = function() {
     // detect if mobile device!
     if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
-        // true for mobile device
+        // notice for mobile device requests
         alert("Notice: the MacroSheds portal is best viewed on a desktop or laptop computer. Some features may be hard to use on mobile. If you must visit on your phone, at least turn it sideways!");
     } else {
         // check for small screen
