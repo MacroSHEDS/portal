@@ -1,5 +1,3 @@
-@charset "UTF-8";
-
 /*
 GLOBALS
 */
@@ -318,6 +316,7 @@ LEFT PANEL SCROLL CONTROL
 
 .wrapper {
     overflow-y: visible;
+    height: 100vh !important;
 }
 
 body {
@@ -359,10 +358,33 @@ COLLAPSE SECTION
     display: none;
 }
 
+/* .wrapper {
+    min-height: 856px;
+} */
+
 .content-wrapper-wide {
     margin-left: 36px !important;
 }
 
+ /* Data Viz Collapser */
+.data-sub-gone {
+    display: none;
+}
+
+.data-wrapper-wide {
+    margin-left: 36px !important;
+    height: inherit;
+}
+.main-sidebar-wide {
+    /* width: -webkit-calc(100% - 36px);
+    width:    -moz-calc(100% - 36px);
+    width:         calc(100% - 36px); */
+    width: calc(100% - 48px) !important;
+}
+
+div#data-toggler.data-toggled {
+    float: right !important;
+}
 
 /*
 DATATABLES
@@ -428,9 +450,12 @@ MISC
 .lds-grid {
   display: inline-block;
   position: relative;
+  margin-left: auto;
   width: 80px;
   height: 80px;
-
+  top: 45%;
+  /* left: 45%; */
+/* test comment */
 }
 .lds-grid div {
   position: absolute;
@@ -494,8 +519,600 @@ MISC
   }
 }
 
-/* leaflet */
+/* table styling */
+/* table {
+  width: 90% !important;
+  background-color: #f7f7f7 !important;
+  color: #485580 !important;
+  /* margin: .5em .5em .5em .5em;  */
+/* } */
+table {
+    /* border-collapse: collapse; */
+    margin: 36px 36px;
+    font-size: 0.9em;
+    font-family: sans-serif;
+    width: auto;
+    /* overflow-x:auto; */
+    /* min-width: 400px; */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    border-radius:8px;
+    -moz-border-radius:8px;
+    min-width: 80%;
+}
 
-#wesmap {
-  height: 100vh;
+.horizontal-scroll {
+  overflow: hidden !important;
+  overflow-x: auto !important;
+  clear: both !important;
+  width: 100% !important;
+}
+
+
+
+/*
+thead tr {
+    background-color: #009879;
+    color: #ffffff;
+    border: solid;
+    border-width: 1px 0;
+    text-align: left;
+}
+ */
+/* th, td { */
+    /* padding: 12px 15px; */
+/* } */
+
+/* tbody tr {
+    border: solid;
+    border-width: 1px 0;
+    border-bottom: 1px solid #367fa9;
+    background-color: #f3f3f3;
+}
+ */
+/* tbody tr:nth-of-type(even) {
+    background-color: #f3f3f3;
+} */
+/*
+tbody tr:last-of-type {
+    border-bottom: 2px solid #009879;
+} */
+/*
+tbody tr.active-row {
+    font-weight: bold !important;
+    color: #f3f3f3 !important;
+    background-color: #6ba9d6 !important;
+}
+ */
+/* th {
+  background-color: #6C7A89;
+  color: #485580;
+} */
+
+/* tr:hover {background-color: #6C7A89;} */
+
+/* Tabs */
+
+.nav-tabs {
+    margin: 6px 6px 6px 18px;
+}
+
+#right_tabs {
+    margin: 0px !important;
+}
+
+/* Toggled Reactivity */
+/* Data Visualization Expand/Collapse */
+#data-toggler {
+    margin-top: 6px;
+}
+
+#COLLAPSE_DATA {
+    margin: -6px;
+}
+.container-fluid {
+    padding: 0px !important;
+}
+
+/* Attribute Table Expand/Collapse */
+.fullmap {
+    /* height: 750px !important; */
+}
+
+/* Bucket List */
+.default-sortable.rank-list-container {
+    margin-top: 24px;
+    border: 0px;
+}
+
+/* Map Styling */
+#MAP {
+    border: 2px solid #367fa9;
+    /* margin: 24px 0px 12px 24px; */
+}
+
+#mapcontainer {
+    padding: 2px !important;
+    margin: 24px 0px 12px 24px;
+}
+
+/* NOtes/Caveats */
+.panel-heading .accordion-toggle:after {
+    /* symbol for "opening" panels */
+    font-family: 'Glyphicons Halflings';  /* essential for enabling glyphicon */
+    content: "\e114";    /* adjust as needed, taken from bootstrap.css */
+    float: right;        /* adjust as needed */
+    color: black;         /* adjust as needed */
+}
+
+.panel-heading .accordion-toggle.collapsed:after {
+    /* symbol for "collapsed" panels */
+    content: "\e080";    /* adjust as needed, taken from bootstrap.css */
+    color: black;
+}
+
+.accordion-toggle.collapsed {
+    color: #2a6a99 !important;
+}
+
+.accordion-toggle.collapsed:after {
+    color: #2a6a99 !important;
+}
+
+.accordion-toggle {
+    color: #2a6a99 !important;
+}
+
+.panel-title {
+    color: #2a6a99 !important;
+}
+
+.panel {
+    /* left: 6; */
+    /* right: 6; */
+    /* width: auto; */
+    color: black;
+    /* width: auto; */
+    /* max-width: calc(40% - 20px); */
+}
+
+/* Glyphicon Size Classes */
+.gi-2x{font-size: 2em;}
+.gi-semi-x{font-size: 1.5em}
+.gi-3x{font-size: 3em;}
+.gi-4x{font-size: 4em;}
+.gi-5x{font-size: 5em;}
+
+/* "People" Styling */
+/* Three columns side by side */
+.people-column {
+ /* float: left; */
+ width: 90%;
+ margin-bottom: 6px;
+ padding: 8px;
+ border-radius: 5%;
+ background-color: #f5f5f5;
+}
+
+/* Display the columns below each other instead of side by side on small screens */
+/* @media screen and (max-width: 650px) {
+ .people-column {
+   width: 100%;
+   display: block;
+ }
+} */
+/* logo  */
+.logo {
+    background-color: transparent;
+    margin-bottom: 4px;
+}
+/* Add some shadows to create a card effect */
+.people-card {
+
+ padding: 8px 0px;
+ border-radius: 25%;
+ background-color: #b8c7ce;
+}
+
+/* Some left and right padding inside the container */
+.people-container {
+ margin-top: 6px;
+ box-shadow: 1px 1px 1px 1px rgba(42, 106, 153, 0.4);
+ /* padding: 4px 2px; */
+ border-radius: 5%;
+}
+
+/* Clear floats */
+.people-container::after, .people-row::after {
+ content: "";
+ clear: both;
+ display: table;
+}
+
+/* .title {
+ color: grey;
+} */
+
+/* .button {
+ border: none;
+ outline: 0;
+ display: inline-block;
+ padding: 8px;
+ color: white;
+ background-color: #000;
+ text-align: center;
+ cursor: pointer;
+ width: 100%;
+} */
+
+/* .button:hover {
+ background-color: #555;
+}  */
+
+/* Landing Styles */
+
+/* Jumbotron */
+.jumbotron {
+    margin-bottom: 30px;
+    margin-left: 20px;
+    margin-top: 10px;
+    padding-top: 36px;
+    padding-bottom: 24px !important;
+}
+
+.text-left {
+    padding: 0px 20px;
+}
+
+/* Slideshow container */
+.slideshow-container {
+     /* position: relative; */
+     /* background: #f1f1f1f1; */
+}
+
+/* Slides */
+.mySlides {
+     /* display: none; */
+     /* padding: 80px; */
+     /* text-align: center; */
+     padding: 2px 12px;
+}
+
+/* update slide */
+
+.update {
+    border: 1px solid orange;
+    border-radius: 50%;
+}
+
+/* Next & previous buttons */
+.prev, .next {
+     cursor: pointer;
+     position: absolute;
+     top: 50%;
+     width: auto;
+     margin-top: -30px;
+     padding: 16px;
+     color: #888;
+     font-weight: bold;
+     font-size: 20px;
+     border-radius: 0 3px 3px 0;
+     user-select: none;
+}
+
+/* Position the "next button" to the right */
+.next {
+     position: absolute;
+     right: 0;
+     border-radius: 3px 0 0 3px;
+}
+
+/* On hover, add a black background color with a little bit see-through */
+.prev:hover, .next:hover {
+     background-color: rgba(0,0,0,0.8);
+     color: white;
+}
+
+/* The dot/bullet/indicator container */
+.dot-container {
+     width: 50%;
+     text-align: center;
+     padding: 10px;
+     background: #eee;
+     border-radius: 5%;
+     /* margin-bottom: 6px; */
+     margin-top: 6px !important;
+     margin: auto;
+}
+
+/* The dots/bullets/indicators */
+.dot {
+     cursor: pointer;
+     height: 15px;
+     width: 15px;
+     margin: 0 2px;
+     background-color: #bbb;
+     border-radius: 50%;
+     display: inline-block;
+     transition: background-color 0.6s ease;
+}
+
+/* Add a background color to the active dot/circle */
+.dot.active, .dot:hover {
+    background-color: #2a6a99; /* purple: #b66397 */
+}
+
+/* start loading dots */
+
+#loading-start {
+    opacity:0.8;
+    /* background-color:#fff; */
+    /* background-image: linear-gradient(red, yellow); */
+    /* background: rgb(2,0,36); */
+    /* background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%); */
+    /* background: rgb(52,152,219);
+    background: radial-gradient(circle, rgba(52,152,219,1) 0%, rgba(0,212,255,1) 100%); */
+    /* background: rgb(241,242,181); */
+    /* background: radial-gradient(circle, rgba(241,242,181,1) 0%, rgba(61,114,180,1) 100%); */
+    background-color: #2a6a99;
+    position:fixed;
+    width:100%;
+    height:100%;
+    top:0px;
+    left:0px;
+    z-index:1000;
+    top:0;
+    left:0;
+    display: flex;
+    justify-content: center;
+}
+
+#loading-start-image {
+    background-color:#ccc;
+    position:fixed;
+    height: 500px;
+    width: auto;
+    border: 2px solid black;
+    border-radius: 50%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 15%;
+    margin-bottom: auto;
+    object-fit: cover;
+}
+
+/* general */
+.flip-horizontally {
+  transform: scaleY(.5);
+}
+
+/* Leaflet Styling */
+/* zoom */
+.leaflet-control-zoom-in {
+    color: #000 !important;
+}
+.leaflet-control-zoom-out {
+    color: #000 !important;
+}
+/* legend */
+/* .leaflet-control-wms-legend {
+    visibility: hidden;
+} */
+
+.diy-legend {
+    /* margin-right: 0px; */
+    color: #000 !important;
+    margin-right: 10px;
+    margin-top: 60px;
+    float: right;
+    z-index: 100;
+}
+
+#diy-legend {
+    float: left !important;
+    margin-top: 70px;
+}
+
+/* c("#2a6a99", "#b66397", "#d88546") */
+/* Rank List Styling (TIMESERIES) */
+.rank-list-item:nth-child(1) {
+    border: 3px solid #2a6a99 !important;
+    margin-bottom: 2px;
+}
+.rank-list-item:nth-child(2) {
+    border: 3px solid #b66397 !important;
+    margin-bottom: 2px;
+}
+.rank-list-item:nth-child(3) {
+    border: 3px solid #d88546 !important;
+    margin-bottom: 2px;
+}
+
+/* 'PLOT' button update animation (flashing orange border)  */
+/* @-webkit-keyframes btn-update {
+    from, to {
+        border-color: transparent
+    }
+    50% {
+        border-color: orange
+    }
+}
+
+@keyframes btn-update {
+    from, to {
+        border-color: transparent
+    }
+    50% {
+        border-color: orange
+    }
+}
+
+.btn-update {
+    border: 1px solid orange;
+    -webkit-animation: btn-update 2s step-end infinite;
+    animation: btn-update 2s step-end infinite;
+} */
+
+/* Legend Styling */
+/* NLCD */
+
+.white {
+    background-color: #FFFFFF;
+}
+
+.water {
+    background-color: #5475A8;
+}
+
+.lowintensity {
+    background-color: #E8D1D1;
+}
+
+.highintensity {
+    background-color: #E29E8C;
+}
+
+.developed {
+    background-color: #ff0000;
+}
+
+.devhighintensity {
+    background-color: #B50000;
+}
+
+.barerock {
+    background-color: #D2CDC0;
+}
+
+.deciduous {
+    background-color: #85C77E;
+}
+
+.evergreen {
+    background-color: #38814E;
+}
+
+.mixed {
+    background-color: #D4E7B0;
+}
+
+.dwarf {
+    background-color: #AF963C;
+}
+
+.shrubland {
+    background-color: #DCCA8F;
+}
+
+.grasslands {
+    background-color: #FDE9AA;
+}
+
+.sedge {
+    background-color: #D1D182;
+}
+
+.lichens {
+    background-color: #A3CC51;
+}
+
+.moss {
+    background-color: #82BA9E;
+}
+
+.pasture {
+    background-color: #FBF65D;
+}
+
+.rowcrops {
+    background-color: #CA9146;
+}
+
+.woodywetlands {
+    background-color: #C8E6F8;
+}
+
+.emergentwetlands {
+    background-color: #64B3D5;
+}
+
+/* NLCD Change */
+
+.no-change {
+  background-color: #005F00;
+}
+.water-change {
+  background-color: #0000FF;
+}
+.urban-change {
+  background-color: #EC82EC;
+}
+.wetland-within-class-change {
+  background-color: #79FFD2;
+}
+.herbaceous-wetland-change {
+  background-color: #009EDE;
+}
+.ag-hay-change {
+  background-color: #FF9F00;
+}
+.cultivated-crop-change {
+  background-color: #9F2828;
+}
+.hay-change {
+  background-color: #FFFF00;
+}
+.persistent-grass-change {
+  background-color: #D1B588;
+}
+.barren-change {
+  background-color: #C0C0C0;
+}
+.forest-theme-change {
+  background-color: #00FF00;
+}
+.woody-wetland-change {
+  background-color: #00FF00;
+}
+
+/* Impervious SUrfaces */
+meter {
+  width: 100%;
+  height: 25px;
+  -webkit-appearance: none; /* Reset appearance */
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+meter::-webkit-meter-bar {
+  background: none; /* Required to get rid of the default background property */
+  background-color: whiteSmoke;
+  box-shadow: 0 5px 5px -5px #333 inset;
+}
+
+meter {
+  box-shadow: 0 5px 5px -5px #999 inset;
+  background-image: linear-gradient(
+    90deg,
+    #000000 0%,
+    #d3d2d0 5%,
+    #deadaa 25%,
+    #ec4c3a 75%,
+    #a13bef 100%
+  );
+  background-size: 100% 100%;
+}
+
+/* The Modal (background) */
+.legend-modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1000; /* Sit on top */
+  left: 10em;
+  right: 10em;
+  top: 2em;
+  /* width: 70%; /\* Full width *\/ */
+  max-height: 90%; /* Full height */
+  max-width: 70%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
 }
