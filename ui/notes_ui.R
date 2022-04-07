@@ -1,5 +1,7 @@
-notes_tab = tabPanel('Notes/Caveats', value='notes',
+notes_tab <- tabPanel("Notes",
+    value = "notes",
     br(),
-    div(includeHTML('ui/notes_tab.html'),
-        style='padding: 20px')
+    div(includeHTML("ui/notes_tab.html"),
+        style = "padding: 20px"
+    )
 )
