@@ -46,17 +46,18 @@ suppressPackageStartupMessages({
 
 conf <- jsonlite::fromJSON("config.json")
 
-# #uncomment and run this (without saving script) to create initial connection to our shinyapps account
-## rsconnect::setAccountInfo(name = 'cuahsi',
-##                           token = conf$shinyapps_cuahsi_token,
-##                           secret = conf$shinyapps_cuahsi_secret)
+# # uncomment and run this (without saving script) to create initial connection to our shinyapps account
+# rsconnect::setAccountInfo(name = 'cuahsi',
+#                           token = conf$shinyapps_cuahsi_token,
+#                           secret = conf$shinyapps_cuahsi_secret)
 
-# #uncomment and run this (without saving script) to deploy app
-## options(rsconnect.http.timeout = 1000)
-## options(rsconnect.max.bundle.size = 8 * 1024 * 1024 * 1024)
-## rsconnect::deployApp('~/files/projects/science/macrosheds/portal',
-##                      appName = 'macrosheds',
-##                      account = 'cuahsi')
+# # uncomment and run this (without saving script) to deploy app. you may need to establish your own path
+# options(rsconnect.http.timeout = 1000)
+# options(rsconnect.max.bundle.size = 8 * 1024 * 1024 * 1024)
+# # rsconnect::deployApp('~/git/macrosheds/portal',
+# rsconnect::deployApp('~/files/projects/science/macrosheds/portal',
+#                      appName = 'macrosheds',
+#                      account = 'cuahsi')
 
 ## rsconnect::showLogs(appName = "macrosheds", streaming = TRUE)
 

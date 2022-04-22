@@ -1085,41 +1085,43 @@ load_portal_config <- function(from_where) {
     # developers, this will always be "remote". for future users, it may be a
     # configurable option.
 
-    if (from_where == "remote") {
+    if (from_where == 'remote') {
         variables <- sm(googlesheets4::read_sheet(
             conf$variables_gsheet,
-            na = c("", "NA"),
-            col_types = "cccccccnnccnn"
+            na = c('', 'NA'),
+            col_types = 'cccccccnnccnn'
         ))
 
         site_data <- sm(googlesheets4::read_sheet(
             conf$site_data_gsheet,
-            na = c("", "NA"),
-            col_types = "ccccccccnnnnnccn"
+            na = c('', 'NA'),
+            col_types = 'ccccccccnnnnnccnc'
         ))
 
-        universal_products <- sm(googlesheets4::read_sheet(
-            conf$univ_prods_gsheet,
-            na = c("", "NA"),
-            col_types = "ccccccccc"
-        ))
+        # universal_products <- sm(googlesheets4::read_sheet(
+        #     conf$univ_prods_gsheet,
+        #     na = c('', 'NA'),
+        #     col_types = 'c'
+        # ))
 
         disturbance_record <- sm(googlesheets4::read_sheet(
             conf$disturbance_record_gsheet,
-            na = c("", "NA"),
-            col_types = "ccccccccccc"
+            na = c('', 'NA'),
+            col_types = 'c'
         ))
 
         site_doi_license <- sm(googlesheets4::read_sheet(
             conf$site_doi_license_gsheet,
-            na = c("", "NA"),
-            col_types = "cnccccccc"
+            skip = 5,
+            na = c('', 'NA'),
+            col_types = 'c'
         ))
+
     } else if (from_where == "local") {
 
         variables <- sm(read_csv("data/general/variables.csv"))
         site_data <- sm(read_csv("data/general/site_data.csv"))
-        universal_products <- sm(read_csv("data/general/universal_products.csv"))
+        # universal_products <- sm(read_csv("data/general/universal_products.csv"))
         disturbance_record <- sm(read_csv("data/general/disturbance_record.csv"))
         site_doi_license <- sm(read_csv("data/general/site_doi_license.csv"))
 

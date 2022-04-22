@@ -840,7 +840,7 @@ cite_info_tib <- reactive({
 
     code_temp_check <- str_split_fixed(site_id, "-", n = Inf)[1, ]
 
-    if (code_temp_check[length(code_temp_check)] == "temp") {
+    if(code_temp_check[length(code_temp_check)] == "temp"){
         code <- substr(site_id, 1, nchar(site_id) - 5)
     } else {
         code <- site_id
@@ -848,16 +848,19 @@ cite_info_tib <- reactive({
 
     rain <- str_split_fixed(code, "_[*]_", n = Inf)[2]
 
-    if (rain == "rain" & !is.na(rain)) {
-      site_code <- str_split_fixed(code, "_[*]_", n = Inf)[1]
+    if(rain == "rain" & !is.na(rain)){
 
-      this_shed <- site_data %>%
+        site_code <- str_split_fixed(code, "_[*]_", n = Inf)[1]
+
+        this_shed <- site_data %>%
             filter(site_code == !!site_code) %>%
             filter(site_type == "rain_gauge")
-    } else {
-      site_code <- code
 
-      this_shed <- site_data %>%
+    } else {
+
+        site_code <- code
+
+        this_shed <- site_data %>%
             filter(site_code == !!site_code) %>%
             filter(site_type == "stream_gauge")
     }
@@ -867,18 +870,15 @@ cite_info_tib <- reactive({
 
     # disturbance record
     cite <- site_doi_license %>%
-      filter(domain == this_dmn) %>%
-      select(-citation_used) %>%
-      select(-last_col()) %>%
-      relocate(any_of(c("domain", "doi", "citation", "license", "license_type")))
+        filter(domain == this_dmn) %>%
+        select(domain, doi, citation, license, license_type)
 
     if(nrow(cite) == 0) {
-      print("this site has no citation information")
-      cite <- tibble()
-      return(cite)
+        print("this site has no citation information")
+        cite <- tibble()
+        return(cite)
     } else {
-      head(cite)
-      return(cite)
+        return(cite)
     }
 })
 
