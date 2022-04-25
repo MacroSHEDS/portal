@@ -1,19 +1,24 @@
 MacroSheds time-series data
 Column names and their descriptions
+A dataframe or table arranged with these columns is said to be in "MacroSheds format."
+Note that most functions in the macrosheds package will work without variable prefixes, status columns, and the val_err column.
 
 
-1. datetime
+1. "datetime"
+POSIX datetime
 
 Date and time in UTC
 
 
-2. site_code
+2. "site_code"
+character
 
 Short name for MacroSheds site. See "Site summary table" under the Data tab at
 macrosheds.org for more information.
 
 
-3. var
+3. "var"
+character
 
 The "sampling prefix" and short name for each MacroSheds variable. The sampling
 prefix makes up the first two characters of all elements of the "var" column, and
@@ -40,12 +45,14 @@ For more on MacroSheds variables, see "Variable table" under the Data tab at
 macrosheds.org.
 
 
-4. val
+4. "val"
+float
 
 The data value.
 
 
-5. ms_status
+5. "ms_status"
+integer
 
 A 0 in this column indicates that the corresponding data point is "clean" by MacroSheds standards.
 This means it was not flagged as problematic in any way by the data provider, and
@@ -59,7 +66,8 @@ of 1. Note that for sequences of points interpolated by MacroSheds, the ms_statu
 preceding the interpolated sequence is carried to all interpolated points within the sequence.
 
 
-6. ms_interp
+6. "ms_interp"
+integer
 
 A 1 in this column indicates that the corresponding data point was imputed by MacroSheds.
 Currently, all imputation is done by linear interpolation, except for winter discharge at
@@ -67,7 +75,8 @@ McMurdo LTER, where we assume discharge values of 0. In future versions, we will
 additional imputation techniques and detail them here.
 
 
-7. val_err
+7. "val_err"
+float
 
 The combined standard uncertainty associated with the corresponding data point.
 Every time-series data point retrieved from a data provider by MacroSheds is assigned

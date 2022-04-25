@@ -85,6 +85,7 @@ output$DL_SUBMIT_SITE <- downloadHandler(
                    site_fullname = SiteName,
                    stream_name = StreamName,
                    site_type = SiteType,
+                   ws_status = WatershedStatus,
                    latitude = Latitude,
                    longitude = Longitude,
                    epsg_code,

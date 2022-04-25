@@ -52,7 +52,7 @@ map_tab <- tabPanel(
                     id = "bucket-info",
                     HTML('<span class="glyphicon glyphicon-question-sign"></span>'),
                     div(
-                        includeHTML("ui/info_tab.html"),
+                        includeHTML("ui/info_tab.html")
                         # style = "padding: 20px"
                     ),
                     div(
@@ -61,7 +61,7 @@ map_tab <- tabPanel(
                             p(
                                 id = "notes-footer",
                                 "go to 'Notes' tab for more information"
-                            ),
+                            )
                             # class = "leftpanel-text"
                         )
                     )
@@ -85,7 +85,7 @@ map_tab <- tabPanel(
                             <a target="_blank" data-toggle="tooltip" data-placement="bottom" title="click to clear all the Map Selections">
                             <span class="glyphicon glyphicon-trash gi-semi-x"></span>
                             </a>
-                            </button></div>'),
+                            </button></div>')
                     )
                 ),
 
@@ -103,7 +103,7 @@ map_tab <- tabPanel(
                             p(
                                 id = "notes-footer",
                                 "go to 'Notes' tab for more information"
-                            ),
+                            )
                             # class = "leftpanel-text"
                         )
                     )
@@ -136,8 +136,7 @@ map_tab <- tabPanel(
                           class = "meta-table",
                           tableOutput("MAP_DISTURBANCE_INFO") %>%
                             tagAppendAttributes(class = "table") %>%
-                            tagAppendAttributes(class = "horizontal-scroll"),
-
+                            tagAppendAttributes(class = "horizontal-scroll")
                       )
                     ),
                     hidden(
@@ -146,7 +145,7 @@ map_tab <- tabPanel(
                           class = "meta-table",
                           tableOutput("MAP_CITATION_INFO") %>%
                             tagAppendAttributes(class = "table") %>%
-                            tagAppendAttributes(class = "horizontal-scroll"),
+                            tagAppendAttributes(class = "horizontal-scroll")
 
                       )
                     )
@@ -177,7 +176,7 @@ map_tab <- tabPanel(
                             # class = "leftpanel-text"
                         )
                     )
-                ),
+                )
             )
         )
     ),
