@@ -23,6 +23,7 @@ suppressPackageStartupMessages({
     library(leaflet)
     library(leaflet.extras)
     library(tidyverse)
+    library(purrr)
     library(glue)
     library(shinyjs)
     library(googlesheets4)
@@ -34,8 +35,6 @@ suppressPackageStartupMessages({
     # library(rhandsontable)
     # library(shiny.router)
 })
-
-
 
 # TODO:
 # most of the variables created in this script can be automatically generated.
@@ -52,10 +51,10 @@ conf <- jsonlite::fromJSON("config.json")
 #                           secret = conf$shinyapps_cuahsi_secret)
 
 # # uncomment and run this (without saving script) to deploy app. you may need to establish your own path
-# options(rsconnect.http.timeout = 1000)
+# options(rsconnect.http.timeout = 3000)
 # options(rsconnect.max.bundle.size = 8 * 1024 * 1024 * 1024)
-# # rsconnect::deployApp('~/git/macrosheds/portal',
-# rsconnect::deployApp('~/files/projects/science/macrosheds/portal',
+# rsconnect::deployApp('~/git/macrosheds/portal',
+# # rsconnect::deployApp('~/files/projects/science/macrosheds/portal',
 #                      appName = 'macrosheds',
 #                      account = 'cuahsi')
 
