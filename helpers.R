@@ -1086,6 +1086,7 @@ load_portal_config <- function(from_where) {
     # configurable option.
 
     if (from_where == 'remote') {
+
         variables <- sm(googlesheets4::read_sheet(
             conf$variables_gsheet,
             na = c('', 'NA'),
@@ -1095,8 +1096,9 @@ load_portal_config <- function(from_where) {
         site_data <- sm(googlesheets4::read_sheet(
             conf$site_data_gsheet,
             na = c('', 'NA'),
-            col_types = 'ccccccccnnnnnccnc'
+            col_types = 'ccccccccnnnnnccccc'
         ))
+
 
         # universal_products <- sm(googlesheets4::read_sheet(
         #     conf$univ_prods_gsheet,
@@ -1112,7 +1114,7 @@ load_portal_config <- function(from_where) {
 
         site_doi_license <- sm(googlesheets4::read_sheet(
             conf$site_doi_license_gsheet,
-            skip = 5,
+            skip = 6,
             na = c('', 'NA'),
             col_types = 'c'
         ))
