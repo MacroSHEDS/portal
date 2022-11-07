@@ -8,6 +8,7 @@ logs
 portal.Rproj
 .RData
 .RDataTmp
+.Renviron
 .DS_Store
 *.DS_Store
 ui/.DS_Store

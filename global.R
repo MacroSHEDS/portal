@@ -3,8 +3,12 @@ suppressPackageStartupMessages({
     library(feather)
     library(plyr)
     library(data.table)
+    library(solartime)
+    # NOTE: adding in sf to library bc might help w deployApp()
+    library(sf)
+    library(spatialwidget)
     # library(dtplyr)
-    library(shiny)
+    ## library(shiny)
     library(shinydashboard)
     library(shinycssloaders)
     library(shinyBS)
@@ -46,20 +50,20 @@ suppressPackageStartupMessages({
 
 conf <- jsonlite::fromJSON("config.json")
 
-# # uncomment and run this (without saving script) to create initial connection to our shinyapps account
-# rsconnect::setAccountInfo(name = 'cuahsi',
-#                           token = conf$shinyapps_cuahsi_token,
-#                           secret = conf$shinyapps_cuahsi_secret)
+## ## uncomment and run this (without saving script) to create initial connection to our shinyapps account
+## rsconnect::setAccountInfo(name = 'cuahsi',
+##                           token = conf$shinyapps_cuahsi_token,
+##                           secret = conf$shinyapps_cuahsi_secret)
 
-# # uncomment and run this (without saving script) to deploy app. you may need to establish your own path
-# options(rsconnect.http.timeout = 1000)
-# options(rsconnect.max.bundle.size = 8 * 1024 * 1024 * 1024)
-# # rsconnect::deployApp('~/git/macrosheds/portal',
-# rsconnect::deployApp('~/files/projects/science/macrosheds/portal',
-#                      appName = 'macrosheds',
-#                      account = 'cuahsi')
+## ## uncomment and run this (without saving script) to deploy app. you may need to establish your own path
+## options(rsconnect.http.timeout = 50000)
+## options(rsconnect.max.bundle.size = 8 * 1024 * 1024 * 1024)
 
-## rsconnect::showLogs(appName = "macrosheds", streaming = TRUE)
+## rsconnect::deployApp('~/science/macrosheds/portal',
+##                      appName = 'macrosheds',
+##                      account = 'cuahsi')
+
+## ## ## rsconnect::showLogs(appName = "macrosheds", streaming = TRUE)
 
 ## options(dplyr.summarise.inform = FALSE)
 
@@ -81,6 +85,8 @@ source("function_aliases.R")
 load_portal_config(from_where = "local")
 
 ##  mapbox token import
+## mapboxapi::mb_access_token(conf$mapboxapi_sk, install = TRUE)
+## NOTE: need new token?
 mapboxapi::mb_access_token(conf$mapbox_sk)
 
 # some stream_gauge sites do not have discharge, like calhoun - weir_3
