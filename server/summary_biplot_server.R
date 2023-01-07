@@ -45,6 +45,8 @@ pre_filtered_bi <- reactive({
     domains_b <- input$DOMAINS2_B
     sites_b <- input$SITES2_B
     sites <- input$SITES2
+    reselect <- input$SITE_SELECTION2
+
     type <- switch(input$SITE_SELECTION2,
         ALL_SITES2 = "all",
         DOMINE_NETWORK2 = "dom",
