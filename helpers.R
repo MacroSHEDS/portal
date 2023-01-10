@@ -1177,6 +1177,10 @@ generate_dropdown_varlist_ws <- function(variables) {
             ),
             variable_name
         )) %>%
+        # hack to solve "Mean Mean" display bug
+        mutate(
+          displayname = gsub('Mean', '', displayname)
+        ) %>%
         select(displayname, variable_code, variable_subtype)
 
     ws_vars <- ws_vars_table %>%
