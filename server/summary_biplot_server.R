@@ -54,7 +54,6 @@ pre_filtered_bi <- reactive({
         BY_BUCKET2 = "bucket"
     )
 
-
     # raw <- summary()
     raw <- sum
 
@@ -179,7 +178,7 @@ filtered_bi <- reactive({
 
         # Filter summary table for needed vars and spread to wide format
         final <- pfb %>%
-            filter(!is.na(Year)) %>%
+            filter(! is.na(Year)) %>%
             select(-missing) %>%
             filter(var %in% !!filter_vars) %>%
             group_by(site_code, Date, Year, var, domain) %>%
@@ -192,6 +191,7 @@ filtered_bi <- reactive({
     # For variables that are not associated with a year (constant through time),
     # they need to be added this way because their year column is NA
     if (x_var %in% c("Terrain", "Hydrology", "Geochemistry", "Soil")) {
+
         terrain <- raw %>%
             filter(var == !!x_var_) %>%
             rename(!!x_var_ := val) %>%
@@ -331,7 +331,6 @@ filtered_bi <- reactive({
 ##   }
 ## )
 
-
 # Update axis options ####
 # remove year as an axis option when aggregation the whole records
 
@@ -348,7 +347,6 @@ observe({
     agg <- input$AGG2
     yearly <- "Year"
     data <- isolate(pre_filtered_bi())
-
 
     if (reactive_vals$facet == 0) {
         return()
@@ -382,12 +380,12 @@ observeEvent(input$X_VAR2, {
 # update individual options for variables based on variable type
 observe({
     data <- isolate(pre_filtered_bi())
-    data_type <<- input$X_TYPE2
-    doms <<- input$DOMAINS2_S
+    data_type <- input$X_TYPE2
+    doms <- input$DOMAINS2_S
     input$DOMAINS2
-    sites <<- input$SITES2
-    site_select <<- input$SITE_SELECTION2
-    old_selection <<- isolate(current_selection$old_x)
+    sites <- input$SITES2
+    site_select <- input$SITE_SELECTION2
+    old_selection <- isolate(current_selection$old_x)
 
     # data <- isolate(pre_filtered_bi())
     # data_type <<- input$X_TYPE2
@@ -739,7 +737,7 @@ output$SUMMARY_BIPLOT <- renderPlotly({
     chem_size <- isolate(input$SIZE_TYPE2)
     num_sites <- isolate(n_sites())
 
-    empty_msg <- if (!length(sites)) {
+    empty_msg <- if (! length(sites)) {
         "No sites selected"
     } else {
         "No data available for \nthe selected variables"
