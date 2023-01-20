@@ -192,6 +192,8 @@ filtered_bi <- reactive({
     # they need to be added this way because their year column is NA
     if (x_var %in% c("Terrain", "Hydrology", "Geochemistry", "Soil")) {
 
+        if(x_var_ == '') return(tibble())
+
         terrain <- raw %>%
             filter(var == !!x_var_) %>%
             rename(!!x_var_ := val) %>%
@@ -202,6 +204,9 @@ filtered_bi <- reactive({
     }
 
     if (y_var %in% c("Terrain", "Hydrology", "Geochemistry", "Soil")) {
+
+        if(y_var_ == '') return(tibble())
+
         terrain <- raw %>%
             filter(var == !!y_var_) %>%
             rename(!!y_var_ := val) %>%
@@ -212,6 +217,9 @@ filtered_bi <- reactive({
     }
 
     if (size_var %in% c("Terrain", "Hydrology", "Geochemistry", "Soil")) {
+
+        if(size_var_ == '') return(tibble())
+
         terrain <- raw %>%
             filter(var == !!size_var_) %>%
             rename(!!size_var_ := val) %>%
@@ -228,14 +236,18 @@ filtered_bi <- reactive({
         return(tibble())
     }
 
+    x_var__ <- if(chem_x %in% c('Watershed Characteristics',
+                                'Discharge', 'Precipitation')) x_var_ else x_var
     x_unit_start <- variables %>%
-        filter(variable_code == x_var)
+        filter(variable_code == x_var__)
 
     # Unit conversions. Could be improved for sure
     if (chem_x %in% c("Stream Chemistry", "Precipitation Chemistry")) {
-        x_unit_start <- pull(variables %>%
+
+        x_unit_start <- variables %>%
             filter(variable_code == x_var) %>%
-            select(unit))
+            select(unit) %>%
+            pull()
 
         final <- convert_conc_units_bi(final, x_var_, x_unit_start, x_unit)
     }
@@ -254,9 +266,10 @@ filtered_bi <- reactive({
     }
 
     if (chem_y %in% c("Stream Chemistry", "Precipitation Chemistry")) {
-        y_unit_start <- pull(variables %>%
+        y_unit_start <- variables %>%
             filter(variable_code == y_var) %>%
-            select(unit))
+            select(unit) %>%
+            pull()
 
         final <- convert_conc_units_bi(final, y_var_, y_unit_start, y_unit)
     }
@@ -274,12 +287,12 @@ filtered_bi <- reactive({
             mutate(discharge_a = discharge_a / 365)
     }
 
-
     if (include_size) {
         if (chem_size %in% c("Stream Chemistry", "Precipitation Chemistry")) {
-            size_unit_start <- pull(variables %>%
+            size_unit_start <- variables %>%
                 filter(variable_code == size_var) %>%
-                select(unit))
+                select(unit) %>%
+                pull()
 
             final <- convert_conc_units_bi(final, size_var_, size_unit_start, size_unit)
         }
@@ -1153,8 +1166,9 @@ output$SUMMARY_BIPLOT <- renderPlotly({
                     text = ~ paste0(size_var, " ", size_unit, ":", round(get(size_tvar), digits = 2), "\nSite:", site_code, ", \nDomain:", pretty_domain)
                 ) %>%
                 plotly::layout(
-                    xaxis = list(title = paste0("Mean", " ", x_var, " ", x_unit)),
-                    yaxis = list(title = paste0("Mean", " ", y_var, " ", y_unit)),
+                    # xaxis = list(title = paste0("Mean", " ", x_var, " ", x_unit)),
+                    xaxis = list(title = paste(x_var, x_unit)),
+                    yaxis = list(title = paste(y_var, y_unit)),
                     paper_bgcolor = "rgba(0,0,0,0)",
                     plot_bgcolor = "rgba(0,0,0,0)",
                     legend = list(itemsizing = "constant")
@@ -1173,8 +1187,8 @@ output$SUMMARY_BIPLOT <- renderPlotly({
                     text = ~ paste0("\nSite:", site_code, ", \nDomain:", pretty_domain)
                 ) %>%
                 plotly::layout(
-                    xaxis = list(title = paste0("Mean", " ", x_var, " ", x_unit)),
-                    yaxis = list(title = paste0("Mean", " ", y_var, " ", y_unit)),
+                    xaxis = list(title = paste(x_var, x_unit)),
+                    yaxis = list(title = paste(y_var, y_unit)),
                     paper_bgcolor = "rgba(0,0,0,0)",
                     plot_bgcolor = "rgba(0,0,0,0)"
                 )

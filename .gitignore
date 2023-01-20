@@ -1,4 +1,7 @@
-data/
+data/*
+!data/general
+data/general/*
+!data/general/variables_portalonly.csv
 config.txt
 .Rhistory
 rsconnect
