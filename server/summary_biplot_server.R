@@ -79,10 +79,7 @@ pre_filtered_bi <- reactive({
     }
 
     final <- fill %>%
-        filter(
-            Year >= !!date1,
-            Year <= !!date2
-        )
+        filter(is.na(Year) | (Year >= !!date1 & Year <= !!date2))
 
     return(final)
 })
@@ -162,71 +159,27 @@ filtered_bi <- reactive({
         filter_vars <- c(x_var_, y_var_)
     }
 
-    if ("missing" %in% filter_vars && agg == "YEARLY2") {
-        # Filter summary table for needed vars and spread to wide format
-        final <- pfb %>%
-            filter(!is.na(Year)) %>%
-            filter(var %in% !!filter_vars) %>%
-            group_by(site_code, Date, Year, var, domain) %>%
-            summarise(
-                val = mean(val, na.rm = TRUE),
-                missing = mean(missing, na.rm = TRUE)
-            ) %>%
-            ungroup() %>%
-            pivot_wider(names_from = "var", values_from = "val")
-    } else {
+    # Filter summary table for needed vars and spread to wide format
+    if (agg == "YEARLY2") {
 
-        # Filter summary table for needed vars and spread to wide format
         final <- pfb %>%
             filter(! is.na(Year)) %>%
-            select(-missing) %>%
             filter(var %in% !!filter_vars) %>%
-            group_by(site_code, Date, Year, var, domain) %>%
-            summarise(val = mean(val, na.rm = TRUE)) %>%
+            select(-Date, -pctCellErr) %>%
+            pivot_wider(names_from = "var", values_from = "val")
+
+    } else {
+
+        final <- pfb %>%
+            # filter(! is.na(Year)) %>%
+            # select(-missing) %>%
+            filter(var %in% !!filter_vars) %>%
+            group_by(site_code, var, domain) %>%
+            # group_by(site_code, Date, Year, var, domain) %>%
+            summarise(val = mean(val, na.rm = TRUE),
+                      missing = mean(missing, na.rm = TRUE)) %>%
             ungroup() %>%
             pivot_wider(names_from = "var", values_from = "val")
-    }
-
-
-    # For variables that are not associated with a year (constant through time),
-    # they need to be added this way because their year column is NA
-    if (x_var %in% c("Terrain", "Hydrology", "Geochemistry", "Soil")) {
-
-        if(x_var_ == '') return(tibble())
-
-        terrain <- raw %>%
-            filter(var == !!x_var_) %>%
-            rename(!!x_var_ := val) %>%
-            select(-Year, -var, -Date, -pctCellErr, -missing)
-
-        final <- final %>%
-            left_join(., terrain, by = c("site_code", "domain"))
-    }
-
-    if (y_var %in% c("Terrain", "Hydrology", "Geochemistry", "Soil")) {
-
-        if(y_var_ == '') return(tibble())
-
-        terrain <- raw %>%
-            filter(var == !!y_var_) %>%
-            rename(!!y_var_ := val) %>%
-            select(-Year, -var, -Date, -pctCellErr, -missing)
-
-        final <- final %>%
-            left_join(., terrain, by = c("site_code", "domain"))
-    }
-
-    if (size_var %in% c("Terrain", "Hydrology", "Geochemistry", "Soil")) {
-
-        if(size_var_ == '') return(tibble())
-
-        terrain <- raw %>%
-            filter(var == !!size_var_) %>%
-            rename(!!size_var_ := val) %>%
-            select(-Year, -var, -Date, -pctCellErr, -missing)
-
-        final <- final %>%
-            left_join(., terrain, by = c("site_code", "domain"))
     }
 
     # Filter to include only sites with all variables available
@@ -311,21 +264,20 @@ filtered_bi <- reactive({
         }
     }
 
-    # If the whole record summary is selected, so that here
+    # If the whole record summary is selected, summarize across dates; compute missing here
     if (agg == "WHOLE2") {
         if (include_size && size_var_ == "missing") {
             year_dif <- (year2 - year1) + 1
             final <- final %>%
-                # select(-Year) %>%
                 group_by(site_code, domain) %>%
                 summarise(across(where(is.numeric), ~ mean(.x, na.rm = TRUE)),
                     n = n()
                 ) %>%
                 mutate(missing = round((((year_dif - n) / year_dif) * 100), 1)) %>%
-                select(-Year, -n)
+                select(-any_of('Year'), -n)
         } else {
             final <- final %>%
-                select(-Year) %>%
+                select(-any_of('Year')) %>%
                 group_by(site_code, domain) %>%
                 summarise(across(where(is.numeric), ~ mean(.x, na.rm = TRUE)))
         }
