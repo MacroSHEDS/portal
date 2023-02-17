@@ -44,15 +44,15 @@ data_tab <- tabPanel(
             #              style = 'color: #333')
             br(),
             actionButton(
-                inputId = "FIGSHARE_LINK",
-                label = "Everything else",
+                inputId = "EDI_LINK",
+                label = "MacroSheds Main Dataset",
                 icon = icon("external-link",
                     lib = "font-awesome"
                 ),
                 width = "100%",
                 style = "color: #333",
-                class = "disabled",
-                onclick = "window.open('https://figshare.com/collections/MacroSheds/5621740', '_blank')"
+                class = "active",
+                onclick = "window.open('https://portal.edirepository.org/nis/mapbrowse?scope=edi&identifier=1262', '_blank')"
             ),
             # p('("Download all" option coming soon.)', style = 'color: white')
             div(
