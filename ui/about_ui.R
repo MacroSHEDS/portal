@@ -29,7 +29,7 @@ about_tab <- tabPanel("About",
       ),
       column(
         4,
-        icon("map-marker", class = "fa-4x"),
+        icon("location-dot", class = "fa-4x"),
         h2(textOutput("NSITES")),
         p("SITES")
       ),
