@@ -27,6 +27,7 @@ suppressPackageStartupMessages({
     library(leaflet)
     library(leaflet.extras)
     library(tidyverse)
+    library(purrr)
     library(glue)
     library(shinyjs)
     library(googlesheets4)
@@ -39,8 +40,6 @@ suppressPackageStartupMessages({
     # library(shiny.router)
 })
 
-
-
 # TODO:
 # most of the variables created in this script can be automatically generated.
 # those that can't should be read from a config file or spreadsheet eventually.
@@ -50,22 +49,21 @@ suppressPackageStartupMessages({
 
 conf <- jsonlite::fromJSON("config.json")
 
-## ## uncomment and run this (without saving script) to create initial connection to our shinyapps account
-## rsconnect::setAccountInfo(name = 'cuahsi',
-##                           token = conf$shinyapps_cuahsi_token,
-##                           secret = conf$shinyapps_cuahsi_secret)
+## uncomment and run this (without saving script) to create initial connection to our shinyapps account
+# rsconnect::setAccountInfo(name = 'cuahsi',
+#                           token = conf$shinyapps_cuahsi_token,
+#                           secret = conf$shinyapps_cuahsi_secret)
 
-## ## uncomment and run this (without saving script) to deploy app. you may need to establish your own path
-## options(rsconnect.http.timeout = 50000)
-## options(rsconnect.max.bundle.size = 8 * 1024 * 1024 * 1024)
+## uncomment and run this (without saving script) to deploy app. you may need to establish your own path
+# options(rsconnect.http.timeout = 50000)
+# options(rsconnect.max.bundle.size = 8 * 1024 * 1024 * 1024)
+# rsconnect::deployApp('~/science/macrosheds/portal',
+#                      appName = 'macrosheds',
+#                      account = 'cuahsi')
 
-## rsconnect::deployApp('~/science/macrosheds/portal',
-##                      appName = 'macrosheds',
-##                      account = 'cuahsi')
+# rsconnect::showLogs(appName = "macrosheds", streaming = TRUE)
 
-## ## ## rsconnect::showLogs(appName = "macrosheds", streaming = TRUE)
-
-## options(dplyr.summarise.inform = FALSE)
+# options(dplyr.summarise.inform = FALSE)
 
 # for local testing (commentshowLogs(appName = "YourApp", entries =100, streaming = TRUE) all before pushing live)
 # setwd('~/git/macrosheds/portal')
