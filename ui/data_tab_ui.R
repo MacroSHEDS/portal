@@ -21,17 +21,18 @@ data_tab <- tabPanel(
                 width = "100%",
                 style = "color: #333"
             ),
+            br(),
             h2("Download",
                 style = "color: #7b96b6"
             ),
             downloadButton(
                 outputId = "DL_SUBMIT_SITE",
-                label = "Site summary table",
+                label = "Site Catalog",
                 style = "color: #333 !important; display: block; margin-left: 15px; margin-right: 5px; margin-top: 6px; margin-bottom: 6px; width: 100%"
             ),
             downloadButton(
                 outputId = "DL_SUBMIT_VAR",
-                label = "Variable table",
+                label = "Variable Catalog",
                 style = "color: #333 !important; display: block; margin-left: 15px; margin-right: 5px; margin-top: 6px; margin-bottom: 6px; width: 100%"
             ),
             # actionButton(inputId = 'TIMESERIES_DL_BUTTON',
@@ -43,21 +44,28 @@ data_tab <- tabPanel(
             #              width = '100%',
             #              style = 'color: #333')
             br(),
+            h2("Main Dataset",
+                style = "color: #7b96b6"
+            ),
             actionButton(
                 inputId = "EDI_LINK",
-                label = "MacroSheds Main Dataset",
+                label = "MacroSheds EDI",
                 icon = icon("external-link",
                     lib = "font-awesome"
                 ),
                 width = "100%",
                 style = "color: #333",
-                class = "active",
+                ## class = "active",
                 onclick = "window.open('https://portal.edirepository.org/nis/mapbrowse?scope=edi&identifier=1262', '_blank')"
             ),
             # p('("Download all" option coming soon.)', style = 'color: white')
+            br(), br(),
             div(
-                class = "label",
-                tags$footer(p("downloadable dataset coming soon", style = "color: white"))
+                class = "well-sm",
+                tags$footer("for R users,",
+                          tags$a(href="https://github.com/MacroSHEDS/macrosheds", "the MacroSheds R package"),
+                          "is the most convenient way to download, explore, and manipulate",
+                          "macrosheds data", style = "color: white")
             )
         )
     )
