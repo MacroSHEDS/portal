@@ -50,7 +50,7 @@ landing_page <- quote({
                     br(),
                     br(),
                     p(HTML(paste(
-                        "This is MacroSheds v1.0 <span style='color: red'><strong>beta</strong></span>,",
+                        "This is MacroSheds portal v1.0 <span style='color: red'><strong>beta</strong></span>,",
                         "so all major components are in place, but there might still be some feature",
                         "bugs or data errors. Please <a href='mailto: mail@macrosheds.org'><u>let us know",
                         "</u></a> if you find any!"
