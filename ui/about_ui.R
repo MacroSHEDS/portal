@@ -20,22 +20,23 @@ about_tab <- tabPanel("About",
       class = "text-center",
       column(
         4,
-        img(
-          src = "water-solid-193d85.svg",
-          style = "height: 56px; width: 56px"
-        ),
+        ## img(
+        ##   src = "water-solid-193d85.svg",
+        ##   style = "height: 56px; width: 56px"
+        ## ),
+        icon("water", class = "fa-4x"),
         h2(textOutput("NSTREAMS")),
         p("STREAMS")
       ),
       column(
         4,
-        icon("map-marker", class = "fa-4x"),
+        icon("location-dot", class = "fa-4x"),
         h2(textOutput("NSITES")),
         p("SITES")
       ),
       column(
         4,
-        icon("chart-bar", class = "fa-4x"),
+        icon("chart-simple", class = "fa-4x"),
         h2(textOutput("NOBS")),
         p("OBSERVATIONS")
       )

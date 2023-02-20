@@ -1,4 +1,4 @@
-Readme for MacroSheds Figshare datasets
+Readme for MacroSheds datasets
 
 ---
 
