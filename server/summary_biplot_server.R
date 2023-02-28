@@ -110,6 +110,12 @@ filtered_bi <- reactive({
     # #raw <- isolate(summary())
     # raw <- sum
 
+    # react to change in selection type
+    select_all <- input$ALL_SITES2
+    select_dmnnwk <- input$DOMINE_NETWORK2
+    select_sites <- input$BY_SITE2
+    select_map <- input$BY_BUCKET2
+
     x_var <- input$X_VAR2
     y_var <- input$Y_VAR2
     include_size <- input$ADD_SIZE2
@@ -389,6 +395,15 @@ observe({
     site_select <<- input$SITE_SELECTION2
     old_selection <<- isolate(current_selection$old_x)
 
+    # react to change in selection type
+    ## select_all <- input$ALL_SITES2
+    ## select_dmnnwk <- input$DOMINE_NETWORK2
+    ## select_sites <- input$BY_SITE2
+    ## select_map <- input$BY_BUCKET2
+
+    # react to change in watershed char var type
+    data_sub_type <- input$X_VAR2
+
     # data <- isolate(pre_filtered_bi())
     # data_type <<- input$X_TYPE2
     # doms <<- input$DOMAINS2_S
@@ -523,6 +538,9 @@ observe({
     old_selection <- isolate(current_selection$old_size)
     x_var <- isolate(input$X_VAR2)
     y_var <- isolate(input$Y_VAR2)
+
+    ## print(x_var)
+    ## print(y_var)
 
     if (data_type %in% c("Stream Chemistry", "Precipitation Chemistry")) {
         select <- filter_dropdown_varlist_bi(data, vartype = "conc")
@@ -753,7 +771,7 @@ output$SUMMARY_BIPLOT <- renderPlotly({
         empty_msg <- 'Non-temporal data selected. \nSet Aggregation to "Full record"'
     }
 
-    empty_plot <- plotly::plot_ly() %>%
+    empty_plot <- plotly::plot_ly(type = "scatter") %>%
         plotly::layout(
             annotations = list(
                 text = empty_msg,
@@ -796,7 +814,7 @@ output$SUMMARY_BIPLOT <- renderPlotly({
         var = size_var
     )
 
-    emplty_blank <- plotly::plot_ly() %>%
+    emplty_blank <- plotly::plot_ly(type = "scatter") %>%
         plotly::layout()
 
     if (!include_size) {
@@ -839,7 +857,7 @@ output$SUMMARY_BIPLOT <- renderPlotly({
         size_var <- ""
     }
 
-    if (num_sites > 12) {
+    if(num_sites > 12) {
         col_by <- "pretty_domain"
 
         networks_cite <- network_domain_default_sites$pretty_network[network_domain_default_sites$domain %in% unique(bi_table$domain)]
@@ -858,7 +876,16 @@ output$SUMMARY_BIPLOT <- renderPlotly({
 
     bi_table <- network_domain_default_sites %>%
         select(domain, pretty_domain) %>%
-        right_join(., bi_table, by = "domain")
+      right_join(., bi_table, by = "domain")
+
+    ## bi_suef <- bi_table %>%
+    ##   filter(domain == "suef")
+    ## print('---------------bloop--------------')
+    ## print(unique(bi_suef$site_code))
+    ## print('---------------bloop--------------')
+
+      # temporary fix to remove outlandish SUEF outliers w wrong site names
+      ## filter(!site_code %in% c("C4", "C2", "C3") )
 
     if (col_by == "legend_name") {
         bi_table <- bi_table %>%
