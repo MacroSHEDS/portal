@@ -38,6 +38,21 @@ pre_filtered_bi <- reactive({
     #     # raw <- summary()
     #     raw <- sum
 
+    x_var <- input$X_VAR2
+    y_var <- input$Y_VAR2
+    chem_x <- input$X_TYPE2
+    chem_y <- input$Y_TYPE2
+    x_unit <- input$X_UNIT2
+    y_unit <- input$Y_UNIT2
+    print('biplot x-axis:')
+    print(chem_x)
+    print(x_var)
+    print(x_unit)
+    print('biplot y-axis:')
+    print(chem_y)
+    print(y_var)
+    print(y_unit)
+
     date1 <- year(input$DATES2_INTER[1])
     date2 <- year(input$DATES2_INTER[2])
     domains <- input$DOMAINS2
@@ -57,6 +72,9 @@ pre_filtered_bi <- reactive({
 
     # raw <- summary()
     raw <- sum
+    ## %>%
+    ##   filter(!site_code %in% site_data_copy$site_code)
+
 
     if (type == "dom") {
         fill <- raw %>%
@@ -118,13 +136,24 @@ filtered_bi <- reactive({
 
     x_var <- input$X_VAR2
     y_var <- input$Y_VAR2
-    include_size <- input$ADD_SIZE2
-    size_var <- input$SIZE_VAR2
+    chem_x <- input$X_TYPE2
+    chem_y <- input$Y_TYPE2
     x_unit <- input$X_UNIT2
     y_unit <- input$Y_UNIT2
+    print('biplot x-axis:')
+    print(chem_x)
+    print(x_var)
+    print(x_unit)
+    print('biplot y-axis:')
+    print(chem_y)
+    print(y_var)
+    print(y_unit)
+
+    include_size <- input$ADD_SIZE2
+    size_var <- input$SIZE_VAR2
     size_unit <- input$SIZE_UNIT2
-    chem_x <- isolate(input$X_TYPE2)
-    chem_y <- isolate(input$Y_TYPE2)
+    ## chem_x <- isolate(input$X_TYPE2)
+    ## chem_y <- isolate(input$Y_TYPE2)
     chem_size <- isolate(input$SIZE_TYPE2)
     agg <- isolate(input$AGG2)
     domains <- isolate(input$DOMAINS2)
@@ -402,7 +431,7 @@ observe({
     ## select_map <- input$BY_BUCKET2
 
     # react to change in watershed char var type
-    data_sub_type <- input$X_VAR2
+    ## data_sub_type <- input$X_VAR2
 
     # data <- isolate(pre_filtered_bi())
     # data_type <<- input$X_TYPE2
@@ -659,8 +688,8 @@ observe({
 observe({
     x_var <- input$X_VAR2
     type <- input$SITE_SELECTION2
+    chem_x <- input$X_TYPE2
     ## trigger <- input$GEN_PLOTS2
-    chem_x <- isolate(input$X_TYPE2)
 
     if (chem_x == "Watershed Characteristics") {
         updateSelectInput(session, "X_UNIT2", choices = subset_ws_traits(x_var, ws_traits))
@@ -669,7 +698,7 @@ observe({
 
 observe({
     y_var <- input$Y_VAR2
-    chem_y <- isolate(input$Y_TYPE2)
+    chem_y <- input$Y_TYPE2
 
     if (chem_y == "Watershed Characteristics") {
         updateSelectInput(session, "Y_UNIT2", choices = subset_ws_traits(y_var, ws_traits))

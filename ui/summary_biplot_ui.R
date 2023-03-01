@@ -88,7 +88,7 @@ summary_biplot_tab <- tabPanel("Site Comparison",
                 ),
                 selectizeInput("X_UNIT2",
                     label = NULL,
-                    multiple = FALSE, choices = "mm", selected = "mm"
+                    multiple = FALSE, choices = conc_units_bi, selected = "mm"
                 ),
                 radioButtons("LOG_X2",
                     label = NULL,
