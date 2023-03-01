@@ -38,21 +38,6 @@ pre_filtered_bi <- reactive({
     #     # raw <- summary()
     #     raw <- sum
 
-    x_var <- input$X_VAR2
-    y_var <- input$Y_VAR2
-    chem_x <- input$X_TYPE2
-    chem_y <- input$Y_TYPE2
-    x_unit <- input$X_UNIT2
-    y_unit <- input$Y_UNIT2
-    print('biplot x-axis:')
-    print(chem_x)
-    print(x_var)
-    print(x_unit)
-    print('biplot y-axis:')
-    print(chem_y)
-    print(y_var)
-    print(y_unit)
-
     date1 <- year(input$DATES2_INTER[1])
     date2 <- year(input$DATES2_INTER[2])
     domains <- input$DOMAINS2
@@ -69,12 +54,13 @@ pre_filtered_bi <- reactive({
         BY_BUCKET2 = "bucket"
     )
 
+    print(ms_vars_blocked)
 
     # raw <- summary()
-    raw <- sum
-    ## %>%
-    ##   filter(!site_code %in% site_data_copy$site_code)
-
+    raw <- sum %>%
+      filter(!var %in% ms_vars_blocked,
+             !paste(domain, site_code) %in% c("suef C2", "suef C3", "suef C4")
+             )
 
     if (type == "dom") {
         fill <- raw %>%
@@ -130,24 +116,13 @@ filtered_bi <- reactive({
 
     x_var <- input$X_VAR2
     y_var <- input$Y_VAR2
-    chem_x <- input$X_TYPE2
-    chem_y <- input$Y_TYPE2
-    x_unit <- input$X_UNIT2
-    y_unit <- input$Y_UNIT2
-    print('biplot x-axis:')
-    print(chem_x)
-    print(x_var)
-    print(x_unit)
-    print('biplot y-axis:')
-    print(chem_y)
-    print(y_var)
-    print(y_unit)
-
     include_size <- input$ADD_SIZE2
     size_var <- input$SIZE_VAR2
+    x_unit <- input$X_UNIT2
+    y_unit <- input$Y_UNIT2
     size_unit <- input$SIZE_UNIT2
-    ## chem_x <- isolate(input$X_TYPE2)
-    ## chem_y <- isolate(input$Y_TYPE2)
+    chem_x <- isolate(input$X_TYPE2)
+    chem_y <- isolate(input$Y_TYPE2)
     chem_size <- isolate(input$SIZE_TYPE2)
     agg <- isolate(input$AGG2)
     domains <- isolate(input$DOMAINS2)
@@ -418,13 +393,6 @@ observe({
     site_select <<- input$SITE_SELECTION2
     old_selection <<- isolate(current_selection$old_x)
 
-    # data <- isolate(pre_filtered_bi())
-    # data_type <<- input$X_TYPE2
-    # doms <<- input$DOMAINS2_S
-    # input$DOMAINS2
-    # sites <<- input$SITES2
-    # site_select <<- input$SITE_SELECTION2
-    # old_selection <<- isolate(current_selection$old_x)
 
     if (data_type == "Stream Chemistry") {
         select <- filter_dropdown_varlist_bi(data, vartype = "conc")
@@ -452,7 +420,7 @@ observe({
 
     if (data_type == "Watershed Characteristics") {
         select <- ws_trait_types
-        units <- subset_ws_traits(ws_trait_types[1], ws_traits)
+        units <- subset_ws_traits(ws_trait_types[2], ws_traits)
         choose <- ""
     }
 
@@ -515,7 +483,7 @@ observe({
 
     if (data_type == "Watershed Characteristics") {
         select <- ws_trait_types
-        units <- subset_ws_traits(ws_trait_types[1], ws_traits)
+        units <- subset_ws_traits(ws_trait_types[2], ws_traits)
         choose <- ""
     }
 
@@ -573,7 +541,7 @@ observe({
 
     if (data_type == "Watershed Characteristics") {
         select <- ws_trait_types
-        units <- subset_ws_traits(ws_trait_types[1], ws_traits)
+        units <- subset_ws_traits(ws_trait_types[2], ws_traits)
         choose <- ""
     }
 
@@ -669,9 +637,7 @@ observe({
 # Update ws_chars options if the category is changed
 observe({
     x_var <- input$X_VAR2
-    type <- input$SITE_SELECTION2
-    chem_x <- input$X_TYPE2
-    ## trigger <- input$GEN_PLOTS2
+    chem_x <- isolate(input$X_TYPE2)
 
     if (chem_x == "Watershed Characteristics") {
         updateSelectInput(session, "X_UNIT2", choices = subset_ws_traits(x_var, ws_traits))
@@ -680,7 +646,7 @@ observe({
 
 observe({
     y_var <- input$Y_VAR2
-    chem_y <- input$Y_TYPE2
+    chem_y <- isolate(input$Y_TYPE2)
 
     if (chem_y == "Watershed Characteristics") {
         updateSelectInput(session, "Y_UNIT2", choices = subset_ws_traits(y_var, ws_traits))

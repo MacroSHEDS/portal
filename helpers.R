@@ -1091,7 +1091,8 @@ load_portal_config <- function(from_where) {
             conf$variables_gsheet,
             na = c('', 'NA'),
             col_types = 'cccccccnnccnn'
-        ))
+        )) %>%
+        filter(!variable_code %in% ms_vars_blocked)
 
         site_data <- sm(googlesheets4::read_sheet(
             conf$site_data_gsheet,
@@ -1157,16 +1158,10 @@ generate_dropdown_varlist_ws <- function(variables) {
         pull(var) %>%
         unique()
 
-    ws_vars_table <- variables %>%
+    ws_vars_table <<- variables %>%
         filter(variable_type == "ws_char") %>%
-        filter(!variable_code %in% c(
-            "cc_precip_sd", "cc_precip_median",
-            "cc_temp_mean_sd", "cc_temp_mean_median",
-            "vb_lai_median", "vb_lai_sd", "vb_fpar_median",
-            "vb_fpar_sd", "va_gpp_median", "va_gpp_sd",
-            "vb_ndvi_median", "vb_ndvi_sd", "vh_tcw_sd",
-            "vh_tcw_median"
-        )) %>%
+        # ms_vars_blocked defined in global.R, around line 90
+        filter(!variable_code %in% ms_vars_blocked) %>%
         filter(variable_code %in% biplot_summary_file) %>%
         mutate(displayname = ifelse(!is.na(unit),
             paste0(
@@ -1211,6 +1206,8 @@ subset_ws_traits <- function(selection, ws_traits = ws_traits) {
     ws_code <- unname(selection)
 
     ws_subest <- unlist(ws_traits[[ws_code]])
+    print(ws_code)
+    print(ws_subest)
 
     return(ws_subest)
 }
