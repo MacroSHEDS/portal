@@ -10,14 +10,14 @@ data_tab <- tabPanel(
             ),
             actionButton(
                 inputId = "SITE_CATALOG_BUTTON",
-                label = "Site Catalog",
+                label = "Site catalog",
                 width = "100%",
                 style = "color: #333"
             ),
             # icon = icon("th"))
             actionButton(
                 inputId = "VARIABLE_CATALOG_BUTTON",
-                label = "Variable Catalog",
+                label = "Variable catalog",
                 width = "100%",
                 style = "color: #333"
             ),
@@ -27,12 +27,12 @@ data_tab <- tabPanel(
             ),
             downloadButton(
                 outputId = "DL_SUBMIT_SITE",
-                label = "Site Catalog",
+                label = "Site summary table",
                 style = "color: #333 !important; display: block; margin-left: 15px; margin-right: 5px; margin-top: 6px; margin-bottom: 6px; width: 100%"
             ),
             downloadButton(
                 outputId = "DL_SUBMIT_VAR",
-                label = "Variable Catalog",
+                label = "Variable table",
                 style = "color: #333 !important; display: block; margin-left: 15px; margin-right: 5px; margin-top: 6px; margin-bottom: 6px; width: 100%"
             ),
             # actionButton(inputId = 'TIMESERIES_DL_BUTTON',
@@ -63,9 +63,9 @@ data_tab <- tabPanel(
             div(
                 class = "well-sm",
                 tags$footer("for R users,",
-                          tags$a(href="https://github.com/MacroSHEDS/macrosheds", "the MacroSheds R package"),
+                          tags$a(href="https://github.com/MacroSHEDS/macrosheds", "the macrosheds R package"),
                           "is the most convenient way to download, explore, and manipulate",
-                          "macrosheds data", style = "color: white")
+                          "MacroSheds data", style = "color: white")
             )
         )
     )

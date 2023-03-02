@@ -47,6 +47,10 @@ suppressPackageStartupMessages({
 
 ## 0. setup ####
 
+options(dplyr.summarise.inform = FALSE,
+        readr.show_progress = FALSE,
+        readr.show_col_types = FALSE)
+
 conf <- jsonlite::fromJSON("config.json")
 
 ## uncomment and run this (without saving script) to create initial connection to our shinyapps account
@@ -81,6 +85,7 @@ source("function_aliases.R")
 # googlesheets4::gs4_auth(path = '../data_acquisition/googlesheet_service_accnt.json')
 #                         use_oob = TRUE)
 load_portal_config(from_where = "local")
+variables <- bind_rows(variables, read_csv('data/general/variables_portalonly.csv'))
 
 ##  mapbox token import
 ## mapboxapi::mb_access_token(conf$mapboxapi_sk, install = TRUE)
