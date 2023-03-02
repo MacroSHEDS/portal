@@ -92,7 +92,7 @@ ms_vars_blocked <<- c(
 # load global datasets
 # googlesheets4::gs4_auth(path = '../data_acquisition/googlesheet_service_accnt.json')
 #                         use_oob = TRUE)
-load_portal_config(from_where = "remote")
+load_portal_config(from_where = "local")
 
 ##  mapbox token import
 ## mapboxapi::mb_access_token(conf$mapboxapi_sk, install = TRUE)

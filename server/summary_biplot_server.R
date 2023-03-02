@@ -54,8 +54,6 @@ pre_filtered_bi <- reactive({
         BY_BUCKET2 = "bucket"
     )
 
-    print(ms_vars_blocked)
-
     # raw <- summary()
     raw <- sum %>%
       filter(!var %in% ms_vars_blocked,
@@ -135,6 +133,7 @@ filtered_bi <- reactive({
     raw <- sum
 
     if (nrow(pfb) == 0) {
+        print('WARNING: prefiltered df is zero rows')
         final <- tibble()
         return(final)
     }
@@ -157,6 +156,13 @@ filtered_bi <- reactive({
         var = size_var
     )
 
+    print('x_var_ var:')
+    print(x_var_)
+    print('y_var_ var:')
+    print(y_var_)
+    print('size var:')
+    print(size_var)
+
     if (include_size) {
         if (size_var_ == "missing" && agg == "WHOLE2") {
             filter_vars <- c(x_var_, y_var_)
@@ -169,7 +175,7 @@ filtered_bi <- reactive({
 
     if ("missing" %in% filter_vars && agg == "YEARLY2") {
         # Filter summary table for needed vars and spread to wide format
-        final <- pfb %>%
+        final <- raw %>%
             filter(!is.na(Year)) %>%
             filter(var %in% !!filter_vars) %>%
             group_by(site_code, Date, Year, var, domain) %>%
@@ -179,10 +185,20 @@ filtered_bi <- reactive({
             ) %>%
             ungroup() %>%
             pivot_wider(names_from = "var", values_from = "val")
-    } else {
-
+    } else if(agg == 'WHOLE2') {
         # Filter summary table for needed vars and spread to wide format
-        final <- pfb %>%
+        final <- raw %>%
+            ## filter(!is.na(Year)) %>%
+            select(-missing) %>%
+            filter(var %in% !!filter_vars) %>%
+            group_by(site_code, Date, Year, var, domain) %>%
+            summarise(val = mean(val, na.rm = TRUE)) %>%
+            ungroup() %>%
+            pivot_wider(names_from = "var", values_from = "val")
+
+      } else {
+        # Filter summary table for needed vars and spread to wide format
+        final <- raw %>%
             filter(!is.na(Year)) %>%
             select(-missing) %>%
             filter(var %in% !!filter_vars) %>%
@@ -195,38 +211,42 @@ filtered_bi <- reactive({
 
     # For variables that are not associated with a year (constant through time),
     # they need to be added this way because their year column is NA
-    if (x_var %in% c("Terrain", "Hydrology", "Geochemistry", "Soil")) {
+    if (x_var %in% c("Terrain", "Hydrology", "Geochemistry", "Soil", "Lithology")) {
         terrain <- raw %>%
             filter(var == !!x_var_) %>%
             rename(!!x_var_ := val) %>%
             select(-Year, -var, -Date, -pctCellErr, -missing)
 
-        final <- final %>%
-            left_join(., terrain, by = c("site_code", "domain"))
+        test <- final %>%
+          left_join(., terrain, by = c("site_code", "domain"), suffix = c("", ".y")) %>%
+          select(-ends_with(".y"))
     }
 
-    if (y_var %in% c("Terrain", "Hydrology", "Geochemistry", "Soil")) {
+    if (y_var %in% c("Terrain", "Hydrology", "Geochemistry", "Soil", "Lithology")) {
         terrain <- raw %>%
             filter(var == !!y_var_) %>%
             rename(!!y_var_ := val) %>%
             select(-Year, -var, -Date, -pctCellErr, -missing)
 
-        final <- final %>%
-            left_join(., terrain, by = c("site_code", "domain"))
+        test <- final %>%
+          left_join(., terrain, by = c("site_code", "domain"), suffix = c("", ".y")) %>%
+          select(-ends_with(".y"))
     }
 
-    if (size_var %in% c("Terrain", "Hydrology", "Geochemistry", "Soil")) {
+    if (size_var %in% c("Terrain", "Hydrology", "Geochemistry", "Soil", "Lithology")) {
         terrain <- raw %>%
             filter(var == !!size_var_) %>%
             rename(!!size_var_ := val) %>%
             select(-Year, -var, -Date, -pctCellErr, -missing)
 
-        final <- final %>%
-            left_join(., terrain, by = c("site_code", "domain"))
+        test <- final %>%
+          left_join(., terrain, by = c("site_code", "domain"), suffix = c("", ".y")) %>%
+          select(-ends_with(".y"))
     }
 
     # Filter to include only sites with all variables available
-    final <- final[complete.cases(final), ]
+
+    ## final <- final[complete.cases(final),]
 
     if (any(!filter_vars %in% names(final))) {
         return(tibble())
@@ -278,7 +298,6 @@ filtered_bi <- reactive({
             mutate(discharge_a = discharge_a / 365)
     }
 
-
     if (include_size) {
         if (chem_size %in% c("Stream Chemistry", "Precipitation Chemistry")) {
             size_unit_start <- pull(variables %>%
@@ -304,6 +323,7 @@ filtered_bi <- reactive({
 
     # If the whole record summary is selected, so that here
     if (agg == "WHOLE2") {
+      print("THIS TRIGGERED?")
         if (include_size && size_var_ == "missing") {
             year_dif <- (year2 - year1) + 1
             final <- final %>%
@@ -667,6 +687,7 @@ observe({
 # color by sites or domain
 n_sites <- reactive({
     sites <- filtered_bi()
+    print(head(sites))
 
     if (nrow(sites) == 0) {
         num <- 1
@@ -729,6 +750,7 @@ output$SUMMARY_BIPLOT <- renderPlotly({
         "YEARLY2" = "year",
         "WHOLE2" = "year "
     )
+
     chem_x <- isolate(input$X_TYPE2)
     chem_y <- isolate(input$Y_TYPE2)
     chem_size <- isolate(input$SIZE_TYPE2)
@@ -740,15 +762,11 @@ output$SUMMARY_BIPLOT <- renderPlotly({
         "No data available for \nthe selected variables"
     }
 
-    if (x_var == "Year" & y_var %in% c("Soil", "Geochemistry", "Hydrology", "Terrain")) {
+    if (x_var == "Year" & y_var %in% c("Soil", "Geochemistry", "Hydrology", "Terrain", "Lithology")) {
         empty_msg <- 'Non-temporal data selected. \nSet Aggregation to "Full record"'
     }
 
-    if (x_var == "Year" & y_var %in% c("Soil", "Geochemistry", "Hydrology", "Terrain")) {
-        empty_msg <- 'Non-temporal data selected. \nSet Aggregation to "Full record"'
-    }
-
-    empty_plot <- plotly::plot_ly() %>%
+    empty_plot <- plotly::plot_ly(type = "scatter") %>%
         plotly::layout(
             annotations = list(
                 text = empty_msg,
@@ -764,6 +782,10 @@ output$SUMMARY_BIPLOT <- renderPlotly({
 
 
     if (nrow(bi_table) == 0 || x_var == "" || y_var == "" || size_var == "") {
+        print(nrow(bi_table))
+        print(x_var)
+        print(y_var)
+        print(size_var)
         return(empty_plot)
     }
 
@@ -791,7 +813,7 @@ output$SUMMARY_BIPLOT <- renderPlotly({
         var = size_var
     )
 
-    emplty_blank <- plotly::plot_ly() %>%
+    emplty_blank <- plotly::plot_ly(type = "scatter") %>%
         plotly::layout()
 
     if (!include_size) {
@@ -1254,3 +1276,18 @@ timeSliderChanged <- eventReactive(
     }
 ) %>%
     debounce(1000)
+
+## # general reactivity
+## observeEvent(input$X_VAR2, {
+##     print('reacted to XVAR2')
+##     pre_filtered_bi()
+##     filtered_bi()
+##     biplot_trigger()
+## })
+
+## observeEvent(input$X_UNIT2, {
+##     print('reacted to XUNIT2')
+##     pre_filtered_bi()
+##     filtered_bi()
+##     biplot_trigger()
+## })

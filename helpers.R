@@ -1159,10 +1159,10 @@ generate_dropdown_varlist_ws <- function(variables) {
         unique()
 
     ws_vars_table <<- variables %>%
-        filter(variable_type == "ws_char") %>%
-        # ms_vars_blocked defined in global.R, around line 90
-        filter(!variable_code %in% ms_vars_blocked) %>%
-        filter(variable_code %in% biplot_summary_file) %>%
+      filter(variable_type == "ws_char") %>%
+        # ms_vars_blocked defined in global.R
+      filter(!variable_code %in% ms_vars_blocked)  %>%
+      filter(variable_code %in% biplot_summary_file) %>%
         mutate(displayname = ifelse(!is.na(unit),
             paste0(
                 variable_name,
