@@ -1,0 +1,43 @@
+variable_code,variable_name,unit,method,variable_type,variable_subtype,R_display,valence,flux_convertible,molecule,notes,val_min,val_max
+cc_cumulative_precip,Watershed Annual Precipitation,mm,UNKNOWN,ws_char,PRISM Precipitation,NA,NA,0,NA,NA,NA,NA
+cc_precip_sd_space,Watershed Standard Deviation,mm,UNKNOWN,ws_char,PRISM Precipitation,NA,NA,0,NA,NA,NA,NA
+cc_precip_sd_year,Annual Standard Deviation,mm,UNKNOWN,ws_char,PRISM Precipitation,NA,NA,0,NA,NA,NA,NA
+cc_temp_mean,Watershed Mean Temperature,C,UNKNOWN,ws_char,PRISM Temperature,NA,NA,0,NA,NA,NA,NA
+cc_temp_sd_space,Watershed Standard Deviation,C,UNKNOWN,ws_char,PRISM Temperature,NA,NA,0,NA,NA,NA,NA
+cc_temp_sd_year,Annual Standard Deviation,C,UNKNOWN,ws_char,PRISM Temperature,NA,NA,0,NA,NA,NA,NA
+ck_et_ref_mean,Mean Annual Reference Evapotranspiration (grass),mm,UNKNOWN,ws_char,GRIDMET,NA,NA,0,NA,NA,NA,NA
+ck_et_ref_sd_space,Watershed Reference Evapotranspiration (grass) Standard Deviation,mm,UNKNOWN,ws_char,GRIDMET,NA,NA,0,NA,NA,NA,NA
+ck_et_ref_sd_year,Annual Reference Evapotranspiration (grass) Standard Deviation,mm,UNKNOWN,ws_char,GRIDMET,NA,NA,0,NA,NA,NA,NA
+cl_snow_depth_ann_max,Annual Max Snow Depth,mm,UNKNOWN,ws_char,Snow,NA,NA,0,NA,NA,NA,NA
+cl_snow_depth_ann_mean,Annual Mean Snow Depth,mm,UNKNOWN,ws_char,Snow,NA,NA,0,NA,NA,NA,NA
+cl_snow_depth_ann_min,Annual Minimum Snow Depth,mm,UNKNOWN,ws_char,Snow,NA,NA,0,NA,NA,NA,NA
+cl_snow_depth_cd_year,Watershed Snow Depth Standard Deviation,mm,UNKNOWN,ws_char,Snow,NA,NA,0,NA,NA,NA,NA
+cl_snow_depth_sd_space,Annual Snow Depth Standard Deviation,mm,UNKNOWN,ws_char,Snow,NA,NA,0,NA,NA,NA,NA
+cl_swe_ann_max,Annual Max Snow Water Equivalent,mm,UNKNOWN,ws_char,Snow,NA,NA,0,NA,NA,NA,NA
+cl_swe_ann_mean,Annual Mean Snow Water Equivalent,mm,UNKNOWN,ws_char,Snow,NA,NA,0,NA,NA,NA,NA
+cl_swe_ann_min,Annual Minimum Snow Water Equivalent,mm,UNKNOWN,ws_char,Snow,NA,NA,0,NA,NA,NA,NA
+cl_swe_sd_space,Annual Snow Water Equivalent Standard Deviation,mm,UNKNOWN,ws_char,Snow,NA,NA,0,NA,NA,NA,NA
+cl_swe_sd_year,Watershed Snow Water Equivalent Standard Deviation,mm,UNKNOWN,ws_char,Snow,NA,NA,0,NA,NA,NA,NA
+perimeter,Perimeter,m,UNKNOWN,ws_char,Other,expression(UNKNOWN),NA,0,NA,NA,0,NA
+va_gpp_sd_space,Watershed Standard Deviation GPP,kg*C/m^2,UNKNOWN,ws_char,Gross Primary Production,NA,NA,0,NA,NA,NA,NA
+va_gpp_sd_year,Annual Standard Deviation GPP,kg*C/m^2,UNKNOWN,ws_char,Gross Primary Production,NA,NA,0,NA,NA,NA,NA
+va_gpp_sum,Annual GPP,kg*C/m^2,UNKNOWN,ws_char,Gross Primary Production,NA,NA,0,NA,NA,NA,NA
+vb_fpar_max,Annual Maximum FPAR,%,UNKNOWN,ws_char,Fraction of Absorbed Photosynthetically Active Radiation,NA,NA,0,NA,NA,NA,NA
+vb_fpar_mean,Annual Mean FPAR,%,UNKNOWN,ws_char,Fraction of Absorbed Photosynthetically Active Radiation,NA,NA,0,NA,NA,NA,NA
+vb_fpar_min,Annual Minimum FPAR,%,UNKNOWN,ws_char,Fraction of Absorbed Photosynthetically Active Radiation,NA,NA,0,NA,NA,NA,NA
+vb_fpar_sd_space,Watershed Standard Deviation FPAR,%,UNKNOWN,ws_char,Fraction of Absorbed Photosynthetically Active Radiation,NA,NA,0,NA,NA,NA,NA
+vb_fpar_sd_year,Annual Standard Deviation FPAR,%,UNKNOWN,ws_char,Fraction of Absorbed Photosynthetically Active Radiation,NA,NA,0,NA,NA,NA,NA
+vb_lai_max,Annual Maximum LAI,m2/m2,UNKNOWN,ws_char,Leaf Area Index,NA,NA,0,NA,NA,NA,NA
+vb_lai_mean,Annual Mean LAI,m2/m2,UNKNOWN,ws_char,Leaf Area Index,NA,NA,0,NA,NA,NA,NA
+vb_lai_min,Annual Minimum LAI,m2/m2,UNKNOWN,ws_char,Leaf Area Index,NA,NA,0,NA,NA,NA,NA
+vb_lai_sd_space,Watershed Standard Deviation LAI,m2/m2,UNKNOWN,ws_char,Leaf Area Index,NA,NA,0,NA,NA,NA,NA
+vb_lai_sd_year,Annual Standard Deviation LAI,m2/m2,UNKNOWN,ws_char,Leaf Area Index,NA,NA,0,NA,NA,NA,NA
+vb_ndvi_max,Annual Maximum NDVI,unitless,UNKNOWN,ws_char,NDVI,NA,NA,0,NA,NA,NA,NA
+vb_ndvi_mean,Annual NDVI Mean,unitless,UNKNOWN,ws_char,NDVI,NA,NA,0,NA,NA,NA,NA
+vb_ndvi_min,Annual NDVI Minimum,unitless,UNKNOWN,ws_char,NDVI,NA,NA,0,NA,NA,NA,NA
+vb_ndvi_sd_space,Annual Mean spatial Standard Deviation,unitless,UNKNOWN,ws_char,NDVI,NA,NA,0,NA,NA,NA,NA
+vb_ndvi_sd_year,Annual NDVI Standard Deviation,unitless,UNKNOWN,ws_char,NDVI,NA,NA,0,NA,NA,NA,NA
+vj_tcw_max,Tasseled Cap Wetness Annual Maximum,unitless,UNKNOWN,ws_char,Tasseled Cap Wetness,NA,NA,0,NA,NA,NA,NA
+vj_tcw_mean,Tasseled Cap Wetness Mean Annual,unitless,UNKNOWN,ws_char,Tasseled Cap Wetness,NA,NA,0,NA,NA,NA,NA
+vj_tcw_min,Tasseled Cap Wetness Annual Minimum,unitless,UNKNOWN,ws_char,Tasseled Cap Wetness,NA,NA,0,NA,NA,NA,NA
+vj_tcw_sd_year,Tasseled Cap Wetness Annual Standard Deviation,unitless,UNKNOWN,ws_char,Tasseled Cap Wetness,NA,NA,0,NA,NA,NA,NA

@@ -82,11 +82,7 @@ pre_filtered_bi <- reactive({
     }
 
     final <- fill %>%
-        filter(
-            Year >= !!date1 | is.na(Year),
-            Year <= !!date2 | is.na(Year)
-        )
-
+        filter(is.na(Year) | (Year >= !!date1 & Year <= !!date2))
 
     return(final)
 })
@@ -167,74 +163,27 @@ filtered_bi <- reactive({
         filter_vars <- c(x_var_, y_var_)
     }
 
-    if ("missing" %in% filter_vars && agg == "YEARLY2") {
-        # Filter summary table for needed vars and spread to wide format
+    # Filter summary table for needed vars and spread to wide format
+    if (agg == "YEARLY2") {
+
         final <- pfb %>%
-            filter(!is.na(Year)) %>%
+            filter(! is.na(Year)) %>%
             filter(var %in% !!filter_vars) %>%
-            group_by(site_code, Date, Year, var, domain) %>%
-            summarise(
-                val = mean(val, na.rm = TRUE),
-                missing = mean(missing, na.rm = TRUE)
-            ) %>%
-            ungroup() %>%
-            pivot_wider(names_from = "var", values_from = "val")
-    } else if(agg == 'WHOLE2') {
-        # Filter summary table for needed vars and spread to wide format
-        final <- pfb %>%
-            select(-missing) %>%
-            filter(var %in% !!filter_vars) %>%
-            group_by(site_code, Date, Year, var, domain) %>%
-            summarise(val = mean(val, na.rm = TRUE)) %>%
-            ungroup() %>%
+            select(-Date, -pctCellErr) %>%
             pivot_wider(names_from = "var", values_from = "val")
 
-      } else {
-        # Filter summary table for needed vars and spread to wide format
+    } else {
+
         final <- pfb %>%
-            filter(!is.na(Year)) %>%
-            select(-missing) %>%
+            # filter(! is.na(Year)) %>%
+            # select(-missing) %>%
             filter(var %in% !!filter_vars) %>%
-            group_by(site_code, Date, Year, var, domain) %>%
-            summarise(val = mean(val, na.rm = TRUE)) %>%
+            group_by(site_code, var, domain) %>%
+            # group_by(site_code, Date, Year, var, domain) %>%
+            summarise(val = mean(val, na.rm = TRUE),
+                      missing = mean(missing, na.rm = TRUE)) %>%
             ungroup() %>%
             pivot_wider(names_from = "var", values_from = "val")
-    }
-
-
-    # For variables that are not associated with a year (constant through time),
-    # they need to be added this way because their year column is NA
-    if (x_var %in% c("Terrain", "Hydrology", "Geochemistry", "Soil", "Lithology")) {
-        terrain <- raw %>%
-            filter(var == !!x_var_) %>%
-            rename(!!x_var_ := val) %>%
-            select(-Year, -var, -Date, -pctCellErr, -missing)
-
-        test <- final %>%
-          left_join(., terrain, by = c("site_code", "domain"), suffix = c("", ".y")) %>%
-          select(-ends_with(".y"))
-    }
-
-    if (y_var %in% c("Terrain", "Hydrology", "Geochemistry", "Soil", "Lithology")) {
-        terrain <- raw %>%
-            filter(var == !!y_var_) %>%
-            rename(!!y_var_ := val) %>%
-            select(-Year, -var, -Date, -pctCellErr, -missing)
-
-        test <- final %>%
-          left_join(., terrain, by = c("site_code", "domain"), suffix = c("", ".y")) %>%
-          select(-ends_with(".y"))
-    }
-
-    if (size_var %in% c("Terrain", "Hydrology", "Geochemistry", "Soil", "Lithology")) {
-        terrain <- raw %>%
-            filter(var == !!size_var_) %>%
-            rename(!!size_var_ := val) %>%
-            select(-Year, -var, -Date, -pctCellErr, -missing)
-
-        test <- final %>%
-          left_join(., terrain, by = c("site_code", "domain"), suffix = c("", ".y")) %>%
-          select(-ends_with(".y"))
     }
 
     # Filter to include only sites with all variables available
@@ -244,14 +193,18 @@ filtered_bi <- reactive({
         return(tibble())
     }
 
+    x_var__ <- if(chem_x %in% c('Watershed Characteristics',
+                                'Discharge', 'Precipitation')) x_var_ else x_var
     x_unit_start <- variables %>%
-        filter(variable_code == x_var)
+        filter(variable_code == x_var__)
 
     # Unit conversions. Could be improved for sure
     if (chem_x %in% c("Stream Chemistry", "Precipitation Chemistry")) {
-        x_unit_start <- pull(variables %>%
+
+        x_unit_start <- variables %>%
             filter(variable_code == x_var) %>%
-            select(unit))
+            select(unit) %>%
+            pull()
 
         final <- convert_conc_units_bi(final, x_var_, x_unit_start, x_unit)
     }
@@ -270,9 +223,10 @@ filtered_bi <- reactive({
     }
 
     if (chem_y %in% c("Stream Chemistry", "Precipitation Chemistry")) {
-        y_unit_start <- pull(variables %>%
+        y_unit_start <- variables %>%
             filter(variable_code == y_var) %>%
-            select(unit))
+            select(unit) %>%
+            pull()
 
         final <- convert_conc_units_bi(final, y_var_, y_unit_start, y_unit)
     }
@@ -292,9 +246,10 @@ filtered_bi <- reactive({
 
     if (include_size) {
         if (chem_size %in% c("Stream Chemistry", "Precipitation Chemistry")) {
-            size_unit_start <- pull(variables %>%
+            size_unit_start <- variables %>%
                 filter(variable_code == size_var) %>%
-                select(unit))
+                select(unit) %>%
+                pull()
 
             final <- convert_conc_units_bi(final, size_var_, size_unit_start, size_unit)
         }
@@ -313,21 +268,20 @@ filtered_bi <- reactive({
         }
     }
 
-    # If the whole record summary is selected, so that here
+    # If the whole record summary is selected, summarize across dates; compute missing here
     if (agg == "WHOLE2") {
         if (include_size && size_var_ == "missing") {
             year_dif <- (year2 - year1) + 1
             final <- final %>%
-                # select(-Year) %>%
                 group_by(site_code, domain) %>%
                 summarise(across(where(is.numeric), ~ mean(.x, na.rm = TRUE)),
                     n = n()
                 ) %>%
                 mutate(missing = round((((year_dif - n) / year_dif) * 100), 1)) %>%
-                select(-Year, -n)
+                select(-any_of('Year'), -n)
         } else {
             final <- final %>%
-                select(-Year) %>%
+                select(-any_of('Year')) %>%
                 group_by(site_code, domain) %>%
                 summarise(across(where(is.numeric), ~ mean(.x, na.rm = TRUE)))
         }
@@ -346,7 +300,6 @@ filtered_bi <- reactive({
 ##   }
 ## )
 
-
 # Update axis options ####
 # remove year as an axis option when aggregation the whole records
 
@@ -363,7 +316,6 @@ observe({
     agg <- input$AGG2
     yearly <- "Year"
     data <- isolate(pre_filtered_bi())
-
 
     if (reactive_vals$facet == 0) {
         return()
@@ -397,13 +349,12 @@ observeEvent(input$X_VAR2, {
 # update individual options for variables based on variable type
 observe({
     data <- isolate(pre_filtered_bi())
-    data_type <<- input$X_TYPE2
-    doms <<- input$DOMAINS2_S
+    data_type <- input$X_TYPE2
+    doms <- input$DOMAINS2_S
     input$DOMAINS2
-    sites <<- input$SITES2
-    site_select <<- isolate(input$SITE_SELECTION2)
-    old_selection <<- isolate(current_selection$old_x)
-
+    sites <- input$SITES2
+    site_select <- input$SITE_SELECTION2
+    old_selection <- isolate(current_selection$old_x)
 
     if (data_type == "Stream Chemistry") {
         select <- filter_dropdown_varlist_bi(data, vartype = "conc")
@@ -588,7 +539,6 @@ observeEvent(input$X_VAR2, {
 })
 
 observe({
-    input$SITE_SELECTION2
     data_type <- input$DOMAINS2_S
     current_sites <- isolate(input$SITES2)
 
@@ -609,6 +559,31 @@ observe({
     new_sites <- current_sites[current_sites %in% sites_in_domains]
 
     updateSelectInput(session, "SITES2", choices = domain_site_list, selected = new_sites)
+})
+
+observe({
+    data_type <- input$DOMAINS2_B
+    current_sites <- input$SITES2_B
+
+    biplot_trigger()
+
+    domain_choices <- site_data %>%
+        filter(
+            site_type == "stream_gauge",
+            domain %in% !!data_type
+        ) %>%
+        pull(domain) %>%
+        unique()
+
+    domain_site_list <- generate_dropdown_sitelist(domain_vec = domain_choices)
+
+    sites_in_domains <- site_data %>%
+        filter(domain %in% domain_choices) %>%
+        pull(site_code)
+
+    new_sites <- current_sites[current_sites %in% sites_in_domains]
+
+    updateSelectInput(session, "SITES2_B", choices = domain_site_list, selected = new_sites)
 })
 
 # update unit options if they are not convertable
@@ -759,7 +734,7 @@ output$SUMMARY_BIPLOT <- renderPlotly({
     chem_size <- isolate(input$SIZE_TYPE2)
     num_sites <- isolate(n_sites())
 
-    empty_msg <- if (!length(sites)) {
+    empty_msg <- if (! length(sites)) {
         "No sites selected"
     } else {
         "No data available for \nthe selected variables"
@@ -1171,8 +1146,9 @@ output$SUMMARY_BIPLOT <- renderPlotly({
                     text = ~ paste0(size_var, " ", size_unit, ":", round(get(size_tvar), digits = 2), "\nSite:", site_code, ", \nDomain:", pretty_domain)
                 ) %>%
                 plotly::layout(
-                    xaxis = list(title = paste0("Mean", " ", x_var, " ", x_unit)),
-                    yaxis = list(title = paste0("Mean", " ", y_var, " ", y_unit)),
+                    # xaxis = list(title = paste0("Mean", " ", x_var, " ", x_unit)),
+                    xaxis = list(title = paste(x_var, x_unit)),
+                    yaxis = list(title = paste(y_var, y_unit)),
                     paper_bgcolor = "rgba(0,0,0,0)",
                     plot_bgcolor = "rgba(0,0,0,0)",
                     legend = list(itemsizing = "constant")
@@ -1191,8 +1167,8 @@ output$SUMMARY_BIPLOT <- renderPlotly({
                     text = ~ paste0("\nSite:", site_code, ", \nDomain:", pretty_domain)
                 ) %>%
                 plotly::layout(
-                    xaxis = list(title = paste0("Mean", " ", x_var, " ", x_unit)),
-                    yaxis = list(title = paste0("Mean", " ", y_var, " ", y_unit)),
+                    xaxis = list(title = paste(x_var, x_unit)),
+                    yaxis = list(title = paste(y_var, y_unit)),
                     paper_bgcolor = "rgba(0,0,0,0)",
                     plot_bgcolor = "rgba(0,0,0,0)"
                 )
