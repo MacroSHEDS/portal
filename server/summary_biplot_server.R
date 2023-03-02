@@ -81,11 +81,19 @@ pre_filtered_bi <- reactive({
             filter(site_code %in% sites_b)
     }
 
-    final <- fill %>%
-        filter(
-            Year >= !!date1,
-            Year <= !!date2
-        )
+
+    ## if (x_var %in% c("Terrain", "Hydrology", "Geochemistry", "Soil", "Lithology")) {
+    ##   final <- fill
+    ## } else if(y_var %in% c("Terrain", "Hydrology", "Geochemistry", "Soil", "Lithology")) {
+    ##   final <- fill
+    ## } else {
+        final <- fill %>%
+            filter(
+                Year >= !!date1 | is.na(Year),
+                Year <= !!date2 | is.na(Year)
+            )
+    ## }
+
 
     return(final)
 })
@@ -112,6 +120,7 @@ filtered_bi <- reactive({
     # #raw <- isolate(summary())
     # raw <- sum
 
+    input$SITE_SELECTION2
     x_var <- input$X_VAR2
     y_var <- input$Y_VAR2
     include_size <- input$ADD_SIZE2
@@ -175,7 +184,7 @@ filtered_bi <- reactive({
 
     if ("missing" %in% filter_vars && agg == "YEARLY2") {
         # Filter summary table for needed vars and spread to wide format
-        final <- raw %>%
+        final <- pfb %>%
             filter(!is.na(Year)) %>%
             filter(var %in% !!filter_vars) %>%
             group_by(site_code, Date, Year, var, domain) %>%
@@ -187,7 +196,7 @@ filtered_bi <- reactive({
             pivot_wider(names_from = "var", values_from = "val")
     } else if(agg == 'WHOLE2') {
         # Filter summary table for needed vars and spread to wide format
-        final <- raw %>%
+        final <- pfb %>%
             ## filter(!is.na(Year)) %>%
             select(-missing) %>%
             filter(var %in% !!filter_vars) %>%
@@ -198,7 +207,7 @@ filtered_bi <- reactive({
 
       } else {
         # Filter summary table for needed vars and spread to wide format
-        final <- raw %>%
+        final <- pfb %>%
             filter(!is.na(Year)) %>%
             select(-missing) %>%
             filter(var %in% !!filter_vars) %>%
@@ -410,7 +419,7 @@ observe({
     doms <<- input$DOMAINS2_S
     input$DOMAINS2
     sites <<- input$SITES2
-    site_select <<- input$SITE_SELECTION2
+    site_select <<- isolate(input$SITE_SELECTION2)
     old_selection <<- isolate(current_selection$old_x)
 
 
@@ -479,7 +488,7 @@ observe({
     doms <- input$DOMAINS2_S
     input$DOMAINS2
     sites <- input$SITES2
-    site_select <- input$SITE_SELECTION2
+    site_select <- isolate(input$SITE_SELECTION2)
     old_selection <- isolate(current_selection$old_y)
 
     if (data_type %in% c("Stream Chemistry", "Precipitation Chemistry")) {
@@ -536,7 +545,7 @@ observe({
     doms <- input$DOMAINS2_S
     input$DOMAINS2
     sites <- input$SITES2
-    site_select <- input$SITE_SELECTION2
+    site_select <- isolate(input$SITE_SELECTION2)
     old_selection <- isolate(current_selection$old_size)
     x_var <- isolate(input$X_VAR2)
     y_var <- isolate(input$Y_VAR2)
@@ -597,6 +606,7 @@ observeEvent(input$X_VAR2, {
 })
 
 observe({
+    input$SITE_SELECTION2
     data_type <- input$DOMAINS2_S
     current_sites <- isolate(input$SITES2)
 
@@ -656,6 +666,10 @@ observe({
 
 # Update ws_chars options if the category is changed
 observe({
+    input$SITE_SELECTION2
+    input$DOMAINS2
+    input$SITES2
+
     x_var <- input$X_VAR2
     chem_x <- isolate(input$X_TYPE2)
 
@@ -665,6 +679,10 @@ observe({
 })
 
 observe({
+    input$SITE_SELECTION2
+    input$DOMAINS2
+    input$SITES2
+
     y_var <- input$Y_VAR2
     chem_y <- isolate(input$Y_TYPE2)
 
@@ -674,6 +692,10 @@ observe({
 })
 
 observe({
+    input$SITE_SELECTION2
+    input$DOMAINS2
+    input$SITES2
+
     size_var <- input$SIZE_VAR2
     chem_size <- isolate(input$SIZE_TYPE2)
 
@@ -1278,16 +1300,11 @@ timeSliderChanged <- eventReactive(
     debounce(1000)
 
 ## # general reactivity
-## observeEvent(input$X_VAR2, {
-##     print('reacted to XVAR2')
-##     pre_filtered_bi()
-##     filtered_bi()
-##     biplot_trigger()
-## })
+## observe({
+##     print('switching selection type')
+##     input$SITE_SELECTION2
 
-## observeEvent(input$X_UNIT2, {
-##     print('reacted to XUNIT2')
-##     pre_filtered_bi()
-##     filtered_bi()
+##     ## pre_filtered_bi()
+##     ## filtered_bi()
 ##     biplot_trigger()
 ## })
