@@ -81,18 +81,11 @@ pre_filtered_bi <- reactive({
             filter(site_code %in% sites_b)
     }
 
-
-    ## if (x_var %in% c("Terrain", "Hydrology", "Geochemistry", "Soil", "Lithology")) {
-    ##   final <- fill
-    ## } else if(y_var %in% c("Terrain", "Hydrology", "Geochemistry", "Soil", "Lithology")) {
-    ##   final <- fill
-    ## } else {
-        final <- fill %>%
-            filter(
-                Year >= !!date1 | is.na(Year),
-                Year <= !!date2 | is.na(Year)
-            )
-    ## }
+    final <- fill %>%
+        filter(
+            Year >= !!date1 | is.na(Year),
+            Year <= !!date2 | is.na(Year)
+        )
 
 
     return(final)
@@ -142,7 +135,6 @@ filtered_bi <- reactive({
     raw <- sum
 
     if (nrow(pfb) == 0) {
-        print('WARNING: prefiltered df is zero rows')
         final <- tibble()
         return(final)
     }
@@ -164,13 +156,6 @@ filtered_bi <- reactive({
         unit = size_unit,
         var = size_var
     )
-
-    print('x_var_ var:')
-    print(x_var_)
-    print('y_var_ var:')
-    print(y_var_)
-    print('size var:')
-    print(size_var)
 
     if (include_size) {
         if (size_var_ == "missing" && agg == "WHOLE2") {
@@ -197,7 +182,6 @@ filtered_bi <- reactive({
     } else if(agg == 'WHOLE2') {
         # Filter summary table for needed vars and spread to wide format
         final <- pfb %>%
-            ## filter(!is.na(Year)) %>%
             select(-missing) %>%
             filter(var %in% !!filter_vars) %>%
             group_by(site_code, Date, Year, var, domain) %>%
@@ -254,7 +238,6 @@ filtered_bi <- reactive({
     }
 
     # Filter to include only sites with all variables available
-
     ## final <- final[complete.cases(final),]
 
     if (any(!filter_vars %in% names(final))) {
@@ -332,7 +315,6 @@ filtered_bi <- reactive({
 
     # If the whole record summary is selected, so that here
     if (agg == "WHOLE2") {
-      print("THIS TRIGGERED?")
         if (include_size && size_var_ == "missing") {
             year_dif <- (year2 - year1) + 1
             final <- final %>%
@@ -709,7 +691,6 @@ observe({
 # color by sites or domain
 n_sites <- reactive({
     sites <- filtered_bi()
-    print(head(sites))
 
     if (nrow(sites) == 0) {
         num <- 1
@@ -804,10 +785,6 @@ output$SUMMARY_BIPLOT <- renderPlotly({
 
 
     if (nrow(bi_table) == 0 || x_var == "" || y_var == "" || size_var == "") {
-        print(nrow(bi_table))
-        print(x_var)
-        print(y_var)
-        print(size_var)
         return(empty_plot)
     }
 
@@ -1298,13 +1275,3 @@ timeSliderChanged <- eventReactive(
     }
 ) %>%
     debounce(1000)
-
-## # general reactivity
-## observe({
-##     print('switching selection type')
-##     input$SITE_SELECTION2
-
-##     ## pre_filtered_bi()
-##     ## filtered_bi()
-##     biplot_trigger()
-## })
