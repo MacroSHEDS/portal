@@ -563,7 +563,7 @@ observe({
 
 observe({
     data_type <- input$DOMAINS2_B
-    current_sites <- input$SITES2_B
+    current_sites <- isolate(input$SITES2_B)
 
     biplot_trigger()
 
@@ -584,6 +584,14 @@ observe({
     new_sites <- current_sites[current_sites %in% sites_in_domains]
 
     updateSelectInput(session, "SITES2_B", choices = domain_site_list, selected = new_sites)
+})
+
+bucket_sites <- reactive({input$SITES2_B})
+observe({
+  bucket_contents <- input$SITES2_B
+  ## print('_________________________')
+  ## print(bucket_contents)
+  ## print('_________________________')
 })
 
 # update unit options if they are not convertable
