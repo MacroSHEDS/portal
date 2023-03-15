@@ -545,7 +545,7 @@ observeEvent(
     print(head(meta))
     if(nrow(meta) < 1) {
       print('no disturbance info for this site')
-    }else if(meta$watershed_type == "exp") {
+    }else if(any(meta$watershed_type == "exp")) {
         print("experimental watershed selected")
         shinyjs::removeClass("history_trigger", "hidden")
         shinyjs::inlineCSS(
@@ -557,7 +557,8 @@ observeEvent(
           "button",
           selected = "history"
           )
-    } else if (meta$watershed_type == "non_exp") {
+    } else {
+        print("no hydrochem manipulation experiments in watershed history")
         shinyjs::addClass("history_trigger", "hidden")
     }
 })

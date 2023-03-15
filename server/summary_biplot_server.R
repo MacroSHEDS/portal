@@ -589,9 +589,6 @@ observe({
 bucket_sites <- reactive({input$SITES2_B})
 observe({
   bucket_contents <- input$SITES2_B
-  ## print('_________________________')
-  ## print(bucket_contents)
-  ## print('_________________________')
 })
 
 # update unit options if they are not convertable
@@ -675,7 +672,7 @@ observe({
 n_sites <- reactive({
     sites <- filtered_bi()
 
-    if (nrow(sites) == 0) {
+    if(nrow(sites) == 0) {
         num <- 1
     } else {
         sites_num <- sites %>%
