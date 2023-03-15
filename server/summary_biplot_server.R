@@ -632,19 +632,15 @@ observe({
     input$DOMAINS2
     input$SITES2
 
+    # X axis react
     x_var <- input$X_VAR2
     chem_x <- isolate(input$X_TYPE2)
 
     if (chem_x == "Watershed Characteristics") {
         updateSelectInput(session, "X_UNIT2", choices = subset_ws_traits(x_var, ws_traits))
     }
-})
 
-observe({
-    input$SITE_SELECTION2
-    input$DOMAINS2
-    input$SITES2
-
+    # Y axis react
     y_var <- input$Y_VAR2
     chem_y <- isolate(input$Y_TYPE2)
 
@@ -728,6 +724,7 @@ output$SUMMARY_BIPLOT <- renderPlotly({
     x_unit <- isolate(input$X_UNIT2)
     y_unit <- isolate(input$Y_UNIT2)
     size_unit <- isolate(input$SIZE_UNIT2)
+
     agg <- switch(isolate(input$AGG2),
         "MONTHLY2" = "m",
         "YEARLY2" = "year",
