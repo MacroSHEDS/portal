@@ -52,12 +52,12 @@ summary_biplot_tab <- tabPanel("Site Comparison",
                 'input.SITE_SELECTION2 == "BY_BUCKET2"',
                 div("Domains", class = "widget-title text-center"),
                 selectizeInput("DOMAINS2_B",
-                    label = NULL, selected = default_domain,
+                    label = NULL, selected = c(),
                     choices = domains_pretty, multiple = TRUE
                 ),
                 div("Sites", class = "widget-title text-center"),
                 selectizeInput("SITES2_B",
-                    label = NULL, selected = default_site,
+                    label = NULL, selected = c(),
                     choices = default_sitelist, multiple = TRUE
                 )
             ),

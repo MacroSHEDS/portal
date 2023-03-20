@@ -55,7 +55,10 @@ pre_filtered_bi <- reactive({
     )
 
     # raw <- summary()
-    raw <- sum
+    raw <- sum %>%
+      filter(!var %in% ms_vars_blocked,
+             !paste(domain, site_code) %in% c("suef C2", "suef C3", "suef C4")
+             )
 
     if (type == "dom") {
         fill <- raw %>%
@@ -106,6 +109,7 @@ filtered_bi <- reactive({
     # #raw <- isolate(summary())
     # raw <- sum
 
+    input$SITE_SELECTION2
     x_var <- input$X_VAR2
     y_var <- input$Y_VAR2
     include_size <- input$ADD_SIZE2
@@ -183,7 +187,7 @@ filtered_bi <- reactive({
     }
 
     # Filter to include only sites with all variables available
-    final <- final[complete.cases(final), ]
+    ## final <- final[complete.cases(final),]
 
     if (any(!filter_vars %in% names(final))) {
         return(tibble())
@@ -352,14 +356,6 @@ observe({
     site_select <- input$SITE_SELECTION2
     old_selection <- isolate(current_selection$old_x)
 
-    # data <- isolate(pre_filtered_bi())
-    # data_type <<- input$X_TYPE2
-    # doms <<- input$DOMAINS2_S
-    # input$DOMAINS2
-    # sites <<- input$SITES2
-    # site_select <<- input$SITE_SELECTION2
-    # old_selection <<- isolate(current_selection$old_x)
-
     if (data_type == "Stream Chemistry") {
         select <- filter_dropdown_varlist_bi(data, vartype = "conc")
         units <- conc_units_bi
@@ -386,7 +382,7 @@ observe({
 
     if (data_type == "Watershed Characteristics") {
         select <- ws_trait_types
-        units <- subset_ws_traits(ws_trait_types[1], ws_traits)
+        units <- subset_ws_traits(ws_trait_types[2], ws_traits)
         choose <- ""
     }
 
@@ -425,7 +421,7 @@ observe({
     doms <- input$DOMAINS2_S
     input$DOMAINS2
     sites <- input$SITES2
-    site_select <- input$SITE_SELECTION2
+    site_select <- isolate(input$SITE_SELECTION2)
     old_selection <- isolate(current_selection$old_y)
 
     if (data_type %in% c("Stream Chemistry", "Precipitation Chemistry")) {
@@ -449,7 +445,7 @@ observe({
 
     if (data_type == "Watershed Characteristics") {
         select <- ws_trait_types
-        units <- subset_ws_traits(ws_trait_types[1], ws_traits)
+        units <- subset_ws_traits(ws_trait_types[2], ws_traits)
         choose <- ""
     }
 
@@ -482,7 +478,7 @@ observe({
     doms <- input$DOMAINS2_S
     input$DOMAINS2
     sites <- input$SITES2
-    site_select <- input$SITE_SELECTION2
+    site_select <- isolate(input$SITE_SELECTION2)
     old_selection <- isolate(current_selection$old_size)
     x_var <- isolate(input$X_VAR2)
     y_var <- isolate(input$Y_VAR2)
@@ -507,7 +503,7 @@ observe({
 
     if (data_type == "Watershed Characteristics") {
         select <- ws_trait_types
-        units <- subset_ws_traits(ws_trait_types[1], ws_traits)
+        units <- subset_ws_traits(ws_trait_types[2], ws_traits)
         choose <- ""
     }
 
@@ -565,6 +561,36 @@ observe({
     updateSelectInput(session, "SITES2", choices = domain_site_list, selected = new_sites)
 })
 
+observe({
+    data_type <- input$DOMAINS2_B
+    current_sites <- isolate(input$SITES2_B)
+
+    biplot_trigger()
+
+    domain_choices <- site_data %>%
+        filter(
+            site_type == "stream_gauge",
+            domain %in% !!data_type
+        ) %>%
+        pull(domain) %>%
+        unique()
+
+    domain_site_list <- generate_dropdown_sitelist(domain_vec = domain_choices)
+
+    sites_in_domains <- site_data %>%
+        filter(domain %in% domain_choices) %>%
+        pull(site_code)
+
+    new_sites <- current_sites[current_sites %in% sites_in_domains]
+
+    updateSelectInput(session, "SITES2_B", choices = domain_site_list, selected = new_sites)
+})
+
+bucket_sites <- reactive({input$SITES2_B})
+observe({
+  bucket_contents <- input$SITES2_B
+})
+
 # update unit options if they are not convertable
 observe({
     x_var <- input$X_VAR2
@@ -602,17 +628,19 @@ observe({
 
 # Update ws_chars options if the category is changed
 observe({
+    input$SITE_SELECTION2
+    input$DOMAINS2
+    input$SITES2
+
+    # X axis react
     x_var <- input$X_VAR2
-    type <- input$SITE_SELECTION2
-    ## trigger <- input$GEN_PLOTS2
     chem_x <- isolate(input$X_TYPE2)
 
     if (chem_x == "Watershed Characteristics") {
         updateSelectInput(session, "X_UNIT2", choices = subset_ws_traits(x_var, ws_traits))
     }
-})
 
-observe({
+    # Y axis react
     y_var <- input$Y_VAR2
     chem_y <- isolate(input$Y_TYPE2)
 
@@ -622,6 +650,10 @@ observe({
 })
 
 observe({
+    input$SITE_SELECTION2
+    input$DOMAINS2
+    input$SITES2
+
     size_var <- input$SIZE_VAR2
     chem_size <- isolate(input$SIZE_TYPE2)
 
@@ -636,7 +668,7 @@ observe({
 n_sites <- reactive({
     sites <- filtered_bi()
 
-    if (nrow(sites) == 0) {
+    if(nrow(sites) == 0) {
         num <- 1
     } else {
         sites_num <- sites %>%
@@ -692,11 +724,13 @@ output$SUMMARY_BIPLOT <- renderPlotly({
     x_unit <- isolate(input$X_UNIT2)
     y_unit <- isolate(input$Y_UNIT2)
     size_unit <- isolate(input$SIZE_UNIT2)
+
     agg <- switch(isolate(input$AGG2),
         "MONTHLY2" = "m",
         "YEARLY2" = "year",
         "WHOLE2" = "year "
     )
+
     chem_x <- isolate(input$X_TYPE2)
     chem_y <- isolate(input$Y_TYPE2)
     chem_size <- isolate(input$SIZE_TYPE2)
@@ -708,15 +742,11 @@ output$SUMMARY_BIPLOT <- renderPlotly({
         "No data available for \nthe selected variables"
     }
 
-    if (x_var == "Year" & y_var %in% c("Soil", "Geochemistry", "Hydrology", "Terrain")) {
+    if (x_var == "Year" & y_var %in% c("Soil", "Geochemistry", "Hydrology", "Terrain", "Lithology")) {
         empty_msg <- 'Non-temporal data selected. \nSet Aggregation to "Full record"'
     }
 
-    if (x_var == "Year" & y_var %in% c("Soil", "Geochemistry", "Hydrology", "Terrain")) {
-        empty_msg <- 'Non-temporal data selected. \nSet Aggregation to "Full record"'
-    }
-
-    empty_plot <- plotly::plot_ly() %>%
+    empty_plot <- plotly::plot_ly(type = "scatter") %>%
         plotly::layout(
             annotations = list(
                 text = empty_msg,
@@ -759,7 +789,7 @@ output$SUMMARY_BIPLOT <- renderPlotly({
         var = size_var
     )
 
-    emplty_blank <- plotly::plot_ly() %>%
+    emplty_blank <- plotly::plot_ly(type = "scatter") %>%
         plotly::layout()
 
     if (!include_size) {
