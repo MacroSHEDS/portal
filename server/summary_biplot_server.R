@@ -186,9 +186,6 @@ filtered_bi <- reactive({
             pivot_wider(names_from = "var", values_from = "val")
     }
 
-    # Filter to include only sites with all variables available
-    ## final <- final[complete.cases(final),]
-
     if (any(!filter_vars %in% names(final))) {
         return(tibble())
     }
@@ -309,7 +306,7 @@ observeEvent(input$AGG2, {
     } else {
         reactive_vals$facet <- reactive_vals$facet + 1
     }
-    print(reactive_vals$facet)
+    # print(reactive_vals$facet)
 })
 
 observe({
@@ -1246,7 +1243,7 @@ timeSliderChanged <- eventReactive(
         # still update if the dates selected don't change, a random date is appended
         # to input$DATES3. this random date is then ignored in all the data preppers
 
-        print("BIPLOT: slider update for plots.")
+        # print("BIPLOT: slider update for plots.")
 
         datevec_rando_append <- c(input$DATES2_INTER, as.Date(runif(1, 0, 10000)))
         return(datevec_rando_append)

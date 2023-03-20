@@ -82,16 +82,12 @@ source("helpers.R") # maybe package these or put them in a namespace called "ms"
 source("function_aliases.R")
 
 # blocked watershed char vars
-ms_vars_blocked <<- c(
-            "cc_precip_sd", "cc_precip_median",
-            "cc_temp_mean_sd", "cc_temp_mean_median",
-            "vb_lai_median", "vb_lai_sd",
-            "vb_fpar_median", "vb_fpar_sd",
-            "vb_fpar_max", "vb_fpar_min", "vb_fpar_mean",
-            "va_gpp_median", "va_gpp_sd",
-            "vb_ndvi_median", "vb_ndvi_sd", "vh_tcw_sd",
-            "vh_tcw_median"
-            )
+ms_vars_blocked <- c(
+    "cc_precip_sd", "cc_precip_median", "cc_temp_mean_sd", "cc_temp_mean_median",
+    "vb_lai_median", "vb_lai_sd", "vb_fpar_median", "vb_fpar_sd",
+    "vb_fpar_max", "vb_fpar_min", "vb_fpar_mean", "va_gpp_median", "va_gpp_sd",
+    "vb_ndvi_median", "vb_ndvi_sd", "vh_tcw_sd", "vh_tcw_median"
+)
 
 # load global datasets
 # googlesheets4::gs4_auth(path = '../data_acquisition/googlesheet_service_accnt.json')
