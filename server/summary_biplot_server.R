@@ -56,9 +56,8 @@ pre_filtered_bi <- reactive({
 
     # raw <- summary()
     raw <- sum %>%
-      filter(!var %in% ms_vars_blocked,
-             !paste(domain, site_code) %in% c("suef C2", "suef C3", "suef C4")
-             )
+      filter(!var %in% ms_vars_blocked)
+             # !paste(domain, site_code) %in% c("suef C2", "suef C3", "suef C4")
 
     if (type == "dom") {
         fill <- raw %>%
@@ -765,11 +764,11 @@ output$SUMMARY_BIPLOT <- renderPlotly({
         return(empty_plot)
     }
 
-    # Color blind safe palette
+    # high contrast pallete, original colors genereated by: https://mokole.com/palette.html
     safe_cols <- c(
-        "#88CCEE", "#CC6677", "#DDCC77", "#117733", "#332288", "#AA4499",
-        "#44AA99", "#999933", "#882255", "#661100", "#6699CC", "#888888"
-    )
+      '#2f4f4f','#2e8b57','#800000','#bdb76b','#9acd32','#00008b','#ff0000','#ff8c00','#ffd700',
+      '#00ff00','#ba55d3','#00fa9a','#00ffff','#00bfff','#0000ff','#ff00ff','#dda0dd','#ff1493',
+      '#ffa07a')
 
     x_tvar <- biplot_selection_to_name(
         chem = chem_x,
