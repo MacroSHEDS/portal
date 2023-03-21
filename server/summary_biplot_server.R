@@ -766,9 +766,26 @@ output$SUMMARY_BIPLOT <- renderPlotly({
 
     # high contrast pallete, original colors genereated by: https://mokole.com/palette.html
     safe_cols <- c(
-      '#00ff00','#ba55d3','#00fa9a','#00ffff','#00bfff','#0000ff','#ff00ff','#dda0dd','#ff1493',
-      '#2f4f4f','#2e8b57','#800000','#bdb76b','#9acd32','#00008b','#ff0000','#ff8c00','#ffd700',
-      '#ffa07a')
+      '#800000',
+      '#00ff00',
+      '#ba55d3',
+      '#ffd700',
+      '#00ffff',
+      '#ff1493',
+      '#0000ff',
+      '#2e8b57',
+      '#ff00ff',
+      '#9acd32',
+      '#00bfff',
+      '#2f4f4f',
+      '#00fa9a',
+      '#00008b',
+      '#ff0000',
+      '#ff8c00',
+      '#dda0dd',
+      '#ffa07a',
+      '#bdb76b'
+    )
 
     x_tvar <- biplot_selection_to_name(
         chem = chem_x,
