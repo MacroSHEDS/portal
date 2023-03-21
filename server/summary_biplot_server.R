@@ -57,7 +57,7 @@ pre_filtered_bi <- reactive({
     # raw <- summary()
     raw <- sum %>%
       filter(!var %in% ms_vars_blocked,
-             !paste(domain, site_code) %in% c("suef C2", "suef C3", "suef C4")
+             !paste(domain, site_code) %in% c("suef C2", "suef C3", "suef C4"))
 
     if (type == "dom") {
         fill <- raw %>%
