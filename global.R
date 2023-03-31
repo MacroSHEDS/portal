@@ -147,6 +147,11 @@ linecolors <- c("#2a6a99", "#b66397", "#d88546")
 pchemcolors <- c("#2a6a99", "#b66397", "#d88546")
 raincolors <- c("#6ba9d6", "#d3a1c1", "#e8b690") # 40% lightness version
 
+# high contrast pallete, original colors genereated by: https://mokole.com/palette.html
+safe_cols <- c('#800000', '#00ff00', '#ba55d3', '#ffd700', '#00ffff', '#ff1493',
+    '#0000ff', '#2e8b57', '#ff00ff', '#9acd32', '#00bfff', '#2f4f4f', '#00fa9a',
+    '#00008b', '#ff0000', '#ff8c00', '#dda0dd', '#ffa07a', '#bdb76b')
+
 # safe_cols <- c("#88CCEE", "#CC6677", "#DDCC77", "#117733", "#332288", "#AA4499",
 #                "#44AA99", "#999933", "#882255", "#661100", "#6699CC", "#888888")
 

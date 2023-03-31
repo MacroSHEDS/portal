@@ -26,18 +26,6 @@ reactive_vals <- reactiveValues()
 # at that site
 pre_filtered_bi <- reactive({
 
-    #     date1 <<- input$DATES2_INTER[1]
-    #     date2 <<- input$DATES2_INTER[2]
-    #     domains <<- input$DOMAINS2
-    #     domains_s <<- input$DOMAINS2_S
-    #     sites <<- input$SITES2
-    #     type <<- switch(input$SITE_SELECTION2,
-    #                     ALL_SITES2 = 'all',
-    #                     DOMINE_NETWORK2 = 'dom',
-    #                     BY_SITE2 = 'site')
-    #     # raw <- summary()
-    #     raw <- sum
-
     date1 <- year(input$DATES2_INTER[1])
     date2 <- year(input$DATES2_INTER[2])
     domains <- input$DOMAINS2
@@ -88,25 +76,6 @@ pre_filtered_bi <- reactive({
 
 # Final filtering for variables and configures table for plotly graph
 filtered_bi <- reactive({
-
-    # x_var <<- input$X_VAR2
-    # y_var <<- input$Y_VAR2
-    # include_size <<- input$ADD_SIZE2
-    # size_var <<- input$SIZE_VAR2
-    # x_unit <<- input$X_UNIT2
-    # y_unit <<- input$Y_UNIT2
-    # size_unit <<- input$SIZE_UNIT2
-    # chem_x <<- input$X_TYPE2
-    # chem_y <<- input$Y_TYPE2
-    # chem_size <<- input$SIZE_TYPE2
-    # agg <<- isolate(input$AGG2)
-    # domains <<- isolate(input$DOMAINS2)
-    # sites <<- isolate(input$SITES2)
-    # year1 <<- year(isolate(input$DATES2_INTER[1]))
-    # year2 <<- year(isolate(input$DATES2_INTER[2]))
-    # pfb <<- pre_filtered_bi()
-    # #raw <- isolate(summary())
-    # raw <- sum
 
     input$SITE_SELECTION2
     x_var <- input$X_VAR2
@@ -344,6 +313,7 @@ observeEvent(input$X_VAR2, {
 
 # update individual options for variables based on variable type
 observe({
+
     data <- isolate(pre_filtered_bi())
     data_type <- input$X_TYPE2
     doms <- input$DOMAINS2_S
@@ -379,7 +349,7 @@ observe({
     if (data_type == "Watershed Characteristics") {
         select <- ws_trait_types
         units <- subset_ws_traits(ws_trait_types[2], ws_traits)
-        choose <- ""
+        choose <- "cc_cumulative_precip"
     }
 
     if (data_type == "Year") {
@@ -412,6 +382,7 @@ observeEvent(input$Y_VAR2, {
 })
 
 observe({
+
     data <- isolate(pre_filtered_bi())
     data_type <- input$Y_TYPE2
     doms <- input$DOMAINS2_S
@@ -442,7 +413,7 @@ observe({
     if (data_type == "Watershed Characteristics") {
         select <- ws_trait_types
         units <- subset_ws_traits(ws_trait_types[2], ws_traits)
-        choose <- ""
+        choose <- "cc_cumulative_precip"
     }
 
     if (data_type == "Precipitation") {
@@ -469,6 +440,7 @@ observeEvent(input$SIZE_VAR2, {
 })
 
 observe({
+
     data <- isolate(pre_filtered_bi())
     data_type <- input$SIZE_TYPE2
     doms <- input$DOMAINS2_S
@@ -624,6 +596,7 @@ observe({
 
 # Update ws_chars options if the category is changed
 observe({
+
     input$SITE_SELECTION2
     input$DOMAINS2
     input$SITES2
@@ -646,6 +619,7 @@ observe({
 })
 
 observe({
+
     input$SITE_SELECTION2
     input$DOMAINS2
     input$SITES2
@@ -688,26 +662,6 @@ biplot_trigger <- reactive({
     debounce(250)
 
 output$SUMMARY_BIPLOT <- renderPlotly({
-
-    # biplot_trigger()
-    # bi_table <<- filtered_bi()
-    # domains <<- isolate(input$DOMAINS2)
-    # sites <<- isolate(input$SITES2)
-    # x_var <<- isolate(input$X_VAR2)
-    # y_var <<- isolate(input$Y_VAR2)
-    # include_size <<- isolate(input$ADD_SIZE2)
-    # size_var <<- isolate(input$SIZE_VAR2)
-    # x_unit <<- isolate(input$X_UNIT2)
-    # y_unit <<- isolate(input$Y_UNIT2)
-    # size_unit <<- isolate(input$SIZE_UNIT2)
-    # agg <<- switch(isolate(input$AGG2),
-    #               'YEARLY2' = 'year',
-    #               'MONTHLY2' = 'm',
-    #               'WHOLE2' = 'year ')
-    # chem_x <<- isolate(input$X_TYPE2)
-    # chem_y <<- isolate(input$Y_TYPE2)
-    # chem_size <<- isolate(input$SIZE_TYPE2)
-    # num_sites <<- isolate(n_sites())
 
     biplot_trigger()
     bi_table <- isolate(filtered_bi())
@@ -760,29 +714,6 @@ output$SUMMARY_BIPLOT <- renderPlotly({
     if (nrow(bi_table) == 0 || x_var == "" || y_var == "" || size_var == "") {
         return(empty_plot)
     }
-
-    # high contrast pallete, original colors genereated by: https://mokole.com/palette.html
-    safe_cols <- c(
-      '#800000',
-      '#00ff00',
-      '#ba55d3',
-      '#ffd700',
-      '#00ffff',
-      '#ff1493',
-      '#0000ff',
-      '#2e8b57',
-      '#ff00ff',
-      '#9acd32',
-      '#00bfff',
-      '#2f4f4f',
-      '#00fa9a',
-      '#00008b',
-      '#ff0000',
-      '#ff8c00',
-      '#dda0dd',
-      '#ffa07a',
-      '#bdb76b'
-    )
 
     x_tvar <- biplot_selection_to_name(
         chem = chem_x,
