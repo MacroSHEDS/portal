@@ -58,8 +58,6 @@ data_tab <- tabPanel(
                 ## class = "active",
                 onclick = "window.open('https://portal.edirepository.org/nis/mapbrowse?scope=edi&identifier=1262', '_blank')"
             ),
-            # p('("Download all" option coming soon.)', style = 'color: white')
-            br(), br(),
             div(
                 class = "well-sm",
                 tags$footer("for R users,",
