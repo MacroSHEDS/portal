@@ -1200,10 +1200,7 @@ generate_dropdown_varlist_ws <- function(variables) {
 
 subset_ws_traits <- function(selection, ws_traits = ws_traits) {
     ws_code <- unname(selection)
-
     ws_subest <- unlist(ws_traits[[ws_code]])
-    print(ws_code)
-    print(ws_subest)
 
     return(ws_subest)
 }

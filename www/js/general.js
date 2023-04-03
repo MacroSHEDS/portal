@@ -834,6 +834,7 @@ $("body").on("shown.bs.tab", "a[data-toggle='tab']", function() {
     //conduct site tour
     $('body').on('click', '#TAKE_TOUR', function(i, v){
         $('#DISMISS_MODAL').trigger('click');
+        $('a[data-value="multisite_exploration"]').trigger('click');
     });
 
     $('body').on('click', '.cicerone1a .driver-next-btn', function(i, v){
