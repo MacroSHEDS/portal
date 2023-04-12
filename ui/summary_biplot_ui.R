@@ -164,7 +164,10 @@ summary_biplot_tab <- tabPanel("Site Comparison",
                 value = c(dtrng[1], dtrng[2]),
                 width = "100%", timeFormat = "%Y", step = 365,
                 dragRange = TRUE
-            )
+                ),
+            actionButton("showTable", "Show Table", icon = icon("table")),
+            bsModal("modalExample", "Data Table", "showTable", size = "large",
+                    dataTableOutput("citation_table"))
         )
     )
 )

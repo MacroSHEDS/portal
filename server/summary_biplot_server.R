@@ -1197,3 +1197,6 @@ timeSliderChanged <- eventReactive(
     }
 ) %>%
     debounce(1000)
+
+output$citation_table = DT::renderDataTable(citation_table_data, selection = 'single',
+                            rownames = FALSE, options = list(scrollX = 'true'))

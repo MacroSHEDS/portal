@@ -54,16 +54,27 @@ options(dplyr.summarise.inform = FALSE,
 conf <- jsonlite::fromJSON("config.json")
 
 ## uncomment and run this (without saving script) to create initial connection to our shinyapps account
-# rsconnect::setAccountInfo(name = 'cuahsi',
-#                           token = conf$shinyapps_cuahsi_token,
-#                           secret = conf$shinyapps_cuahsi_secret)
+## rsconnect::setAccountInfo(name = 'cuahsi',
+##                           token = conf$shinyapps_cuahsi_token,
+##                           secret = conf$shinyapps_cuahsi_secret)
 
 ## uncomment and run this (without saving script) to deploy app. you may need to establish your own path
-# options(rsconnect.http.timeout = 50000)
-# options(rsconnect.max.bundle.size = 8 * 1024 * 1024 * 1024)
-# rsconnect::deployApp('~/science/macrosheds/portal',
-#                      appName = 'macrosheds',
-#                      account = 'cuahsi')
+## options(rsconnect.http.timeout = 10000000)
+## options(rsconnect.max.bundle.size = 8 * 1024 * 1024 * 1024)
+## while(TRUE){
+##     catch = 0
+##     catch_counter = 0
+
+##     catch = try({
+##         catch_counter = catch_counter + 1
+##         print(paste('MacroSheds deploy attempt, tries on this run:', catch_counter))
+##         rsconnect::deployApp('~/science/macrosheds/portal',
+##                              appName = 'macrosheds',
+##                              account = 'cuahsi',
+##                              forceUpdate = TRUE)
+##     })
+##     if(! inherits(catch, 'try-error')) break
+## }
 
 # rsconnect::showLogs(appName = "macrosheds", streaming = TRUE)
 

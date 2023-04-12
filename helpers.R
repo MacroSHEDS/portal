@@ -1100,7 +1100,6 @@ load_portal_config <- function(from_where) {
             col_types = 'ccccccccnnnnnccccc'
         ))
 
-
         # universal_products <- sm(googlesheets4::read_sheet(
         #     conf$univ_prods_gsheet,
         #     na = c('', 'NA'),
@@ -1120,6 +1119,18 @@ load_portal_config <- function(from_where) {
             col_types = 'c'
         ))
 
+        detection_limits <- sm(googlesheets4::read_sheet(
+            conf$detection_limits_gsheet,
+            na = c('', 'NA'),
+            col_types = 'c'
+        ))
+
+        products_registry <- sm(googlesheets4::read_sheet(
+            conf$product_registry_gsheet,
+            na = c('', 'NA'),
+            col_types = 'c'
+        ))
+
     } else if (from_where == "local") {
 
         variables <- sm(read_csv("data/general/variables.csv"))
@@ -1127,6 +1138,8 @@ load_portal_config <- function(from_where) {
         # universal_products <- sm(read_csv("data/general/universal_products.csv"))
         disturbance_record <- sm(read_csv("data/general/disturbance_record.csv"))
         site_doi_license <- sm(read_csv("data/general/site_doi_license.csv"))
+        detection_limits <- sm(read_csv("data/general/detection_limits.csv"))
+        products_registry <- sm(read_csv("data/general/products_registry.csv"))
 
     } else {
         stop('from_where must be either "local" or "remote"')
@@ -1149,6 +1162,22 @@ load_portal_config <- function(from_where) {
 
     assign("site_doi_license",
         site_doi_license,
+        pos = .GlobalEnv
+    )
+
+    assign("detection_limits",
+        detection_limits,
+        pos = .GlobalEnv
+    )
+
+    assign("products_registry",
+        products_registry,
+        pos = .GlobalEnv
+    )
+
+    citation_table_data <- create_prodname_from_prodcode_table()
+    assign("citation_table_data",
+        citation_table_data,
         pos = .GlobalEnv
     )
 }
@@ -1482,4 +1511,49 @@ read_combine_ws_traits <- function(ws_prod, ws_var, new_var_name, dmns,
         )
     }
     return(combined_data)
+}
+
+create_prodname_from_prodcode_table <- function() {
+
+    citation_table_data <- site_doi_license %>%
+      left_join(products_registry, by = c('domain', "macrosheds_prodcode" = 'prodcode')) %>%
+      relocate(prodname, .after = domain) %>%
+      rename(data_product_type = prodname)
+
+    return(citation_table_data)
+}
+
+create_product_registry <- function(ms_root) {
+    src_root = file.path(ms_root, 'src')
+    src_nwks = list.dirs(src_root, recursive = F)
+    src_nwks = src_nwks[!grepl('output|dev', src_nwks)]
+
+    for(nwk in src_nwks) {
+        src_dmns = list.dirs(nwk, recursive = F)
+
+        for(dmn in src_dmns) {
+            src_dmn_files <- list.files(dmn, recursive = F, full.names = TRUE)
+            products <- try(
+                read.csv(src_dmn_files[grepl('products.csv', src_dmn_files)])
+            )
+
+            if(inherits(products, 'try-error')) {
+                next
+            } else {
+                dmn_name = str_extract(dmn, '([^\\/]+$)')
+                products$domain = dmn_name
+            }
+
+            if(!exists('products_registry')) {
+                products_registry = products
+            } else {
+                products_registry = dplyr::bind_rows(products_registry, products)
+            }
+        }
+    }
+
+    products_registry <- products_registry %>%
+      relocate(domain, .before = prodcode)
+
+    googlesheets4::write_sheet(products_registry, conf$product_registry_gsheet, sheet = 'products_registry')
 }
