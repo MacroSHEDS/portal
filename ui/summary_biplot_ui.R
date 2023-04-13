@@ -165,7 +165,15 @@ summary_biplot_tab <- tabPanel("Site Comparison",
                 width = "100%", timeFormat = "%Y", step = 365,
                 dragRange = TRUE
                 ),
-            actionButton("showTable", "Show Table", icon = icon("table")),
+          fluidRow(
+            column(3),
+            column(4,
+                    br(),
+                    actionButton("showTable", "macrosheds data source and citation information", icon = icon("table")),
+                    br()
+                ),
+            column(5)
+          ),
             bsModal("modalExample", "Data Table", "showTable", size = "large",
                     dataTableOutput("citation_table"))
         )

@@ -363,9 +363,24 @@ nSiteNVar_tab <- tabPanel("Time Series",
                     HTML(paste0(
                         '<p style="color: blue; font-size: 0.75em">',
                         "Click and drag to zoom. Double-click to reset view.</p>"
-                    ))
+                    )),
+                    actionButton("showTable", "macrosheds data source and citation information", icon = icon("table")),
+                    bsModal("modalExample", "Data Table", "showTable", size = "large",
+                            dataTableOutput("citation_table_ts"))
                 )
-            )
+            ),
+
+            ## fluidRow(
+            ##     column(3),
+            ##     column(4,
+            ##             br(),
+            ##             actionButton("showTable", "macrosheds data source and citation information", icon = icon("table")),
+            ##             br()
+            ##         ),
+            ##     column(5)
+            ## ),
+            ## bsModal("modalExample", "Data Table", "showTable", size = "large",
+            ##         dataTableOutput("citation_table"))
         )
     )
 )
