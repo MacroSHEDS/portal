@@ -137,7 +137,7 @@
         <div class="panel-heading">
           <h4 class="panel-title">
             <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseFive">
-              Volume Weighted Concentration
+              Volume Weighted Concentration and Flux
             </a>
           </h4>
         </div>
@@ -153,6 +153,9 @@
                 </li>
                 <li>
                     Also <strong>NOTE</strong>, that for efficiency in computing VWC, we do not remove measurements from the denominator that are unmatched in the numerator (e.g. timepoints with a measured Q value, but no calculated F value). For some sites and time periods, this will produce a weighted mean (VWC) that is skewed. Such a mismatch is uncommon, and should rarely be of great consequence. Still, before you draw any conclusions from a VWC trend, be sure to switch the view back to "Daily" aggregation and verify that the trend is real, not just an artifact of there being more Q or precipitation measurements than there are flux estimates. In particular, this might be relevant if there was a large storm during a certain month, and that storm was captured in the discharge series, but not in the flux series.
+                </li>
+                <li>
+                  <strong> flux </strong> is calculated by the formula <code> F = Q * C </code> where Q is discharge and C is concentration of a solute. This is the only calculation for flux available on the MacroSheds portal, and all such calculations are made by MacroSheds and are not in any way the official flux values of the original data source, and it must be noted that many data sources report their own flux values, often using more advanced flux estimation methods which have been chosen and developed for their specific needs. MacroSheds currently uses the most basic possible flux calculation method for simplicity and transparency.
                 </li>
             </ul>
           </div>
@@ -191,11 +194,15 @@
             <ul>
                 <li>
                     All MacroSheds data are from U.S. federally funded projects,
-                    <em>except</em> data from the Krycklan Catchment Study (Sweden), and data from the <a href = "https://metrocouncil.org/About-Us/What-We-Do/Departments/Environmental-Services.aspx"> Metropolitan Council Environmental Services </a> (Minneapolis and St. Paul, Minnesota -- pre-release). It is encouraged that users "insert MCES request here" if you plan to use MCES data, especially for any uses intended for publication. To learn more about our data sources -- including licensing and citation information, original dataset links, contact information, and more -- click on the "macrosheds data source and citation information" button below the data visualizations on either the time series or site comparison tabs.
+                    <em>except</em> data from the Krycklan Catchment Study (Sweden), and data from the <a href = "https://metrocouncil.org/About-Us/What-We-Do/Departments/Environmental-Services.aspx"> Metropolitan Council Environmental Services </a> (Minneapolis and St. Paul, Minnesota -- pre-release).
+                </li>
+                <li>It is encouraged that users "insert MCES request here" if you plan to use MCES data, especially for any uses intended for publication. To learn more about our data sources -- including licensing and citation information, original dataset links, contact information, and more -- click on the "macrosheds data source and citation information" button below the data visualizations on either the time series or site comparison tabs.
                 </li>
                 <li>
                     MacroSheds cannot retain all source metadata, so please consult primary source documentation
-                    for specifics on sampling/analytical methods, quality control, and sampling sites. Note that MacroSheds versions of source data may deviate from original data by filtering and aggregations, as well as include additional products (such as flux) which may not be included or deviate from similar products in original data sources. Data in MacroSheds is not represent in any way an official dataset of any source, and is entirely a seperate entity. Any discrepancies should be resolved by defering to the expertise and data version of the dataset source.
+                    for specifics on sampling/analytical methods, quality control, and sampling sites.
+                </li>
+                <li>Note that MacroSheds versions of source data may deviate from original data by filtering and aggregations, as well as include additional products (such as flux) which may not be included or deviate from similar products in original data sources. Data in MacroSheds is not represent in any way an official dataset of any source, and is entirely a seperate entity. Any discrepancies should be resolved by defering to the expertise and data version of the dataset source.
                 </li>
             </ul>
           </div>
