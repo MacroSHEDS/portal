@@ -364,7 +364,7 @@ nSiteNVar_tab <- tabPanel("Time Series",
                         '<p style="color: blue; font-size: 0.75em">',
                         "Click and drag to zoom. Double-click to reset view.</p>"
                     )),
-                    actionButton("showTable", " macrosheds data source and citation information", icon = icon("table", style = "color: #d88546"), title="information available in this table includes citation, license, data source url, data source contact, and much more metadata for each data product in MacroSheds"),
+                    actionButton("showTable", " data source and citation information", icon = icon("table", style = "color: #d88546"), title="information available in this table includes citation, license, data source url, data source contact, and much more metadata for each data product in MacroSheds"),
                     bsModal("modalExample", "Data Table", "showTable", size = "large",
                             dataTableOutput("citation_table_ts"))
                 )

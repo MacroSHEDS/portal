@@ -1518,7 +1518,8 @@ create_prodname_from_prodcode_table <- function() {
     citation_table_data <- site_doi_license %>%
       left_join(products_registry, by = c('domain', "macrosheds_prodcode" = 'prodcode')) %>%
       relocate(prodname, .after = domain) %>%
-      rename(data_product_type = prodname)
+      rename(data_product_type = prodname) %>%
+      select(-retrieve_status, -munge_status, -derive_status, -components, -component, -NA_status, -retrieve_status.1, -retrieve_status.2)
 
     return(citation_table_data)
 }
