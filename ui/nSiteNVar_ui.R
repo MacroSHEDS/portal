@@ -13,7 +13,6 @@ nSiteNVar_tab <- tabPanel("Time Series",
             br(),
             div(
                 style = "display: none",
-
                 # these are ineligant alternatives to an "invalidateInput" function
                 # that must exist to accompany updateSelectizeInput, etc., but
                 # seemingly doesn't
@@ -106,10 +105,11 @@ nSiteNVar_tab <- tabPanel("Time Series",
                 ),
             ),
             br(),
-            div("Unit", class = "widget-title text-center"),
+            div("Unit", class = "widget-title text-center", title = "solute flux and volume weighted concentration data are both calculated by MacroSheds, and not from source data. See Notes tab for information on these calculations"),
             div("(Applies to solutes only)",
                 class = "widget-caption text-center"
             ),
+            br(),
             div(
                 id = "cf_div",
                 radioButtons("CONC_FLUX3",
@@ -363,9 +363,24 @@ nSiteNVar_tab <- tabPanel("Time Series",
                     HTML(paste0(
                         '<p style="color: blue; font-size: 0.75em">',
                         "Click and drag to zoom. Double-click to reset view.</p>"
-                    ))
+                    )),
+                    actionButton("showTable", " data source and citation information", icon = icon("table", style = "color: #d88546"), title="information available in this table includes citation, license, data source url, data source contact, and much more metadata for each data product in MacroSheds"),
+                    bsModal("modalExample", "Data Table", "showTable", size = "large",
+                            dataTableOutput("citation_table_ts"))
                 )
-            )
+            ),
+
+            ## fluidRow(
+            ##     column(3),
+            ##     column(4,
+            ##             br(),
+            ##             actionButton("showTable", "macrosheds data source and citation information", icon = icon("table")),
+            ##             br()
+            ##         ),
+            ##     column(5)
+            ## ),
+            ## bsModal("modalExample", "Data Table", "showTable", size = "large",
+            ##         dataTableOutput("citation_table"))
         )
     )
 )

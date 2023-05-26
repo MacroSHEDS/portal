@@ -1984,3 +1984,6 @@ outputOptions(output,
     suspendWhenHidden = FALSE,
     priority = 100
 )
+
+output$citation_table_ts = DT::renderDataTable(citation_table_data, selection = 'single',
+                            rownames = FALSE, options = list(scrollX = 'true'))

@@ -164,7 +164,18 @@ summary_biplot_tab <- tabPanel("Site Comparison",
                 value = c(dtrng[1], dtrng[2]),
                 width = "100%", timeFormat = "%Y", step = 365,
                 dragRange = TRUE
-            )
+                ),
+          fluidRow(
+            column(3),
+            column(4,
+                    br(),
+                    actionButton("showTable", " data source and citation information", icon = icon("table", style = "color: #d88546"), title="information available in this table includes citation, license, data source url, data source contact, and much more metadata for each data product in MacroSheds"),
+                    br()
+                ),
+            column(5)
+          ),
+            bsModal("modalExample", "Data Table", "showTable", size = "large",
+                    dataTableOutput("citation_table"))
         )
     )
 )
