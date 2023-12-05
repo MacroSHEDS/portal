@@ -35,7 +35,7 @@ suppressPackageStartupMessages({
     library(errors)
     library(cicerone)
     library(mapdeck)
-    library(mapboxapi)
+#    library(mapboxapi)
     # library(rhandsontable)
     # library(shiny.router)
 })
@@ -98,7 +98,7 @@ variables <- bind_rows(variables, read_csv('data/general/variables_portalonly.cs
 ##  mapbox token import
 ## mapboxapi::mb_access_token(conf$mapboxapi_sk, install = TRUE)
 ## NOTE: need new token?
-mapboxapi::mb_access_token(conf$mapbox_sk)
+#mapboxapi::mb_access_token(conf$mapbox_sk)
 
 # some stream_gauge sites do not have discharge, like calhoun - weir_3
 sites_with_Q <- sm(read_csv("data/general/sites_with_discharge.csv")) %>%
