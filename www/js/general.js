@@ -832,10 +832,11 @@ $("body").on("shown.bs.tab", "a[data-toggle='tab']", function() {
     }, 1000));
 
     //conduct site tour
-    $('body').on('click', '#TAKE_TOUR', function(i, v){
-        $('#DISMISS_MODAL').trigger('click');
-        $('a[data-value="multisite_exploration"]').trigger('click');
-    });
+	$('body').on('click', '#TAKE_TOUR', function(i, v){
+		$('#DISMISS_MODAL').trigger('click');
+		$('a[data-value="multisite_exploration"]').trigger('click');
+		Shiny.setInputValue('TAKE_TOUR', new Date().getTime());  // Trigger event for Shiny
+	});
 
     $('body').on('click', '.cicerone1a .driver-next-btn', function(i, v){
         $('a[data-value="biplot"]').trigger('click');
@@ -926,7 +927,7 @@ $("body").on("shown.bs.tab", "a[data-toggle='tab']", function() {
         Shiny.setInputValue('FLAGS3:logical', 'true');
         Shiny.setInputValue('INTERP3:logical', 'true');
 
-        Shiny.setInputValue('START_     DATA_TOUR', '' + new Date());
+        Shiny.setInputValue('START_DATA_TOUR', '' + new Date());
     });
 
     $('body').on('click', '.cicerone2a .driver-close-btn', function(i, v){
