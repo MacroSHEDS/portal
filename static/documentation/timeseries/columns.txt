@@ -4,10 +4,10 @@ A dataframe or table arranged with these columns is said to be in "MacroSheds fo
 Note that most functions in the macrosheds package will work without variable prefixes, status columns, and the val_err column.
 
 
-1. "datetime"
-POSIX datetime
+1. "date"
+date
 
-Date and time in UTC
+ISO 8601 date format
 
 
 2. "site_code"
@@ -17,32 +17,18 @@ Short name for MacroSheds site. See "Site summary table" under the Data tab at
 macrosheds.org for more information.
 
 
-3. "var"
+3. "grab_sample"
+logical
+
+Indicates whether the corresponding observation was obtained as a grab sample (TRUE) or
+via some sort of installed sensor/device.
+
+
+4. "var"
 character
 
-The "sampling prefix" and short name for each MacroSheds variable. The sampling
-prefix makes up the first two characters of all elements of the "var" column, and
-is separated from the short name of the variable by an underscore. The first letter
-of the prefix is either "I" or "G", and the second letter is either "S" or "N".
-Prefixes can be interpreted as follows:
-
-    I = "installed", referring to data points that were recorded by some kind of
-        
-installed apparatus, e.g. a rain gauge or an in-stream sensor array.
-    G = "grab", referring to data points that were collected "by hand", either
-        as water samples or manual/visual point measurements.
-
-    S = "sensor", referring to data points that were recorded by an electronic
-        device in the field.
-    N = "non-sensor", referring to data points that were recorded by a human making
-        physical measurements, or as analytical samples in a lab
-
-Note that MacroSheds determines I vs. G automatically using a set of heuristics.
-S vs. N is determined from source metadata where possible, and inferred otherwise.
-Prefixes may therefore be incorrect in some cases.
-
-For more on MacroSheds variables, see "Variable table" under the Data tab at
-macrosheds.org.
+Short name for MacroSheds variable. For full names and additional variable metadata,
+see 05c_timeseries_variable_metadata_column_descriptions.txt or "Variable table" under the Data tab at macrosheds.org.
 
 
 4. "val"

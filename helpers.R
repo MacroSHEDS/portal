@@ -456,6 +456,7 @@ read_combine_feathers <- function(var, dmns, sites = NULL) {
 }
 
 generate_dropdown_varlist <- function(chemvars, filter_set = NULL) {
+
     if (!is.null(filter_set)) {
         chemvars <- filter(chemvars, variable_code %in% filter_set)
     }
@@ -1092,7 +1093,8 @@ load_portal_config <- function(from_where) {
             na = c('', 'NA'),
             col_types = 'cccccccnnccnn'
         )) %>%
-        filter(!variable_code %in% ms_vars_blocked)
+        filter(! variable_code %in% ms_vars_blocked,
+               ! grepl('_sd$', variable_code))
 
         site_data <- sm(googlesheets4::read_sheet(
             conf$site_data_gsheet,
@@ -1153,15 +1155,16 @@ load_portal_config <- function(from_where) {
     )
 }
 
-generate_dropdown_varlist_ws <- function(variables) {
+generate_dropdown_varlist_ws <- function(variables){
+
     biplot_summary_file <- read_feather("data/general/biplot/year.feather") %>%
         pull(var) %>%
         unique()
 
-    ws_vars_table <<- variables %>%
+    ws_vars_table <- variables %>%
       filter(variable_type == "ws_char") %>%
-        # ms_vars_blocked defined in global.R
-      filter(!variable_code %in% ms_vars_blocked)  %>%
+      filter(! variable_code %in% ms_vars_blocked,
+             ! grepl('_sd$', variable_code)) %>%
       filter(variable_code %in% biplot_summary_file) %>%
         mutate(displayname = ifelse(!is.na(unit),
             paste0(
@@ -1240,14 +1243,20 @@ filter_dropdown_varlist_bi <- function(filter_set, vartype = "conc") {
     return(vars_display_subset)
 }
 
-drop_var_prefix <- function(x) {
-    unprefixed <- substr(x, 4, nchar(x))
+drop_var_prefix <- function(x){
+
+    unprefixed <- ifelse(grepl('^(?!Ge_)[IGa-z][SNa-z]_.+', x, perl = TRUE),
+                         substr(x, 4, nchar(x)),
+                         x)
 
     return(unprefixed)
 }
 
-extract_var_prefix <- function(x) {
-    prefix <- substr(x, 1, 2)
+extract_var_prefix <- function(x){
+
+    prefix <- ifelse(grepl('^(?!Ge_)[IGa-z][SNa-z]_.+', x, perl = TRUE),
+                     substr(x, 1, 2),
+                     x)
 
     return(prefix)
 }
@@ -1269,7 +1278,7 @@ ms_read_portalsite <- function(domain,
                                site_code,
                                prodname) {
 
-    # read data from network/domain/site, arrange by variable then datetime.
+    # read data from portal/data/domain/site, arrange by variable then datetime.
     # insert val_err column
     # into the val column as errors attribute and then remove val_err column
     # (error/uncertainty is handled by the errors package as an attribute,
@@ -1358,7 +1367,7 @@ biplot_selection_to_name <- function(chem, unit, var) {
         chem == "Discharge" & unit == "m^3" ~ "discharge",
         chem == "Discharge" & unit %in% c("mm/year", "mm/d") ~ "discharge_a",
         chem == "Stream Chemistry" ~ paste0(var, "_conc"),
-        chem == "Stream Chemistry Flux" ~ paste0(var, "_flux"),
+        chem == "Stream Chemical Flux" ~ paste0(var, "_flux"),
         chem == "Watershed Characteristics" ~ unit,
         chem == "Year" ~ "Year",
         chem == "Precipitation" ~ "precip",

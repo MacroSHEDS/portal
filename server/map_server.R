@@ -9,15 +9,15 @@ sg <- filter(
 watershed_summaries <- sm(read_csv("data/general/spatial_downloadables/watershed_summaries.csv"))
 
 watershed_quar <- watershed_summaries %>%
-    summarise(
-        "Annual Mean Precip (mm)_bb" = quantile(cc_mean_annual_precip, .25, na.rm = T),
-        "Annual Mean Precip (mm)_tt" = quantile(cc_mean_annual_precip, .75, na.rm = T),
-        "Annual Mean Temp (C)_bb" = quantile(cc_mean_annual_temp, .25, na.rm = T),
-        "Annual Mean Temp (C)_tt" = quantile(cc_mean_annual_temp, .75, na.rm = T),
-        "Mean Slope (%)_bb" = quantile(te_slope_mean, .25, na.rm = T),
-        "Mean Slope (%)_tt" = quantile(te_slope_mean, .75, na.rm = T),
-        "Area (ha)_bb" = quantile(ws_area_ha, .25, na.rm = T),
-        "Area (ha)_tt" = quantile(ws_area_ha, .75, na.rm = T)
+    summarize(
+        "Annual Mean Precip (mm)_bb" = quantile(precip_mean, .25, na.rm = T),
+        "Annual Mean Precip (mm)_tt" = quantile(precip_mean, .75, na.rm = T),
+        "Annual Mean Temp (C)_bb" = quantile(temp_mean, .25, na.rm = T),
+        "Annual Mean Temp (C)_tt" = quantile(temp_mean, .75, na.rm = T),
+        "Mean Slope (%)_bb" = quantile(slope_mean, .25, na.rm = T),
+        "Mean Slope (%)_tt" = quantile(slope_mean, .75, na.rm = T),
+        "Area (ha)_bb" = quantile(area, .25, na.rm = T),
+        "Area (ha)_tt" = quantile(area, .75, na.rm = T)
     ) %>%
     pivot_longer(cols = everything()) %>%
     mutate(
@@ -344,7 +344,7 @@ output$MAP <- renderLeaflet({
                 domain = rg$domain,
                 # pretty_domain = rg$pretty_domain,
                 # site_type = rg$site_type,
-                site_code = rg$site_code,
+                site_code = rg$site_code
                 # full_name = rg$full_name,
                 # latitude = rg$latitude,
                 # longitude = rg$longitude

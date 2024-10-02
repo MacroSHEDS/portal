@@ -131,6 +131,10 @@ observeEvent(
         basedata <- reactive_vals$basedata
         vars_ <- input$VARS3
 
+        # chemvars_display_subset <- generate_dropdown_varlist(
+        #     chemvars = chemvars,
+        #     filter_set = drop_var_prefix(unique(basedata$chem$var))
+        # )
         chemvars_display_subset <- filter_dropdown_varlist(basedata$chem)
         chemvars_vec <- unlist(chemvars_display_subset,
             recursive = TRUE,
