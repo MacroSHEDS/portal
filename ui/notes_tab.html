@@ -146,9 +146,9 @@
             <ul>
                 <li>
                     The "traditional" way to compute VWC is:<br>
-                    [1] <code>VWC = (C<sub>1</sub>V<sub>1</sub> + C<sub>2</sub>V<sub>2</sub> + ... + C<sub>n</sub>V<sub>n</sub>) \ (V<sub>1</sub> + V<sub>2</sub> + ... + V<sub>n</sub>)</code><br>
+                    [1] <code>VWC = (C<sub>1</sub>V<sub>1</sub> + C<sub>2</sub>V<sub>2</sub> + ... + C<sub>n</sub>V<sub>n</sub>) / (V<sub>1</sub> + V<sub>2</sub> + ... + V<sub>n</sub>)</code><br>
                     where <code>C</code> is concentration, <code>V</code> is volume, and <code>n</code> is the number of samples over the period (monthly or yearly). For computational efficiency, we begin with flux (<code>F</code>; the numerator), which is precomputed as a rate. Our denominator is discharge (<code>Q</code>), which is also a rate. Thus, we use:<br>
-                    [2] <code>VWC = mean(F<sub>1</sub>, F<sub>2</sub>, ..., F<sub>n</sub>) \ mean(Q<sub>1</sub>, Q<sub>2</sub>, ..., Q<sub>n</sub>)</code><br>
+                    [2] <code>VWC = mean(F<sub>1</sub>, F<sub>2</sub>, ..., F<sub>n</sub>) / mean(Q<sub>1</sub>, Q<sub>2</sub>, ..., Q<sub>n</sub>)</code><br>
                     to compute stream VWC. To compute VWC of precipitation, which we do not store in rate units, the denominator from equation 1 is used, and the numerator is converted from a rate (per day) to a quantity by multiplying by the number of days in the aggregation period. <strong>NOTE</strong> that this approach can produce skewed VWCs in the case where sampling captures only a subset of an overall pattern. For this reason, we do not display precipitation VWC values for time periods with less than 50% sample coverage. Still, before you draw any conclusions from a precipitation VWC trend, be sure to switch the view back to "Daily" aggregation and verify that the trend is real, not just an artifact of uneven sampling.
                 </li>
                 <li>

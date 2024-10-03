@@ -42,27 +42,20 @@ pre_filtered_bi <- reactive({
         BY_BUCKET2 = "bucket"
     )
 
-    # raw <- summary()
     raw <- sum %>%
-      filter(!var %in% ms_vars_blocked,
-             !paste(domain, site_code) %in% c("suef C2", "suef C3", "suef C4"))
+      filter(! var %in% ms_vars_blocked,
+             ! grepl('_sd$', var))
 
-    if (type == "dom") {
+    if(type == "dom"){
         fill <- raw %>%
             filter(domain %in% domains)
-    }
-
-    if (type == "site") {
+    } else if(type == "site"){
         fill <- raw %>%
             filter(domain %in% domains_s) %>%
             filter(site_code %in% sites)
-    }
-
-    if (type == "all") {
+    } else if(type == "all"){
         fill <- raw
-    }
-
-    if (type == "bucket") {
+    } else if(type == "bucket"){
         fill <- raw %>%
             filter(domain %in% domains_b) %>%
             filter(site_code %in% sites_b)
@@ -173,7 +166,7 @@ filtered_bi <- reactive({
 
         final <- convert_conc_units_bi(final, x_var_, x_unit_start, x_unit)
     }
-    if (chem_x %in% c("Stream Chemistry Flux", "Precipitation Chemistry Flux")) {
+    if (chem_x %in% c("Stream Chemical Flux", "Precipitation Chemistry Flux")) {
         final <- convert_flux_units_bi(
             df = final,
             col = x_var_,
@@ -195,7 +188,7 @@ filtered_bi <- reactive({
 
         final <- convert_conc_units_bi(final, y_var_, y_unit_start, y_unit)
     }
-    if (chem_y %in% c("Stream Chemistry Flux", "Precipitation Chemistry Flux")) {
+    if (chem_y %in% c("Stream Chemical Flux", "Precipitation Chemistry Flux")) {
         final <- convert_flux_units_bi(
             df = final,
             col = y_var_,
@@ -218,7 +211,7 @@ filtered_bi <- reactive({
 
             final <- convert_conc_units_bi(final, size_var_, size_unit_start, size_unit)
         }
-        if (chem_size %in% c("Stream Chemistry Flux", "Precipitation Chemistry Flux")) {
+        if (chem_size %in% c("Stream Chemical Flux", "Precipitation Chemistry Flux")) {
             final <- convert_flux_units_bi(
                 df = final,
                 col = size_var_,
@@ -296,7 +289,6 @@ observe({
         updateSelectInput(session, "X_VAR2", choices = "Q", selected = "Q")
         updateSelectInput(session, "SIZE_TYPE2", choices = biplot_data_types_size)
     }
-    # }
 })
 
 # reactivre value saves varibles so when conc is changed to flux, it will not change the
@@ -334,7 +326,7 @@ observe({
         choose <- "mg/L"
     }
 
-    if (data_type %in% c("Stream Chemistry Flux", "Precipitation Chemistry Flux")) {
+    if (data_type %in% c("Stream Chemical Flux", "Precipitation Chemistry Flux")) {
         select <- filter_dropdown_varlist_bi(data, vartype = "flux")
         units <- flux_units_bi
         choose <- "kg/ha/year"
@@ -397,7 +389,7 @@ observe({
         choose <- "mg/L"
     }
 
-    if (data_type %in% c("Stream Chemistry Flux", "Precipitation Chemistry Flux")) {
+    if (data_type %in% c("Stream Chemical Flux", "Precipitation Chemistry Flux")) {
         select <- filter_dropdown_varlist_bi(data, vartype = "flux")
         units <- flux_units_bi
         choose <- "kg/ha/year"
@@ -457,7 +449,7 @@ observe({
         choose <- "mg/L"
     }
 
-    if (data_type %in% c("Stream Chemistry Flux", "Precipitation Chemistry Flux")) {
+    if (data_type %in% c("Stream Chemical Flux", "Precipitation Chemistry Flux")) {
         select <- filter_dropdown_varlist_bi(data, vartype = "flux")
         units <- flux_units_bi
         choose <- "kg/ha/year"
@@ -559,8 +551,9 @@ observe({
   bucket_contents <- input$SITES2_B
 })
 
-# update unit options if they are not convertable
+# update unit options if they are not convertible
 observe({
+
     x_var <- input$X_VAR2
     y_var <- input$Y_VAR2
     size_var <- input$SIZE_VAR2
@@ -597,6 +590,7 @@ observe({
 # Update ws_chars options if the category is changed
 observe({
 
+    # browser()
     input$SITE_SELECTION2
     input$DOMAINS2
     input$SITES2
@@ -746,15 +740,15 @@ output$SUMMARY_BIPLOT <- renderPlotly({
         }
     }
 
-    # if(chem_x %in% c('Stream Chemistry Flux', 'Precipitation Chemistry Flux')) {
+    # if(chem_x %in% c('Stream Chemical Flux', 'Precipitation Chemistry Flux')) {
     #     x_unit <- paste0(x_unit, '/', agg)
     # }
     #
-    # if(chem_y %in% c('Stream Chemistry Flux', 'Precipitation Chemistry Flux')) {
+    # if(chem_y %in% c('Stream Chemical Flux', 'Precipitation Chemistry Flux')) {
     #     y_unit <- paste0(y_unit, '/', agg)
     # }
     #
-    # if(chem_size %in% c('Stream Chemistry Flux', 'Precipitation Chemistry Flux')) {
+    # if(chem_size %in% c('Stream Chemical Flux', 'Precipitation Chemistry Flux')) {
     #     size_unit <- paste0(size_unit, '/', agg)
     # }
 

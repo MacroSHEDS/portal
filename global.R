@@ -35,7 +35,7 @@ suppressPackageStartupMessages({
     library(errors)
     library(cicerone)
     library(mapdeck)
-    library(mapboxapi)
+#    library(mapboxapi)
     # library(rhandsontable)
     # library(shiny.router)
 })
@@ -61,7 +61,7 @@ conf <- jsonlite::fromJSON("config.json")
 ## uncomment and run this (without saving script) to deploy app. you may need to establish your own path
 # options(rsconnect.http.timeout = 50000)
 # options(rsconnect.max.bundle.size = 8 * 1024 * 1024 * 1024)
-# rsconnect::deployApp('~/science/macrosheds/portal',
+# rsconnect::deployApp('~/git/macrosheds/portal',
 #                      appName = 'macrosheds',
 #                      account = 'cuahsi')
 
@@ -83,22 +83,23 @@ source("function_aliases.R")
 
 # blocked watershed char vars
 ms_vars_blocked <- c(
-    "cc_precip_sd", "cc_precip_median", "cc_temp_mean_sd", "cc_temp_mean_median",
-    "vb_lai_median", "vb_lai_sd", "vb_fpar_median", "vb_fpar_sd",
-    "vb_fpar_max", "vb_fpar_min", "vb_fpar_mean", "va_gpp_median", "va_gpp_sd",
-    "vb_ndvi_median", "vb_ndvi_sd", "vh_tcw_sd", "vh_tcw_median"
+    'cc_precip_median', 'cc_temp_median', 'ck_et_ref_median',
+    'vb_lai_median', 'vb_fpar_median',
+    # 'vb_fpar_max', 'vb_fpar_min', 'vb_fpar_mean',
+    'vb_ndvi_median', 'vb_evi_median', 'vh_tcw_median',
+    'model_GPP', 'model_ER', 'model_k600'
 )
 
 # load global datasets
 # googlesheets4::gs4_auth(path = '../data_acquisition/googlesheet_service_accnt.json')
 #                         use_oob = TRUE)
-load_portal_config(from_where = "local")
-variables <- bind_rows(variables, read_csv('data/general/variables_portalonly.csv'))
+load_portal_config(from_where = 'local')
+# variables <- bind_rows(variables, read_csv('data/general/variables_portalonly.csv'))
 
 ##  mapbox token import
 ## mapboxapi::mb_access_token(conf$mapboxapi_sk, install = TRUE)
 ## NOTE: need new token?
-mapboxapi::mb_access_token(conf$mapbox_sk)
+#mapboxapi::mb_access_token(conf$mapbox_sk)
 
 # some stream_gauge sites do not have discharge, like calhoun - weir_3
 sites_with_Q <- sm(read_csv("data/general/sites_with_discharge.csv")) %>%
@@ -235,7 +236,8 @@ fluxvars <- variables %>%
 
 chemvars <- filter(
     variables,
-    variable_type %in% c("chem_discrete", "chem_mix", "gas")
+    # variable_type %in% c('chem_discrete', 'chem_mix', 'gas')
+    variable_type != 'ws_char'
 )
 # filter(variable_code %in% fluxvars) #might need this back temporarily
 
@@ -245,14 +247,14 @@ pchemvars <- list( # TODO: program this list. dig into pchem files by domain and
     # extract all available variable names. pchemvars_display should
     # only reflect the available vars for the sites that are selected
     hbef = c(
-        "pH", "spCond", "Ca", "Mg", "K", "Na", "TMAl", "OMAl", "Al_ICP",
-        "NH4", "SO4", "NO3", "Cl", "PO4", "DOC", "TDN", "DON", "SiO2", "Mn", "Fe",
-        "F", "cationCharge", "anionCharge", "theoryCond", "ionError", "ionBalance"
+        'pH', 'spCond', 'Ca', 'Mg', 'K', 'Na', 'TMAl', 'OMAl', 'Al_ICP',
+        'NH4', 'SO4', 'NO3', 'Cl', 'PO4', 'DOC', 'TDN', 'DON', 'SiO2', 'Mn', 'Fe',
+        'F', 'cationCharge', 'anionCharge', 'theoryCond', 'ionError', 'ionBalance'
     ),
     hjandrews = c(
-        "alk", "Ca", "Cl", "spCond", "DOC", "K", "Mg", "Na", "NH3_N",
-        "NO3_N", "pH", "PO4_P", "SiO2", "SO4_S", "suspSed", "TDN", "TDP", "TKN",
-        "UTKN", "UTN", "UTP"
+        'alk', 'Ca', 'Cl', 'spCond', 'DOC', 'K', 'Mg', 'Na', 'NH3_N',
+        'NO3_N', 'pH', 'PO4_P', 'SiO2', 'SO4_S', 'suspSed', 'TDN', 'TDP', 'TKN',
+        'UTKN', 'UTN', 'UTP'
     )
 )
 
@@ -263,23 +265,25 @@ pchemvars_display <- generate_dropdown_varlist(chemvars,
     )
 )
 
+#what's this for?
 conc_vars <- variables %>%
-    filter(variable_type %in% c("chem_discrete", "gas")) %>% # TODO: allow the 4 gas variables to be displayed in ppx OR x/L, xM, xeq
+    filter(flux_convertible == 1) %>% # TODO: allow the 4 gas variables to be displayed in ppx OR x/L, xM, xeq
+    # filter(variable_type %in% c('chem_discrete', 'gas')) %>% # TODO: allow the 4 gas variables to be displayed in ppx OR x/L, xM, xeq
     pull(variable_code)
 
 # these are the available selections for the unit conversion menus
-conc_units <- c("ng/L",
-    "\u03BCg/L" = "ug/L", "mg/L", "g/L", "nM", "\u03BCM" = "uM", "mM", "M",
-    "neq/L", "\u03BCeq/L" = "ueq/L", "meq/L", "eq/L"
+conc_units <- c('ng/L',
+    '\u03BCg/L' = 'ug/L', 'mg/L', 'g/L', 'nM', '\u03BCM' = 'uM', 'mM', 'M',
+    'neq/L', '\u03BCeq/L' = 'ueq/L', 'meq/L', 'eq/L'
 ) # TODO: add ppt, ppm, ppb to this list (see TODO above)
-flux_units <- c("Mg/ha/d", "kg/ha/d", "g/ha/d", "mg/ha/d")
+flux_units <- c('Mg/ha/d', 'kg/ha/d', 'g/ha/d', 'mg/ha/d')
 
 # map conc/flux display options to internal IDs for conc/flux metrics
 conc_flux_names <- c(
-    "Concentration" = "Concentration",
+    'Concentration' = 'Concentration',
     # '_x' = 'Flux',
-    "Flux" = "Flux",
-    "VWC" = "VWC"
+    'Flux' = 'Flux',
+    'VWC' = 'VWC'
 )
 # '_y' = 'VWC')
 
@@ -301,7 +305,7 @@ chemvars_display_subset <- filter_dropdown_varlist(basedata$chem)
 biplot_options <- chemvars_display_subset
 
 biplot_data_types <- c(
-    "Stream Chemistry", "Stream Chemistry Flux", "Discharge",
+    "Stream Chemistry", "Stream Chemical Flux", "Discharge",
     "Watershed Characteristics", "Precipitation",
     "Precipitation Chemistry", "Precipitation Chemistry Flux"
 )

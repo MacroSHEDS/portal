@@ -37,7 +37,6 @@ vb_ndvi_mean,Annual NDVI Mean,unitless,UNKNOWN,ws_char,NDVI,NA,NA,0,NA,NA,NA,NA
 vb_ndvi_min,Annual NDVI Minimum,unitless,UNKNOWN,ws_char,NDVI,NA,NA,0,NA,NA,NA,NA
 vb_ndvi_sd_space,Annual Mean spatial Standard Deviation,unitless,UNKNOWN,ws_char,NDVI,NA,NA,0,NA,NA,NA,NA
 vb_ndvi_sd_year,Annual NDVI Standard Deviation,unitless,UNKNOWN,ws_char,NDVI,NA,NA,0,NA,NA,NA,NA
-vj_tcw_max,Tesselated Cap Wetness Annual Maximum,unitless,UNKNOWN,ws_char,Tesselated Cap Wetness,NA,NA,0,NA,NA,NA,NA
+vj_tcw_median,Tesselated Cap Wetness Median Monthly,unitless,UNKNOWN,ws_char,Tesselated Cap Wetness,NA,NA,0,NA,NA,NA,NA
 vj_tcw_mean,Tesselated Cap Wetness Mean Annual,unitless,UNKNOWN,ws_char,Tesselated Cap Wetness,NA,NA,0,NA,NA,NA,NA
-vj_tcw_min,Tesselated Cap Wetness Annual Minimum,unitless,UNKNOWN,ws_char,Tesselated Cap Wetness,NA,NA,0,NA,NA,NA,NA
-vj_tcw_sd_year,Tesselated Cap Wetness Annual Standard Deviation,unitless,UNKNOWN,ws_char,Tesselated Cap Wetness,NA,NA,0,NA,NA,NA,NA
+vj_tcw_sd,Tesselated Cap Wetness Monthly Standard Deviation,unitless,UNKNOWN,ws_char,Tesselated Cap Wetness,NA,NA,0,NA,NA,NA,NA
