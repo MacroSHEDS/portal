@@ -61,7 +61,7 @@ conf <- jsonlite::fromJSON("config.json")
 ## uncomment and run this (without saving script) to deploy app. you may need to establish your own path
 # options(rsconnect.http.timeout = 50000)
 # options(rsconnect.max.bundle.size = 8 * 1024 * 1024 * 1024)
-# rsconnect::deployApp('~/science/macrosheds/portal',
+# rsconnect::deployApp('~/git/macrosheds/portal',
 #                      appName = 'macrosheds',
 #                      account = 'cuahsi')
 
